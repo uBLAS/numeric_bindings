@@ -186,8 +186,10 @@ struct ungtr_impl {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t ungtr( const fortran_int_t n, MatrixA& a,
-        const VectorTAU& tau, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ungtr( const fortran_int_t n, MatrixA& a, const VectorTAU& tau,
+        Workspace work ) {
     return ungtr_impl< typename value< MatrixA >::type >::invoke( n, a,
             tau, work );
 }
@@ -198,8 +200,9 @@ inline std::ptrdiff_t ungtr( const fortran_int_t n, MatrixA& a,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t ungtr( const fortran_int_t n, MatrixA& a,
-        const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+ungtr( const fortran_int_t n, MatrixA& a, const VectorTAU& tau ) {
     return ungtr_impl< typename value< MatrixA >::type >::invoke( n, a,
             tau, optimal_workspace() );
 }
@@ -210,8 +213,10 @@ inline std::ptrdiff_t ungtr( const fortran_int_t n, MatrixA& a,
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t ungtr( const fortran_int_t n, const MatrixA& a,
-        const VectorTAU& tau, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ungtr( const fortran_int_t n, const MatrixA& a, const VectorTAU& tau,
+        Workspace work ) {
     return ungtr_impl< typename value< MatrixA >::type >::invoke( n, a,
             tau, work );
 }
@@ -222,7 +227,9 @@ inline std::ptrdiff_t ungtr( const fortran_int_t n, const MatrixA& a,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t ungtr( const fortran_int_t n, const MatrixA& a,
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+ungtr( const fortran_int_t n, const MatrixA& a,
         const VectorTAU& tau ) {
     return ungtr_impl< typename value< MatrixA >::type >::invoke( n, a,
             tau, optimal_workspace() );

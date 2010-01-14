@@ -171,8 +171,9 @@ struct hetrf_impl {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t hetrf( MatrixA& a, VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrf( MatrixA& a, VectorIPIV& ipiv, Workspace work ) {
     return hetrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, work );
 }
@@ -184,7 +185,9 @@ inline std::ptrdiff_t hetrf( MatrixA& a, VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t hetrf( MatrixA& a, VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+hetrf( MatrixA& a, VectorIPIV& ipiv ) {
     return hetrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, optimal_workspace() );
 }
@@ -196,8 +199,9 @@ inline std::ptrdiff_t hetrf( MatrixA& a, VectorIPIV& ipiv ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t hetrf( const MatrixA& a, VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrf( const MatrixA& a, VectorIPIV& ipiv, Workspace work ) {
     return hetrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, work );
 }
@@ -209,7 +213,9 @@ inline std::ptrdiff_t hetrf( const MatrixA& a, VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t hetrf( const MatrixA& a, VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+hetrf( const MatrixA& a, VectorIPIV& ipiv ) {
     return hetrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, optimal_workspace() );
 }
@@ -221,8 +227,9 @@ inline std::ptrdiff_t hetrf( const MatrixA& a, VectorIPIV& ipiv ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t hetrf( MatrixA& a, const VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrf( MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
     return hetrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, work );
 }
@@ -234,7 +241,9 @@ inline std::ptrdiff_t hetrf( MatrixA& a, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t hetrf( MatrixA& a, const VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+hetrf( MatrixA& a, const VectorIPIV& ipiv ) {
     return hetrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, optimal_workspace() );
 }
@@ -246,8 +255,9 @@ inline std::ptrdiff_t hetrf( MatrixA& a, const VectorIPIV& ipiv ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t hetrf( const MatrixA& a, const VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrf( const MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
     return hetrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, work );
 }
@@ -259,7 +269,9 @@ inline std::ptrdiff_t hetrf( const MatrixA& a, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t hetrf( const MatrixA& a, const VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+hetrf( const MatrixA& a, const VectorIPIV& ipiv ) {
     return hetrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, optimal_workspace() );
 }

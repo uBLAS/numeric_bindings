@@ -299,8 +299,9 @@ struct sytrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sytrf( MatrixA& a, VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sytrf( MatrixA& a, VectorIPIV& ipiv, Workspace work ) {
     return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, work );
 }
@@ -312,7 +313,9 @@ inline std::ptrdiff_t sytrf( MatrixA& a, VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t sytrf( MatrixA& a, VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+sytrf( MatrixA& a, VectorIPIV& ipiv ) {
     return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, optimal_workspace() );
 }
@@ -324,8 +327,9 @@ inline std::ptrdiff_t sytrf( MatrixA& a, VectorIPIV& ipiv ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sytrf( const MatrixA& a, VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sytrf( const MatrixA& a, VectorIPIV& ipiv, Workspace work ) {
     return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, work );
 }
@@ -337,7 +341,9 @@ inline std::ptrdiff_t sytrf( const MatrixA& a, VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t sytrf( const MatrixA& a, VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+sytrf( const MatrixA& a, VectorIPIV& ipiv ) {
     return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, optimal_workspace() );
 }
@@ -349,8 +355,9 @@ inline std::ptrdiff_t sytrf( const MatrixA& a, VectorIPIV& ipiv ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sytrf( MatrixA& a, const VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sytrf( MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
     return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, work );
 }
@@ -362,7 +369,9 @@ inline std::ptrdiff_t sytrf( MatrixA& a, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t sytrf( MatrixA& a, const VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+sytrf( MatrixA& a, const VectorIPIV& ipiv ) {
     return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, optimal_workspace() );
 }
@@ -374,8 +383,9 @@ inline std::ptrdiff_t sytrf( MatrixA& a, const VectorIPIV& ipiv ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sytrf( const MatrixA& a, const VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sytrf( const MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
     return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, work );
 }
@@ -387,7 +397,9 @@ inline std::ptrdiff_t sytrf( const MatrixA& a, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t sytrf( const MatrixA& a, const VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+sytrf( const MatrixA& a, const VectorIPIV& ipiv ) {
     return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, optimal_workspace() );
 }

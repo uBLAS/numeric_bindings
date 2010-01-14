@@ -467,12 +467,13 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF,
         typename Workspace >
-inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
-        const MatrixE& e, MatrixF& f, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& scale,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
+        MatrixC& c, const MatrixD& d, const MatrixE& e, MatrixF& f,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& dif, Workspace work ) {
+        MatrixA >::type >::type& scale, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& dif, Workspace work ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
             a, b, c, d, e, f, scale, dif, work );
 }
@@ -485,12 +486,13 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF >
-inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
-        const MatrixE& e, MatrixF& f, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& scale,
+inline typename boost::disable_if< detail::is_workspace< MatrixF >,
+        std::ptrdiff_t >::type
+tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
+        MatrixC& c, const MatrixD& d, const MatrixE& e, MatrixF& f,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& dif ) {
+        MatrixA >::type >::type& scale, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& dif ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
             a, b, c, d, e, f, scale, dif, optimal_workspace() );
 }
@@ -504,9 +506,10 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF,
         typename Workspace >
-inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const MatrixA& a, const MatrixB& b, const MatrixC& c,
-        const MatrixD& d, const MatrixE& e, MatrixF& f,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
+        const MatrixC& c, const MatrixD& d, const MatrixE& e, MatrixF& f,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& dif, Workspace work ) {
@@ -522,9 +525,10 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF >
-inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const MatrixA& a, const MatrixB& b, const MatrixC& c,
-        const MatrixD& d, const MatrixE& e, MatrixF& f,
+inline typename boost::disable_if< detail::is_workspace< MatrixF >,
+        std::ptrdiff_t >::type
+tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
+        const MatrixC& c, const MatrixD& d, const MatrixE& e, MatrixF& f,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& dif ) {
@@ -541,12 +545,13 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF,
         typename Workspace >
-inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
-        const MatrixE& e, const MatrixF& f, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& scale,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
+        MatrixC& c, const MatrixD& d, const MatrixE& e, const MatrixF& f,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& dif, Workspace work ) {
+        MatrixA >::type >::type& scale, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& dif, Workspace work ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
             a, b, c, d, e, f, scale, dif, work );
 }
@@ -559,12 +564,13 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF >
-inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
-        const MatrixE& e, const MatrixF& f, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& scale,
+inline typename boost::disable_if< detail::is_workspace< MatrixF >,
+        std::ptrdiff_t >::type
+tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
+        MatrixC& c, const MatrixD& d, const MatrixE& e, const MatrixF& f,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& dif ) {
+        MatrixA >::type >::type& scale, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& dif ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
             a, b, c, d, e, f, scale, dif, optimal_workspace() );
 }
@@ -578,10 +584,11 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF,
         typename Workspace >
-inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const MatrixA& a, const MatrixB& b, const MatrixC& c,
-        const MatrixD& d, const MatrixE& e, const MatrixF& f,
-        typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
+        const MatrixC& c, const MatrixD& d, const MatrixE& e,
+        const MatrixF& f, typename remove_imaginary< typename value<
         MatrixA >::type >::type& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& dif, Workspace work ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
@@ -596,10 +603,11 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF >
-inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const MatrixA& a, const MatrixB& b, const MatrixC& c,
-        const MatrixD& d, const MatrixE& e, const MatrixF& f,
-        typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixF >,
+        std::ptrdiff_t >::type
+tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
+        const MatrixC& c, const MatrixD& d, const MatrixE& e,
+        const MatrixF& f, typename remove_imaginary< typename value<
         MatrixA >::type >::type& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& dif ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,

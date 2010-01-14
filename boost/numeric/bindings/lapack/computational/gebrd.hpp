@@ -366,7 +366,275 @@ struct gebrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, work );
@@ -374,258 +642,19 @@ inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
 
 //
 // Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * VectorE&
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
 // * VectorTAUQ&
 // * VectorTAUP&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
-        VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
-        VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
-        VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
-        VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
-        VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
-        VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, optimal_workspace() );
 }
@@ -641,7 +670,237 @@ inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAUQ& tauq,
+        VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAUQ& tauq,
+        VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, work );
@@ -650,15 +909,17 @@ inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
 //
 // Overloaded function for gebrd. Its overload differs for
 // * MatrixA&
-// * VectorD&
-// * VectorE&
+// * const VectorD&
+// * const VectorE&
 // * const VectorTAUQ&
 // * VectorTAUP&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, optimal_workspace() );
@@ -667,15 +928,17 @@ inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
 //
 // Overloaded function for gebrd. Its overload differs for
 // * const MatrixA&
-// * VectorD&
-// * VectorE&
+// * const VectorD&
+// * const VectorE&
 // * const VectorTAUQ&
 // * VectorTAUP&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, work );
@@ -684,15 +947,17 @@ inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
 //
 // Overloaded function for gebrd. Its overload differs for
 // * const MatrixA&
-// * VectorD&
-// * VectorE&
+// * const VectorD&
+// * const VectorE&
 // * const VectorTAUQ&
 // * VectorTAUP&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, optimal_workspace() );
@@ -701,209 +966,20 @@ inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
 //
 // Overloaded function for gebrd. Its overload differs for
 // * MatrixA&
-// * const VectorD&
-// * VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
-        const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
-        const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
 // * VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
-        const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
-        const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -913,11 +989,260 @@ inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
 // * VectorE&
 // * VectorTAUQ&
 // * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, work );
@@ -925,259 +1250,19 @@ inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
 
 //
 // Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * VectorE&
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
 // * VectorTAUQ&
 // * const VectorTAUP&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
-        VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
-        VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
-        VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
-        VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
-        VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
-        VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, optimal_workspace() );
 }
@@ -1193,7 +1278,123 @@ inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, work );
@@ -1201,8 +1402,8 @@ inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
 
 //
 // Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
+// * const MatrixA&
+// * const VectorD&
 // * VectorE&
 // * const VectorTAUQ&
 // * const VectorTAUP&
@@ -1210,8 +1411,48 @@ inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAUQ& tauq,
+        const VectorTAUP& taup, Workspace work ) {
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
+}
+
+//
+// Overloaded function for gebrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAUQ& tauq,
+        const VectorTAUP& taup ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, optimal_workspace() );
 }
@@ -1220,14 +1461,16 @@ inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
 // Overloaded function for gebrd. Its overload differs for
 // * const MatrixA&
 // * VectorD&
-// * VectorE&
+// * const VectorE&
 // * const VectorTAUQ&
 // * const VectorTAUP&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, work );
@@ -1237,14 +1480,16 @@ inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
 // Overloaded function for gebrd. Its overload differs for
 // * const MatrixA&
 // * VectorD&
-// * VectorE&
+// * const VectorE&
 // * const VectorTAUQ&
 // * const VectorTAUP&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, optimal_workspace() );
@@ -1254,14 +1499,16 @@ inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
 // Overloaded function for gebrd. Its overload differs for
 // * MatrixA&
 // * const VectorD&
-// * VectorE&
+// * const VectorE&
 // * const VectorTAUQ&
 // * const VectorTAUP&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, work );
@@ -1271,14 +1518,16 @@ inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
 // Overloaded function for gebrd. Its overload differs for
 // * MatrixA&
 // * const VectorD&
-// * VectorE&
+// * const VectorE&
 // * const VectorTAUQ&
 // * const VectorTAUP&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, optimal_workspace() );
@@ -1288,41 +1537,6 @@ inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
 // Overloaded function for gebrd. Its overload differs for
 // * const MatrixA&
 // * const VectorD&
-// * VectorE&
-// * const VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * const VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
 // * const VectorE&
 // * const VectorTAUQ&
 // * const VectorTAUP&
@@ -1330,7 +1544,9 @@ inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, work );
@@ -1338,8 +1554,8 @@ inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
 
 //
 // Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
+// * const MatrixA&
+// * const VectorD&
 // * const VectorE&
 // * const VectorTAUQ&
 // * const VectorTAUP&
@@ -1347,113 +1563,10 @@ inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
+        std::ptrdiff_t >::type
+gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * const VectorTAUP&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
-        Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAUQ&
-// * const VectorTAUP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup ) {
     return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tauq, taup, optimal_workspace() );
 }

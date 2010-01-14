@@ -367,8 +367,10 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-        VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b, VectorTAUB& taub,
+        Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -383,7 +385,152 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b, VectorTAUB& taub ) {
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggrqf. Its overload differs for
+// * const MatrixA&
+// * VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, VectorTAUA& taua, MatrixB& b, VectorTAUB& taub,
+        Workspace work ) {
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
+}
+
+//
+// Overloaded function for ggrqf. Its overload differs for
+// * const MatrixA&
+// * VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, VectorTAUA& taua, MatrixB& b,
+        VectorTAUB& taub ) {
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggrqf. Its overload differs for
+// * MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, const VectorTAUA& taua, MatrixB& b, VectorTAUB& taub,
+        Workspace work ) {
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
+}
+
+//
+// Overloaded function for ggrqf. Its overload differs for
+// * MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, const VectorTAUA& taua, MatrixB& b,
+        VectorTAUB& taub ) {
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggrqf. Its overload differs for
+// * const MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, const VectorTAUA& taua, MatrixB& b,
+        VectorTAUB& taub, Workspace work ) {
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
+}
+
+//
+// Overloaded function for ggrqf. Its overload differs for
+// * const MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, const VectorTAUA& taua, MatrixB& b,
+        VectorTAUB& taub ) {
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggrqf. Its overload differs for
+// * MatrixA&
+// * VectorTAUA&
+// * const MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, VectorTAUA& taua, const MatrixB& b, VectorTAUB& taub,
+        Workspace work ) {
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
+}
+
+//
+// Overloaded function for ggrqf. Its overload differs for
+// * MatrixA&
+// * VectorTAUA&
+// * const MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, VectorTAUA& taua, const MatrixB& b,
         VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
@@ -393,142 +540,16 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
 // Overloaded function for ggrqf. Its overload differs for
 // * const MatrixA&
 // * VectorTAUA&
-// * MatrixB&
-// * VectorTAUB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
-        MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * const MatrixA&
-// * VectorTAUA&
-// * MatrixB&
-// * VectorTAUB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
-        MatrixB& b, VectorTAUB& taub ) {
-    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * MatrixA&
-// * const VectorTAUA&
-// * MatrixB&
-// * VectorTAUB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
-        MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * MatrixA&
-// * const VectorTAUA&
-// * MatrixB&
-// * VectorTAUB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
-        MatrixB& b, VectorTAUB& taub ) {
-    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * const MatrixA&
-// * const VectorTAUA&
-// * MatrixB&
-// * VectorTAUB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
-        MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * const MatrixA&
-// * const VectorTAUA&
-// * MatrixB&
-// * VectorTAUB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
-        MatrixB& b, VectorTAUB& taub ) {
-    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * MatrixA&
-// * VectorTAUA&
 // * const MatrixB&
 // * VectorTAUB&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua,
-        const MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * MatrixA&
-// * VectorTAUA&
-// * const MatrixB&
-// * VectorTAUB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua,
-        const MatrixB& b, VectorTAUB& taub ) {
-    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * const MatrixA&
-// * VectorTAUA&
-// * const MatrixB&
-// * VectorTAUB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
-        const MatrixB& b, VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, VectorTAUA& taua, const MatrixB& b,
+        VectorTAUB& taub, Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -543,8 +564,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
-        const MatrixB& b, VectorTAUB& taub ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, VectorTAUA& taua, const MatrixB& b,
+        VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
 }
@@ -559,8 +582,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
-        const MatrixB& b, VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
+        VectorTAUB& taub, Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -575,8 +600,10 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
-        const MatrixB& b, VectorTAUB& taub ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
+        VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
 }
@@ -591,8 +618,10 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
-        const MatrixB& b, VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
+        VectorTAUB& taub, Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -607,8 +636,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
-        const MatrixB& b, VectorTAUB& taub ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
+        VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
 }
@@ -623,8 +654,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-        const VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b, const VectorTAUB& taub,
+        Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -639,7 +672,9 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
         const VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
@@ -655,8 +690,10 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
-        MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, VectorTAUA& taua, MatrixB& b,
+        const VectorTAUB& taub, Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -671,8 +708,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
-        MatrixB& b, const VectorTAUB& taub ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, VectorTAUA& taua, MatrixB& b,
+        const VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
 }
@@ -687,8 +726,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
-        MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, const VectorTAUA& taua, MatrixB& b,
+        const VectorTAUB& taub, Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -703,8 +744,10 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
-        MatrixB& b, const VectorTAUB& taub ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, const VectorTAUA& taua, MatrixB& b,
+        const VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
 }
@@ -719,8 +762,10 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
-        MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, const VectorTAUA& taua, MatrixB& b,
+        const VectorTAUB& taub, Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -735,8 +780,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
-        MatrixB& b, const VectorTAUB& taub ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, const VectorTAUA& taua, MatrixB& b,
+        const VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
 }
@@ -751,8 +798,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua,
-        const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, VectorTAUA& taua, const MatrixB& b,
+        const VectorTAUB& taub, Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -767,8 +816,10 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua,
-        const MatrixB& b, const VectorTAUB& taub ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, VectorTAUA& taua, const MatrixB& b,
+        const VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
 }
@@ -783,8 +834,10 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
-        const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, VectorTAUA& taua, const MatrixB& b,
+        const VectorTAUB& taub, Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -799,8 +852,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
-        const MatrixB& b, const VectorTAUB& taub ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, VectorTAUA& taua, const MatrixB& b,
+        const VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
 }
@@ -815,8 +870,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
-        const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
+        const VectorTAUB& taub, Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -831,8 +888,10 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
-        const MatrixB& b, const VectorTAUB& taub ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
+        const VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
 }
@@ -847,8 +906,10 @@ inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
-        const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
+        const VectorTAUB& taub, Workspace work ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, work );
 }
@@ -863,8 +924,10 @@ inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
-        const MatrixB& b, const VectorTAUB& taub ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
+        std::ptrdiff_t >::type
+ggrqf( const MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
+        const VectorTAUB& taub ) {
     return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
             taua, b, taub, optimal_workspace() );
 }

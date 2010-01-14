@@ -219,8 +219,10 @@ struct hegv_impl {
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, MatrixA& a, MatrixB& b, VectorW& w, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
+        MatrixB& b, VectorW& w, Workspace work ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, work );
 }
@@ -233,8 +235,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, MatrixA& a, MatrixB& b, VectorW& w ) {
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
+        MatrixB& b, VectorW& w ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, optimal_workspace() );
 }
@@ -248,9 +252,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, const MatrixA& a, MatrixB& b, VectorW& w,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
+        MatrixB& b, VectorW& w, Workspace work ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, work );
 }
@@ -263,8 +268,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, const MatrixA& a, MatrixB& b, VectorW& w ) {
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
+        MatrixB& b, VectorW& w ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, optimal_workspace() );
 }
@@ -278,9 +285,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, MatrixA& a, const MatrixB& b, VectorW& w,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
+        const MatrixB& b, VectorW& w, Workspace work ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, work );
 }
@@ -293,8 +301,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, MatrixA& a, const MatrixB& b, VectorW& w ) {
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
+        const MatrixB& b, VectorW& w ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, optimal_workspace() );
 }
@@ -308,9 +318,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, const MatrixA& a, const MatrixB& b, VectorW& w,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
+        const MatrixB& b, VectorW& w, Workspace work ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, work );
 }
@@ -323,8 +334,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, const MatrixA& a, const MatrixB& b, VectorW& w ) {
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
+        const MatrixB& b, VectorW& w ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, optimal_workspace() );
 }
@@ -338,9 +351,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, MatrixA& a, MatrixB& b, const VectorW& w,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
+        MatrixB& b, const VectorW& w, Workspace work ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, work );
 }
@@ -353,8 +367,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, MatrixA& a, MatrixB& b, const VectorW& w ) {
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
+        MatrixB& b, const VectorW& w ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, optimal_workspace() );
 }
@@ -368,9 +384,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, const MatrixA& a, MatrixB& b, const VectorW& w,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
+        MatrixB& b, const VectorW& w, Workspace work ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, work );
 }
@@ -383,8 +400,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, const MatrixA& a, MatrixB& b, const VectorW& w ) {
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
+        MatrixB& b, const VectorW& w ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, optimal_workspace() );
 }
@@ -398,9 +417,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, MatrixA& a, const MatrixB& b, const VectorW& w,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
+        const MatrixB& b, const VectorW& w, Workspace work ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, work );
 }
@@ -413,8 +433,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, MatrixA& a, const MatrixB& b, const VectorW& w ) {
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
+        const MatrixB& b, const VectorW& w ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, optimal_workspace() );
 }
@@ -428,9 +450,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, const MatrixA& a, const MatrixB& b, const VectorW& w,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
+        const MatrixB& b, const VectorW& w, Workspace work ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, work );
 }
@@ -443,9 +466,10 @@ inline std::ptrdiff_t hegv( const fortran_int_t itype,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
-inline std::ptrdiff_t hegv( const fortran_int_t itype,
-        const char jobz, const MatrixA& a, const MatrixB& b,
-        const VectorW& w ) {
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
+        const MatrixB& b, const VectorW& w ) {
     return hegv_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, a, b, w, optimal_workspace() );
 }

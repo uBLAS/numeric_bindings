@@ -495,11 +495,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
@@ -515,11 +517,12 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
@@ -537,12 +540,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
@@ -558,11 +562,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
@@ -580,12 +586,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
@@ -601,11 +608,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
@@ -623,12 +632,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
@@ -644,11 +654,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
@@ -666,12 +678,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
@@ -687,11 +700,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
@@ -709,12 +724,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
@@ -730,11 +746,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
@@ -752,12 +770,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
@@ -773,11 +792,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
@@ -795,12 +816,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
@@ -816,11 +838,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t gtrfs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
+        const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
             d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );

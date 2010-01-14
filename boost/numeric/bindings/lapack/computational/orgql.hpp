@@ -175,9 +175,11 @@ struct orgql_impl {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t orgql( const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-        const VectorTAU& tau, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+orgql( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t k, MatrixA& a, const VectorTAU& tau,
+        Workspace work ) {
     return orgql_impl< typename value< MatrixA >::type >::invoke( m, n,
             k, a, tau, work );
 }
@@ -188,9 +190,10 @@ inline std::ptrdiff_t orgql( const fortran_int_t m,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t orgql( const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-        const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+orgql( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t k, MatrixA& a, const VectorTAU& tau ) {
     return orgql_impl< typename value< MatrixA >::type >::invoke( m, n,
             k, a, tau, optimal_workspace() );
 }
@@ -201,9 +204,11 @@ inline std::ptrdiff_t orgql( const fortran_int_t m,
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t orgql( const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+orgql( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t k, const MatrixA& a, const VectorTAU& tau,
+        Workspace work ) {
     return orgql_impl< typename value< MatrixA >::type >::invoke( m, n,
             k, a, tau, work );
 }
@@ -214,9 +219,10 @@ inline std::ptrdiff_t orgql( const fortran_int_t m,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t orgql( const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+orgql( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t k, const MatrixA& a, const VectorTAU& tau ) {
     return orgql_impl< typename value< MatrixA >::type >::invoke( m, n,
             k, a, tau, optimal_workspace() );
 }

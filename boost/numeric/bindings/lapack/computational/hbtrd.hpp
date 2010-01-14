@@ -198,8 +198,10 @@ struct hbtrd_impl {
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
-        VectorE& e, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
+        Workspace work ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, work );
 }
@@ -214,8 +216,10 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
-        VectorE& e, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
+        MatrixQ& q ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, optimal_workspace() );
 }
@@ -230,8 +234,10 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        VectorD& d, VectorE& e, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
+        MatrixQ& q, Workspace work ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, work );
 }
@@ -246,8 +252,10 @@ inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        VectorD& d, VectorE& e, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
+        MatrixQ& q ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, optimal_workspace() );
 }
@@ -262,8 +270,10 @@ inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
-        const VectorD& d, VectorE& e, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, const VectorD& d, VectorE& e,
+        MatrixQ& q, Workspace work ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, work );
 }
@@ -278,8 +288,10 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
-        const VectorD& d, VectorE& e, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, const VectorD& d, VectorE& e,
+        MatrixQ& q ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, optimal_workspace() );
 }
@@ -294,8 +306,10 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        const VectorD& d, VectorE& e, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, const VectorD& d, VectorE& e,
+        MatrixQ& q, Workspace work ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, work );
 }
@@ -310,8 +324,10 @@ inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        const VectorD& d, VectorE& e, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, const VectorD& d, VectorE& e,
+        MatrixQ& q ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, optimal_workspace() );
 }
@@ -326,7 +342,117 @@ inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, VectorD& d, const VectorE& e,
+        MatrixQ& q, Workspace work ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, work );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, VectorD& d, const VectorE& e,
+        MatrixQ& q ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, VectorD& d, const VectorE& e,
+        MatrixQ& q, Workspace work ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, work );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, VectorD& d, const VectorE& e,
+        MatrixQ& q ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, const VectorD& d, const VectorE& e,
+        MatrixQ& q, Workspace work ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, work );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, const VectorD& d, const VectorE& e,
+        MatrixQ& q ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, const VectorD& d,
         const VectorE& e, MatrixQ& q, Workspace work ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, work );
@@ -334,15 +460,17 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
 
 //
 // Overloaded function for hbtrd. Its overload differs for
-// * MatrixAB&
-// * VectorD&
+// * const MatrixAB&
+// * const VectorD&
 // * const VectorE&
 // * MatrixQ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, const VectorD& d,
         const VectorE& e, MatrixQ& q ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, optimal_workspace() );
@@ -350,102 +478,6 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
 
 //
 // Overloaded function for hbtrd. Its overload differs for
-// * const MatrixAB&
-// * VectorD&
-// * const VectorE&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        VectorD& d, const VectorE& e, MatrixQ& q, Workspace work ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * const MatrixAB&
-// * VectorD&
-// * const VectorE&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        VectorD& d, const VectorE& e, MatrixQ& q ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * MatrixAB&
-// * const VectorD&
-// * const VectorE&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
-        const VectorD& d, const VectorE& e, MatrixQ& q, Workspace work ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * MatrixAB&
-// * const VectorD&
-// * const VectorE&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
-        const VectorD& d, const VectorE& e, MatrixQ& q ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * const MatrixAB&
-// * const VectorD&
-// * const VectorE&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        const VectorD& d, const VectorE& e, MatrixQ& q, Workspace work ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * const MatrixAB&
-// * const VectorD&
-// * const VectorE&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        const VectorD& d, const VectorE& e, MatrixQ& q ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
 // * MatrixAB&
 // * VectorD&
 // * VectorE&
@@ -454,8 +486,10 @@ inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
-        VectorE& e, const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
+        const MatrixQ& q, Workspace work ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, work );
 }
@@ -470,8 +504,10 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
-        VectorE& e, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
+        const MatrixQ& q ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, optimal_workspace() );
 }
@@ -486,8 +522,10 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        VectorD& d, VectorE& e, const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
+        const MatrixQ& q, Workspace work ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, work );
 }
@@ -502,8 +540,10 @@ inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        VectorD& d, VectorE& e, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
+        const MatrixQ& q ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, optimal_workspace() );
 }
@@ -518,8 +558,10 @@ inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
-        const VectorD& d, VectorE& e, const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, const VectorD& d, VectorE& e,
+        const MatrixQ& q, Workspace work ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, work );
 }
@@ -534,8 +576,10 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
-        const VectorD& d, VectorE& e, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, const VectorD& d, VectorE& e,
+        const MatrixQ& q ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, optimal_workspace() );
 }
@@ -550,8 +594,10 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        const VectorD& d, VectorE& e, const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, const VectorD& d, VectorE& e,
+        const MatrixQ& q, Workspace work ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, work );
 }
@@ -566,8 +612,10 @@ inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        const VectorD& d, VectorE& e, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, const VectorD& d, VectorE& e,
+        const MatrixQ& q ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, optimal_workspace() );
 }
@@ -582,7 +630,117 @@ inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, VectorD& d, const VectorE& e,
+        const MatrixQ& q, Workspace work ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, work );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, VectorD& d, const VectorE& e,
+        const MatrixQ& q ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, VectorD& d, const VectorE& e,
+        const MatrixQ& q, Workspace work ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, work );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, VectorD& d, const VectorE& e,
+        const MatrixQ& q ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, const VectorD& d, const VectorE& e,
+        const MatrixQ& q, Workspace work ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, work );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, MatrixAB& ab, const VectorD& d, const VectorE& e,
+        const MatrixQ& q ) {
+    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for hbtrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, const VectorD& d,
         const VectorE& e, const MatrixQ& q, Workspace work ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, work );
@@ -590,114 +748,18 @@ inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
 
 //
 // Overloaded function for hbtrd. Its overload differs for
-// * MatrixAB&
-// * VectorD&
+// * const MatrixAB&
+// * const VectorD&
 // * const VectorE&
 // * const MatrixQ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab, VectorD& d,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+hbtrd( const char vect, const MatrixAB& ab, const VectorD& d,
         const VectorE& e, const MatrixQ& q ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * const MatrixAB&
-// * VectorD&
-// * const VectorE&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        VectorD& d, const VectorE& e, const MatrixQ& q, Workspace work ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * const MatrixAB&
-// * VectorD&
-// * const VectorE&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        VectorD& d, const VectorE& e, const MatrixQ& q ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * MatrixAB&
-// * const VectorD&
-// * const VectorE&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
-        const VectorD& d, const VectorE& e, const MatrixQ& q,
-        Workspace work ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * MatrixAB&
-// * const VectorD&
-// * const VectorE&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, MatrixAB& ab,
-        const VectorD& d, const VectorE& e, const MatrixQ& q ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * const MatrixAB&
-// * const VectorD&
-// * const VectorE&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        const VectorD& d, const VectorE& e, const MatrixQ& q,
-        Workspace work ) {
-    return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
-}
-
-//
-// Overloaded function for hbtrd. Its overload differs for
-// * const MatrixAB&
-// * const VectorD&
-// * const VectorE&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ >
-inline std::ptrdiff_t hbtrd( const char vect, const MatrixAB& ab,
-        const VectorD& d, const VectorE& e, const MatrixQ& q ) {
     return hbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, d, e, q, optimal_workspace() );
 }

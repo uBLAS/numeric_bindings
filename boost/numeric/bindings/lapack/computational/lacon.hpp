@@ -268,9 +268,10 @@ struct lacon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename VectorX, typename Workspace >
-inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
-        typename remove_imaginary< typename value<
-        VectorX >::type >::type& est, fortran_int_t& kase,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lacon( const fortran_int_t n, VectorX& x, typename remove_imaginary<
+        typename value< VectorX >::type >::type& est, fortran_int_t& kase,
         Workspace work ) {
     return lacon_impl< typename value< VectorX >::type >::invoke( n, x,
             est, kase, work );
@@ -282,9 +283,11 @@ inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
 // * Default workspace-type (optimal)
 //
 template< typename VectorX >
-inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
-        typename remove_imaginary< typename value<
-        VectorX >::type >::type& est, fortran_int_t& kase ) {
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+lacon( const fortran_int_t n, VectorX& x, typename remove_imaginary<
+        typename value< VectorX >::type >::type& est,
+        fortran_int_t& kase ) {
     return lacon_impl< typename value< VectorX >::type >::invoke( n, x,
             est, kase, optimal_workspace() );
 }
@@ -295,7 +298,9 @@ inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
 // * User-defined workspace
 //
 template< typename VectorX, typename Workspace >
-inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lacon( const fortran_int_t n, const VectorX& x,
         typename remove_imaginary< typename value<
         VectorX >::type >::type& est, fortran_int_t& kase,
         Workspace work ) {
@@ -309,7 +314,9 @@ inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
 // * Default workspace-type (optimal)
 //
 template< typename VectorX >
-inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+lacon( const fortran_int_t n, const VectorX& x,
         typename remove_imaginary< typename value<
         VectorX >::type >::type& est, fortran_int_t& kase ) {
     return lacon_impl< typename value< VectorX >::type >::invoke( n, x,

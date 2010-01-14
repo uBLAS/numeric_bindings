@@ -297,7 +297,9 @@ struct gecon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixA, typename Workspace >
-inline std::ptrdiff_t gecon( const char norm, const MatrixA& a,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gecon( const char norm, const MatrixA& a,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, Workspace work ) {
@@ -310,7 +312,9 @@ inline std::ptrdiff_t gecon( const char norm, const MatrixA& a,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA >
-inline std::ptrdiff_t gecon( const char norm, const MatrixA& a,
+inline typename boost::disable_if< detail::is_workspace< MatrixA >,
+        std::ptrdiff_t >::type
+gecon( const char norm, const MatrixA& a,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond ) {

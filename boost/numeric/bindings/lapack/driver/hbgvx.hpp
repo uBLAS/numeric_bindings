@@ -272,9 +272,10 @@ struct hbgvx_impl {
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -297,9 +298,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -324,15 +326,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -349,15 +352,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -376,15 +380,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -401,15 +406,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -428,15 +434,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -453,15 +460,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -480,9 +488,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -505,113 +514,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -626,6 +532,60 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 // Overloaded function for hbgvx. Its overload differs for
 // * const MatrixAB&
+// * MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
 // * VectorW&
@@ -636,15 +596,70 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -661,15 +676,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -688,9 +704,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -713,9 +730,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -740,14 +758,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -765,14 +784,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -792,14 +812,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -817,14 +838,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -844,14 +866,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -869,14 +892,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -896,9 +920,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -921,9 +946,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -948,14 +974,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -973,14 +1000,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1000,14 +1028,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -1025,14 +1054,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1052,14 +1082,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -1077,14 +1108,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1104,9 +1136,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1129,9 +1162,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1156,15 +1190,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1181,15 +1216,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1208,15 +1244,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1233,15 +1270,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1260,15 +1298,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1285,15 +1324,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1312,9 +1352,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1337,113 +1378,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1458,6 +1396,60 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 // Overloaded function for hbgvx. Its overload differs for
 // * const MatrixAB&
+// * MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
 // * VectorW&
@@ -1468,15 +1460,70 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1493,15 +1540,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1520,9 +1568,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1546,9 +1595,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1573,14 +1623,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1599,14 +1650,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1626,14 +1678,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1652,14 +1705,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1679,14 +1733,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1705,14 +1760,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1732,9 +1788,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1758,9 +1815,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1785,14 +1843,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1811,14 +1870,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1838,14 +1898,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1864,14 +1925,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1891,14 +1953,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1917,14 +1980,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1944,9 +2008,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1969,9 +2034,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1996,15 +2062,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -2021,15 +2088,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -2048,15 +2116,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -2073,15 +2142,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -2100,15 +2170,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -2125,15 +2196,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -2152,9 +2224,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2177,113 +2250,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2298,6 +2268,60 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 // Overloaded function for hbgvx. Its overload differs for
 // * const MatrixAB&
+// * MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
 // * VectorW&
@@ -2308,15 +2332,70 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+    return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for hbgvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixBB&
+// * const MatrixQ&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
+        typename VectorW, typename MatrixZ, typename VectorIFAIL,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -2333,15 +2412,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -2360,9 +2440,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2386,9 +2467,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2413,14 +2495,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -2439,14 +2522,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -2466,14 +2550,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -2492,14 +2577,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -2519,14 +2605,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -2545,14 +2632,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -2572,9 +2660,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2598,9 +2687,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2625,14 +2715,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -2651,14 +2742,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -2678,14 +2770,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -2704,14 +2797,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -2731,14 +2825,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -2757,14 +2852,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -2784,9 +2880,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2809,9 +2906,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2836,15 +2934,17 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -2861,15 +2961,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -2888,15 +2989,17 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -2913,15 +3016,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -2940,15 +3044,17 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -2965,15 +3071,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -2992,9 +3099,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3017,9 +3125,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3044,15 +3153,17 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -3069,15 +3180,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -3096,15 +3208,17 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -3121,15 +3235,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -3148,15 +3263,17 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -3173,15 +3290,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -3200,9 +3318,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3226,9 +3345,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3253,14 +3373,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -3279,14 +3400,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -3306,14 +3428,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -3332,14 +3455,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -3359,14 +3483,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -3385,14 +3510,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -3412,9 +3538,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3438,9 +3565,10 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3465,14 +3593,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -3491,14 +3620,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -3518,14 +3648,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -3544,14 +3675,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -3571,14 +3703,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -3597,14 +3730,15 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hbgvx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vl,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,

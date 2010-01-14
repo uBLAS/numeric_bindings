@@ -504,8 +504,110 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -516,7 +618,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHAR&
 // * VectorALPHAI&
 // * VectorBETA&
@@ -527,8 +629,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -539,7 +643,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHAR&
 // * VectorALPHAI&
 // * VectorBETA&
@@ -550,8 +654,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -562,7 +668,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHAR&
 // * VectorALPHAI&
 // * VectorBETA&
@@ -573,8 +679,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -585,8 +693,8 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
+// * MatrixB&
+// * const VectorALPHAR&
 // * VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
@@ -596,9 +704,423 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
@@ -608,9 +1130,9 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
 // * MatrixVSR&
@@ -619,9 +1141,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
@@ -631,438 +1155,6 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
 // * MatrixB&
 // * const VectorALPHAR&
 // * const VectorALPHAI&
@@ -1074,56 +1166,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
@@ -1146,8 +1192,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
@@ -1170,8 +1218,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
@@ -1194,8 +1244,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
@@ -1218,9 +1270,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -1242,9 +1296,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -1266,9 +1322,421 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -1281,7 +1749,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // * MatrixA&
 // * MatrixB&
 // * VectorALPHAR&
-// * VectorALPHAI&
+// * const VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * MatrixVSR&
@@ -1290,9 +1758,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
@@ -1304,7 +1774,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // * const MatrixA&
 // * MatrixB&
 // * VectorALPHAR&
-// * VectorALPHAI&
+// * const VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * MatrixVSR&
@@ -1313,9 +1783,167 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -1325,10 +1953,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 
 //
 // Overloaded function for gges. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * MatrixVSR&
@@ -1337,56 +1965,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
@@ -1396,438 +1979,6 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
 // * MatrixB&
 // * const VectorALPHAR&
 // * const VectorALPHAI&
@@ -1839,56 +1990,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
@@ -1911,8 +2016,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
@@ -1935,8 +2042,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
@@ -1959,8 +2068,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
@@ -1983,9 +2094,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -2007,9 +2120,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -2031,8 +2146,111 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
@@ -2044,7 +2262,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHAR&
 // * VectorALPHAI&
 // * VectorBETA&
@@ -2055,8 +2273,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -2067,7 +2287,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHAR&
 // * VectorALPHAI&
 // * VectorBETA&
@@ -2078,8 +2298,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
@@ -2091,7 +2313,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHAR&
 // * VectorALPHAI&
 // * VectorBETA&
@@ -2102,8 +2324,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -2114,8 +2338,8 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
+// * MatrixB&
+// * const VectorALPHAR&
 // * VectorALPHAI&
 // * VectorBETA&
 // * const MatrixVSL&
@@ -2125,9 +2349,423 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -2138,9 +2776,9 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
 // * VectorBETA&
 // * const MatrixVSL&
 // * MatrixVSR&
@@ -2149,9 +2787,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
@@ -2161,438 +2801,6 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
 // * MatrixB&
 // * const VectorALPHAR&
 // * const VectorALPHAI&
@@ -2604,56 +2812,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
@@ -2676,8 +2838,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
@@ -2700,8 +2864,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
@@ -2724,8 +2890,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
@@ -2748,9 +2916,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -2772,9 +2942,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -2796,11 +2968,12 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             work );
@@ -2820,10 +2993,12 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
@@ -2843,8 +3018,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
@@ -2867,8 +3044,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -2890,8 +3069,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
@@ -2914,8 +3095,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -2937,634 +3120,270 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
@@ -3576,6 +3395,419 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // * MatrixA&
 // * MatrixB&
 // * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
 // * VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
@@ -3585,10 +3817,12 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
@@ -3608,8 +3842,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
@@ -3632,8 +3868,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -3655,8 +3893,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
@@ -3679,8 +3919,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -3702,4432 +3944,40 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
-        const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR, typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHAR&
-// * const VectorALPHAI&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
-        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
-        typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
-}
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
@@ -8135,41 +3985,49 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * const VectorALPHA&
+// * const VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * const VectorALPHA&
+// * const VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
@@ -8177,41 +4035,51 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * const VectorALPHA&
+// * const VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * const VectorALPHA&
+// * const VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
@@ -8219,41 +4087,51 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * const VectorALPHA&
+// * const VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * const VectorALPHA&
+// * const VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
@@ -8261,42 +4139,464 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * const VectorALPHA&
+// * const VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
 // * VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
@@ -8304,41 +4604,49 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * VectorALPHA&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * VectorALPHA&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
@@ -8346,298 +4654,152 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * VectorALPHA&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * const VectorBETA&
 // * MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
@@ -8645,41 +4807,670 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * VectorALPHA&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * const MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * VectorALPHA&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * const MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
@@ -8687,210 +5478,50 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * VectorALPHA&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * const MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
 }
 
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * const MatrixVSL&
 // * const MatrixVSR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
             optimal_workspace() );
 }
 
@@ -8898,63 +5529,4105 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * const VectorALPHA&
+// * VectorALPHAR&
+// * VectorALPHAI&
 // * VectorBETA&
 // * const MatrixVSL&
 // * const MatrixVSR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
+            optimal_workspace() );
+}
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
+        Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
 }
 
@@ -8970,10 +9643,12 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
             optimal_workspace() );
@@ -8992,10 +9667,12 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
         typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
 }
@@ -9012,8 +9689,102 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixVSL& vsl,
+        const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
+    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
+            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+}
+
+//
+// Overloaded function for gges. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixVSL&
+// * const MatrixVSR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -9024,7 +9795,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHA&
 // * const VectorBETA&
 // * const MatrixVSL&
@@ -9034,8 +9805,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
         typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -9045,7 +9818,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHA&
 // * const VectorBETA&
 // * const MatrixVSL&
@@ -9054,8 +9827,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -9066,8 +9841,8 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
+// * MatrixB&
+// * const VectorALPHA&
 // * const VectorBETA&
 // * const MatrixVSL&
 // * const MatrixVSR&
@@ -9076,9 +9851,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
         typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
@@ -9087,8 +9864,8 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
+// * MatrixB&
+// * const VectorALPHA&
 // * const VectorBETA&
 // * const MatrixVSL&
 // * const MatrixVSR&
@@ -9096,9 +9873,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
-        fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
@@ -9108,49 +9887,6 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 // Overloaded function for gges. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * const VectorBETA&
@@ -9161,51 +9897,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
         typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
-        Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-        fortran_int_t& sdim, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gges. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixVSL&
-// * const MatrixVSR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
-        typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
@@ -9225,8 +9920,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -9247,8 +9944,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
         typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
@@ -9268,8 +9967,10 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -9290,9 +9991,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
         typename Workspace >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
@@ -9311,9 +10014,11 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 //
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const MatrixA& a,
-        const MatrixB& b, fortran_int_t& sdim, const VectorALPHA& alpha,
+inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
+        std::ptrdiff_t >::type
+gges( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const MatrixA& a, const MatrixB& b,
+        fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
             jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,

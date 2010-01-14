@@ -234,8 +234,10 @@ struct hpevx_impl {
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -256,8 +258,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -279,8 +283,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -301,8 +307,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -324,8 +332,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -346,8 +356,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -369,8 +381,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -391,8 +405,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -414,8 +430,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -436,8 +454,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -459,8 +479,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -481,8 +503,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -504,8 +528,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -527,8 +553,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -550,8 +578,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -573,8 +603,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -596,8 +628,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -618,8 +652,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -641,8 +677,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -663,8 +701,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -686,8 +726,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -709,8 +751,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -732,8 +776,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -755,8 +801,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -778,8 +826,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -800,8 +850,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -823,8 +875,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -845,8 +899,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -868,8 +924,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -891,8 +949,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -914,8 +974,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -937,8 +999,10 @@ inline std::ptrdiff_t hpevx( const char jobz, const char range,
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t hpevx( const char jobz, const char range,
-        const MatrixAP& ap, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+hpevx( const char jobz, const char range, const MatrixAP& ap,
+        const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,

@@ -370,8 +370,632 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixVT&
+// * MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixVT&
+// * const MatrixU&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixVT&
+// * MatrixU&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
@@ -383,13 +1007,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * VectorE&
 // * MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -400,13 +1026,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * VectorE&
 // * MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
@@ -418,13 +1046,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * VectorE&
 // * MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -435,13 +1065,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * const VectorE&
 // * MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
@@ -453,13 +1085,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * const VectorE&
 // * MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -470,14 +1104,16 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * const VectorE&
 // * MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
-        MatrixC& c, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c,
+        Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
 }
@@ -488,14 +1124,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * const VectorE&
 // * MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
-        MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -506,13 +1143,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * VectorE&
 // * const MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
@@ -524,13 +1163,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * VectorE&
 // * const MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -541,14 +1182,16 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * VectorE&
 // * const MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
-        MatrixC& c, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c,
+        Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
 }
@@ -559,14 +1202,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * VectorE&
 // * const MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
-        MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -577,14 +1221,16 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * const VectorE&
 // * const MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
-        MatrixC& c, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c,
+        Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
 }
@@ -595,14 +1241,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * const VectorE&
 // * const MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
-        MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -613,14 +1260,16 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * const VectorE&
 // * const MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
-        MatrixC& c, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c,
+        Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
 }
@@ -631,14 +1280,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * const VectorE&
 // * const MatrixVT&
 // * MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
-        MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -649,13 +1299,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * VectorE&
 // * MatrixVT&
 // * const MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c,
         Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
@@ -667,13 +1319,15 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * VectorE&
 // * MatrixVT&
 // * const MatrixU&
-// * MatrixC&
+// * const MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -684,265 +1338,132 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // * VectorE&
 // * MatrixVT&
 // * const MatrixU&
-// * MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
-        MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
-        MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
-        MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
-        MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
-        MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
-        MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
-        MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
-        MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
-        MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
-        MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixVT& vt, const MatrixU& u,
-        MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixVT& vt, const MatrixU& u,
-        MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixVT& vt,
-        const MatrixU& u, MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixVT&
-// * const MatrixU&
-// * MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixVT& vt,
-        const MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixVT&
-// * MatrixU&
 // * const MatrixC&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c,
+        Workspace work ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixVT&
+// * const MatrixU&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsqr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixVT&
+// * const MatrixU&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixVT& vt, const MatrixU& u, const MatrixC& c,
         Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
@@ -952,437 +1473,6 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 // Overloaded function for bdsqr. Its overload differs for
 // * VectorD&
 // * VectorE&
-// * MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixVT&
-// * MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixVT&
-// * const MatrixU&
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixVT&
-// * const MatrixU&
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixVT,
-        typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
-}
-
-//
-// Overloaded function for bdsqr. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * const MatrixVT&
 // * const MatrixU&
 // * const MatrixC&
@@ -1390,9 +1480,10 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -1408,9 +1499,11 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixVT& vt, const MatrixU& u, const MatrixC& c,
+        Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
 }
@@ -1426,9 +1519,10 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
-        const MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }
@@ -1444,8 +1538,10 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixVT& vt, const MatrixU& u,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c, Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
@@ -1462,8 +1558,10 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixVT& vt, const MatrixU& u,
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
@@ -1480,9 +1578,11 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixVT& vt,
-        const MatrixU& u, const MatrixC& c, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixVT& vt, const MatrixU& u,
+        const MatrixC& c, Workspace work ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, work );
 }
@@ -1498,9 +1598,11 @@ inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixVT& vt,
-        const MatrixU& u, const MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixVT& vt, const MatrixU& u,
+        const MatrixC& c ) {
     return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
             n, d, e, vt, u, c, optimal_workspace() );
 }

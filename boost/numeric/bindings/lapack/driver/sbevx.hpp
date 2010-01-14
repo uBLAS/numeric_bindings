@@ -244,14 +244,16 @@ struct sbevx_impl {
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -267,14 +269,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -291,14 +295,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -314,14 +320,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -338,14 +346,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -361,14 +371,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -385,14 +397,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -408,14 +422,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -432,13 +448,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -455,13 +473,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -479,13 +499,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -502,13 +524,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -526,13 +550,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -549,13 +575,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -573,13 +601,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -596,13 +626,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -620,14 +652,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -643,14 +677,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -667,14 +703,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -690,14 +728,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -714,14 +754,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -737,14 +779,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -761,14 +805,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -784,14 +830,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -808,13 +856,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -832,13 +882,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -856,13 +908,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -880,13 +934,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -904,13 +960,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -928,13 +986,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -952,13 +1012,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -976,13 +1038,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1000,14 +1064,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1023,14 +1089,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1047,14 +1115,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1070,14 +1140,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1094,14 +1166,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1117,14 +1191,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1141,14 +1217,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1164,14 +1242,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1188,13 +1268,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1212,13 +1294,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1236,13 +1320,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1260,13 +1346,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1284,13 +1372,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1308,13 +1398,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1332,13 +1424,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1356,13 +1450,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1380,15 +1476,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1404,14 +1501,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1428,15 +1527,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1452,14 +1552,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1476,15 +1578,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1500,14 +1603,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1524,15 +1629,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1548,14 +1654,16 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1572,13 +1680,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1596,13 +1706,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1620,13 +1732,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1644,13 +1758,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab, MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1668,13 +1784,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1692,13 +1810,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, MatrixAB& ab, const MatrixQ& q,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1716,13 +1836,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
@@ -1740,13 +1862,15 @@ inline std::ptrdiff_t sbevx( const char jobz, const char range,
 //
 template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sbevx( const char jobz, const char range,
-        const MatrixAB& ab, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sbevx( const char jobz, const char range, const MatrixAB& ab,
+        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
+        MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbevx_impl< typename value< MatrixAB >::type >::invoke( jobz,
             range, ab, q, vl, vu, il, iu, abstol, m, w, z, ifail,

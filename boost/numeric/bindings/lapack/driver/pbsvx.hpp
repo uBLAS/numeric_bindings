@@ -467,1450 +467,11 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, work );
@@ -1923,17 +484,18 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * VectorBERR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1946,17 +508,18 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * VectorBERR&
 // * User-defined workspace
 //
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, work );
@@ -1969,17 +532,18 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * VectorBERR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1992,17 +556,18 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * VectorBERR&
 // * User-defined workspace
 //
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, work );
@@ -2015,6 +580,1466 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
 // * const VectorFERR&
 // * VectorBERR&
 // * Default workspace-type (optimal)
@@ -2022,11 +2047,108 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -2045,8 +2167,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -2068,8 +2192,10 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
@@ -2091,8 +2217,792 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -2106,558 +3016,6 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * MatrixAFB&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
 // * const MatrixX&
 // * const VectorFERR&
 // * VectorBERR&
@@ -2666,193 +3024,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -2873,9 +3049,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -2896,9 +3074,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -2919,9 +3099,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -2942,9 +3124,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -2965,9 +3149,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -2988,9 +3174,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3011,9 +3199,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3034,9 +3224,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3057,9 +3249,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3080,9 +3274,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3103,9 +3299,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3126,9 +3324,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3149,9 +3349,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3172,9 +3374,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3195,9 +3399,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3218,9 +3424,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3241,9 +3449,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3264,9 +3474,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3287,9 +3499,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3310,9 +3524,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3333,9 +3549,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3356,9 +3574,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -3379,8 +3599,1186 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -3393,376 +4791,8 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * MatrixAB&
 // * MatrixAFB&
 // * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
 // * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -3770,8 +4800,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -3785,7 +4817,7 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * MatrixAFB&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -3793,8 +4825,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -3808,7 +4842,7 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // * MatrixAFB&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -3816,8 +4850,10 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -3831,282 +4867,6 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // * const MatrixAFB&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
 // * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
@@ -4115,8 +4875,110 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -4128,8 +4990,8 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // Overloaded function for pbsvx. Its overload differs for
 // * MatrixAB&
 // * MatrixAFB&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
@@ -4138,8 +5000,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -4151,8 +5015,8 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // Overloaded function for pbsvx. Its overload differs for
 // * const MatrixAB&
 // * MatrixAFB&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
@@ -4161,8 +5025,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -4174,8 +5040,8 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // Overloaded function for pbsvx. Its overload differs for
 // * const MatrixAB&
 // * MatrixAFB&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
@@ -4184,8 +5050,10 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -4197,466 +5065,6 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // Overloaded function for pbsvx. Its overload differs for
 // * MatrixAB&
 // * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
 // * const VectorS&
 // * const MatrixB&
 // * const MatrixX&
@@ -4667,101 +5075,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -4782,9 +5100,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -4805,9 +5125,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -4828,9 +5150,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -4851,11 +5175,12 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, work );
 }
@@ -4874,11 +5199,12 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -4897,11 +5223,12 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, work );
 }
@@ -4920,11 +5247,12 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -4943,11 +5271,12 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, work );
 }
@@ -4966,11 +5295,12 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
             ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -4989,8 +5319,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5012,8 +5344,10 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5035,8 +5369,792 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5050,7 +6168,7 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * MatrixAFB&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5058,8 +6176,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5073,7 +6193,7 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * MatrixAFB&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -5081,8 +6201,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5096,7 +6218,7 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // * MatrixAFB&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5104,8 +6226,10 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5119,7 +6243,7 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // * const MatrixAFB&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -5127,9 +6251,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -5142,7 +6268,7 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * const MatrixAFB&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5150,9 +6276,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -5165,7 +6293,7 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * const MatrixAFB&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -5173,9 +6301,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -5188,7 +6318,7 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // * const MatrixAFB&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5196,9 +6326,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -5211,7 +6343,7 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // * MatrixAFB&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -5219,8 +6351,10 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5234,7 +6368,7 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * MatrixAFB&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5242,8 +6376,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5257,7 +6393,7 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // * MatrixAFB&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -5265,8 +6401,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5280,7 +6418,7 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // * MatrixAFB&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5288,8 +6426,10 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5303,282 +6443,6 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // * const MatrixAFB&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * MatrixB&
 // * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
@@ -5587,8 +6451,110 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * const MatrixAB&
+// * const MatrixAFB&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
+            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pbsvx. Its overload differs for
+// * MatrixAB&
+// * MatrixAFB&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5600,8 +6566,8 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // Overloaded function for pbsvx. Its overload differs for
 // * MatrixAB&
 // * MatrixAFB&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
@@ -5610,8 +6576,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5623,8 +6591,8 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 // Overloaded function for pbsvx. Its overload differs for
 // * const MatrixAB&
 // * MatrixAFB&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
@@ -5633,8 +6601,10 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5646,8 +6616,8 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // Overloaded function for pbsvx. Its overload differs for
 // * const MatrixAB&
 // * MatrixAFB&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
@@ -5656,8 +6626,10 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5669,466 +6641,6 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 // Overloaded function for pbsvx. Its overload differs for
 // * MatrixAB&
 // * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixAFB&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
 // * const VectorS&
 // * const MatrixB&
 // * const MatrixX&
@@ -6139,101 +6651,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pbsvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixAFB&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -6254,9 +6676,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -6277,9 +6701,11 @@ inline std::ptrdiff_t pbsvx( const char fact, MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
@@ -6300,9 +6726,11 @@ inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t pbsvx( const char fact, const MatrixAB& ab,
-        const MatrixAFB& afb, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return pbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,

@@ -209,7 +209,9 @@ struct unmhr_impl {
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t unmhr( const char side, const fortran_int_t ilo,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+unmhr( const char side, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c, Workspace work ) {
     return unmhr_impl< typename value< MatrixA >::type >::invoke( side,
@@ -222,7 +224,9 @@ inline std::ptrdiff_t unmhr( const char side, const fortran_int_t ilo,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline std::ptrdiff_t unmhr( const char side, const fortran_int_t ilo,
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+unmhr( const char side, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c ) {
     return unmhr_impl< typename value< MatrixA >::type >::invoke( side,
@@ -236,7 +240,9 @@ inline std::ptrdiff_t unmhr( const char side, const fortran_int_t ilo,
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t unmhr( const char side, const fortran_int_t ilo,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+unmhr( const char side, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
         const MatrixC& c, Workspace work ) {
     return unmhr_impl< typename value< MatrixA >::type >::invoke( side,
@@ -249,7 +255,9 @@ inline std::ptrdiff_t unmhr( const char side, const fortran_int_t ilo,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline std::ptrdiff_t unmhr( const char side, const fortran_int_t ilo,
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+unmhr( const char side, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
         const MatrixC& c ) {
     return unmhr_impl< typename value< MatrixA >::type >::invoke( side,

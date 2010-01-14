@@ -211,8 +211,10 @@ struct unmlq_impl {
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t unmlq( const char side, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, MatrixC& c, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+unmlq( const char side, const fortran_int_t k, const MatrixA& a,
+        const VectorTAU& tau, MatrixC& c, Workspace work ) {
     return unmlq_impl< typename value< MatrixA >::type >::invoke( side,
             k, a, tau, c, work );
 }
@@ -223,8 +225,10 @@ inline std::ptrdiff_t unmlq( const char side, const fortran_int_t k,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline std::ptrdiff_t unmlq( const char side, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+unmlq( const char side, const fortran_int_t k, const MatrixA& a,
+        const VectorTAU& tau, MatrixC& c ) {
     return unmlq_impl< typename value< MatrixA >::type >::invoke( side,
             k, a, tau, c, optimal_workspace() );
 }
@@ -236,9 +240,10 @@ inline std::ptrdiff_t unmlq( const char side, const fortran_int_t k,
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t unmlq( const char side, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, const MatrixC& c,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+unmlq( const char side, const fortran_int_t k, const MatrixA& a,
+        const VectorTAU& tau, const MatrixC& c, Workspace work ) {
     return unmlq_impl< typename value< MatrixA >::type >::invoke( side,
             k, a, tau, c, work );
 }
@@ -249,8 +254,10 @@ inline std::ptrdiff_t unmlq( const char side, const fortran_int_t k,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline std::ptrdiff_t unmlq( const char side, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, const MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+unmlq( const char side, const fortran_int_t k, const MatrixA& a,
+        const VectorTAU& tau, const MatrixC& c ) {
     return unmlq_impl< typename value< MatrixA >::type >::invoke( side,
             k, a, tau, c, optimal_workspace() );
 }

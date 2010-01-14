@@ -349,7 +349,9 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename Workspace >
-inline std::ptrdiff_t gels( MatrixA& a, MatrixB& b, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gels( MatrixA& a, MatrixB& b, Workspace work ) {
     return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             work );
 }
@@ -361,7 +363,9 @@ inline std::ptrdiff_t gels( MatrixA& a, MatrixB& b, Workspace work ) {
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t gels( MatrixA& a, MatrixB& b ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+gels( MatrixA& a, MatrixB& b ) {
     return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             optimal_workspace() );
 }
@@ -373,8 +377,9 @@ inline std::ptrdiff_t gels( MatrixA& a, MatrixB& b ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename Workspace >
-inline std::ptrdiff_t gels( const MatrixA& a, MatrixB& b,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gels( const MatrixA& a, MatrixB& b, Workspace work ) {
     return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             work );
 }
@@ -386,7 +391,9 @@ inline std::ptrdiff_t gels( const MatrixA& a, MatrixB& b,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t gels( const MatrixA& a, MatrixB& b ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+gels( const MatrixA& a, MatrixB& b ) {
     return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             optimal_workspace() );
 }
@@ -398,8 +405,9 @@ inline std::ptrdiff_t gels( const MatrixA& a, MatrixB& b ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename Workspace >
-inline std::ptrdiff_t gels( MatrixA& a, const MatrixB& b,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gels( MatrixA& a, const MatrixB& b, Workspace work ) {
     return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             work );
 }
@@ -411,7 +419,9 @@ inline std::ptrdiff_t gels( MatrixA& a, const MatrixB& b,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t gels( MatrixA& a, const MatrixB& b ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+gels( MatrixA& a, const MatrixB& b ) {
     return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             optimal_workspace() );
 }
@@ -423,8 +433,9 @@ inline std::ptrdiff_t gels( MatrixA& a, const MatrixB& b ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename Workspace >
-inline std::ptrdiff_t gels( const MatrixA& a, const MatrixB& b,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gels( const MatrixA& a, const MatrixB& b, Workspace work ) {
     return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             work );
 }
@@ -436,7 +447,9 @@ inline std::ptrdiff_t gels( const MatrixA& a, const MatrixB& b,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t gels( const MatrixA& a, const MatrixB& b ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+gels( const MatrixA& a, const MatrixB& b ) {
     return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             optimal_workspace() );
 }

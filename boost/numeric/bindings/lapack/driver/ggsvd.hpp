@@ -475,10 +475,12 @@ struct ggsvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
+        MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -497,9 +499,305 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
+        MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
+        MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
+        MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -509,8 +807,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * MatrixV&
@@ -520,9 +818,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -531,8 +831,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * MatrixV&
@@ -542,9 +842,305 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u, MatrixV& v,
+        MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u, MatrixV& v,
+        MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -555,8 +1151,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * MatrixV&
 // * MatrixQ&
@@ -565,9 +1161,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -577,8 +1175,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * MatrixV&
 // * MatrixQ&
@@ -587,9 +1185,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -600,8 +1200,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * MatrixV&
 // * MatrixQ&
@@ -610,11 +1210,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -623,8 +1224,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * MatrixV&
 // * MatrixQ&
@@ -633,54 +1234,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -689,511 +1247,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 
 //
 // Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
@@ -1206,10 +1259,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -1228,10 +1283,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -1251,10 +1308,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -1273,10 +1332,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -1296,9 +1357,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -1318,9 +1381,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -1341,11 +1406,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -1364,10 +1430,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -1387,10 +1455,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -1409,9 +1479,109 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -1421,52 +1591,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
 // * const MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -1478,57 +1602,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -1547,10 +1626,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -1570,9 +1651,109 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -1581,7 +1762,7 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHA&
 // * const VectorBETA&
 // * const MatrixU&
@@ -1592,9 +1773,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -1604,52 +1787,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
 // * const MatrixB&
 // * VectorALPHA&
 // * const VectorBETA&
@@ -1661,57 +1798,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -1730,10 +1822,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -1753,11 +1847,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -1776,10 +1871,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -1799,11 +1896,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -1822,10 +1920,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -1845,11 +1945,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -1868,10 +1969,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -1891,11 +1994,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -1914,10 +2018,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -1937,9 +2043,305 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, const MatrixV& v,
+        MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, const MatrixV& v,
+        MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -1948,8 +2350,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * const MatrixV&
@@ -1959,9 +2361,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -1971,8 +2375,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * const MatrixV&
@@ -1982,9 +2386,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -1993,8 +2399,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * const MatrixV&
@@ -2004,9 +2410,305 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -2017,8 +2719,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * const MatrixV&
 // * MatrixQ&
@@ -2027,9 +2729,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -2039,8 +2743,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * const MatrixV&
 // * MatrixQ&
@@ -2049,9 +2753,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -2062,8 +2768,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * const MatrixV&
 // * MatrixQ&
@@ -2072,11 +2778,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -2085,8 +2792,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * const MatrixV&
 // * MatrixQ&
@@ -2095,54 +2802,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -2151,511 +2815,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 
 //
 // Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
@@ -2668,10 +2827,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -2690,10 +2851,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -2713,10 +2876,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -2735,10 +2900,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -2758,9 +2925,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -2780,9 +2949,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -2803,11 +2974,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -2826,10 +2998,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -2849,10 +3023,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -2871,9 +3047,109 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -2883,52 +3159,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
 // * const MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -2940,57 +3170,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -3009,10 +3194,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -3032,9 +3219,109 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -3043,7 +3330,7 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHA&
 // * const VectorBETA&
 // * const MatrixU&
@@ -3054,9 +3341,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -3066,53 +3355,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
 // * const MatrixB&
 // * VectorALPHA&
 // * const VectorBETA&
@@ -3124,58 +3366,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -3194,11 +3390,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -3218,11 +3415,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -3241,11 +3439,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -3265,11 +3464,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -3288,11 +3488,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -3312,11 +3513,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -3335,11 +3537,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -3359,11 +3562,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -3382,11 +3586,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -3406,9 +3611,305 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
+        const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
+        const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
+        const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
+        const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -3417,8 +3918,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * MatrixV&
@@ -3428,9 +3929,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -3440,8 +3943,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * MatrixV&
@@ -3451,9 +3954,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -3462,8 +3967,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * MatrixV&
@@ -3473,9 +3978,305 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u, MatrixV& v,
+        const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u, MatrixV& v,
+        const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -3486,8 +4287,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * MatrixV&
 // * const MatrixQ&
@@ -3496,9 +4297,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -3508,8 +4311,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * MatrixV&
 // * const MatrixQ&
@@ -3518,9 +4321,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -3531,8 +4336,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * MatrixV&
 // * const MatrixQ&
@@ -3541,11 +4346,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -3554,8 +4360,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * MatrixV&
 // * const MatrixQ&
@@ -3564,54 +4370,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -3620,511 +4383,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 
 //
 // Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
@@ -4137,10 +4395,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -4159,10 +4419,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -4182,10 +4444,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -4204,10 +4468,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -4227,9 +4493,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -4249,9 +4517,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -4272,11 +4542,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -4295,10 +4566,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -4318,10 +4591,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -4340,9 +4615,109 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -4352,52 +4727,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
 // * const MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -4409,57 +4738,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -4478,10 +4762,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -4501,9 +4787,109 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -4512,7 +4898,7 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHA&
 // * const VectorBETA&
 // * const MatrixU&
@@ -4523,9 +4909,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -4535,53 +4923,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
 // * const MatrixB&
 // * VectorALPHA&
 // * const VectorBETA&
@@ -4593,58 +4934,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -4663,11 +4958,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -4687,11 +4983,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -4710,11 +5007,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -4734,11 +5032,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -4757,11 +5056,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -4781,11 +5081,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -4804,11 +5105,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -4828,11 +5130,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -4851,11 +5154,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -4875,9 +5179,305 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, const MatrixV& v,
+        const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -4886,8 +5486,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * const MatrixV&
@@ -4897,9 +5497,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -4909,8 +5511,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * const MatrixV&
@@ -4920,9 +5522,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -4931,8 +5535,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * const MatrixV&
@@ -4942,9 +5546,305 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -4955,8 +5855,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * const MatrixV&
 // * const MatrixQ&
@@ -4965,9 +5865,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
@@ -4977,8 +5879,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * const MatrixV&
 // * const MatrixQ&
@@ -4987,9 +5889,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -5000,8 +5904,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * const MatrixV&
 // * const MatrixQ&
@@ -5010,11 +5914,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -5023,8 +5928,8 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
+// * const VectorALPHA&
+// * const VectorBETA&
 // * MatrixU&
 // * const MatrixV&
 // * const MatrixQ&
@@ -5033,54 +5938,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -5089,518 +5951,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 
 //
 // Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
@@ -5613,11 +5963,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -5636,10 +5987,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -5659,11 +6012,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -5682,10 +6036,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -5705,9 +6061,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -5728,9 +6086,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -5751,11 +6111,13 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -5774,11 +6136,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -5798,9 +6161,110 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -5810,7 +6274,7 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -5821,9 +6285,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -5833,53 +6299,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
 // * const MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -5891,58 +6310,13 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -5961,11 +6335,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -5985,9 +6360,110 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
+    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -5997,7 +6473,7 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * MatrixA&
-// * MatrixB&
+// * const MatrixB&
 // * VectorALPHA&
 // * const VectorBETA&
 // * const MatrixU&
@@ -6008,9 +6484,11 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
@@ -6020,53 +6498,6 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 //
 // Overloaded function for ggsvd. Its overload differs for
 // * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
 // * const MatrixB&
 // * VectorALPHA&
 // * const VectorBETA&
@@ -6078,58 +6509,13 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -6148,11 +6534,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -6172,11 +6559,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, const MatrixQ& q, Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -6195,11 +6583,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
+        const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -6219,11 +6608,13 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -6242,11 +6633,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -6266,11 +6658,13 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -6289,11 +6683,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );
@@ -6313,11 +6708,13 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
 }
@@ -6336,11 +6733,12 @@ inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline std::ptrdiff_t ggsvd( const char jobu, const char jobv,
-        const char jobq, fortran_int_t& k, fortran_int_t& l,
-        const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvd( const char jobu, const char jobv, const char jobq,
+        fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
+        const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
     return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
             optimal_workspace() );

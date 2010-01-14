@@ -418,8 +418,10 @@ struct spsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
@@ -439,8 +441,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -459,8 +463,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
@@ -480,8 +486,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -500,8 +508,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
@@ -521,8 +531,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -541,9 +553,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -562,9 +576,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -582,8 +598,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
@@ -603,8 +621,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -623,9 +643,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -644,9 +666,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -664,9 +688,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -685,9 +711,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -705,9 +733,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -726,9 +756,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -746,8 +778,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -767,8 +801,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
@@ -788,8 +824,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -809,8 +847,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
@@ -830,8 +870,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -851,8 +893,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
@@ -872,9 +916,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -893,9 +939,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -914,8 +962,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -935,8 +985,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
@@ -956,9 +1008,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -977,9 +1031,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -998,9 +1054,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1019,9 +1077,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1040,9 +1100,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1061,9 +1123,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1082,8 +1146,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1103,8 +1169,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1124,8 +1192,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1145,8 +1215,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1166,8 +1238,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1187,8 +1261,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1208,9 +1284,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1229,9 +1307,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1250,8 +1330,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1271,8 +1353,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1292,9 +1376,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1313,9 +1399,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1334,9 +1422,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1355,9 +1445,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1376,9 +1468,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1397,9 +1491,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1418,8 +1514,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1439,8 +1537,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1460,8 +1560,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1481,8 +1583,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1502,8 +1606,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1523,8 +1629,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1544,9 +1652,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1565,9 +1675,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1586,8 +1698,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1607,8 +1721,10 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1628,9 +1744,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1649,9 +1767,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1670,9 +1790,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1691,9 +1813,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1712,9 +1836,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -1733,9 +1859,11 @@ inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t spsvx( const char fact, const MatrixAP& ap,
-        const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,

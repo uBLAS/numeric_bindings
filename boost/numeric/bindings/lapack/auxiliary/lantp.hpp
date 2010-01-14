@@ -185,8 +185,10 @@ struct lantp_impl {
 // * User-defined workspace
 //
 template< typename MatrixAP, typename Workspace >
-inline std::ptrdiff_t lantp( const char norm, const char uplo,
-        const MatrixAP& ap, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lantp( const char norm, const char uplo, const MatrixAP& ap,
+        Workspace work ) {
     return lantp_impl< typename value< MatrixAP >::type >::invoke( norm,
             uplo, ap, work );
 }
@@ -196,8 +198,9 @@ inline std::ptrdiff_t lantp( const char norm, const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP >
-inline std::ptrdiff_t lantp( const char norm, const char uplo,
-        const MatrixAP& ap ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixAP >,
+        std::ptrdiff_t >::type
+lantp( const char norm, const char uplo, const MatrixAP& ap ) {
     return lantp_impl< typename value< MatrixAP >::type >::invoke( norm,
             uplo, ap, optimal_workspace() );
 }

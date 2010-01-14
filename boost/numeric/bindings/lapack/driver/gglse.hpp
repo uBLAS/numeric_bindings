@@ -378,8 +378,10 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
-        VectorD& d, VectorX& x, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d, VectorX& x,
+        Workspace work ) {
     return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
             c, d, x, work );
 }
@@ -395,8 +397,9 @@ inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
 //
 template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
-        VectorD& d, VectorX& x ) {
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d, VectorX& x ) {
     return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
             c, d, x, optimal_workspace() );
 }
@@ -412,960 +415,9 @@ inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
 //
 template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
-        VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorC&
-// * VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
-        VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
-        VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
-        VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        VectorC& c, VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        VectorC& c, VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
-        VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
-        VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
-        const VectorC& c, VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
-        const VectorC& c, VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
-        const VectorC& c, VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
-        const VectorC& c, VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        const VectorC& c, VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        const VectorC& c, VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorC&
-// * const VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
-        const VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorC&
-// * const VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
-        const VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorC&
-// * const VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
-        const VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorC&
-// * const VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
-        const VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * const VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
-        const VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * const VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
-        const VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * const VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        VectorC& c, const VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * const VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        VectorC& c, const VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
-        const VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
-        const VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
-        const VectorC& c, const VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
-        const VectorC& c, const VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
-        const VectorC& c, const VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
-        const VectorC& c, const VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        const VectorC& c, const VectorD& d, VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        const VectorC& c, const VectorD& d, VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorC&
-// * VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
-        VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorC&
-// * VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
-        VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorC&
-// * VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
-        VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorC&
-// * VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
-        VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
-        VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
-        VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        VectorC& c, VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        VectorC& c, VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
-        VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
-        VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
-        const VectorC& c, VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
-        const VectorC& c, VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
-        const VectorC& c, VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
-        const VectorC& c, VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        const VectorC& c, VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorC&
-// * VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        const VectorC& c, VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorC&
-// * const VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
-        const VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorC&
-// * const VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
-        const VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorC&
-// * const VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
-        const VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorC&
-// * const VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
-        const VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * const VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
-        const VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * const VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
-        const VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * const VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        VectorC& c, const VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorC&
-// * const VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        VectorC& c, const VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
-        const VectorD& d, const VectorX& x, Workspace work ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, work );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
-        const VectorD& d, const VectorX& x ) {
-    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
-            c, d, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for gglse. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorC&
-// * const VectorD&
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorC,
-        typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
-        const VectorC& c, const VectorD& d, const VectorX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, VectorC& c, VectorD& d, VectorX& x,
         Workspace work ) {
     return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
             c, d, x, work );
@@ -1375,6 +427,1032 @@ inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
 // Overloaded function for gglse. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
+// * VectorC&
+// * VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, VectorC& c, VectorD& d, VectorX& x,
+        Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, VectorC& c, VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, VectorC& c, VectorD& d,
+        VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, VectorC& c, VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, const VectorC& c, VectorD& d, VectorX& x,
+        Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, const VectorC& c, VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, const VectorC& c, VectorD& d,
+        VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, const VectorC& c, VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, const VectorC& c, VectorD& d,
+        VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, const VectorC& c, VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, const VectorC& c, VectorD& d,
+        VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, const VectorC& c, VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorC&
+// * const VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, VectorC& c, const VectorD& d, VectorX& x,
+        Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorC&
+// * const VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, VectorC& c, const VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorC&
+// * const VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, VectorC& c, const VectorD& d,
+        VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorC&
+// * const VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, VectorC& c, const VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * const VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, VectorC& c, const VectorD& d,
+        VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * const VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, VectorC& c, const VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * const VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, VectorC& c, const VectorD& d,
+        VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * const VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, VectorC& c, const VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, const VectorC& c, const VectorD& d,
+        VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, const VectorC& c, const VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, const VectorC& c, const VectorD& d,
+        VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, const VectorC& c, const VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, const VectorC& c, const VectorD& d,
+        VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, const VectorC& c, const VectorD& d,
+        VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, const VectorC& c,
+        const VectorD& d, VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, const VectorC& c,
+        const VectorD& d, VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorC&
+// * VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d, const VectorX& x,
+        Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorC&
+// * VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorC&
+// * VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorC&
+// * VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, VectorC& c, VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, VectorC& c, VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, VectorC& c, VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, VectorC& c, VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, const VectorC& c, VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, const VectorC& c, VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, const VectorC& c, VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, const VectorC& c, VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, const VectorC& c, VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, const VectorC& c, VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, const VectorC& c, VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorC&
+// * VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, const VectorC& c, VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorC&
+// * const VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, VectorC& c, const VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorC&
+// * const VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, VectorC& c, const VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorC&
+// * const VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, VectorC& c, const VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorC&
+// * const VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, VectorC& c, const VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * const VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, VectorC& c, const VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * const VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, VectorC& c, const VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * const VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, VectorC& c, const VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorC&
+// * const VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, VectorC& c, const VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, const VectorC& c, const VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * MatrixA&
+// * MatrixB&
 // * const VectorC&
 // * const VectorD&
 // * const VectorX&
@@ -1382,8 +1460,48 @@ inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
-        const VectorC& c, const VectorD& d, const VectorX& x ) {
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, MatrixB& b, const VectorC& c, const VectorD& d,
+        const VectorX& x ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * const VectorX&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, const VectorC& c, const VectorD& d,
+        const VectorX& x, Workspace work ) {
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
+}
+
+//
+// Overloaded function for gglse. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorC&
+// * const VectorD&
+// * const VectorX&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorC,
+        typename VectorD, typename VectorX >
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, MatrixB& b, const VectorC& c, const VectorD& d,
+        const VectorX& x ) {
     return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
             c, d, x, optimal_workspace() );
 }
@@ -1399,9 +1517,10 @@ inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
-        const VectorC& c, const VectorD& d, const VectorX& x,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, const VectorC& c, const VectorD& d,
+        const VectorX& x, Workspace work ) {
     return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
             c, d, x, work );
 }
@@ -1417,8 +1536,10 @@ inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
-        const VectorC& c, const VectorD& d, const VectorX& x ) {
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( MatrixA& a, const MatrixB& b, const VectorC& c, const VectorD& d,
+        const VectorX& x ) {
     return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
             c, d, x, optimal_workspace() );
 }
@@ -1434,9 +1555,10 @@ inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        const VectorC& c, const VectorD& d, const VectorX& x,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, const VectorC& c,
+        const VectorD& d, const VectorX& x, Workspace work ) {
     return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
             c, d, x, work );
 }
@@ -1452,8 +1574,10 @@ inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
-inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
-        const VectorC& c, const VectorD& d, const VectorX& x ) {
+inline typename boost::disable_if< detail::is_workspace< VectorX >,
+        std::ptrdiff_t >::type
+gglse( const MatrixA& a, const MatrixB& b, const VectorC& c,
+        const VectorD& d, const VectorX& x ) {
     return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
             c, d, x, optimal_workspace() );
 }

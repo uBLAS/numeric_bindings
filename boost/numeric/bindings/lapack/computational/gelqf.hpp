@@ -304,7 +304,9 @@ struct gelqf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t gelqf( MatrixA& a, VectorTAU& tau, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gelqf( MatrixA& a, VectorTAU& tau, Workspace work ) {
     return gelqf_impl< typename value< MatrixA >::type >::invoke( a, tau,
             work );
 }
@@ -316,7 +318,9 @@ inline std::ptrdiff_t gelqf( MatrixA& a, VectorTAU& tau, Workspace work ) {
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t gelqf( MatrixA& a, VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+gelqf( MatrixA& a, VectorTAU& tau ) {
     return gelqf_impl< typename value< MatrixA >::type >::invoke( a, tau,
             optimal_workspace() );
 }
@@ -328,8 +332,9 @@ inline std::ptrdiff_t gelqf( MatrixA& a, VectorTAU& tau ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t gelqf( const MatrixA& a, VectorTAU& tau,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gelqf( const MatrixA& a, VectorTAU& tau, Workspace work ) {
     return gelqf_impl< typename value< MatrixA >::type >::invoke( a, tau,
             work );
 }
@@ -341,7 +346,9 @@ inline std::ptrdiff_t gelqf( const MatrixA& a, VectorTAU& tau,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t gelqf( const MatrixA& a, VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+gelqf( const MatrixA& a, VectorTAU& tau ) {
     return gelqf_impl< typename value< MatrixA >::type >::invoke( a, tau,
             optimal_workspace() );
 }
@@ -353,8 +360,9 @@ inline std::ptrdiff_t gelqf( const MatrixA& a, VectorTAU& tau ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t gelqf( MatrixA& a, const VectorTAU& tau,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gelqf( MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return gelqf_impl< typename value< MatrixA >::type >::invoke( a, tau,
             work );
 }
@@ -366,7 +374,9 @@ inline std::ptrdiff_t gelqf( MatrixA& a, const VectorTAU& tau,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t gelqf( MatrixA& a, const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+gelqf( MatrixA& a, const VectorTAU& tau ) {
     return gelqf_impl< typename value< MatrixA >::type >::invoke( a, tau,
             optimal_workspace() );
 }
@@ -378,8 +388,9 @@ inline std::ptrdiff_t gelqf( MatrixA& a, const VectorTAU& tau ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t gelqf( const MatrixA& a, const VectorTAU& tau,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gelqf( const MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return gelqf_impl< typename value< MatrixA >::type >::invoke( a, tau,
             work );
 }
@@ -391,7 +402,9 @@ inline std::ptrdiff_t gelqf( const MatrixA& a, const VectorTAU& tau,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t gelqf( const MatrixA& a, const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+gelqf( const MatrixA& a, const VectorTAU& tau ) {
     return gelqf_impl< typename value< MatrixA >::type >::invoke( a, tau,
             optimal_workspace() );
 }

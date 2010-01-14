@@ -200,7 +200,254 @@ struct hetrd_impl {
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAU& tau, Workspace work ) {
     return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tau, work );
@@ -208,240 +455,18 @@ inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, VectorE& e,
 
 //
 // Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * VectorE&
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
 // * VectorTAU&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAU >
-inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * VectorE&
-// * VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( const MatrixA& a, VectorD& d, VectorE& e,
-        VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * VectorE&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( const MatrixA& a, VectorD& d, VectorE& e,
-        VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( MatrixA& a, const VectorD& d, VectorE& e,
-        VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( MatrixA& a, const VectorD& d, VectorE& e,
-        VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, const VectorE& e,
-        VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, const VectorE& e,
-        VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, VectorTAU& tau ) {
     return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tau, optimal_workspace() );
 }
@@ -456,7 +481,221 @@ inline std::ptrdiff_t hetrd( const MatrixA& a, const VectorD& d,
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAU& tau, Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAU& tau,
+        Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAU& tau, Workspace work ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, work );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAU& tau ) {
+    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for hetrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAU, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAU& tau, Workspace work ) {
     return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tau, work );
@@ -465,14 +704,16 @@ inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, VectorE& e,
 //
 // Overloaded function for hetrd. Its overload differs for
 // * MatrixA&
-// * VectorD&
-// * VectorE&
+// * const VectorD&
+// * const VectorE&
 // * const VectorTAU&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAU >
-inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAU& tau ) {
     return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tau, optimal_workspace() );
@@ -481,14 +722,16 @@ inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, VectorE& e,
 //
 // Overloaded function for hetrd. Its overload differs for
 // * const MatrixA&
-// * VectorD&
-// * VectorE&
+// * const VectorD&
+// * const VectorE&
 // * const VectorTAU&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( const MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAU& tau, Workspace work ) {
     return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tau, work );
@@ -497,207 +740,17 @@ inline std::ptrdiff_t hetrd( const MatrixA& a, VectorD& d, VectorE& e,
 //
 // Overloaded function for hetrd. Its overload differs for
 // * const MatrixA&
-// * VectorD&
-// * VectorE&
+// * const VectorD&
+// * const VectorE&
 // * const VectorTAU&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAU >
-inline std::ptrdiff_t hetrd( const MatrixA& a, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+hetrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * VectorE&
-// * const VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( MatrixA& a, const VectorD& d, VectorE& e,
-        const VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * VectorE&
-// * const VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( MatrixA& a, const VectorD& d, VectorE& e,
-        const VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * const VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, const VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * VectorE&
-// * const VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( const MatrixA& a, const VectorD& d,
-        VectorE& e, const VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * const VectorE&
-// * const VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, const VectorE& e,
-        const VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * VectorD&
-// * const VectorE&
-// * const VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( MatrixA& a, VectorD& d, const VectorE& e,
-        const VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * const VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, const VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * VectorD&
-// * const VectorE&
-// * const VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( const MatrixA& a, VectorD& d,
-        const VectorE& e, const VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAU& tau ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t hetrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAU& tau, Workspace work ) {
-    return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
-}
-
-//
-// Overloaded function for hetrd. Its overload differs for
-// * const MatrixA&
-// * const VectorD&
-// * const VectorE&
-// * const VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hetrd( const MatrixA& a, const VectorD& d,
-        const VectorE& e, const VectorTAU& tau ) {
     return hetrd_impl< typename value< MatrixA >::type >::invoke( a, d,
             e, tau, optimal_workspace() );
 }

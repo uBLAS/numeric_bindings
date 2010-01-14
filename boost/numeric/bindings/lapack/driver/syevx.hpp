@@ -245,8 +245,10 @@ struct syevx_impl {
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -267,8 +269,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -290,8 +294,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -312,8 +318,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -335,8 +343,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -357,8 +367,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -380,8 +392,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -402,8 +416,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -425,8 +441,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -447,8 +465,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -470,8 +490,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -492,8 +514,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -515,8 +539,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -538,8 +564,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -561,8 +589,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -584,8 +614,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -607,8 +639,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -629,8 +663,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -652,8 +688,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -674,8 +712,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -697,8 +737,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -720,8 +762,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -743,8 +787,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -766,8 +812,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -789,8 +837,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -811,8 +861,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -834,8 +886,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -856,8 +910,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -879,8 +935,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -902,8 +960,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -925,8 +985,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -948,8 +1010,10 @@ inline std::ptrdiff_t syevx( const char jobz, const char range,
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline std::ptrdiff_t syevx( const char jobz, const char range,
-        const MatrixA& a, const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+syevx( const char jobz, const char range, const MatrixA& a,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,

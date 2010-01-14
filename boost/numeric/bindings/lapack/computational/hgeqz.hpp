@@ -448,8 +448,10 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -470,8 +472,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -493,10 +497,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -515,10 +521,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -538,10 +546,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -560,10 +570,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -583,10 +595,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -605,10 +619,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -628,8 +644,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -650,8 +668,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -673,10 +693,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -695,10 +717,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -718,10 +742,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -740,10 +766,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -763,10 +791,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -785,10 +815,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -808,8 +840,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -830,8 +864,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -853,10 +889,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -875,10 +913,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -898,10 +938,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -920,10 +962,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -943,10 +987,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -965,10 +1011,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -988,8 +1036,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1010,8 +1060,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1033,9 +1085,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
@@ -1055,9 +1109,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -1078,11 +1134,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -1101,11 +1158,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -1125,11 +1183,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -1148,11 +1207,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -1172,8 +1232,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1194,8 +1256,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1217,10 +1281,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -1239,10 +1305,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -1262,10 +1330,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -1284,10 +1354,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -1307,10 +1379,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -1329,10 +1403,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -1352,8 +1428,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1374,8 +1452,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1397,9 +1477,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
@@ -1419,9 +1501,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -1442,9 +1526,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
@@ -1464,9 +1550,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -1487,9 +1575,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
@@ -1509,9 +1599,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -1532,8 +1624,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1554,8 +1648,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1577,9 +1673,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
@@ -1599,9 +1697,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -1622,9 +1722,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
@@ -1644,9 +1746,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -1667,9 +1771,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
@@ -1689,9 +1795,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -1712,8 +1820,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1734,8 +1844,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1757,9 +1869,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
@@ -1779,9 +1893,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -1802,11 +1918,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -1825,11 +1942,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -1849,11 +1967,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -1872,11 +1991,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -1896,8 +2016,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1918,8 +2040,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -1941,10 +2065,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -1963,10 +2089,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -1986,10 +2114,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2008,10 +2138,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2031,10 +2163,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2053,10 +2187,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2076,8 +2212,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2098,8 +2236,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2121,10 +2261,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2143,10 +2285,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2166,10 +2310,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2188,10 +2334,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2211,10 +2359,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2233,10 +2383,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2256,8 +2408,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2278,8 +2432,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2301,10 +2457,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2323,10 +2481,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2346,10 +2506,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2368,10 +2530,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2391,10 +2555,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2413,10 +2579,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2436,8 +2604,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2458,8 +2628,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2481,9 +2653,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
@@ -2503,9 +2677,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -2526,11 +2702,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2549,11 +2726,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2573,11 +2751,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2596,11 +2775,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2620,8 +2800,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2642,8 +2824,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2665,11 +2849,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2688,10 +2873,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2711,11 +2898,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2734,10 +2922,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2757,11 +2947,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -2780,10 +2971,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -2803,8 +2996,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
@@ -2826,8 +3021,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2849,9 +3046,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2872,9 +3071,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -2895,9 +3096,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2918,9 +3121,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -2941,9 +3146,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -2964,9 +3171,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -2987,8 +3196,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
@@ -3010,8 +3221,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3033,9 +3246,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3056,9 +3271,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -3079,9 +3296,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3102,9 +3321,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -3125,9 +3346,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3148,9 +3371,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -3171,8 +3396,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
@@ -3194,8 +3421,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3217,9 +3446,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3240,9 +3471,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -3263,11 +3496,13 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3286,11 +3521,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3310,11 +3546,13 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3333,11 +3571,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3357,8 +3596,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3379,8 +3620,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3402,10 +3645,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3424,10 +3669,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3447,10 +3694,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3469,10 +3718,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3492,10 +3743,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3514,10 +3767,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3537,8 +3792,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3559,8 +3816,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3582,10 +3841,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3604,10 +3865,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3627,10 +3890,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3649,10 +3914,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3672,10 +3939,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3694,10 +3963,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3717,8 +3988,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3739,8 +4012,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3762,10 +4037,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3784,10 +4061,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3807,10 +4086,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3829,10 +4110,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3852,10 +4135,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -3874,10 +4159,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -3897,8 +4184,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3919,8 +4208,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -3942,9 +4233,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
@@ -3964,9 +4257,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -3987,11 +4282,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -4010,11 +4306,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -4034,11 +4331,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -4057,11 +4355,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -4081,8 +4380,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4103,8 +4404,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4126,11 +4429,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -4149,10 +4453,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -4172,11 +4478,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -4195,10 +4502,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -4218,11 +4527,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -4241,10 +4551,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -4264,8 +4576,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
@@ -4287,8 +4601,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4310,9 +4626,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4333,9 +4651,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -4356,9 +4676,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4379,9 +4701,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -4402,9 +4726,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4425,9 +4751,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -4448,8 +4776,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
@@ -4471,8 +4801,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4494,9 +4826,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4517,9 +4851,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -4540,9 +4876,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4563,9 +4901,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -4586,9 +4926,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4609,9 +4951,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -4632,8 +4976,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
@@ -4655,8 +5001,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4678,9 +5026,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4701,9 +5051,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -4724,11 +5076,13 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -4747,11 +5101,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -4771,11 +5126,13 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -4794,11 +5151,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -4818,8 +5176,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4840,8 +5200,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -4863,11 +5225,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -4886,10 +5249,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -4909,11 +5274,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -4932,10 +5298,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -4955,11 +5323,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -4978,10 +5347,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5001,8 +5372,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5023,8 +5396,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5046,11 +5421,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5069,10 +5445,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5092,11 +5470,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5115,10 +5494,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5138,11 +5519,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5161,10 +5543,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5184,8 +5568,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5206,8 +5592,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5229,11 +5617,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5252,10 +5641,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5275,11 +5666,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5298,10 +5690,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5321,11 +5715,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5344,10 +5739,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5367,8 +5764,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
@@ -5390,8 +5789,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5413,9 +5814,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5436,9 +5839,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -5459,11 +5864,13 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5482,11 +5889,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5506,11 +5914,13 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5529,11 +5939,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5553,8 +5964,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5575,8 +5988,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5598,11 +6013,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5621,10 +6037,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5644,11 +6062,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5667,10 +6086,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5690,11 +6111,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -5713,10 +6135,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -5736,8 +6160,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
@@ -5759,8 +6185,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5782,9 +6210,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5805,9 +6235,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -5828,9 +6260,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5851,9 +6285,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -5874,9 +6310,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5897,9 +6335,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -5920,8 +6360,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
@@ -5943,8 +6385,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5966,9 +6410,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -5989,9 +6435,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -6012,9 +6460,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -6035,9 +6485,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -6058,9 +6510,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -6081,9 +6535,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -6104,8 +6560,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
@@ -6127,8 +6585,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -6150,9 +6610,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -6173,9 +6635,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
@@ -6196,11 +6660,13 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -6219,11 +6685,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -6243,11 +6710,13 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
 }
@@ -6266,11 +6735,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHAR& alphar,
-        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
             optimal_workspace() );
@@ -6288,8 +6758,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -6308,8 +6780,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
@@ -6328,10 +6802,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6348,10 +6824,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6369,10 +6846,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6389,10 +6868,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6410,10 +6890,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6430,10 +6912,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6451,8 +6934,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -6471,8 +6956,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
@@ -6491,10 +6978,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6511,10 +7000,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6532,10 +7022,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6552,10 +7044,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6573,10 +7066,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6593,10 +7088,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6614,8 +7110,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -6634,8 +7132,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
@@ -6654,10 +7154,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6674,10 +7176,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6695,10 +7198,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6715,10 +7220,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6736,10 +7242,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6756,10 +7264,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6777,8 +7286,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -6797,8 +7308,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -6818,10 +7331,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6838,10 +7353,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6859,10 +7376,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6879,10 +7398,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6900,10 +7421,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -6920,10 +7443,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -6941,8 +7466,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -6961,8 +7488,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
@@ -6981,10 +7510,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7001,10 +7532,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7022,10 +7554,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7042,10 +7576,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7063,10 +7598,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7083,10 +7620,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7104,8 +7642,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7124,8 +7664,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7145,10 +7687,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7165,10 +7709,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7186,10 +7732,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7206,10 +7754,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7227,10 +7777,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7247,10 +7799,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7268,8 +7822,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7288,8 +7844,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7309,10 +7867,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7329,10 +7889,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7350,10 +7912,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7370,10 +7934,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7391,10 +7957,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7411,10 +7979,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7432,8 +8002,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7452,8 +8024,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7473,10 +8047,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7493,10 +8069,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7514,10 +8092,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7534,10 +8114,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7555,10 +8137,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7575,10 +8159,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7596,8 +8182,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7616,8 +8204,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
@@ -7636,10 +8226,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7656,10 +8248,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7677,10 +8270,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7697,10 +8292,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7718,10 +8314,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7738,10 +8336,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7759,8 +8358,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7779,8 +8380,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7800,9 +8403,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
@@ -7820,9 +8425,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
@@ -7841,10 +8448,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7861,10 +8470,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7882,10 +8493,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -7902,10 +8515,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -7923,8 +8538,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7943,8 +8560,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -7964,9 +8583,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
@@ -7984,9 +8605,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
@@ -8005,10 +8628,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8025,10 +8650,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8046,10 +8673,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8066,10 +8695,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8087,8 +8718,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -8107,8 +8740,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -8128,10 +8763,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8148,10 +8785,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8169,10 +8808,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8189,10 +8830,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8210,10 +8853,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8230,10 +8875,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8251,8 +8898,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -8271,8 +8920,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -8292,9 +8943,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
@@ -8312,9 +8965,11 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
@@ -8333,10 +8988,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8353,10 +9010,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8374,10 +9033,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8394,10 +9055,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8415,8 +9078,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -8435,8 +9100,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -8456,10 +9123,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8476,10 +9145,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8497,10 +9168,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8517,10 +9190,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8538,10 +9213,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8558,10 +9235,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8579,8 +9258,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -8599,8 +9280,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -8620,10 +9303,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8640,10 +9325,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8661,10 +9348,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8681,10 +9370,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8702,10 +9393,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8722,10 +9415,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8743,8 +9438,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -8763,8 +9460,10 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
@@ -8784,10 +9483,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8804,10 +9505,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8825,10 +9528,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8845,10 +9550,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }
@@ -8866,10 +9573,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, work );
 }
@@ -8886,10 +9595,12 @@ inline std::ptrdiff_t hgeqz( const char job, const char compq,
 //
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline std::ptrdiff_t hgeqz( const char job, const char compq,
-        const char compz, const fortran_int_t ilo, const MatrixH& h,
-        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hgeqz( const char job, const char compq, const char compz,
+        const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
     return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
             compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
 }

@@ -296,7 +296,9 @@ inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
 // * User-defined workspace
 //
 template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trexc( const char compq, MatrixT& t, MatrixQ& q,
         const fortran_int_t ifst, const fortran_int_t ilst,
         Workspace work ) {
     return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
@@ -310,7 +312,9 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+trexc( const char compq, MatrixT& t, MatrixQ& q,
         const fortran_int_t ifst, const fortran_int_t ilst ) {
     return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
             t, q, ifst, ilst, optimal_workspace() );
@@ -323,9 +327,11 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
 // * User-defined workspace
 //
 template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        MatrixQ& q, const fortran_int_t ifst,
-        const fortran_int_t ilst, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trexc( const char compq, const MatrixT& t, MatrixQ& q,
+        const fortran_int_t ifst, const fortran_int_t ilst,
+        Workspace work ) {
     return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
             t, q, ifst, ilst, work );
 }
@@ -337,9 +343,10 @@ inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        MatrixQ& q, const fortran_int_t ifst,
-        const fortran_int_t ilst ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+trexc( const char compq, const MatrixT& t, MatrixQ& q,
+        const fortran_int_t ifst, const fortran_int_t ilst ) {
     return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
             t, q, ifst, ilst, optimal_workspace() );
 }
@@ -351,9 +358,11 @@ inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
 // * User-defined workspace
 //
 template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
-        const MatrixQ& q, const fortran_int_t ifst,
-        const fortran_int_t ilst, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trexc( const char compq, MatrixT& t, const MatrixQ& q,
+        const fortran_int_t ifst, const fortran_int_t ilst,
+        Workspace work ) {
     return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
             t, q, ifst, ilst, work );
 }
@@ -365,9 +374,10 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
-        const MatrixQ& q, const fortran_int_t ifst,
-        const fortran_int_t ilst ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+trexc( const char compq, MatrixT& t, const MatrixQ& q,
+        const fortran_int_t ifst, const fortran_int_t ilst ) {
     return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
             t, q, ifst, ilst, optimal_workspace() );
 }
@@ -379,9 +389,11 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
 // * User-defined workspace
 //
 template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        const MatrixQ& q, const fortran_int_t ifst,
-        const fortran_int_t ilst, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trexc( const char compq, const MatrixT& t, const MatrixQ& q,
+        const fortran_int_t ifst, const fortran_int_t ilst,
+        Workspace work ) {
     return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
             t, q, ifst, ilst, work );
 }
@@ -393,9 +405,10 @@ inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        const MatrixQ& q, const fortran_int_t ifst,
-        const fortran_int_t ilst ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+trexc( const char compq, const MatrixT& t, const MatrixQ& q,
+        const fortran_int_t ifst, const fortran_int_t ilst ) {
     return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
             t, q, ifst, ilst, optimal_workspace() );
 }

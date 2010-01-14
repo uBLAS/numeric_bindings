@@ -177,9 +177,11 @@ struct orghr_impl {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t orghr( const fortran_int_t n,
-        const fortran_int_t ilo, const fortran_int_t ihi, MatrixA& a,
-        const VectorTAU& tau, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+orghr( const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, MatrixA& a, const VectorTAU& tau,
+        Workspace work ) {
     return orghr_impl< typename value< MatrixA >::type >::invoke( n, ilo,
             ihi, a, tau, work );
 }
@@ -190,9 +192,10 @@ inline std::ptrdiff_t orghr( const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t orghr( const fortran_int_t n,
-        const fortran_int_t ilo, const fortran_int_t ihi, MatrixA& a,
-        const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+orghr( const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, MatrixA& a, const VectorTAU& tau ) {
     return orghr_impl< typename value< MatrixA >::type >::invoke( n, ilo,
             ihi, a, tau, optimal_workspace() );
 }
@@ -203,9 +206,11 @@ inline std::ptrdiff_t orghr( const fortran_int_t n,
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t orghr( const fortran_int_t n,
-        const fortran_int_t ilo, const fortran_int_t ihi,
-        const MatrixA& a, const VectorTAU& tau, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+orghr( const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
+        Workspace work ) {
     return orghr_impl< typename value< MatrixA >::type >::invoke( n, ilo,
             ihi, a, tau, work );
 }
@@ -216,9 +221,10 @@ inline std::ptrdiff_t orghr( const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t orghr( const fortran_int_t n,
-        const fortran_int_t ilo, const fortran_int_t ihi,
-        const MatrixA& a, const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+orghr( const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau ) {
     return orghr_impl< typename value< MatrixA >::type >::invoke( n, ilo,
             ihi, a, tau, optimal_workspace() );
 }

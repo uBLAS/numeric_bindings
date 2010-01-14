@@ -315,9 +315,10 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixA, typename Workspace >
-inline std::ptrdiff_t trcon( const char norm, const MatrixA& a,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trcon( const char norm, const MatrixA& a, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, Workspace work ) {
     return trcon_impl< typename value< MatrixA >::type >::invoke( norm,
             a, rcond, work );
 }
@@ -327,9 +328,10 @@ inline std::ptrdiff_t trcon( const char norm, const MatrixA& a,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA >
-inline std::ptrdiff_t trcon( const char norm, const MatrixA& a,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixA >,
+        std::ptrdiff_t >::type
+trcon( const char norm, const MatrixA& a, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond ) {
     return trcon_impl< typename value< MatrixA >::type >::invoke( norm,
             a, rcond, optimal_workspace() );
 }

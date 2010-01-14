@@ -225,14 +225,15 @@ struct larrb_impl {
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR, typename Workspace >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        VectorW& w, VectorWGAP& wgap, VectorWERR& werr,
-        const typename remove_imaginary< typename value<
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, VectorW& w, VectorWGAP& wgap,
+        VectorWERR& werr, const typename remove_imaginary< typename value<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
         typename value< VectorD >::type >::type spdiam,
         const fortran_int_t twist, Workspace work ) {
@@ -250,14 +251,15 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        VectorW& w, VectorWGAP& wgap, VectorWERR& werr,
-        const typename remove_imaginary< typename value<
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, VectorW& w, VectorWGAP& wgap,
+        VectorWERR& werr, const typename remove_imaginary< typename value<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
         typename value< VectorD >::type >::type spdiam,
         const fortran_int_t twist ) {
@@ -275,14 +277,15 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR, typename Workspace >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        const VectorW& w, VectorWGAP& wgap, VectorWERR& werr,
-        const typename remove_imaginary< typename value<
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, const VectorW& w, VectorWGAP& wgap,
+        VectorWERR& werr, const typename remove_imaginary< typename value<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
         typename value< VectorD >::type >::type spdiam,
         const fortran_int_t twist, Workspace work ) {
@@ -300,14 +303,15 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        const VectorW& w, VectorWGAP& wgap, VectorWERR& werr,
-        const typename remove_imaginary< typename value<
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, const VectorW& w, VectorWGAP& wgap,
+        VectorWERR& werr, const typename remove_imaginary< typename value<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
         typename value< VectorD >::type >::type spdiam,
         const fortran_int_t twist ) {
@@ -325,14 +329,15 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR, typename Workspace >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        VectorW& w, const VectorWGAP& wgap, VectorWERR& werr,
-        const typename remove_imaginary< typename value<
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, VectorW& w, const VectorWGAP& wgap,
+        VectorWERR& werr, const typename remove_imaginary< typename value<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
         typename value< VectorD >::type >::type spdiam,
         const fortran_int_t twist, Workspace work ) {
@@ -350,14 +355,15 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        VectorW& w, const VectorWGAP& wgap, VectorWERR& werr,
-        const typename remove_imaginary< typename value<
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, VectorW& w, const VectorWGAP& wgap,
+        VectorWERR& werr, const typename remove_imaginary< typename value<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
         typename value< VectorD >::type >::type spdiam,
         const fortran_int_t twist ) {
@@ -375,13 +381,15 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR, typename Workspace >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        const VectorW& w, const VectorWGAP& wgap, VectorWERR& werr,
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, const VectorW& w,
+        const VectorWGAP& wgap, VectorWERR& werr,
         const typename remove_imaginary< typename value<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
         typename value< VectorD >::type >::type spdiam,
@@ -400,13 +408,15 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        const VectorW& w, const VectorWGAP& wgap, VectorWERR& werr,
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, const VectorW& w,
+        const VectorWGAP& wgap, VectorWERR& werr,
         const typename remove_imaginary< typename value<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
         typename value< VectorD >::type >::type spdiam,
@@ -425,17 +435,19 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR, typename Workspace >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        VectorW& w, VectorWGAP& wgap, const VectorWERR& werr,
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, VectorW& w, VectorWGAP& wgap,
+        const VectorWERR& werr, const typename remove_imaginary<
+        typename value< VectorD >::type >::type pivmin,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist, Workspace work ) {
+        VectorD >::type >::type spdiam, const fortran_int_t twist,
+        Workspace work ) {
     return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
             lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
             spdiam, twist, work );
@@ -450,17 +462,18 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        VectorW& w, VectorWGAP& wgap, const VectorWERR& werr,
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, VectorW& w, VectorWGAP& wgap,
+        const VectorWERR& werr, const typename remove_imaginary<
+        typename value< VectorD >::type >::type pivmin,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist ) {
+        VectorD >::type >::type spdiam, const fortran_int_t twist ) {
     return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
             lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
             spdiam, twist, optimal_workspace() );
@@ -475,17 +488,19 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR, typename Workspace >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        const VectorW& w, VectorWGAP& wgap, const VectorWERR& werr,
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, const VectorW& w, VectorWGAP& wgap,
+        const VectorWERR& werr, const typename remove_imaginary<
+        typename value< VectorD >::type >::type pivmin,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist, Workspace work ) {
+        VectorD >::type >::type spdiam, const fortran_int_t twist,
+        Workspace work ) {
     return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
             lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
             spdiam, twist, work );
@@ -500,17 +515,18 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        const VectorW& w, VectorWGAP& wgap, const VectorWERR& werr,
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, const VectorW& w, VectorWGAP& wgap,
+        const VectorWERR& werr, const typename remove_imaginary<
+        typename value< VectorD >::type >::type pivmin,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist ) {
+        VectorD >::type >::type spdiam, const fortran_int_t twist ) {
     return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
             lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
             spdiam, twist, optimal_workspace() );
@@ -525,17 +541,19 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR, typename Workspace >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        VectorW& w, const VectorWGAP& wgap, const VectorWERR& werr,
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, VectorW& w, const VectorWGAP& wgap,
+        const VectorWERR& werr, const typename remove_imaginary<
+        typename value< VectorD >::type >::type pivmin,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist, Workspace work ) {
+        VectorD >::type >::type spdiam, const fortran_int_t twist,
+        Workspace work ) {
     return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
             lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
             spdiam, twist, work );
@@ -550,17 +568,18 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        VectorW& w, const VectorWGAP& wgap, const VectorWERR& werr,
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, VectorW& w, const VectorWGAP& wgap,
+        const VectorWERR& werr, const typename remove_imaginary<
+        typename value< VectorD >::type >::type pivmin,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist ) {
+        VectorD >::type >::type spdiam, const fortran_int_t twist ) {
     return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
             lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
             spdiam, twist, optimal_workspace() );
@@ -575,13 +594,15 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR, typename Workspace >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        const VectorW& w, const VectorWGAP& wgap, const VectorWERR& werr,
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, const VectorW& w,
+        const VectorWGAP& wgap, const VectorWERR& werr,
         const typename remove_imaginary< typename value<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
         typename value< VectorD >::type >::type spdiam,
@@ -600,13 +621,15 @@ inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
 //
 template< typename VectorD, typename VectorLLD, typename VectorW,
         typename VectorWGAP, typename VectorWERR >
-inline std::ptrdiff_t larrb( const fortran_int_t n, const VectorD& d,
-        const VectorLLD& lld, const fortran_int_t ifirst,
-        const fortran_int_t ilast, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol1,
+inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
+        std::ptrdiff_t >::type
+larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
+        const fortran_int_t ifirst, const fortran_int_t ilast,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type rtol2, const fortran_int_t offset,
-        const VectorW& w, const VectorWGAP& wgap, const VectorWERR& werr,
+        VectorD >::type >::type rtol1, const typename remove_imaginary<
+        typename value< VectorD >::type >::type rtol2,
+        const fortran_int_t offset, const VectorW& w,
+        const VectorWGAP& wgap, const VectorWERR& werr,
         const typename remove_imaginary< typename value<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
         typename value< VectorD >::type >::type spdiam,

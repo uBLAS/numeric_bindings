@@ -561,10 +561,11 @@ inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        MatrixB& b, MatrixQ& q, MatrixZ& z, const fortran_int_t ifst,
+        fortran_int_t& ilst, Workspace work ) {
     return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
             wantz, a, b, q, z, ifst, ilst, work );
 }
@@ -579,9 +580,11 @@ inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        MatrixB& b, MatrixQ& q, MatrixZ& z, const fortran_int_t ifst,
+        fortran_int_t& ilst ) {
     return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
             wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
 }
@@ -596,499 +599,10 @@ inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * MatrixQ&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixQ&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, const MatrixB& b, MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixQ&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, const MatrixB& b, MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * MatrixQ&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, const MatrixB& b, MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * MatrixQ&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, const MatrixB& b, MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const MatrixQ&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, MatrixB& b, const MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const MatrixQ&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, MatrixB& b, const MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixQ&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, MatrixB& b, const MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixQ&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, MatrixB& b, const MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixQ&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, const MatrixB& b, const MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixQ&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, const MatrixB& b, const MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const MatrixQ&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, const MatrixB& b, const MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const MatrixQ&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, const MatrixB& b, const MatrixQ& q, MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * MatrixQ&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, MatrixB& b, MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * MatrixQ&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, MatrixB& b, MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * MatrixQ&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, MatrixB& b, MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * MatrixQ&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, MatrixB& b, MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixQ&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, const MatrixB& b, MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixQ&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, const MatrixB& b, MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * MatrixQ&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, const MatrixB& b, MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * MatrixQ&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, const MatrixB& b, MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const MatrixQ&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, MatrixB& b, const MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const MatrixQ&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, MatrixB& b, const MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixQ&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, MatrixB& b, const MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixQ&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, MatrixB& b, const MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixQ&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst,
-        Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixQ&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        MatrixA& a, const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
-        const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgexc. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const MatrixQ&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixQ,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, const MatrixB& b, const MatrixQ& q,
-        const MatrixZ& z, const fortran_int_t ifst,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        MatrixB& b, MatrixQ& q, MatrixZ& z, const fortran_int_t ifst,
         fortran_int_t& ilst, Workspace work ) {
     return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
             wantz, a, b, q, z, ifst, ilst, work );
@@ -1097,6 +611,513 @@ inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
 //
 // Overloaded function for tgexc. Its overload differs for
 // * const MatrixA&
+// * MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        MatrixB& b, MatrixQ& q, MatrixZ& z, const fortran_int_t ifst,
+        fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        const MatrixB& b, MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        const MatrixB& b, MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        const MatrixB& b, MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        const MatrixB& b, MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        MatrixB& b, const MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        MatrixB& b, const MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        MatrixB& b, const MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        MatrixB& b, const MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        const MatrixB& b, const MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        const MatrixB& b, const MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        const MatrixB& b, const MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        const MatrixB& b, const MatrixQ& q, MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        MatrixB& b, MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        MatrixB& b, MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        MatrixB& b, MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        MatrixB& b, MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        const MatrixB& b, MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        const MatrixB& b, MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        const MatrixB& b, MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        const MatrixB& b, MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        MatrixB& b, const MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        MatrixB& b, const MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        MatrixB& b, const MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        MatrixB& b, const MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * MatrixA&
 // * const MatrixB&
 // * const MatrixQ&
 // * const MatrixZ&
@@ -1104,10 +1125,50 @@ inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixQ,
         typename MatrixZ >
-inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
-        const MatrixA& a, const MatrixB& b, const MatrixQ& q,
-        const MatrixZ& z, const fortran_int_t ifst,
-        fortran_int_t& ilst ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
+        const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst,
+        Workspace work ) {
+    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
+            wantz, a, b, q, z, ifst, ilst, work );
+}
+
+//
+// Overloaded function for tgexc. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
+        const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
+        const fortran_int_t ifst, fortran_int_t& ilst ) {
     return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
             wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
 }

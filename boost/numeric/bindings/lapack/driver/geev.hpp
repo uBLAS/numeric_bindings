@@ -396,8 +396,946 @@ struct geev_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        VectorWI& wi, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        VectorWI& wi, MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        const VectorWI& wi, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        const VectorWI& wi, MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        VectorWI& wi, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        VectorWI& wi, const MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, VectorWI& wi, const MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, const MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, const MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
+        MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
+        MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
+        MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * const MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
+        MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        VectorWI& wi, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        VectorWI& wi, MatrixVL& vl, const MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, VectorWI& wi, MatrixVL& vl, const MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, MatrixVL& vl, const MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, MatrixVL& vl, const MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
+        Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
+        const MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
+        const MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
+        const MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVL&
+// * const MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
+        const MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * const MatrixVL&
+// * const MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, work );
@@ -408,14 +1346,16 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * MatrixA&
 // * VectorWR&
 // * VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, optimal_workspace() );
 }
@@ -425,15 +1365,17 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * const MatrixA&
 // * VectorWR&
 // * VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
+        Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, work );
 }
@@ -443,15 +1385,16 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * const MatrixA&
 // * VectorWR&
 // * VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, optimal_workspace() );
 }
@@ -461,15 +1404,17 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * MatrixA&
 // * const VectorWR&
 // * VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
+        const MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, work );
 }
@@ -479,15 +1424,17 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * MatrixA&
 // * const VectorWR&
 // * VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
+        const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, optimal_workspace() );
 }
@@ -497,15 +1444,17 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * const MatrixA&
 // * const VectorWR&
 // * VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
+        const MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, work );
 }
@@ -515,15 +1464,17 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * const MatrixA&
 // * const VectorWR&
 // * VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
+        const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, optimal_workspace() );
 }
@@ -533,15 +1484,17 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * MatrixA&
 // * VectorWR&
 // * const VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
+        Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, work );
 }
@@ -551,15 +1504,16 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * MatrixA&
 // * VectorWR&
 // * const VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
+        const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, optimal_workspace() );
 }
@@ -569,15 +1523,17 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * const MatrixA&
 // * VectorWR&
 // * const VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
+        const MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, work );
 }
@@ -587,15 +1543,17 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * const MatrixA&
 // * VectorWR&
 // * const VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
+        const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, optimal_workspace() );
 }
@@ -605,15 +1563,17 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * MatrixA&
 // * const VectorWR&
 // * const VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
+        const MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, work );
 }
@@ -623,15 +1583,17 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * MatrixA&
 // * const VectorWR&
 // * const VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        MatrixVR& vr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
+        const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, wr, wi, vl, vr, optimal_workspace() );
 }
@@ -641,1142 +1603,594 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * const MatrixA&
 // * const VectorWR&
 // * const VectorWI&
-// * MatrixVL&
-// * MatrixVR&
+// * const MatrixVL&
+// * const MatrixVR&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, const VectorWI& wi,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
+        const MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * const MatrixVL&
+// * const MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVL, typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
+        const MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+}
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorW&
+// * MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * const VectorWI&
+// * MatrixA&
+// * VectorW&
 // * MatrixVL&
 // * MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorW& w,
         MatrixVL& vl, MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVL&
+// * VectorW&
+// * MatrixVL&
 // * MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, Workspace work ) {
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a, VectorW& w,
+        MatrixVL& vl, MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVL&
+// * VectorW&
+// * MatrixVL&
 // * MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr ) {
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a, VectorW& w,
+        MatrixVL& vl, MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * const MatrixVL&
+// * const VectorW&
+// * MatrixVL&
 // * MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, Workspace work ) {
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, const VectorW& w,
+        MatrixVL& vl, MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * const MatrixVL&
+// * const VectorW&
+// * MatrixVL&
 // * MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr ) {
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, const VectorW& w,
+        MatrixVL& vl, MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * const VectorWR&
-// * VectorWI&
+// * const VectorW&
+// * MatrixVL&
+// * MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorW& w, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, w, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorW&
+// * MatrixVL&
+// * MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorW& w, MatrixVL& vl, MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, w, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * VectorWI&
+// * MatrixA&
+// * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * const MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * const MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * VectorWR&
-// * const VectorWI&
+// * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * VectorWR&
-// * const VectorWI&
+// * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * MatrixA&
-// * const VectorWR&
-// * const VectorWI&
+// * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * MatrixA&
-// * const VectorWR&
-// * const VectorWI&
+// * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * const VectorWR&
-// * const VectorWI&
+// * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, const VectorWI& wi,
-        const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorW& w, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * const VectorWR&
-// * const VectorWI&
+// * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, const VectorWI& wi,
-        const MatrixVL& vl, MatrixVR& vr ) {
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorW& w, const MatrixVL& vl, MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * MatrixA&
-// * VectorWR&
-// * VectorWI&
+// * VectorW&
 // * MatrixVL&
 // * const MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorWR&
-// * const VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorWR&
-// * const VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * const VectorWI&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * const VectorWI&
+// * MatrixA&
+// * VectorW&
 // * MatrixVL&
 // * const MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVL&
+// * VectorW&
+// * MatrixVL&
 // * const MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a, VectorW& w,
+        MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVL&
+// * VectorW&
+// * MatrixVL&
 // * const MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr ) {
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a, VectorW& w,
+        MatrixVL& vl, const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * const MatrixVL&
+// * const VectorW&
+// * MatrixVL&
 // * const MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, const VectorW& w,
+        MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * const MatrixVL&
+// * const VectorW&
+// * MatrixVL&
 // * const MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr ) {
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, const VectorW& w,
+        MatrixVL& vl, const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * const VectorWR&
-// * VectorWI&
+// * const VectorW&
+// * MatrixVL&
+// * const MatrixVR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorW& w, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, w, vl, vr, work );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * const MatrixA&
+// * const VectorW&
+// * MatrixVL&
+// * const MatrixVR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorW& w, MatrixVL& vl, const MatrixVR& vr ) {
+    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, w, vl, vr, optimal_workspace() );
+}
+
+//
+// Overloaded function for geev. Its overload differs for
+// * MatrixA&
+// * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * VectorWI&
+// * MatrixA&
+// * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * const MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * const MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * VectorWR&
-// * const VectorWI&
+// * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * VectorWR&
-// * const VectorWI&
+// * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * MatrixA&
-// * const VectorWR&
-// * const VectorWI&
+// * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
+            jobvr, a, w, vl, vr, work );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * MatrixA&
-// * const VectorWR&
-// * const VectorWI&
+// * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorWR& wr, const VectorWI& wi,
+template< typename MatrixA, typename VectorW, typename MatrixVL,
+        typename MatrixVR >
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, MatrixA& a, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
+            jobvr, a, w, vl, vr, optimal_workspace() );
 }
 
 //
 // Overloaded function for geev. Its overload differs for
 // * const MatrixA&
-// * const VectorWR&
-// * const VectorWI&
+// * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, const VectorWI& wi,
-        const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * const VectorWI&
-// * const MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVL, typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorWR& wr, const VectorWI& wi,
-        const MatrixVL& vl, const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, wr, wi, vl, vr, optimal_workspace() );
-}
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
 template< typename MatrixA, typename VectorW, typename MatrixVL,
         typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorW& w, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorW& w, MatrixVL& vl, MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorW& w, MatrixVL& vl, MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorW& w, MatrixVL& vl, MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorW& w, MatrixVL& vl, MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorW& w, const MatrixVL& vl, MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorW& w, const MatrixVL& vl, MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorW& w, const MatrixVL& vl, MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorW& w, const MatrixVL& vl, MatrixVR& vr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, w, vl, vr, work );
@@ -1787,282 +2201,15 @@ inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
 // * const MatrixA&
 // * const VectorW&
 // * const MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorW& w, const MatrixVL& vl,
-        MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorW&
-// * MatrixVL&
 // * const MatrixVR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixVL,
         typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorW& w, MatrixVL& vl, const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorW& w, MatrixVL& vl, const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorW& w, MatrixVL& vl, const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorW& w, MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, VectorW& w, const MatrixVL& vl, const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, VectorW& w, const MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        MatrixA& a, const VectorW& w, const MatrixVL& vl,
-        const MatrixVR& vr ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, optimal_workspace() );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorW& w, const MatrixVL& vl,
-        const MatrixVR& vr, Workspace work ) {
-    return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, w, vl, vr, work );
-}
-
-//
-// Overloaded function for geev. Its overload differs for
-// * const MatrixA&
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixVL,
-        typename MatrixVR >
-inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
-        const MatrixA& a, const VectorW& w, const MatrixVL& vl,
-        const MatrixVR& vr ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
+        std::ptrdiff_t >::type
+geev( const char jobvl, const char jobvr, const MatrixA& a,
+        const VectorW& w, const MatrixVL& vl, const MatrixVR& vr ) {
     return geev_impl< typename value< MatrixA >::type >::invoke( jobvl,
             jobvr, a, w, vl, vr, optimal_workspace() );
 }

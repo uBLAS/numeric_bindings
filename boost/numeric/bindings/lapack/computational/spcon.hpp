@@ -289,7 +289,9 @@ struct spcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t spcon( const MatrixAP& ap, const VectorIPIV& ipiv,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spcon( const MatrixAP& ap, const VectorIPIV& ipiv,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixAP >::type >::type& rcond, Workspace work ) {
@@ -302,7 +304,9 @@ inline std::ptrdiff_t spcon( const MatrixAP& ap, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t spcon( const MatrixAP& ap, const VectorIPIV& ipiv,
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+spcon( const MatrixAP& ap, const VectorIPIV& ipiv,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixAP >::type >::type& rcond ) {

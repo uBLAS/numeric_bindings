@@ -460,9 +460,99 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
+        VectorWI& wi, MatrixVS& vs, typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rconde, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * MatrixVS&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS >
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
+        VectorWI& wi, MatrixVS& vs, typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rconde, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcondv ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * MatrixVS&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorWR& wr, VectorWI& wi, MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcondv, Workspace work ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * MatrixVS&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS >
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorWR& wr, VectorWI& wi, MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcondv ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * MatrixVS&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, VectorWI& wi, MatrixVS& vs,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
@@ -473,16 +563,18 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 // Overloaded function for geesx. Its overload differs for
 // * MatrixA&
-// * VectorWR&
+// * const VectorWR&
 // * VectorWI&
 // * MatrixVS&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, VectorWI& wi, MatrixVS& vs,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv ) {
@@ -494,16 +586,288 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 // Overloaded function for geesx. Its overload differs for
 // * const MatrixA&
-// * VectorWR&
+// * const VectorWR&
 // * VectorWI&
 // * MatrixVS&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, VectorWI& wi, MatrixVS& vs,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rconde, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * VectorWI&
+// * MatrixVS&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS >
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, VectorWI& wi, MatrixVS& vs,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rconde, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcondv ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVS&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
+        const VectorWI& wi, MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcondv, Workspace work ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVS&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS >
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
+        const VectorWI& wi, MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcondv ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVS&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorWR& wr, const VectorWI& wi, MatrixVS& vs,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rconde, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * const VectorWI&
+// * MatrixVS&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS >
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorWR& wr, const VectorWI& wi, MatrixVS& vs,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rconde, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcondv ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVS&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, const VectorWI& wi, MatrixVS& vs,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rconde, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVS&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS >
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, const VectorWI& wi, MatrixVS& vs,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rconde, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcondv ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVS&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, const VectorWI& wi, MatrixVS& vs,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rconde, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * const MatrixA&
+// * const VectorWR&
+// * const VectorWI&
+// * MatrixVS&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS >
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, const VectorWI& wi, MatrixVS& vs,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rconde, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcondv ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * const MatrixVS&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
+        VectorWI& wi, const MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcondv, Workspace work ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * const MatrixVS&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS >
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
+        VectorWI& wi, const MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcondv ) {
+    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
+            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for geesx. Its overload differs for
+// * const MatrixA&
+// * VectorWR&
+// * VectorWI&
+// * const MatrixVS&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorWR& wr, VectorWI& wi, const MatrixVS& vs,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
@@ -516,14 +880,16 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * const MatrixA&
 // * VectorWR&
 // * VectorWI&
-// * MatrixVS&
+// * const MatrixVS&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorWR& wr, VectorWI& wi, const MatrixVS& vs,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv ) {
@@ -537,343 +903,17 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * MatrixA&
 // * const VectorWR&
 // * VectorWI&
-// * MatrixVS&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * MatrixVS&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * MatrixVS&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * MatrixVS&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * MatrixVS&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * MatrixVS&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * const MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * MatrixVS&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * const MatrixA&
-// * VectorWR&
-// * const VectorWI&
-// * MatrixVS&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * MatrixA&
-// * const VectorWR&
-// * const VectorWI&
-// * MatrixVS&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * MatrixA&
-// * const VectorWR&
-// * const VectorWI&
-// * MatrixVS&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * const VectorWI&
-// * MatrixVS&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * const MatrixA&
-// * const VectorWR&
-// * const VectorWI&
-// * MatrixVS&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
-        MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * VectorWI&
 // * const MatrixVS&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVS&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * const MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVS&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * const MatrixA&
-// * VectorWR&
-// * VectorWI&
-// * const MatrixVS&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
-    return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for geesx. Its overload differs for
-// * MatrixA&
-// * const VectorWR&
-// * VectorWI&
-// * const MatrixVS&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorWR, typename VectorWI,
-        typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, VectorWI& wi, const MatrixVS& vs,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -890,10 +930,12 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, VectorWI& wi, const MatrixVS& vs,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -911,10 +953,12 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, VectorWI& wi, const MatrixVS& vs,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -931,10 +975,12 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, VectorWI& wi, const MatrixVS& vs,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -952,12 +998,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
+        const VectorWI& wi, const MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv, work );
 }
@@ -972,12 +1020,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
+        const VectorWI& wi, const MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, wr, wi, vs, rconde, rcondv,
             optimal_workspace() );
@@ -993,10 +1043,12 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorWR& wr, const VectorWI& wi, const MatrixVS& vs,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1013,10 +1065,12 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorWR& wr, const VectorWI& wi, const MatrixVS& vs,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1034,10 +1088,12 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVS& vs,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1054,10 +1110,12 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVS& vs,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1075,10 +1133,12 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVS& vs,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1095,10 +1155,12 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
-        const MatrixVS& vs, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorWR& wr, const VectorWI& wi, const MatrixVS& vs,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1114,10 +1176,11 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
-        typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorW& w,
+        MatrixVS& vs, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1132,10 +1195,11 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
-        typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorW& w,
+        MatrixVS& vs, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1152,10 +1216,11 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
-        typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorW& w, MatrixVS& vs, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1170,10 +1235,11 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
-        typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorW& w, MatrixVS& vs, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1190,12 +1256,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorW& w, MatrixVS& vs,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorW& w, MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+        MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, w, vs, rconde, rcondv, work );
 }
@@ -1208,12 +1276,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorW& w, MatrixVS& vs,
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorW& w, MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
+        MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, w, vs, rconde, rcondv,
             optimal_workspace() );
@@ -1228,12 +1298,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorW& w, MatrixVS& vs,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorW& w, MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+        MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, w, vs, rconde, rcondv, work );
 }
@@ -1246,12 +1318,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorW& w, MatrixVS& vs,
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorW& w, MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
+        MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, w, vs, rconde, rcondv,
             optimal_workspace() );
@@ -1266,10 +1340,11 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorW& w, const MatrixVS& vs,
-        typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorW& w,
+        const MatrixVS& vs, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1284,10 +1359,11 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, VectorW& w, const MatrixVS& vs,
-        typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim, VectorW& w,
+        const MatrixVS& vs, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rconde, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
@@ -1304,12 +1380,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorW& w, const MatrixVS& vs,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorW& w, const MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+        MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, w, vs, rconde, rcondv, work );
 }
@@ -1322,12 +1400,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, VectorW& w, const MatrixVS& vs,
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        VectorW& w, const MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
+        MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, w, vs, rconde, rcondv,
             optimal_workspace() );
@@ -1342,12 +1422,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorW& w, const MatrixVS& vs,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorW& w, const MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+        MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, w, vs, rconde, rcondv, work );
 }
@@ -1360,12 +1442,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, MatrixA& a,
-        fortran_int_t& sdim, const VectorW& w, const MatrixVS& vs,
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, MatrixA& a, fortran_int_t& sdim,
+        const VectorW& w, const MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
+        MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, w, vs, rconde, rcondv,
             optimal_workspace() );
@@ -1380,12 +1464,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorW& w, const MatrixVS& vs,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorW& w, const MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv, Workspace work ) {
+        MatrixA >::type >::type& rcondv, Workspace work ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, w, vs, rconde, rcondv, work );
 }
@@ -1398,12 +1484,14 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixVS >
-inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const MatrixA& a,
-        fortran_int_t& sdim, const VectorW& w, const MatrixVS& vs,
+inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
+        std::ptrdiff_t >::type
+geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const MatrixA& a, fortran_int_t& sdim,
+        const VectorW& w, const MatrixVS& vs, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rconde,
         typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rconde, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcondv ) {
+        MatrixA >::type >::type& rcondv ) {
     return geesx_impl< typename value< MatrixA >::type >::invoke( jobvs,
             sort, select, sense, a, sdim, w, vs, rconde, rcondv,
             optimal_workspace() );

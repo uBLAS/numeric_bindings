@@ -397,8 +397,153 @@ struct pprfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        MatrixX& x, VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            afp, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for pprfs. Its overload differs for
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
+    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            afp, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pprfs. Its overload differs for
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            afp, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for pprfs. Its overload differs for
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
+    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            afp, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pprfs. Its overload differs for
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            afp, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for pprfs. Its overload differs for
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
+    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            afp, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pprfs. Its overload differs for
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            afp, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for pprfs. Its overload differs for
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
+    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            afp, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for pprfs. Its overload differs for
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
         Workspace work ) {
     return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
             afp, b, x, ferr, berr, work );
@@ -408,145 +553,15 @@ inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
 // Overloaded function for pprfs. Its overload differs for
 // * MatrixX&
 // * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
-            afp, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pprfs. Its overload differs for
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR,
-        typename Workspace >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
-            afp, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for pprfs. Its overload differs for
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
-            afp, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pprfs. Its overload differs for
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR,
-        typename Workspace >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
-            afp, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for pprfs. Its overload differs for
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
-            afp, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pprfs. Its overload differs for
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR,
-        typename Workspace >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
-            afp, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for pprfs. Its overload differs for
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
-            afp, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for pprfs. Its overload differs for
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR,
-        typename Workspace >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
-            afp, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for pprfs. Its overload differs for
-// * MatrixX&
-// * VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
     return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
             afp, b, x, ferr, berr, optimal_workspace() );
 }
@@ -561,9 +576,11 @@ inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
 template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
+        Workspace work ) {
     return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
             afp, b, x, ferr, berr, work );
 }
@@ -577,9 +594,10 @@ inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
 //
 template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
     return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
             afp, b, x, ferr, berr, optimal_workspace() );
 }
@@ -594,9 +612,11 @@ inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
 template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
+        Workspace work ) {
     return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
             afp, b, x, ferr, berr, work );
 }
@@ -610,9 +630,10 @@ inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
 //
 template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
     return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
             afp, b, x, ferr, berr, optimal_workspace() );
 }
@@ -627,9 +648,11 @@ inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
 template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
+        Workspace work ) {
     return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
             afp, b, x, ferr, berr, work );
 }
@@ -643,9 +666,10 @@ inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
 //
 template< typename MatrixAP, typename MatrixAFP, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t pprfs( const MatrixAP& ap, const MatrixAFP& afp,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+pprfs( const MatrixAP& ap, const MatrixAFP& afp, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
     return pprfs_impl< typename value< MatrixAP >::type >::invoke( ap,
             afp, b, x, ferr, berr, optimal_workspace() );
 }

@@ -210,9 +210,11 @@ struct trsen_impl {
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
-        fortran_int_t& m, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        MatrixT& t, MatrixQ& q, VectorW& w, fortran_int_t& m,
+        typename remove_imaginary< typename value<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
         typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
     return trsen_impl< typename value<
@@ -229,9 +231,11 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
-        fortran_int_t& m, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        MatrixT& t, MatrixQ& q, VectorW& w, fortran_int_t& m,
+        typename remove_imaginary< typename value<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
         typename value< VectorSELECT >::type >::type& sep ) {
     return trsen_impl< typename value<
@@ -248,9 +252,11 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, MatrixQ& q, VectorW& w,
-        fortran_int_t& m, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        const MatrixT& t, MatrixQ& q, VectorW& w, fortran_int_t& m,
+        typename remove_imaginary< typename value<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
         typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
     return trsen_impl< typename value<
@@ -267,9 +273,11 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, MatrixQ& q, VectorW& w,
-        fortran_int_t& m, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        const MatrixT& t, MatrixQ& q, VectorW& w, fortran_int_t& m,
+        typename remove_imaginary< typename value<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
         typename value< VectorSELECT >::type >::type& sep ) {
     return trsen_impl< typename value<
@@ -286,9 +294,11 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, const MatrixQ& q, VectorW& w,
-        fortran_int_t& m, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        MatrixT& t, const MatrixQ& q, VectorW& w, fortran_int_t& m,
+        typename remove_imaginary< typename value<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
         typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
     return trsen_impl< typename value<
@@ -305,9 +315,11 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, const MatrixQ& q, VectorW& w,
-        fortran_int_t& m, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        MatrixT& t, const MatrixQ& q, VectorW& w, fortran_int_t& m,
+        typename remove_imaginary< typename value<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
         typename value< VectorSELECT >::type >::type& sep ) {
     return trsen_impl< typename value<
@@ -324,12 +336,13 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, const MatrixQ& q,
-        VectorW& w, fortran_int_t& m, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& s,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        const MatrixT& t, const MatrixQ& q, VectorW& w, fortran_int_t& m,
         typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& sep, Workspace work ) {
+        VectorSELECT >::type >::type& s, typename remove_imaginary<
+        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
     return trsen_impl< typename value<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
@@ -344,12 +357,13 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, const MatrixQ& q,
-        VectorW& w, fortran_int_t& m, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& s,
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        const MatrixT& t, const MatrixQ& q, VectorW& w, fortran_int_t& m,
         typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& sep ) {
+        VectorSELECT >::type >::type& s, typename remove_imaginary<
+        typename value< VectorSELECT >::type >::type& sep ) {
     return trsen_impl< typename value<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
@@ -364,9 +378,11 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, MatrixQ& q, const VectorW& w,
-        fortran_int_t& m, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        MatrixT& t, MatrixQ& q, const VectorW& w, fortran_int_t& m,
+        typename remove_imaginary< typename value<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
         typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
     return trsen_impl< typename value<
@@ -383,9 +399,11 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, MatrixQ& q, const VectorW& w,
-        fortran_int_t& m, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        MatrixT& t, MatrixQ& q, const VectorW& w, fortran_int_t& m,
+        typename remove_imaginary< typename value<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
         typename value< VectorSELECT >::type >::type& sep ) {
     return trsen_impl< typename value<
@@ -402,12 +420,13 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, MatrixQ& q,
-        const VectorW& w, fortran_int_t& m, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& s,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        const MatrixT& t, MatrixQ& q, const VectorW& w, fortran_int_t& m,
         typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& sep, Workspace work ) {
+        VectorSELECT >::type >::type& s, typename remove_imaginary<
+        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
     return trsen_impl< typename value<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
@@ -422,12 +441,13 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, MatrixQ& q,
-        const VectorW& w, fortran_int_t& m, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& s,
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        const MatrixT& t, MatrixQ& q, const VectorW& w, fortran_int_t& m,
         typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& sep ) {
+        VectorSELECT >::type >::type& s, typename remove_imaginary<
+        typename value< VectorSELECT >::type >::type& sep ) {
     return trsen_impl< typename value<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
@@ -442,12 +462,13 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, const MatrixQ& q,
-        const VectorW& w, fortran_int_t& m, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& s,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        MatrixT& t, const MatrixQ& q, const VectorW& w, fortran_int_t& m,
         typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& sep, Workspace work ) {
+        VectorSELECT >::type >::type& s, typename remove_imaginary<
+        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
     return trsen_impl< typename value<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
@@ -462,12 +483,13 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, const MatrixQ& q,
-        const VectorW& w, fortran_int_t& m, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& s,
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        MatrixT& t, const MatrixQ& q, const VectorW& w, fortran_int_t& m,
         typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& sep ) {
+        VectorSELECT >::type >::type& s, typename remove_imaginary<
+        typename value< VectorSELECT >::type >::type& sep ) {
     return trsen_impl< typename value<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
@@ -482,12 +504,13 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, const MatrixQ& q,
-        const VectorW& w, fortran_int_t& m, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& s,
-        typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& sep, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        const MatrixT& t, const MatrixQ& q, const VectorW& w,
+        fortran_int_t& m, typename remove_imaginary< typename value<
+        VectorSELECT >::type >::type& s, typename remove_imaginary<
+        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
     return trsen_impl< typename value<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
@@ -502,12 +525,13 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, const MatrixQ& q,
-        const VectorW& w, fortran_int_t& m, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& s,
-        typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& sep ) {
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+trsen( const char job, const char compq, const VectorSELECT& select,
+        const MatrixT& t, const MatrixQ& q, const VectorW& w,
+        fortran_int_t& m, typename remove_imaginary< typename value<
+        VectorSELECT >::type >::type& s, typename remove_imaginary<
+        typename value< VectorSELECT >::type >::type& sep ) {
     return trsen_impl< typename value<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );

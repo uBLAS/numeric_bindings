@@ -175,8 +175,9 @@ struct orgqr_impl {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t orgqr( MatrixA& a, const VectorTAU& tau,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+orgqr( MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return orgqr_impl< typename value< MatrixA >::type >::invoke( a, tau,
             work );
 }
@@ -187,7 +188,9 @@ inline std::ptrdiff_t orgqr( MatrixA& a, const VectorTAU& tau,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t orgqr( MatrixA& a, const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+orgqr( MatrixA& a, const VectorTAU& tau ) {
     return orgqr_impl< typename value< MatrixA >::type >::invoke( a, tau,
             optimal_workspace() );
 }
@@ -198,8 +201,9 @@ inline std::ptrdiff_t orgqr( MatrixA& a, const VectorTAU& tau ) {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t orgqr( const MatrixA& a, const VectorTAU& tau,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+orgqr( const MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return orgqr_impl< typename value< MatrixA >::type >::invoke( a, tau,
             work );
 }
@@ -210,7 +214,9 @@ inline std::ptrdiff_t orgqr( const MatrixA& a, const VectorTAU& tau,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t orgqr( const MatrixA& a, const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+orgqr( const MatrixA& a, const VectorTAU& tau ) {
     return orgqr_impl< typename value< MatrixA >::type >::invoke( a, tau,
             optimal_workspace() );
 }

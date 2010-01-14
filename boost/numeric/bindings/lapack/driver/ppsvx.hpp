@@ -440,1450 +440,11 @@ struct ppsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, work );
@@ -1896,17 +457,18 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * VectorBERR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1919,17 +481,18 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * VectorBERR&
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, work );
@@ -1942,17 +505,18 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * VectorBERR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1965,17 +529,18 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * VectorBERR&
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, work );
@@ -1988,6 +553,1466 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
 // * const VectorFERR&
 // * VectorBERR&
 // * Default workspace-type (optimal)
@@ -1995,11 +2020,108 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -2018,8 +2140,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -2041,8 +2165,10 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
@@ -2064,8 +2190,792 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -2079,558 +2989,6 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * VectorAFP&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
 // * const MatrixX&
 // * const VectorFERR&
 // * VectorBERR&
@@ -2639,193 +2997,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -2846,9 +3022,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -2869,9 +3047,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -2892,9 +3072,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -2915,9 +3097,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -2938,9 +3122,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -2961,9 +3147,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -2984,9 +3172,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3007,9 +3197,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3030,9 +3222,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3053,9 +3247,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3076,9 +3272,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3099,9 +3297,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3122,9 +3322,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3145,9 +3347,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3168,9 +3372,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3191,9 +3397,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3214,9 +3422,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3237,9 +3447,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3260,9 +3472,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3283,9 +3497,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3306,9 +3522,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3329,9 +3547,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -3352,8 +3572,1186 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -3366,376 +4764,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * MatrixAP&
 // * VectorAFP&
 // * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
 // * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -3743,8 +4773,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -3758,7 +4790,7 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * VectorAFP&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -3766,8 +4798,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -3781,7 +4815,7 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // * VectorAFP&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -3789,8 +4823,10 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -3804,282 +4840,6 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // * const VectorAFP&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
 // * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
@@ -4088,8 +4848,110 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -4101,8 +4963,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // Overloaded function for ppsvx. Its overload differs for
 // * MatrixAP&
 // * VectorAFP&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
@@ -4111,8 +4973,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -4124,8 +4988,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // Overloaded function for ppsvx. Its overload differs for
 // * const MatrixAP&
 // * VectorAFP&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
@@ -4134,8 +4998,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -4147,8 +5013,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // Overloaded function for ppsvx. Its overload differs for
 // * const MatrixAP&
 // * VectorAFP&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
@@ -4157,8 +5023,10 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -4170,466 +5038,6 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // Overloaded function for ppsvx. Its overload differs for
 // * MatrixAP&
 // * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
 // * const VectorS&
 // * const MatrixB&
 // * const MatrixX&
@@ -4640,101 +5048,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -4755,9 +5073,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -4778,9 +5098,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -4801,9 +5123,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -4824,11 +5148,12 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
@@ -4847,11 +5172,12 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -4870,11 +5196,12 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
@@ -4893,11 +5220,12 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -4916,11 +5244,12 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
@@ -4939,11 +5268,12 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
             ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -4962,8 +5292,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -4985,8 +5317,10 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5008,8 +5342,792 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5023,7 +6141,7 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * VectorAFP&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5031,8 +6149,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5046,7 +6166,7 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * VectorAFP&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -5054,8 +6174,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5069,7 +6191,7 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // * VectorAFP&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5077,8 +6199,10 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5092,7 +6216,7 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // * const VectorAFP&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -5100,9 +6224,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -5115,7 +6241,7 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * const VectorAFP&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5123,9 +6249,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -5138,7 +6266,7 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * const VectorAFP&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -5146,9 +6274,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -5161,7 +6291,7 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // * const VectorAFP&
 // * const VectorS&
 // * MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5169,9 +6299,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -5184,7 +6316,7 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // * VectorAFP&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -5192,8 +6324,10 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5207,7 +6341,7 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * VectorAFP&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5215,8 +6349,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5230,7 +6366,7 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // * VectorAFP&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -5238,8 +6374,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5253,7 +6391,7 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // * VectorAFP&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
+// * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -5261,8 +6399,10 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5276,282 +6416,6 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // * const VectorAFP&
 // * VectorS&
 // * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * MatrixB&
 // * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
@@ -5560,8 +6424,110 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * const MatrixAP&
+// * const VectorAFP&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ppsvx. Its overload differs for
+// * MatrixAP&
+// * VectorAFP&
+// * const VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorAFP, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5573,8 +6539,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // Overloaded function for ppsvx. Its overload differs for
 // * MatrixAP&
 // * VectorAFP&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
@@ -5583,8 +6549,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5596,8 +6564,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 // Overloaded function for ppsvx. Its overload differs for
 // * const MatrixAP&
 // * VectorAFP&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
@@ -5606,8 +6574,10 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -5619,8 +6589,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // Overloaded function for ppsvx. Its overload differs for
 // * const MatrixAP&
 // * VectorAFP&
-// * VectorS&
-// * MatrixB&
+// * const VectorS&
+// * const MatrixB&
 // * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
@@ -5629,8 +6599,10 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -5642,466 +6614,6 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 // Overloaded function for ppsvx. Its overload differs for
 // * MatrixAP&
 // * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * const VectorAFP&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
 // * const VectorS&
 // * const MatrixB&
 // * const MatrixX&
@@ -6112,101 +6624,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * const MatrixAP&
-// * VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ppsvx. Its overload differs for
-// * MatrixAP&
-// * const VectorAFP&
-// * const VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorAFP, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -6227,9 +6649,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, MatrixAP& ap, const VectorAFP& afp, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -6250,9 +6674,11 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
@@ -6273,9 +6699,11 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
 template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
-        const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ppsvx( const char fact, const MatrixAP& ap, const VectorAFP& afp,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,

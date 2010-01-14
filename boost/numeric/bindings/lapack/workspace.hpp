@@ -14,13 +14,17 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_WORKSPACE_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_WORKSPACE_HPP
 
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/traits/type.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <memory>
 
-namespace boost { namespace numeric { namespace bindings {
+namespace boost {
+namespace numeric {
+namespace bindings {
+namespace lapack {
 
   /*
    * Organization of workspace in Lapack.
@@ -34,7 +38,6 @@ namespace boost { namespace numeric { namespace bindings {
    *                              that require two workarrays)
    * */
 
-  namespace lapack {
 
 
      // Four classes are introduced to distinguish between the different type of memory allocations
@@ -192,8 +195,35 @@ namespace boost { namespace numeric { namespace bindings {
         static const int value = 2 ;
      };
 
-  }
 
-}}}
+namespace detail {
+
+template< typename T >
+struct is_workspace: mpl::false_ {};
+
+template<>
+struct is_workspace< minimal_workspace >: mpl::true_ {};
+
+template<>
+struct is_workspace< optimal_workspace >: mpl::true_ {};
+
+template< typename T >
+struct is_workspace< workspace1<T> >: mpl::true_ {};
+
+template< typename T1, typename T2 >
+struct is_workspace< workspace2<T1,T2> >: mpl::true_ {};
+
+template< typename T1, typename T2, typename T3 >
+struct is_workspace< workspace3<T1,T2,T3> >: mpl::true_ {};
+
+template< typename T1, typename T2, typename T3, typename T4 >
+struct is_workspace< workspace4<T1,T2,T3,T4> >: mpl::true_ {};
+
+}
+
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

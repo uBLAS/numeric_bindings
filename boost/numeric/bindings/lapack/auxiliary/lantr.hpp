@@ -203,8 +203,9 @@ struct lantr_impl {
 // * User-defined workspace
 //
 template< typename MatrixA, typename Workspace >
-inline std::ptrdiff_t lantr( const char norm, const MatrixA& a,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lantr( const char norm, const MatrixA& a, Workspace work ) {
     return lantr_impl< typename value< MatrixA >::type >::invoke( norm,
             a, work );
 }
@@ -214,7 +215,9 @@ inline std::ptrdiff_t lantr( const char norm, const MatrixA& a,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA >
-inline std::ptrdiff_t lantr( const char norm, const MatrixA& a ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixA >,
+        std::ptrdiff_t >::type
+lantr( const char norm, const MatrixA& a ) {
     return lantr_impl< typename value< MatrixA >::type >::invoke( norm,
             a, optimal_workspace() );
 }

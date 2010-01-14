@@ -163,8 +163,9 @@ struct hptri_impl {
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t hptri( MatrixAP& ap, const VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hptri( MatrixAP& ap, const VectorIPIV& ipiv, Workspace work ) {
     return hptri_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv, work );
 }
@@ -175,7 +176,9 @@ inline std::ptrdiff_t hptri( MatrixAP& ap, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t hptri( MatrixAP& ap, const VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+hptri( MatrixAP& ap, const VectorIPIV& ipiv ) {
     return hptri_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv, optimal_workspace() );
 }
@@ -186,8 +189,9 @@ inline std::ptrdiff_t hptri( MatrixAP& ap, const VectorIPIV& ipiv ) {
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t hptri( const MatrixAP& ap, const VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hptri( const MatrixAP& ap, const VectorIPIV& ipiv, Workspace work ) {
     return hptri_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv, work );
 }
@@ -198,7 +202,9 @@ inline std::ptrdiff_t hptri( const MatrixAP& ap, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t hptri( const MatrixAP& ap, const VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+hptri( const MatrixAP& ap, const VectorIPIV& ipiv ) {
     return hptri_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv, optimal_workspace() );
 }

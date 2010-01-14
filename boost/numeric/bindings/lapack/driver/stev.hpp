@@ -173,8 +173,10 @@ struct stev_impl {
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixZ& z, Workspace work ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, work );
 }
@@ -187,8 +189,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixZ& z ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, optimal_workspace() );
 }
@@ -202,8 +206,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixZ& z, Workspace work ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, work );
 }
@@ -216,8 +222,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixZ& z ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, optimal_workspace() );
 }
@@ -231,8 +239,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixZ& z, Workspace work ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, work );
 }
@@ -245,8 +255,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixZ& z ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, optimal_workspace() );
 }
@@ -260,8 +272,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixZ& z, Workspace work ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, work );
 }
@@ -274,8 +288,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixZ& z ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, optimal_workspace() );
 }
@@ -289,8 +305,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixZ& z, Workspace work ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, work );
 }
@@ -303,8 +321,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixZ& z ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, optimal_workspace() );
 }
@@ -318,8 +338,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixZ& z, Workspace work ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, work );
 }
@@ -332,8 +354,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixZ& z ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, optimal_workspace() );
 }
@@ -347,8 +371,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixZ& z, Workspace work ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, work );
 }
@@ -361,8 +387,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixZ& z ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, optimal_workspace() );
 }
@@ -376,9 +404,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixZ& z, Workspace work ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, work );
 }
@@ -391,8 +420,10 @@ inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+stev( const char jobz, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixZ& z ) {
     return stev_impl< typename value< VectorD >::type >::invoke( jobz,
             n, d, e, z, optimal_workspace() );
 }

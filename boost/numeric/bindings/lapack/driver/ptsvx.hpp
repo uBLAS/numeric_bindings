@@ -412,11 +412,13 @@ struct ptsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
@@ -433,11 +435,12 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -454,94 +457,11 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
@@ -551,6 +471,51 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 //
 // Overloaded function for ptsvx. Its overload differs for
 // * const VectorDF&
+// * VectorEF&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
 // * const VectorEF&
 // * MatrixX&
 // * VectorFERR&
@@ -560,10 +525,11 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -571,6 +537,52 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 
 //
 // Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
 // * VectorDF&
 // * VectorEF&
 // * const MatrixX&
@@ -581,11 +593,13 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
@@ -602,11 +616,12 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -623,94 +638,11 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
@@ -720,7 +652,7 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 //
 // Overloaded function for ptsvx. Its overload differs for
 // * const VectorDF&
-// * const VectorEF&
+// * VectorEF&
 // * const MatrixX&
 // * VectorFERR&
 // * VectorBERR&
@@ -729,10 +661,11 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -741,316 +674,66 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 //
 // Overloaded function for ptsvx. Its overload differs for
 // * VectorDF&
-// * VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
 // * const VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        VectorE >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        VectorE >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * VectorEF&
 // * const MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * VectorBERR&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, work );
@@ -1061,18 +744,19 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 // * const VectorDF&
 // * const VectorEF&
 // * const MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * VectorBERR&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1083,6 +767,374 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 // * VectorDF&
 // * VectorEF&
 // * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * VectorEF&
+// * MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
@@ -1090,10 +1142,12 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, work );
@@ -1111,10 +1165,12 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1132,94 +1188,11 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
@@ -1229,7 +1202,7 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 //
 // Overloaded function for ptsvx. Its overload differs for
 // * const VectorDF&
-// * const VectorEF&
+// * VectorEF&
 // * MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
@@ -1238,10 +1211,11 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
@@ -1251,6 +1225,98 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 //
 // Overloaded function for ptsvx. Its overload differs for
 // * VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
 // * VectorEF&
 // * const MatrixX&
 // * VectorFERR&
@@ -1260,10 +1326,12 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, work );
@@ -1281,10 +1349,12 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1302,94 +1372,11 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
@@ -1399,7 +1386,7 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 //
 // Overloaded function for ptsvx. Its overload differs for
 // * const VectorDF&
-// * const VectorEF&
+// * VectorEF&
 // * const MatrixX&
 // * VectorFERR&
 // * const VectorBERR&
@@ -1408,10 +1395,11 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
@@ -1421,146 +1409,21 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 //
 // Overloaded function for ptsvx. Its overload differs for
 // * VectorDF&
-// * VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
 // * const VectorEF&
-// * MatrixX&
-// * const VectorFERR&
+// * const MatrixX&
+// * VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * const VectorEF&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, work );
@@ -1568,21 +1431,22 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 
 //
 // Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
+// * VectorDF&
 // * const VectorEF&
-// * MatrixX&
-// * const VectorFERR&
+// * const MatrixX&
+// * VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1590,147 +1454,22 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 
 //
 // Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const VectorDF&
-// * VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df, VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * VectorDF&
-// * const VectorEF&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
-            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
 // * const VectorDF&
 // * const VectorEF&
 // * const MatrixX&
-// * const VectorFERR&
+// * VectorFERR&
 // * const VectorBERR&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, work );
@@ -1741,6 +1480,52 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 // * const VectorDF&
 // * const VectorEF&
 // * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * VectorEF&
+// * MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
 // * Default workspace-type (optimal)
@@ -1748,12 +1533,335 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const VectorDF& df,
-        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * VectorDF&
+// * const VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, VectorDF& df, const VectorEF& ef, const MatrixB& b,
+        const MatrixX& x, typename remove_imaginary< typename value<
+        VectorE >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptsvx. Its overload differs for
+// * const VectorDF&
+// * const VectorEF&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptsvx( const char fact, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< VectorE >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
     return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
             n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }

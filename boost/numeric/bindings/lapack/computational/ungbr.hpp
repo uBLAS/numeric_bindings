@@ -180,7 +180,9 @@ struct ungbr_impl {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t ungbr( const char vect, const fortran_int_t m,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ungbr( const char vect, const fortran_int_t m,
         const fortran_int_t n, const fortran_int_t k, MatrixA& a,
         const VectorTAU& tau, Workspace work ) {
     return ungbr_impl< typename value< MatrixA >::type >::invoke( vect,
@@ -193,7 +195,9 @@ inline std::ptrdiff_t ungbr( const char vect, const fortran_int_t m,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t ungbr( const char vect, const fortran_int_t m,
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+ungbr( const char vect, const fortran_int_t m,
         const fortran_int_t n, const fortran_int_t k, MatrixA& a,
         const VectorTAU& tau ) {
     return ungbr_impl< typename value< MatrixA >::type >::invoke( vect,
@@ -206,7 +210,9 @@ inline std::ptrdiff_t ungbr( const char vect, const fortran_int_t m,
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t ungbr( const char vect, const fortran_int_t m,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ungbr( const char vect, const fortran_int_t m,
         const fortran_int_t n, const fortran_int_t k,
         const MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return ungbr_impl< typename value< MatrixA >::type >::invoke( vect,
@@ -219,7 +225,9 @@ inline std::ptrdiff_t ungbr( const char vect, const fortran_int_t m,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t ungbr( const char vect, const fortran_int_t m,
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+ungbr( const char vect, const fortran_int_t m,
         const fortran_int_t n, const fortran_int_t k,
         const MatrixA& a, const VectorTAU& tau ) {
     return ungbr_impl< typename value< MatrixA >::type >::invoke( vect,

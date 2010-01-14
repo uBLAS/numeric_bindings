@@ -306,7 +306,9 @@ struct pbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixAB, typename Workspace >
-inline std::ptrdiff_t pbcon( const char uplo, const MatrixAB& ab,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pbcon( const char uplo, const MatrixAB& ab,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixAB >::type >::type& rcond, Workspace work ) {
@@ -319,7 +321,9 @@ inline std::ptrdiff_t pbcon( const char uplo, const MatrixAB& ab,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB >
-inline std::ptrdiff_t pbcon( const char uplo, const MatrixAB& ab,
+inline typename boost::disable_if< detail::is_workspace< MatrixAB >,
+        std::ptrdiff_t >::type
+pbcon( const char uplo, const MatrixAB& ab,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixAB >::type >::type& rcond ) {

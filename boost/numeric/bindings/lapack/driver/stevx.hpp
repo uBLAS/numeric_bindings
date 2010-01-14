@@ -226,15 +226,16 @@ struct stevx_impl {
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -250,15 +251,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -275,15 +277,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -299,15 +302,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -324,15 +328,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -348,15 +353,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -373,15 +379,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -397,15 +404,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -422,14 +430,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -446,14 +455,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -471,14 +481,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -495,14 +506,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -520,14 +532,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -544,14 +557,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -569,14 +583,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
@@ -593,14 +608,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -618,15 +634,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -642,15 +659,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -667,15 +685,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -691,15 +710,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -716,15 +736,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -740,15 +761,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -765,15 +787,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -789,15 +812,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -814,14 +838,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -839,14 +864,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -864,14 +890,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -889,14 +916,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -914,14 +942,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -939,14 +968,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -964,14 +994,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -989,14 +1020,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1014,15 +1046,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1038,15 +1071,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1063,15 +1097,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1087,15 +1122,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1112,15 +1148,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1136,15 +1173,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1161,15 +1199,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1185,15 +1224,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1210,14 +1250,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -1235,14 +1276,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1260,14 +1302,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -1285,14 +1328,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1310,14 +1354,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -1335,14 +1380,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1360,14 +1406,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -1385,14 +1432,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1410,15 +1458,17 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1434,15 +1484,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1459,15 +1510,17 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1483,15 +1536,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1508,15 +1562,17 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1532,15 +1588,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1557,15 +1614,17 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
@@ -1581,15 +1640,16 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1606,14 +1666,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -1631,14 +1692,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1656,14 +1718,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -1681,14 +1744,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1706,14 +1770,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -1731,14 +1796,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1756,14 +1822,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
@@ -1781,14 +1848,15 @@ inline std::ptrdiff_t stevx( const char jobz, const char range,
 //
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t stevx( const char jobz, const char range,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+stevx( const char jobz, const char range, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vl,
         const typename remove_imaginary< typename value<
-        VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, fortran_int_t& m,
+        VectorD >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return stevx_impl< typename value< VectorD >::type >::invoke( jobz,
             range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,

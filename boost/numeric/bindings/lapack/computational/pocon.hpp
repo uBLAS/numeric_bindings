@@ -306,8 +306,9 @@ struct pocon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixA, typename Workspace >
-inline std::ptrdiff_t pocon( const MatrixA& a,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+pocon( const MatrixA& a, const typename remove_imaginary< typename value<
         MatrixA >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, Workspace work ) {
     return pocon_impl< typename value< MatrixA >::type >::invoke( a,
@@ -319,8 +320,9 @@ inline std::ptrdiff_t pocon( const MatrixA& a,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA >
-inline std::ptrdiff_t pocon( const MatrixA& a,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixA >,
+        std::ptrdiff_t >::type
+pocon( const MatrixA& a, const typename remove_imaginary< typename value<
         MatrixA >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond ) {
     return pocon_impl< typename value< MatrixA >::type >::invoke( a,

@@ -208,8 +208,10 @@ struct ormtr_impl {
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t ormtr( const char side, const MatrixA& a,
-        const VectorTAU& tau, MatrixC& c, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ormtr( const char side, const MatrixA& a, const VectorTAU& tau,
+        MatrixC& c, Workspace work ) {
     return ormtr_impl< typename value< MatrixA >::type >::invoke( side,
             a, tau, c, work );
 }
@@ -220,8 +222,10 @@ inline std::ptrdiff_t ormtr( const char side, const MatrixA& a,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline std::ptrdiff_t ormtr( const char side, const MatrixA& a,
-        const VectorTAU& tau, MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+ormtr( const char side, const MatrixA& a, const VectorTAU& tau,
+        MatrixC& c ) {
     return ormtr_impl< typename value< MatrixA >::type >::invoke( side,
             a, tau, c, optimal_workspace() );
 }
@@ -233,8 +237,10 @@ inline std::ptrdiff_t ormtr( const char side, const MatrixA& a,
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t ormtr( const char side, const MatrixA& a,
-        const VectorTAU& tau, const MatrixC& c, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ormtr( const char side, const MatrixA& a, const VectorTAU& tau,
+        const MatrixC& c, Workspace work ) {
     return ormtr_impl< typename value< MatrixA >::type >::invoke( side,
             a, tau, c, work );
 }
@@ -245,8 +251,10 @@ inline std::ptrdiff_t ormtr( const char side, const MatrixA& a,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline std::ptrdiff_t ormtr( const char side, const MatrixA& a,
-        const VectorTAU& tau, const MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+ormtr( const char side, const MatrixA& a, const VectorTAU& tau,
+        const MatrixC& c ) {
     return ormtr_impl< typename value< MatrixA >::type >::invoke( side,
             a, tau, c, optimal_workspace() );
 }

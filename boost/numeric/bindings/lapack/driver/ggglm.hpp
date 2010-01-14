@@ -380,8 +380,10 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
-        VectorX& x, VectorY& y, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, VectorY& y,
+        Workspace work ) {
     return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
             d, x, y, work );
 }
@@ -397,8 +399,9 @@ inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
 //
 template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
-        VectorX& x, VectorY& y ) {
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, VectorY& y ) {
     return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
             d, x, y, optimal_workspace() );
 }
@@ -414,960 +417,9 @@ inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
 //
 template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
-        VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorD&
-// * VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
-        VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
-        VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
-        VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        VectorD& d, VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        VectorD& d, VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
-        VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
-        VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
-        const VectorD& d, VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
-        const VectorD& d, VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
-        const VectorD& d, VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
-        const VectorD& d, VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        const VectorD& d, VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        const VectorD& d, VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorD&
-// * const VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
-        const VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorD&
-// * const VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
-        const VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorD&
-// * const VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
-        const VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorD&
-// * const VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
-        const VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * const VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
-        const VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * const VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
-        const VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * const VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        VectorD& d, const VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * const VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        VectorD& d, const VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
-        const VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
-        const VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
-        const VectorD& d, const VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
-        const VectorD& d, const VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
-        const VectorD& d, const VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
-        const VectorD& d, const VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        const VectorD& d, const VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        const VectorD& d, const VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorD&
-// * VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
-        VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorD&
-// * VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
-        VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorD&
-// * VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
-        VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorD&
-// * VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
-        VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
-        VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
-        VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        VectorD& d, VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        VectorD& d, VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
-        VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
-        VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
-        const VectorD& d, VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
-        const VectorD& d, VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
-        const VectorD& d, VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
-        const VectorD& d, VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        const VectorD& d, VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorD&
-// * VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        const VectorD& d, VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorD&
-// * const VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
-        const VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorD&
-// * const VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
-        const VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorD&
-// * const VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
-        const VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorD&
-// * const VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
-        const VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * const VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
-        const VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * const VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
-        const VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * const VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        VectorD& d, const VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorD&
-// * const VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        VectorD& d, const VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
-        const VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * const VectorY&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
-        const VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorD&
-// * const VectorX&
-// * const VectorY&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
-        const VectorD& d, const VectorX& x, const VectorY& y,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, VectorY& y,
         Workspace work ) {
     return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
             d, x, y, work );
@@ -1377,6 +429,1032 @@ inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
 // Overloaded function for ggglm. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
+// * VectorD&
+// * VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x, VectorY& y,
+        Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
+        VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x, VectorY& y,
+        Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
+        VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
+        VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
+        VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorD&
+// * const VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x, VectorY& y,
+        Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorD&
+// * const VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorD&
+// * const VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
+        VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorD&
+// * const VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * const VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
+        VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * const VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * const VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
+        VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * const VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
+        VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
+        VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, const VectorX& x,
+        VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, const VectorX& x,
+        VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d,
+        const VectorX& x, VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d,
+        const VectorX& x, VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorD&
+// * VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, const VectorY& y,
+        Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorD&
+// * VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorD&
+// * VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorD&
+// * VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorD&
+// * VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorD&
+// * const VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorD&
+// * const VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorD&
+// * const VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorD&
+// * const VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * const VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * const VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * const VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorD&
+// * const VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * MatrixA&
+// * MatrixB&
 // * const VectorD&
 // * const VectorX&
 // * const VectorY&
@@ -1384,8 +1462,48 @@ inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
-        const VectorD& d, const VectorX& x, const VectorY& y ) {
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
+        const VectorY& y ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * const VectorY&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
+        const VectorY& y, Workspace work ) {
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
+}
+
+//
+// Overloaded function for ggglm. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorD&
+// * const VectorX&
+// * const VectorY&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorD,
+        typename VectorX, typename VectorY >
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
+        const VectorY& y ) {
     return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
             d, x, y, optimal_workspace() );
 }
@@ -1401,9 +1519,10 @@ inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
-        const VectorD& d, const VectorX& x, const VectorY& y,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, const VectorX& x,
+        const VectorY& y, Workspace work ) {
     return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
             d, x, y, work );
 }
@@ -1419,8 +1538,10 @@ inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
-        const VectorD& d, const VectorX& x, const VectorY& y ) {
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, const VectorX& x,
+        const VectorY& y ) {
     return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
             d, x, y, optimal_workspace() );
 }
@@ -1436,9 +1557,10 @@ inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        const VectorD& d, const VectorX& x, const VectorY& y,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d,
+        const VectorX& x, const VectorY& y, Workspace work ) {
     return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
             d, x, y, work );
 }
@@ -1454,8 +1576,10 @@ inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
-inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
-        const VectorD& d, const VectorX& x, const VectorY& y ) {
+inline typename boost::disable_if< detail::is_workspace< VectorY >,
+        std::ptrdiff_t >::type
+ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d,
+        const VectorX& x, const VectorY& y ) {
     return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
             d, x, y, optimal_workspace() );
 }

@@ -320,8 +320,10 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixAB, typename Workspace >
-inline std::ptrdiff_t tbcon( const char norm, const fortran_int_t kd,
-        const MatrixAB& ab, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tbcon( const char norm, const fortran_int_t kd, const MatrixAB& ab,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, Workspace work ) {
     return tbcon_impl< typename value< MatrixAB >::type >::invoke( norm,
             kd, ab, rcond, work );
@@ -332,8 +334,10 @@ inline std::ptrdiff_t tbcon( const char norm, const fortran_int_t kd,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB >
-inline std::ptrdiff_t tbcon( const char norm, const fortran_int_t kd,
-        const MatrixAB& ab, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixAB >,
+        std::ptrdiff_t >::type
+tbcon( const char norm, const fortran_int_t kd, const MatrixAB& ab,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond ) {
     return tbcon_impl< typename value< MatrixAB >::type >::invoke( norm,
             kd, ab, rcond, optimal_workspace() );

@@ -327,7 +327,136 @@ struct geqp3_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
-inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geqp3( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau, Workspace work ) {
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
+}
+
+//
+// Overloaded function for geqp3. Its overload differs for
+// * MatrixA&
+// * VectorJPVT&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+geqp3( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau ) {
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for geqp3. Its overload differs for
+// * const MatrixA&
+// * VectorJPVT&
+// * VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geqp3( const MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
+        Workspace work ) {
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
+}
+
+//
+// Overloaded function for geqp3. Its overload differs for
+// * const MatrixA&
+// * VectorJPVT&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+geqp3( const MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau ) {
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for geqp3. Its overload differs for
+// * MatrixA&
+// * const VectorJPVT&
+// * VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geqp3( MatrixA& a, const VectorJPVT& jpvt, VectorTAU& tau,
+        Workspace work ) {
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
+}
+
+//
+// Overloaded function for geqp3. Its overload differs for
+// * MatrixA&
+// * const VectorJPVT&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+geqp3( MatrixA& a, const VectorJPVT& jpvt, VectorTAU& tau ) {
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for geqp3. Its overload differs for
+// * const MatrixA&
+// * const VectorJPVT&
+// * VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geqp3( const MatrixA& a, const VectorJPVT& jpvt, VectorTAU& tau,
+        Workspace work ) {
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
+}
+
+//
+// Overloaded function for geqp3. Its overload differs for
+// * const MatrixA&
+// * const VectorJPVT&
+// * VectorTAU&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+geqp3( const MatrixA& a, const VectorJPVT& jpvt, VectorTAU& tau ) {
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
+}
+
+//
+// Overloaded function for geqp3. Its overload differs for
+// * MatrixA&
+// * VectorJPVT&
+// * const VectorTAU&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geqp3( MatrixA& a, VectorJPVT& jpvt, const VectorTAU& tau,
         Workspace work ) {
     return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
             jpvt, tau, work );
@@ -337,128 +466,13 @@ inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
 // Overloaded function for geqp3. Its overload differs for
 // * MatrixA&
 // * VectorJPVT&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt,
-        VectorTAU& tau ) {
-    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
-            jpvt, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for geqp3. Its overload differs for
-// * const MatrixA&
-// * VectorJPVT&
-// * VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
-        typename Workspace >
-inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
-        VectorTAU& tau, Workspace work ) {
-    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
-            jpvt, tau, work );
-}
-
-//
-// Overloaded function for geqp3. Its overload differs for
-// * const MatrixA&
-// * VectorJPVT&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
-        VectorTAU& tau ) {
-    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
-            jpvt, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for geqp3. Its overload differs for
-// * MatrixA&
-// * const VectorJPVT&
-// * VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
-        typename Workspace >
-inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
-        VectorTAU& tau, Workspace work ) {
-    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
-            jpvt, tau, work );
-}
-
-//
-// Overloaded function for geqp3. Its overload differs for
-// * MatrixA&
-// * const VectorJPVT&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
-        VectorTAU& tau ) {
-    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
-            jpvt, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for geqp3. Its overload differs for
-// * const MatrixA&
-// * const VectorJPVT&
-// * VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
-        typename Workspace >
-inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
-        VectorTAU& tau, Workspace work ) {
-    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
-            jpvt, tau, work );
-}
-
-//
-// Overloaded function for geqp3. Its overload differs for
-// * const MatrixA&
-// * const VectorJPVT&
-// * VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
-        VectorTAU& tau ) {
-    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
-            jpvt, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for geqp3. Its overload differs for
-// * MatrixA&
-// * VectorJPVT&
-// * const VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
-        typename Workspace >
-inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt,
-        const VectorTAU& tau, Workspace work ) {
-    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
-            jpvt, tau, work );
-}
-
-//
-// Overloaded function for geqp3. Its overload differs for
-// * MatrixA&
-// * VectorJPVT&
 // * const VectorTAU&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt,
-        const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+geqp3( MatrixA& a, VectorJPVT& jpvt, const VectorTAU& tau ) {
     return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
             jpvt, tau, optimal_workspace() );
 }
@@ -472,8 +486,10 @@ inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt,
 //
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
-inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
-        const VectorTAU& tau, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geqp3( const MatrixA& a, VectorJPVT& jpvt, const VectorTAU& tau,
+        Workspace work ) {
     return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
             jpvt, tau, work );
 }
@@ -486,8 +502,9 @@ inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
-        const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+geqp3( const MatrixA& a, VectorJPVT& jpvt, const VectorTAU& tau ) {
     return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
             jpvt, tau, optimal_workspace() );
 }
@@ -501,8 +518,10 @@ inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
 //
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
-inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
-        const VectorTAU& tau, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geqp3( MatrixA& a, const VectorJPVT& jpvt, const VectorTAU& tau,
+        Workspace work ) {
     return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
             jpvt, tau, work );
 }
@@ -515,8 +534,9 @@ inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
-        const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+geqp3( MatrixA& a, const VectorJPVT& jpvt, const VectorTAU& tau ) {
     return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
             jpvt, tau, optimal_workspace() );
 }
@@ -530,8 +550,10 @@ inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
 //
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
-inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
-        const VectorTAU& tau, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+geqp3( const MatrixA& a, const VectorJPVT& jpvt, const VectorTAU& tau,
+        Workspace work ) {
     return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
             jpvt, tau, work );
 }
@@ -544,8 +566,9 @@ inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
-        const VectorTAU& tau ) {
+inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
+        std::ptrdiff_t >::type
+geqp3( const MatrixA& a, const VectorJPVT& jpvt, const VectorTAU& tau ) {
     return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
             jpvt, tau, optimal_workspace() );
 }

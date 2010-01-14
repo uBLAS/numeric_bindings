@@ -213,8 +213,10 @@ struct hbgst_impl {
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t hbgst( const char vect, MatrixAB& ab,
-        const MatrixBB& bb, MatrixX& x, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgst( const char vect, MatrixAB& ab, const MatrixBB& bb, MatrixX& x,
+        Workspace work ) {
     return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, bb, x, work );
 }
@@ -226,8 +228,9 @@ inline std::ptrdiff_t hbgst( const char vect, MatrixAB& ab,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline std::ptrdiff_t hbgst( const char vect, MatrixAB& ab,
-        const MatrixBB& bb, MatrixX& x ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+hbgst( const char vect, MatrixAB& ab, const MatrixBB& bb, MatrixX& x ) {
     return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, bb, x, optimal_workspace() );
 }
@@ -240,8 +243,10 @@ inline std::ptrdiff_t hbgst( const char vect, MatrixAB& ab,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t hbgst( const char vect, const MatrixAB& ab,
-        const MatrixBB& bb, MatrixX& x, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
+        MatrixX& x, Workspace work ) {
     return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, bb, x, work );
 }
@@ -253,8 +258,10 @@ inline std::ptrdiff_t hbgst( const char vect, const MatrixAB& ab,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline std::ptrdiff_t hbgst( const char vect, const MatrixAB& ab,
-        const MatrixBB& bb, MatrixX& x ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+hbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
+        MatrixX& x ) {
     return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, bb, x, optimal_workspace() );
 }
@@ -267,8 +274,10 @@ inline std::ptrdiff_t hbgst( const char vect, const MatrixAB& ab,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t hbgst( const char vect, MatrixAB& ab,
-        const MatrixBB& bb, const MatrixX& x, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgst( const char vect, MatrixAB& ab, const MatrixBB& bb,
+        const MatrixX& x, Workspace work ) {
     return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, bb, x, work );
 }
@@ -280,8 +289,10 @@ inline std::ptrdiff_t hbgst( const char vect, MatrixAB& ab,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline std::ptrdiff_t hbgst( const char vect, MatrixAB& ab,
-        const MatrixBB& bb, const MatrixX& x ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+hbgst( const char vect, MatrixAB& ab, const MatrixBB& bb,
+        const MatrixX& x ) {
     return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, bb, x, optimal_workspace() );
 }
@@ -294,8 +305,10 @@ inline std::ptrdiff_t hbgst( const char vect, MatrixAB& ab,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t hbgst( const char vect, const MatrixAB& ab,
-        const MatrixBB& bb, const MatrixX& x, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
+        const MatrixX& x, Workspace work ) {
     return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, bb, x, work );
 }
@@ -307,8 +320,10 @@ inline std::ptrdiff_t hbgst( const char vect, const MatrixAB& ab,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline std::ptrdiff_t hbgst( const char vect, const MatrixAB& ab,
-        const MatrixBB& bb, const MatrixX& x ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+hbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
+        const MatrixX& x ) {
     return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
             ab, bb, x, optimal_workspace() );
 }

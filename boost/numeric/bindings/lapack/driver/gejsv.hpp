@@ -230,9 +230,11 @@ struct gejsv_impl {
 // * User-defined workspace
 //
 template< typename MatrixA, typename Workspace >
-inline std::ptrdiff_t gejsv( const char joba, const char jobu,
-        const char jobv, const char jobr, const char jobt, const char jobp,
-        MatrixA& a, const fortran_int_t lwork, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gejsv( const char joba, const char jobu, const char jobv,
+        const char jobr, const char jobt, const char jobp, MatrixA& a,
+        const fortran_int_t lwork, Workspace work ) {
     return gejsv_impl< typename value< MatrixA >::type >::invoke( joba,
             jobu, jobv, jobr, jobt, jobp, a, lwork, work );
 }
@@ -243,9 +245,11 @@ inline std::ptrdiff_t gejsv( const char joba, const char jobu,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA >
-inline std::ptrdiff_t gejsv( const char joba, const char jobu,
-        const char jobv, const char jobr, const char jobt, const char jobp,
-        MatrixA& a, const fortran_int_t lwork ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixA >,
+        std::ptrdiff_t >::type
+gejsv( const char joba, const char jobu, const char jobv,
+        const char jobr, const char jobt, const char jobp, MatrixA& a,
+        const fortran_int_t lwork ) {
     return gejsv_impl< typename value< MatrixA >::type >::invoke( joba,
             jobu, jobv, jobr, jobt, jobp, a, lwork, optimal_workspace() );
 }
@@ -256,9 +260,11 @@ inline std::ptrdiff_t gejsv( const char joba, const char jobu,
 // * User-defined workspace
 //
 template< typename MatrixA, typename Workspace >
-inline std::ptrdiff_t gejsv( const char joba, const char jobu,
-        const char jobv, const char jobr, const char jobt, const char jobp,
-        const MatrixA& a, const fortran_int_t lwork, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gejsv( const char joba, const char jobu, const char jobv,
+        const char jobr, const char jobt, const char jobp, const MatrixA& a,
+        const fortran_int_t lwork, Workspace work ) {
     return gejsv_impl< typename value< MatrixA >::type >::invoke( joba,
             jobu, jobv, jobr, jobt, jobp, a, lwork, work );
 }
@@ -269,9 +275,11 @@ inline std::ptrdiff_t gejsv( const char joba, const char jobu,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA >
-inline std::ptrdiff_t gejsv( const char joba, const char jobu,
-        const char jobv, const char jobr, const char jobt, const char jobp,
-        const MatrixA& a, const fortran_int_t lwork ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixA >,
+        std::ptrdiff_t >::type
+gejsv( const char joba, const char jobu, const char jobv,
+        const char jobr, const char jobt, const char jobp, const MatrixA& a,
+        const fortran_int_t lwork ) {
     return gejsv_impl< typename value< MatrixA >::type >::invoke( joba,
             jobu, jobv, jobr, jobt, jobp, a, lwork, optimal_workspace() );
 }

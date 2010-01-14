@@ -480,9 +480,10 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
@@ -502,9 +503,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
@@ -523,11 +525,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -545,11 +549,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
@@ -566,9 +572,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
@@ -588,9 +595,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
@@ -609,11 +617,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -631,11 +641,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
@@ -652,9 +664,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
@@ -674,9 +687,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
@@ -695,11 +709,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -717,11 +733,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
@@ -738,9 +756,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
@@ -760,9 +779,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
@@ -781,11 +801,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -803,11 +825,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
@@ -824,9 +848,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
@@ -846,9 +871,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
@@ -867,11 +893,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -889,11 +917,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
@@ -910,9 +940,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
@@ -932,9 +963,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
@@ -953,11 +985,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -975,11 +1009,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
@@ -996,9 +1032,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
@@ -1018,9 +1055,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
@@ -1040,11 +1078,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1062,11 +1102,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1084,9 +1126,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
@@ -1106,9 +1149,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
@@ -1128,11 +1172,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1150,11 +1196,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1172,9 +1220,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
@@ -1194,9 +1243,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
@@ -1215,11 +1265,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1237,11 +1289,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
@@ -1258,9 +1312,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
@@ -1280,9 +1335,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
@@ -1301,11 +1357,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1323,11 +1381,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
             jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
@@ -1344,9 +1404,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
@@ -1366,9 +1427,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v,
@@ -1388,11 +1450,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1410,11 +1474,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1432,9 +1498,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
@@ -1454,9 +1521,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v,
@@ -1476,11 +1544,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1498,11 +1568,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1520,9 +1592,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
@@ -1542,9 +1615,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
@@ -1564,11 +1638,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1586,11 +1662,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1608,9 +1686,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
@@ -1630,9 +1709,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
@@ -1652,11 +1732,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1674,11 +1756,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1696,9 +1780,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
@@ -1718,9 +1803,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
@@ -1740,11 +1826,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1762,11 +1850,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1784,9 +1874,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
@@ -1806,9 +1897,10 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
@@ -1828,11 +1920,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
@@ -1850,11 +1944,13 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
-inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
-        const char jobq, const MatrixA& a, const MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type tola,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
     return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,

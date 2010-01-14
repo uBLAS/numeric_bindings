@@ -176,8 +176,10 @@ struct opgtr_impl {
 //
 template< typename VectorAP, typename VectorTAU, typename MatrixQ,
         typename Workspace >
-inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
-        const VectorTAU& tau, MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+opgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
+        MatrixQ& q, Workspace work ) {
     return opgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
             ap, tau, q, work );
 }
@@ -188,8 +190,10 @@ inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
 // * Default workspace-type (optimal)
 //
 template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
-        const VectorTAU& tau, MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+opgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
+        MatrixQ& q ) {
     return opgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
             ap, tau, q, optimal_workspace() );
 }
@@ -201,8 +205,10 @@ inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
 //
 template< typename VectorAP, typename VectorTAU, typename MatrixQ,
         typename Workspace >
-inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
-        const VectorTAU& tau, const MatrixQ& q, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+opgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
+        const MatrixQ& q, Workspace work ) {
     return opgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
             ap, tau, q, work );
 }
@@ -213,8 +219,10 @@ inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
 // * Default workspace-type (optimal)
 //
 template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
-        const VectorTAU& tau, const MatrixQ& q ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+opgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
+        const MatrixQ& q ) {
     return opgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
             ap, tau, q, optimal_workspace() );
 }

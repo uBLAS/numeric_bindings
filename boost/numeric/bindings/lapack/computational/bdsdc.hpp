@@ -226,9 +226,11 @@ struct bdsdc_impl {
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
+        VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -245,9 +247,11 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
+        VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -265,9 +269,11 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
+        VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -284,1114 +290,10 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, const MatrixVT& vt, VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, const MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, MatrixVT& vt, const VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, const MatrixVT& vt, const VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, const MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
@@ -1401,19 +303,20 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // Overloaded function for bdsdc. Its overload differs for
 // * VectorD&
 // * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
 // * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
+        VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -1422,17 +325,18 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // Overloaded function for bdsdc. Its overload differs for
 // * VectorD&
 // * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
 // * VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
@@ -1442,19 +346,20 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // Overloaded function for bdsdc. Its overload differs for
 // * const VectorD&
 // * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
 // * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q, VectorIQ& iq,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -1463,17 +368,61 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // Overloaded function for bdsdc. Its overload differs for
 // * const VectorD&
 // * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
 // * VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt, VectorQ& q,
+        VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
@@ -1481,217 +430,22 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 
 //
 // Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, MatrixVT& vt, VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        MatrixVT& vt, VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
 // * const VectorD&
 // * VectorE&
 // * const MatrixU&
 // * MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -1703,14 +457,16 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * const MatrixU&
 // * MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -1722,16 +478,17 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * const MatrixU&
 // * MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -1743,14 +500,16 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * const MatrixU&
 // * MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -1762,16 +521,17 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * const MatrixU&
 // * MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -1783,14 +543,16 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * const MatrixU&
 // * MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -1802,15 +564,17 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, const VectorIQ& iq, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt, VectorQ& q,
+        VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -1822,14 +586,16 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt, VectorQ& q,
+        VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -1841,15 +607,17 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, const VectorIQ& iq, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -1861,14 +629,16 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -1880,15 +650,17 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, const VectorIQ& iq, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -1900,14 +672,16 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -1919,16 +693,17 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, const MatrixVT& vt, VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -1940,14 +715,16 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, const MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -1959,15 +736,17 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * const MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, const VectorIQ& iq, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -1979,14 +758,16 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * const MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        const MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -1998,16 +779,17 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * const MatrixU&
 // * const MatrixVT&
 // * VectorQ&
-// * const VectorIQ&
+// * VectorIQ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -2019,14 +801,832 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // * const MatrixU&
 // * const MatrixVT&
 // * VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u,
+        const MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u,
+        const MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, const VectorQ& q,
+        VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, const VectorQ& q,
+        VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u,
+        const MatrixVT& vt, const VectorQ& q, VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u,
+        const MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
+        const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
 // * const VectorIQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q,
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
@@ -2034,10 +1634,10 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 
 //
 // Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
 // * VectorQ&
 // * const VectorIQ&
 // * User-defined workspace
@@ -2045,611 +1645,10 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q,
-        const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, VectorQ& q,
-        const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q,
-        const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q,
-        const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixU&
-// * MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, MatrixVT& vt, const VectorQ& q,
-        const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixU& u, const MatrixVT& vt, const VectorQ& q,
-        const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
-        Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixU& u,
-        const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
-}
-
-//
-// Overloaded function for bdsdc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixU&
-// * const MatrixVT&
-// * const VectorQ&
-// * const VectorIQ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixU,
-        typename MatrixVT, typename VectorQ, typename VectorIQ,
-        typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
@@ -2659,6 +1658,1167 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 // Overloaded function for bdsdc. Its overload differs for
 // * const VectorD&
 // * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
+        const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
+        const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
+        const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt, VectorQ& q,
+        const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt, VectorQ& q,
+        const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt, VectorQ& q,
+        const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt, VectorQ& q,
+        const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u,
+        const MatrixVT& vt, VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u,
+        const MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, const VectorQ& q,
+        const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, const VectorQ& q,
+        const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixU&
+// * MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * VectorD&
+// * VectorE&
 // * const MatrixU&
 // * const MatrixVT&
 // * const VectorQ&
@@ -2667,10 +2827,54 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q,
-        const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
+    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
+            compq, n, d, e, u, vt, q, iq, work );
+}
+
+//
+// Overloaded function for bdsdc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixU&
+// * const MatrixVT&
+// * const VectorQ&
+// * const VectorIQ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -2688,10 +2892,11 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q,
-        const VectorIQ& iq, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq, Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -2708,10 +2913,11 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q,
-        const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
+        const VectorQ& q, const VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }
@@ -2729,10 +2935,12 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q,
-        const VectorIQ& iq, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u,
+        const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
+        Workspace work ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, work );
 }
@@ -2749,10 +2957,11 @@ inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
 //
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixU& u, const MatrixVT& vt, const VectorQ& q,
-        const VectorIQ& iq ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
+        std::ptrdiff_t >::type
+bdsdc( const char uplo, const char compq, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixU& u,
+        const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
     return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
             compq, n, d, e, u, vt, q, iq, optimal_workspace() );
 }

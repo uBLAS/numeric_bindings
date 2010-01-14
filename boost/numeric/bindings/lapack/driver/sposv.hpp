@@ -192,8 +192,10 @@ struct sposv_impl {
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
-        fortran_int_t& iter, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sposv( MatrixA& a, const MatrixB& b, MatrixX& x, fortran_int_t& iter,
+        Workspace work ) {
     return sposv_impl< typename value< MatrixA >::type >::invoke( a, b,
             x, iter, work );
 }
@@ -205,7 +207,9 @@ inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
         fortran_int_t& iter ) {
     return sposv_impl< typename value< MatrixA >::type >::invoke( a, b,
             x, iter, optimal_workspace() );
@@ -219,8 +223,10 @@ inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
-        MatrixX& x, fortran_int_t& iter, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sposv( const MatrixA& a, const MatrixB& b, MatrixX& x,
+        fortran_int_t& iter, Workspace work ) {
     return sposv_impl< typename value< MatrixA >::type >::invoke( a, b,
             x, iter, work );
 }
@@ -232,8 +238,10 @@ inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
-        MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+sposv( const MatrixA& a, const MatrixB& b, MatrixX& x,
+        fortran_int_t& iter ) {
     return sposv_impl< typename value< MatrixA >::type >::invoke( a, b,
             x, iter, optimal_workspace() );
 }
@@ -246,8 +254,10 @@ inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
-        const MatrixX& x, fortran_int_t& iter, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sposv( MatrixA& a, const MatrixB& b, const MatrixX& x,
+        fortran_int_t& iter, Workspace work ) {
     return sposv_impl< typename value< MatrixA >::type >::invoke( a, b,
             x, iter, work );
 }
@@ -259,8 +269,10 @@ inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
-        const MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+sposv( MatrixA& a, const MatrixB& b, const MatrixX& x,
+        fortran_int_t& iter ) {
     return sposv_impl< typename value< MatrixA >::type >::invoke( a, b,
             x, iter, optimal_workspace() );
 }
@@ -273,8 +285,10 @@ inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
-        const MatrixX& x, fortran_int_t& iter, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sposv( const MatrixA& a, const MatrixB& b, const MatrixX& x,
+        fortran_int_t& iter, Workspace work ) {
     return sposv_impl< typename value< MatrixA >::type >::invoke( a, b,
             x, iter, work );
 }
@@ -286,8 +300,10 @@ inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
-        const MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+sposv( const MatrixA& a, const MatrixB& b, const MatrixX& x,
+        fortran_int_t& iter ) {
     return sposv_impl< typename value< MatrixA >::type >::invoke( a, b,
             x, iter, optimal_workspace() );
 }

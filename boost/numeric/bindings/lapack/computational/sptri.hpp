@@ -269,8 +269,9 @@ struct sptri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sptri( MatrixAP& ap, const VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sptri( MatrixAP& ap, const VectorIPIV& ipiv, Workspace work ) {
     return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv, work );
 }
@@ -281,7 +282,9 @@ inline std::ptrdiff_t sptri( MatrixAP& ap, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t sptri( MatrixAP& ap, const VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+sptri( MatrixAP& ap, const VectorIPIV& ipiv ) {
     return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv, optimal_workspace() );
 }
@@ -292,8 +295,9 @@ inline std::ptrdiff_t sptri( MatrixAP& ap, const VectorIPIV& ipiv ) {
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sptri( const MatrixAP& ap, const VectorIPIV& ipiv,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sptri( const MatrixAP& ap, const VectorIPIV& ipiv, Workspace work ) {
     return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv, work );
 }
@@ -304,7 +308,9 @@ inline std::ptrdiff_t sptri( const MatrixAP& ap, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t sptri( const MatrixAP& ap, const VectorIPIV& ipiv ) {
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+sptri( const MatrixAP& ap, const VectorIPIV& ipiv ) {
     return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv, optimal_workspace() );
 }

@@ -199,8 +199,9 @@ struct lansb_impl {
 // * User-defined workspace
 //
 template< typename MatrixAB, typename Workspace >
-inline std::ptrdiff_t lansb( const char norm, const MatrixAB& ab,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lansb( const char norm, const MatrixAB& ab, Workspace work ) {
     return lansb_impl< typename value< MatrixAB >::type >::invoke( norm,
             ab, work );
 }
@@ -210,7 +211,9 @@ inline std::ptrdiff_t lansb( const char norm, const MatrixAB& ab,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB >
-inline std::ptrdiff_t lansb( const char norm, const MatrixAB& ab ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixAB >,
+        std::ptrdiff_t >::type
+lansb( const char norm, const MatrixAB& ab ) {
     return lansb_impl< typename value< MatrixAB >::type >::invoke( norm,
             ab, optimal_workspace() );
 }

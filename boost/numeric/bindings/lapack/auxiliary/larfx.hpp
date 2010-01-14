@@ -279,7 +279,9 @@ struct larfx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename VectorV, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t larfx( const char side, const VectorV& v,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larfx( const char side, const VectorV& v,
         const typename remove_imaginary< typename value<
         VectorV >::type >::type tau, MatrixC& c, Workspace work ) {
     return larfx_impl< typename value< VectorV >::type >::invoke( side,
@@ -292,7 +294,9 @@ inline std::ptrdiff_t larfx( const char side, const VectorV& v,
 // * Default workspace-type (optimal)
 //
 template< typename VectorV, typename MatrixC >
-inline std::ptrdiff_t larfx( const char side, const VectorV& v,
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+larfx( const char side, const VectorV& v,
         const typename remove_imaginary< typename value<
         VectorV >::type >::type tau, MatrixC& c ) {
     return larfx_impl< typename value< VectorV >::type >::invoke( side,
@@ -305,7 +309,9 @@ inline std::ptrdiff_t larfx( const char side, const VectorV& v,
 // * User-defined workspace
 //
 template< typename VectorV, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t larfx( const char side, const VectorV& v,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larfx( const char side, const VectorV& v,
         const typename remove_imaginary< typename value<
         VectorV >::type >::type tau, const MatrixC& c, Workspace work ) {
     return larfx_impl< typename value< VectorV >::type >::invoke( side,
@@ -318,7 +324,9 @@ inline std::ptrdiff_t larfx( const char side, const VectorV& v,
 // * Default workspace-type (optimal)
 //
 template< typename VectorV, typename MatrixC >
-inline std::ptrdiff_t larfx( const char side, const VectorV& v,
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+larfx( const char side, const VectorV& v,
         const typename remove_imaginary< typename value<
         VectorV >::type >::type tau, const MatrixC& c ) {
     return larfx_impl< typename value< VectorV >::type >::invoke( side,
@@ -330,9 +338,10 @@ inline std::ptrdiff_t larfx( const char side, const VectorV& v,
 // * User-defined workspace
 //
 template< typename VectorV, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t larfx( const char side, const VectorV& v,
-        const typename value< VectorV >::type tau, MatrixC& c,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larfx( const char side, const VectorV& v, const typename value<
+        VectorV >::type tau, MatrixC& c, Workspace work ) {
     return larfx_impl< typename value< VectorV >::type >::invoke( side,
             v, tau, c, work );
 }
@@ -343,8 +352,10 @@ inline std::ptrdiff_t larfx( const char side, const VectorV& v,
 // * Default workspace-type (optimal)
 //
 template< typename VectorV, typename MatrixC >
-inline std::ptrdiff_t larfx( const char side, const VectorV& v,
-        const typename value< VectorV >::type tau, MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+larfx( const char side, const VectorV& v, const typename value<
+        VectorV >::type tau, MatrixC& c ) {
     return larfx_impl< typename value< VectorV >::type >::invoke( side,
             v, tau, c, optimal_workspace() );
 }
@@ -355,9 +366,10 @@ inline std::ptrdiff_t larfx( const char side, const VectorV& v,
 // * User-defined workspace
 //
 template< typename VectorV, typename MatrixC, typename Workspace >
-inline std::ptrdiff_t larfx( const char side, const VectorV& v,
-        const typename value< VectorV >::type tau, const MatrixC& c,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larfx( const char side, const VectorV& v, const typename value<
+        VectorV >::type tau, const MatrixC& c, Workspace work ) {
     return larfx_impl< typename value< VectorV >::type >::invoke( side,
             v, tau, c, work );
 }
@@ -368,8 +380,10 @@ inline std::ptrdiff_t larfx( const char side, const VectorV& v,
 // * Default workspace-type (optimal)
 //
 template< typename VectorV, typename MatrixC >
-inline std::ptrdiff_t larfx( const char side, const VectorV& v,
-        const typename value< VectorV >::type tau, const MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+larfx( const char side, const VectorV& v, const typename value<
+        VectorV >::type tau, const MatrixC& c ) {
     return larfx_impl< typename value< VectorV >::type >::invoke( side,
             v, tau, c, optimal_workspace() );
 }

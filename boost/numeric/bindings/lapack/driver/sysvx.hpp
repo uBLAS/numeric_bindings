@@ -474,338 +474,11 @@ struct sysvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
-// * VectorIPIV&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * VectorIPIV&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * VectorIPIV&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
-// * const VectorIPIV&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
-// * const VectorIPIV&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * const VectorIPIV&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * const VectorIPIV&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
-// * VectorIPIV&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
-// * VectorIPIV&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * VectorIPIV&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * VectorIPIV&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
-// * const VectorIPIV&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
-// * const VectorIPIV&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * const VectorIPIV&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * const VectorIPIV&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
-// * VectorIPIV&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, ipiv, b, x, rcond, ferr, berr, work );
@@ -816,6 +489,364 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 // * MatrixAF&
 // * VectorIPIV&
 // * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * VectorIPIV&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * VectorIPIV&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * const VectorIPIV&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * const VectorIPIV&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * const VectorIPIV&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * const VectorIPIV&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * VectorIPIV&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * VectorIPIV&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * VectorIPIV&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * VectorIPIV&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * const VectorIPIV&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * const VectorIPIV&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * const VectorIPIV&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * const VectorIPIV&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * VectorIPIV&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * VectorIPIV&
+// * MatrixX&
 // * const VectorFERR&
 // * VectorBERR&
 // * Default workspace-type (optimal)
@@ -823,11 +854,12 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -844,8 +876,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -865,8 +899,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
@@ -886,8 +922,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -907,8 +945,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
@@ -928,9 +968,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -949,9 +991,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -970,8 +1014,100 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * VectorIPIV&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * VectorIPIV&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * VectorIPIV&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * const VectorIPIV&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -982,7 +1118,7 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 //
 // Overloaded function for sysvx. Its overload differs for
 // * MatrixAF&
-// * VectorIPIV&
+// * const VectorIPIV&
 // * const MatrixX&
 // * const VectorFERR&
 // * VectorBERR&
@@ -991,8 +1127,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
@@ -1003,48 +1141,6 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 //
 // Overloaded function for sysvx. Its overload differs for
 // * const MatrixAF&
-// * VectorIPIV&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * VectorIPIV&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
 // * const VectorIPIV&
 // * const MatrixX&
 // * const VectorFERR&
@@ -1054,51 +1150,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
-// * const VectorIPIV&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * const VectorIPIV&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1117,9 +1173,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1138,10 +1196,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, ipiv, b, x, rcond, ferr, berr, work );
@@ -1159,10 +1218,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1180,8 +1240,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1201,8 +1263,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1222,8 +1286,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1243,8 +1309,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1264,9 +1332,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1285,9 +1355,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1306,10 +1378,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, ipiv, b, x, rcond, ferr, berr, work );
@@ -1327,10 +1400,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1348,9 +1422,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1369,9 +1445,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1390,9 +1468,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1411,9 +1491,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1432,9 +1514,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1453,9 +1537,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1474,11 +1560,12 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, ipiv, b, x, rcond, ferr, berr, work );
 }
@@ -1495,11 +1582,12 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
 }
@@ -1516,8 +1604,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1537,8 +1627,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1558,8 +1650,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1579,8 +1673,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1600,9 +1696,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1621,9 +1719,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1642,8 +1742,100 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * VectorIPIV&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * VectorIPIV&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * const MatrixAF&
+// * VectorIPIV&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for sysvx. Its overload differs for
+// * MatrixAF&
+// * const VectorIPIV&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -1654,7 +1846,7 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 //
 // Overloaded function for sysvx. Its overload differs for
 // * MatrixAF&
-// * VectorIPIV&
+// * const VectorIPIV&
 // * const MatrixX&
 // * const VectorFERR&
 // * const VectorBERR&
@@ -1663,8 +1855,10 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -1675,48 +1869,6 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 //
 // Overloaded function for sysvx. Its overload differs for
 // * const MatrixAF&
-// * VectorIPIV&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * VectorIPIV&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
 // * const VectorIPIV&
 // * const MatrixX&
 // * const VectorFERR&
@@ -1726,51 +1878,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * MatrixAF&
-// * const VectorIPIV&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for sysvx. Its overload differs for
-// * const MatrixAF&
-// * const VectorIPIV&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1789,9 +1901,11 @@ inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t sysvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+sysvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return sysvx_impl< typename value< MatrixA >::type >::invoke( fact,

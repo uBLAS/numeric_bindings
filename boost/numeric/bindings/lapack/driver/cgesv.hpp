@@ -211,9 +211,10 @@ struct cgesv_impl {
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, fortran_int_t& iter,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+cgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        fortran_int_t& iter, Workspace work ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, work );
 }
@@ -227,8 +228,10 @@ inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
-inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+cgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        fortran_int_t& iter ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, optimal_workspace() );
 }
@@ -242,9 +245,10 @@ inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, fortran_int_t& iter,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+cgesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        fortran_int_t& iter, Workspace work ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, work );
 }
@@ -258,8 +262,10 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
-inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+cgesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        fortran_int_t& iter ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, optimal_workspace() );
 }
@@ -273,9 +279,10 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, fortran_int_t& iter,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+cgesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        fortran_int_t& iter, Workspace work ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, work );
 }
@@ -289,8 +296,10 @@ inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
-inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+cgesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        fortran_int_t& iter ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, optimal_workspace() );
 }
@@ -304,9 +313,10 @@ inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, fortran_int_t& iter,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+cgesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
+        MatrixX& x, fortran_int_t& iter, Workspace work ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, work );
 }
@@ -320,8 +330,10 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
-inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+cgesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
+        MatrixX& x, fortran_int_t& iter ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, optimal_workspace() );
 }
@@ -335,9 +347,10 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, fortran_int_t& iter,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+cgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        fortran_int_t& iter, Workspace work ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, work );
 }
@@ -351,8 +364,10 @@ inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
-inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+cgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        fortran_int_t& iter ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, optimal_workspace() );
 }
@@ -366,9 +381,10 @@ inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, fortran_int_t& iter,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+cgesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, fortran_int_t& iter, Workspace work ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, work );
 }
@@ -382,8 +398,10 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
-inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+cgesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, fortran_int_t& iter ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, optimal_workspace() );
 }
@@ -397,9 +415,10 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, fortran_int_t& iter,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+cgesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, fortran_int_t& iter, Workspace work ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, work );
 }
@@ -413,8 +432,10 @@ inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
-inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+cgesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, fortran_int_t& iter ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, optimal_workspace() );
 }
@@ -428,9 +449,10 @@ inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, fortran_int_t& iter,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+cgesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, fortran_int_t& iter, Workspace work ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, work );
 }
@@ -444,8 +466,10 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
-inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, fortran_int_t& iter ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixX >,
+        std::ptrdiff_t >::type
+cgesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, fortran_int_t& iter ) {
     return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, x, iter, optimal_workspace() );
 }

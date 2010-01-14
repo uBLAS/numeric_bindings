@@ -198,7 +198,197 @@ struct hesv_impl {
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
-inline std::ptrdiff_t hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, Workspace work ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * VectorIPIV&
+// * MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * VectorIPIV&
+// * MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hesv( const MatrixA& a, VectorIPIV& ipiv, MatrixB& b, Workspace work ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * VectorIPIV&
+// * MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+hesv( const MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * const VectorIPIV&
+// * MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hesv( MatrixA& a, const VectorIPIV& ipiv, MatrixB& b, Workspace work ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * const VectorIPIV&
+// * MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+hesv( MatrixA& a, const VectorIPIV& ipiv, MatrixB& b ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * const VectorIPIV&
+// * MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hesv( const MatrixA& a, const VectorIPIV& ipiv, MatrixB& b,
+        Workspace work ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * const VectorIPIV&
+// * MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+hesv( const MatrixA& a, const VectorIPIV& ipiv, MatrixB& b ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * VectorIPIV&
+// * const MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, Workspace work ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * VectorIPIV&
+// * const MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+hesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * VectorIPIV&
+// * const MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
+        Workspace work ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * VectorIPIV&
+// * const MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+hesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b ) {
+    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * const VectorIPIV&
+// * const MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
         Workspace work ) {
     return hesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, work );
@@ -207,186 +397,14 @@ inline std::ptrdiff_t hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
 //
 // Overloaded function for hesv. Its overload differs for
 // * MatrixA&
-// * VectorIPIV&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, optimal_workspace() );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * const MatrixA&
-// * VectorIPIV&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename Workspace >
-inline std::ptrdiff_t hesv( const MatrixA& a, VectorIPIV& ipiv,
-        MatrixB& b, Workspace work ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, work );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * const MatrixA&
-// * VectorIPIV&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hesv( const MatrixA& a, VectorIPIV& ipiv,
-        MatrixB& b ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, optimal_workspace() );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename Workspace >
-inline std::ptrdiff_t hesv( MatrixA& a, const VectorIPIV& ipiv,
-        MatrixB& b, Workspace work ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, work );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hesv( MatrixA& a, const VectorIPIV& ipiv,
-        MatrixB& b ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, optimal_workspace() );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename Workspace >
-inline std::ptrdiff_t hesv( const MatrixA& a, const VectorIPIV& ipiv,
-        MatrixB& b, Workspace work ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, work );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hesv( const MatrixA& a, const VectorIPIV& ipiv,
-        MatrixB& b ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, optimal_workspace() );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * MatrixA&
-// * VectorIPIV&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename Workspace >
-inline std::ptrdiff_t hesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, Workspace work ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, work );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * MatrixA&
-// * VectorIPIV&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, optimal_workspace() );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * const MatrixA&
-// * VectorIPIV&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename Workspace >
-inline std::ptrdiff_t hesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, Workspace work ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, work );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * const MatrixA&
-// * VectorIPIV&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, optimal_workspace() );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename Workspace >
-inline std::ptrdiff_t hesv( MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, Workspace work ) {
-    return hesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, work );
-}
-
-//
-// Overloaded function for hesv. Its overload differs for
-// * MatrixA&
 // * const VectorIPIV&
 // * const MatrixB&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hesv( MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+hesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b ) {
     return hesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, optimal_workspace() );
 }
@@ -400,8 +418,10 @@ inline std::ptrdiff_t hesv( MatrixA& a, const VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
-inline std::ptrdiff_t hesv( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
+        Workspace work ) {
     return hesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, work );
 }
@@ -414,8 +434,9 @@ inline std::ptrdiff_t hesv( const MatrixA& a, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hesv( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+hesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b ) {
     return hesv_impl< typename value< MatrixA >::type >::invoke( a,
             ipiv, b, optimal_workspace() );
 }

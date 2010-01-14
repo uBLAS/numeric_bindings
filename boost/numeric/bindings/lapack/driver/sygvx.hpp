@@ -259,15 +259,17 @@ struct sygvx_impl {
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -284,15 +286,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -309,15 +313,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -334,15 +340,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -359,15 +367,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -384,15 +394,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -409,15 +421,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -434,15 +448,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -459,14 +475,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -484,14 +502,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -509,14 +529,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -534,14 +556,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -559,14 +583,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -584,14 +610,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -609,14 +637,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -634,14 +664,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -659,15 +691,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -684,15 +718,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -709,15 +745,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -734,15 +772,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -759,15 +799,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -784,15 +826,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -809,15 +853,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -834,15 +880,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -859,14 +907,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -885,14 +935,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -910,14 +962,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -936,14 +990,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -961,14 +1017,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -987,14 +1045,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1012,14 +1072,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -1038,14 +1100,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1063,15 +1127,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1088,15 +1154,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1113,15 +1181,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1138,15 +1208,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1163,15 +1235,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1188,15 +1262,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1213,15 +1289,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1238,15 +1316,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1263,14 +1343,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -1289,14 +1371,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1314,14 +1398,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -1340,14 +1426,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1365,14 +1453,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -1391,14 +1481,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1416,14 +1508,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -1442,14 +1536,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1467,16 +1563,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1493,15 +1590,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1518,16 +1617,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1544,15 +1644,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1569,16 +1671,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1595,15 +1698,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1620,16 +1725,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1646,15 +1752,17 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1671,14 +1779,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -1697,14 +1807,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1722,14 +1834,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -1748,14 +1862,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1773,14 +1889,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -1799,14 +1917,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1824,14 +1944,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
@@ -1850,14 +1972,16 @@ inline std::ptrdiff_t sygvx( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t sygvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+sygvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sygvx_impl< typename value< MatrixA >::type >::invoke( itype,
             jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,

@@ -184,7 +184,93 @@ struct syev_impl {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorW, typename Workspace >
-inline std::ptrdiff_t syev( const char jobz, MatrixA& a, VectorW& w,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syev( const char jobz, MatrixA& a, VectorW& w, Workspace work ) {
+    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, w, work );
+}
+
+//
+// Overloaded function for syev. Its overload differs for
+// * MatrixA&
+// * VectorW&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW >
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+syev( const char jobz, MatrixA& a, VectorW& w ) {
+    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, w, optimal_workspace() );
+}
+
+//
+// Overloaded function for syev. Its overload differs for
+// * const MatrixA&
+// * VectorW&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syev( const char jobz, const MatrixA& a, VectorW& w, Workspace work ) {
+    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, w, work );
+}
+
+//
+// Overloaded function for syev. Its overload differs for
+// * const MatrixA&
+// * VectorW&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW >
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+syev( const char jobz, const MatrixA& a, VectorW& w ) {
+    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, w, optimal_workspace() );
+}
+
+//
+// Overloaded function for syev. Its overload differs for
+// * MatrixA&
+// * const VectorW&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syev( const char jobz, MatrixA& a, const VectorW& w, Workspace work ) {
+    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, w, work );
+}
+
+//
+// Overloaded function for syev. Its overload differs for
+// * MatrixA&
+// * const VectorW&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW >
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+syev( const char jobz, MatrixA& a, const VectorW& w ) {
+    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, w, optimal_workspace() );
+}
+
+//
+// Overloaded function for syev. Its overload differs for
+// * const MatrixA&
+// * const VectorW&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+syev( const char jobz, const MatrixA& a, const VectorW& w,
         Workspace work ) {
     return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
             a, w, work );
@@ -192,90 +278,14 @@ inline std::ptrdiff_t syev( const char jobz, MatrixA& a, VectorW& w,
 
 //
 // Overloaded function for syev. Its overload differs for
-// * MatrixA&
-// * VectorW&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW >
-inline std::ptrdiff_t syev( const char jobz, MatrixA& a, VectorW& w ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
-}
-
-//
-// Overloaded function for syev. Its overload differs for
-// * const MatrixA&
-// * VectorW&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename Workspace >
-inline std::ptrdiff_t syev( const char jobz, const MatrixA& a,
-        VectorW& w, Workspace work ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
-}
-
-//
-// Overloaded function for syev. Its overload differs for
-// * const MatrixA&
-// * VectorW&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW >
-inline std::ptrdiff_t syev( const char jobz, const MatrixA& a,
-        VectorW& w ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
-}
-
-//
-// Overloaded function for syev. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename Workspace >
-inline std::ptrdiff_t syev( const char jobz, MatrixA& a,
-        const VectorW& w, Workspace work ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
-}
-
-//
-// Overloaded function for syev. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW >
-inline std::ptrdiff_t syev( const char jobz, MatrixA& a,
-        const VectorW& w ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
-}
-
-//
-// Overloaded function for syev. Its overload differs for
-// * const MatrixA&
-// * const VectorW&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename Workspace >
-inline std::ptrdiff_t syev( const char jobz, const MatrixA& a,
-        const VectorW& w, Workspace work ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
-}
-
-//
-// Overloaded function for syev. Its overload differs for
 // * const MatrixA&
 // * const VectorW&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW >
-inline std::ptrdiff_t syev( const char jobz, const MatrixA& a,
-        const VectorW& w ) {
+inline typename boost::disable_if< detail::is_workspace< VectorW >,
+        std::ptrdiff_t >::type
+syev( const char jobz, const MatrixA& a, const VectorW& w ) {
     return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
             a, w, optimal_workspace() );
 }

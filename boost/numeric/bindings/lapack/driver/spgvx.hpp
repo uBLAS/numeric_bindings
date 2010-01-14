@@ -234,15 +234,17 @@ struct spgvx_impl {
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -259,15 +261,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -284,15 +288,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -309,15 +315,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -334,15 +342,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -359,15 +369,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -384,9 +396,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -410,9 +423,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -436,14 +450,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -461,14 +477,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -486,14 +504,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -511,14 +531,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -536,14 +558,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -561,14 +585,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -586,9 +612,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -612,9 +639,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -638,15 +666,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -663,15 +693,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -688,15 +720,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -713,15 +747,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -738,15 +774,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -763,15 +801,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -788,9 +828,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -814,9 +855,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -840,14 +882,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
@@ -866,14 +910,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -891,14 +937,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
@@ -917,14 +965,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -942,14 +992,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
@@ -968,14 +1020,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -993,9 +1047,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -1020,9 +1075,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -1046,15 +1102,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1071,15 +1129,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1096,15 +1156,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1121,15 +1183,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1146,15 +1210,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1171,15 +1237,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1196,9 +1264,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -1222,9 +1291,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -1248,14 +1318,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
@@ -1274,14 +1346,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1299,14 +1373,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
@@ -1325,14 +1401,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1350,14 +1428,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
@@ -1376,14 +1456,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1401,9 +1483,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -1428,9 +1511,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -1454,16 +1538,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1480,15 +1565,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1505,16 +1592,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1531,15 +1619,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1556,16 +1646,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
@@ -1582,15 +1673,17 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
@@ -1607,9 +1700,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -1633,9 +1727,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -1659,14 +1754,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
@@ -1685,14 +1782,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1710,14 +1809,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
@@ -1736,14 +1837,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1761,14 +1864,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
@@ -1787,14 +1892,16 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vl,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
-        MatrixAP >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
+        MatrixAP >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixAP >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return spgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
@@ -1812,9 +1919,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
@@ -1839,9 +1947,10 @@ inline std::ptrdiff_t spgvx( const fortran_int_t itype,
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t spgvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixBP& bp,
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,

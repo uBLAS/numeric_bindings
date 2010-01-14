@@ -458,7 +458,153 @@ struct posvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
@@ -469,8 +615,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
@@ -481,7 +627,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
@@ -491,141 +639,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -638,7 +651,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
@@ -649,8 +808,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * MatrixB&
 // * MatrixX&
@@ -661,7 +820,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
@@ -671,141 +832,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -818,7 +844,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
@@ -829,8 +1001,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * const MatrixB&
 // * MatrixX&
@@ -841,7 +1013,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
@@ -851,141 +1025,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -998,7 +1037,156 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
@@ -1009,8 +1197,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * const MatrixB&
 // * MatrixX&
@@ -1021,7 +1209,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
@@ -1031,141 +1221,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -1178,7 +1233,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
@@ -1189,8 +1390,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * MatrixB&
 // * const MatrixX&
@@ -1201,7 +1402,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
@@ -1211,141 +1414,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -1358,7 +1426,156 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
@@ -1369,8 +1586,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * MatrixB&
 // * const MatrixX&
@@ -1381,7 +1598,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
@@ -1391,141 +1610,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -1538,7 +1622,156 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
@@ -1549,8 +1782,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * const MatrixB&
 // * const MatrixX&
@@ -1561,7 +1794,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
@@ -1571,141 +1806,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -1718,8 +1818,10 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
-        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
@@ -1741,8 +1843,10 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
-        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1763,9 +1867,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1786,9 +1892,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1808,9 +1916,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1831,9 +1941,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1853,9 +1965,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -1876,9 +1990,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
             a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
@@ -1898,7 +2014,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -1909,8 +2171,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
@@ -1921,7 +2183,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -1932,144 +2196,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -2082,7 +2208,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -2093,8 +2365,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * MatrixB&
 // * MatrixX&
@@ -2105,7 +2377,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -2116,144 +2390,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -2266,7 +2402,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -2277,8 +2559,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * const MatrixB&
 // * MatrixX&
@@ -2289,7 +2571,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -2300,144 +2584,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -2450,7 +2596,159 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -2461,8 +2759,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * const MatrixB&
 // * MatrixX&
@@ -2473,7 +2771,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -2484,144 +2784,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -2634,7 +2796,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -2645,8 +2953,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * MatrixB&
 // * const MatrixX&
@@ -2657,7 +2965,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -2668,144 +2978,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -2818,7 +2990,159 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -2829,8 +3153,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * MatrixB&
 // * const MatrixX&
@@ -2841,7 +3165,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -2852,144 +3178,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -3002,7 +3190,159 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -3013,8 +3353,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * const MatrixB&
 // * const MatrixX&
@@ -3025,7 +3365,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -3036,144 +3378,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -3186,8 +3390,10 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
-        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -3209,8 +3415,10 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
-        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
@@ -3232,9 +3440,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -3255,9 +3465,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -3278,9 +3490,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -3301,9 +3515,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -3324,9 +3540,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -3347,9 +3565,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -3370,7 +3590,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -3381,8 +3747,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
@@ -3393,7 +3759,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -3404,144 +3772,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -3554,7 +3784,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -3565,8 +3941,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * MatrixB&
 // * MatrixX&
@@ -3577,7 +3953,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -3588,144 +3966,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -3738,7 +3978,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -3749,8 +4135,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * const MatrixB&
 // * MatrixX&
@@ -3761,7 +4147,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -3772,144 +4160,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -3922,7 +4172,159 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -3933,8 +4335,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * const MatrixB&
 // * MatrixX&
@@ -3945,7 +4347,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -3956,144 +4360,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -4106,7 +4372,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -4117,8 +4529,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * MatrixB&
 // * const MatrixX&
@@ -4129,7 +4541,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -4140,144 +4554,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -4290,7 +4566,159 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -4301,8 +4729,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * MatrixB&
 // * const MatrixX&
@@ -4313,7 +4741,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -4324,144 +4754,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -4474,7 +4766,159 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -4485,8 +4929,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * const MatrixB&
 // * const MatrixX&
@@ -4497,7 +4941,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
@@ -4508,144 +4954,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -4658,8 +4966,10 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
-        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -4681,8 +4991,10 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
-        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -4704,9 +5016,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -4727,9 +5041,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -4750,9 +5066,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -4773,9 +5091,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -4796,9 +5116,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -4819,9 +5141,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -4842,7 +5166,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -4853,8 +5323,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * MatrixB&
 // * MatrixX&
@@ -4865,7 +5335,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -4876,144 +5348,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -5026,7 +5360,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5037,8 +5517,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * MatrixB&
 // * MatrixX&
@@ -5049,7 +5529,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5060,144 +5542,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -5210,7 +5554,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5221,8 +5711,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * const MatrixB&
 // * MatrixX&
@@ -5233,7 +5723,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5244,144 +5736,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -5394,7 +5748,159 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * const MatrixB&
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5405,8 +5911,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * const MatrixB&
 // * MatrixX&
@@ -5417,7 +5923,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5428,144 +5936,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * const MatrixB&
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -5578,7 +5948,153 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, MatrixB& b, const MatrixX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5589,8 +6105,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * MatrixB&
 // * const MatrixX&
@@ -5601,7 +6117,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5612,144 +6130,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -5762,7 +6142,159 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * const VectorS&
+// * MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5773,8 +6305,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * const VectorS&
 // * MatrixB&
 // * const MatrixX&
@@ -5785,7 +6317,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5796,144 +6330,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * const VectorS&
-// * MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * VectorS&
@@ -5946,7 +6342,159 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
+        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for posvx. Its overload differs for
+// * const MatrixA&
+// * const MatrixAF&
+// * VectorS&
+// * const MatrixB&
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixAF, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5957,8 +6505,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * MatrixAF&
+// * const MatrixA&
+// * const MatrixAF&
 // * VectorS&
 // * const MatrixB&
 // * const MatrixX&
@@ -5969,7 +6517,9 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
@@ -5980,144 +6530,6 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 
 //
 // Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixAF&
-// * VectorS&
-// * const MatrixB&
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorS,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
-            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for posvx. Its overload differs for
 // * MatrixA&
 // * MatrixAF&
 // * const VectorS&
@@ -6130,8 +6542,10 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
-        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
@@ -6153,8 +6567,10 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
-        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
@@ -6176,9 +6592,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -6199,9 +6617,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -6222,9 +6642,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -6245,9 +6667,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, MatrixA& a, const MatrixAF& af, char& equed,
+        const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -6268,9 +6692,11 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
@@ -6291,9 +6717,11 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
-        const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+posvx( const char fact, const MatrixA& a, const MatrixAF& af,
+        char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
     return posvx_impl< typename value< MatrixA >::type >::invoke( fact,

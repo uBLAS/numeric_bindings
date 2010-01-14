@@ -436,9 +436,11 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, work );
 }
@@ -453,9 +455,10 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -470,9 +473,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, work );
 }
@@ -487,9 +492,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -504,9 +511,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, work );
 }
@@ -521,9 +530,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        const VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -538,9 +549,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, work );
 }
@@ -555,9 +568,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -572,9 +587,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, work );
 }
@@ -589,9 +606,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -606,9 +625,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, work );
 }
@@ -623,9 +644,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -640,9 +663,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, work );
 }
@@ -657,9 +682,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -674,9 +701,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, work );
 }
@@ -691,9 +720,11 @@ inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t gbrfs( const MatrixAB& ab, const MatrixAFB& afb,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return gbrfs_impl< typename value< MatrixAB >::type >::invoke( ab,
             afb, ipiv, b, x, ferr, berr, optimal_workspace() );
 }

@@ -396,10 +396,12 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename VectorS, typename VectorSEP,
         typename Workspace >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, VectorS& s, VectorSEP& sep,
-        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsna( const char job, const char howmny, const VectorSELECT& select,
+        const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
+        VectorSEP& sep, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
     return trsna_impl< typename value< MatrixT >::type >::invoke( job,
             howmny, select, t, vl, vr, s, sep, mm, m, work );
 }
@@ -412,10 +414,11 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename VectorS, typename VectorSEP >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, VectorS& s, VectorSEP& sep,
-        const fortran_int_t mm, fortran_int_t& m ) {
+inline typename boost::disable_if< detail::is_workspace< VectorSEP >,
+        std::ptrdiff_t >::type
+trsna( const char job, const char howmny, const VectorSELECT& select,
+        const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
+        VectorSEP& sep, const fortran_int_t mm, fortran_int_t& m ) {
     return trsna_impl< typename value< MatrixT >::type >::invoke( job,
             howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
 }
@@ -429,10 +432,12 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename VectorS, typename VectorSEP,
         typename Workspace >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, const VectorS& s, VectorSEP& sep,
-        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsna( const char job, const char howmny, const VectorSELECT& select,
+        const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
+        const VectorS& s, VectorSEP& sep, const fortran_int_t mm,
+        fortran_int_t& m, Workspace work ) {
     return trsna_impl< typename value< MatrixT >::type >::invoke( job,
             howmny, select, t, vl, vr, s, sep, mm, m, work );
 }
@@ -445,10 +450,12 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename VectorS, typename VectorSEP >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, const VectorS& s, VectorSEP& sep,
-        const fortran_int_t mm, fortran_int_t& m ) {
+inline typename boost::disable_if< detail::is_workspace< VectorSEP >,
+        std::ptrdiff_t >::type
+trsna( const char job, const char howmny, const VectorSELECT& select,
+        const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
+        const VectorS& s, VectorSEP& sep, const fortran_int_t mm,
+        fortran_int_t& m ) {
     return trsna_impl< typename value< MatrixT >::type >::invoke( job,
             howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
 }
@@ -462,10 +469,12 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename VectorS, typename VectorSEP,
         typename Workspace >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, VectorS& s, const VectorSEP& sep,
-        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsna( const char job, const char howmny, const VectorSELECT& select,
+        const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
+        const VectorSEP& sep, const fortran_int_t mm,
+        fortran_int_t& m, Workspace work ) {
     return trsna_impl< typename value< MatrixT >::type >::invoke( job,
             howmny, select, t, vl, vr, s, sep, mm, m, work );
 }
@@ -478,10 +487,12 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename VectorS, typename VectorSEP >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, VectorS& s, const VectorSEP& sep,
-        const fortran_int_t mm, fortran_int_t& m ) {
+inline typename boost::disable_if< detail::is_workspace< VectorSEP >,
+        std::ptrdiff_t >::type
+trsna( const char job, const char howmny, const VectorSELECT& select,
+        const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
+        const VectorSEP& sep, const fortran_int_t mm,
+        fortran_int_t& m ) {
     return trsna_impl< typename value< MatrixT >::type >::invoke( job,
             howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
 }
@@ -495,10 +506,12 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename VectorS, typename VectorSEP,
         typename Workspace >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, const VectorS& s, const VectorSEP& sep,
-        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trsna( const char job, const char howmny, const VectorSELECT& select,
+        const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
+        const VectorS& s, const VectorSEP& sep, const fortran_int_t mm,
+        fortran_int_t& m, Workspace work ) {
     return trsna_impl< typename value< MatrixT >::type >::invoke( job,
             howmny, select, t, vl, vr, s, sep, mm, m, work );
 }
@@ -511,10 +524,12 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename VectorS, typename VectorSEP >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, const VectorS& s, const VectorSEP& sep,
-        const fortran_int_t mm, fortran_int_t& m ) {
+inline typename boost::disable_if< detail::is_workspace< VectorSEP >,
+        std::ptrdiff_t >::type
+trsna( const char job, const char howmny, const VectorSELECT& select,
+        const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
+        const VectorS& s, const VectorSEP& sep, const fortran_int_t mm,
+        fortran_int_t& m ) {
     return trsna_impl< typename value< MatrixT >::type >::invoke( job,
             howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
 }

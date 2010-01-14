@@ -334,9 +334,10 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixV, typename MatrixT, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t larfb( const char side, const char direct,
-        const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larfb( const char side, const char direct, const char storev,
+        const MatrixV& v, const MatrixT& t, MatrixC& c, Workspace work ) {
     return larfb_impl< typename value< MatrixV >::type >::invoke( side,
             direct, storev, v, t, c, work );
 }
@@ -347,8 +348,10 @@ inline std::ptrdiff_t larfb( const char side, const char direct,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixV, typename MatrixT, typename MatrixC >
-inline std::ptrdiff_t larfb( const char side, const char direct,
-        const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+larfb( const char side, const char direct, const char storev,
+        const MatrixV& v, const MatrixT& t, MatrixC& c ) {
     return larfb_impl< typename value< MatrixV >::type >::invoke( side,
             direct, storev, v, t, c, optimal_workspace() );
 }
@@ -360,9 +363,11 @@ inline std::ptrdiff_t larfb( const char side, const char direct,
 //
 template< typename MatrixV, typename MatrixT, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t larfb( const char side, const char direct,
-        const char storev, const MatrixV& v, const MatrixT& t,
-        const MatrixC& c, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+larfb( const char side, const char direct, const char storev,
+        const MatrixV& v, const MatrixT& t, const MatrixC& c,
+        Workspace work ) {
     return larfb_impl< typename value< MatrixV >::type >::invoke( side,
             direct, storev, v, t, c, work );
 }
@@ -373,9 +378,10 @@ inline std::ptrdiff_t larfb( const char side, const char direct,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixV, typename MatrixT, typename MatrixC >
-inline std::ptrdiff_t larfb( const char side, const char direct,
-        const char storev, const MatrixV& v, const MatrixT& t,
-        const MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+larfb( const char side, const char direct, const char storev,
+        const MatrixV& v, const MatrixT& t, const MatrixC& c ) {
     return larfb_impl< typename value< MatrixV >::type >::invoke( side,
             direct, storev, v, t, c, optimal_workspace() );
 }

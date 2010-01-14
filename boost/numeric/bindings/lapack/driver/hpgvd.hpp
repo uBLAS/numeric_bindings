@@ -262,8 +262,524 @@ struct hpgvd_impl {
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, MatrixBP& bp, VectorW& w, MatrixZ& z,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        MatrixBP& bp, VectorW& w, MatrixZ& z, Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * MatrixBP&
+// * VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        MatrixBP& bp, VectorW& w, MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, MatrixBP& bp, VectorW& w, MatrixZ& z,
+        Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, MatrixBP& bp, VectorW& w, MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        const MatrixBP& bp, VectorW& w, MatrixZ& z, Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        const MatrixBP& bp, VectorW& w, MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * const MatrixBP&
+// * VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, const MatrixBP& bp, VectorW& w, MatrixZ& z,
+        Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * const MatrixBP&
+// * VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, const MatrixBP& bp, VectorW& w, MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * MatrixBP&
+// * const VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        MatrixBP& bp, const VectorW& w, MatrixZ& z, Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * MatrixBP&
+// * const VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        MatrixBP& bp, const VectorW& w, MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * const VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, MatrixBP& bp, const VectorW& w, MatrixZ& z,
+        Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * const VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, MatrixBP& bp, const VectorW& w, MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * const VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        const MatrixBP& bp, const VectorW& w, MatrixZ& z, Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * const VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        const MatrixBP& bp, const VectorW& w, MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * const MatrixBP&
+// * const VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, const MatrixBP& bp, const VectorW& w, MatrixZ& z,
+        Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * const MatrixBP&
+// * const VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, const MatrixBP& bp, const VectorW& w,
+        MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * MatrixBP&
+// * VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        MatrixBP& bp, VectorW& w, const MatrixZ& z, Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * MatrixBP&
+// * VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        MatrixBP& bp, VectorW& w, const MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, MatrixBP& bp, VectorW& w, const MatrixZ& z,
+        Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, MatrixBP& bp, VectorW& w, const MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        const MatrixBP& bp, VectorW& w, const MatrixZ& z, Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        const MatrixBP& bp, VectorW& w, const MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * const MatrixBP&
+// * VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, const MatrixBP& bp, VectorW& w, const MatrixZ& z,
+        Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * const MatrixBP&
+// * VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, const MatrixBP& bp, VectorW& w,
+        const MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * MatrixBP&
+// * const VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        MatrixBP& bp, const VectorW& w, const MatrixZ& z, Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * MatrixBP&
+// * const VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        MatrixBP& bp, const VectorW& w, const MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * const VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, MatrixBP& bp, const VectorW& w, const MatrixZ& z,
+        Workspace work ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, work );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * const VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, MatrixBP& bp, const VectorW& w,
+        const MatrixZ& z ) {
+    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, ap, bp, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for hpgvd. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * const VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        const MatrixBP& bp, const VectorW& w, const MatrixZ& z,
         Workspace work ) {
     return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, ap, bp, w, z, work );
@@ -272,355 +788,17 @@ inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
 //
 // Overloaded function for hpgvd. Its overload differs for
 // * MatrixAP&
-// * MatrixBP&
-// * VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, MatrixBP& bp, VectorW& w, MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, MatrixBP& bp, VectorW& w,
-        MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, MatrixBP& bp, VectorW& w,
-        MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, const MatrixBP& bp, VectorW& w,
-        MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, const MatrixBP& bp, VectorW& w,
-        MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * const MatrixBP&
-// * VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, const MatrixBP& bp, VectorW& w,
-        MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * const MatrixBP&
-// * VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, const MatrixBP& bp, VectorW& w,
-        MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * MatrixBP&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, MatrixBP& bp, const VectorW& w,
-        MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * MatrixBP&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, MatrixBP& bp, const VectorW& w,
-        MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, MatrixBP& bp, const VectorW& w,
-        MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, MatrixBP& bp, const VectorW& w,
-        MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
 // * const MatrixBP&
 // * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, const MatrixBP& bp, const VectorW& w,
-        MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, const MatrixBP& bp, const VectorW& w,
-        MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * const MatrixBP&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, const MatrixBP& bp,
-        const VectorW& w, MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * const MatrixBP&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, const MatrixBP& bp,
-        const VectorW& w, MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * MatrixBP&
-// * VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, MatrixBP& bp, VectorW& w,
-        const MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * MatrixBP&
-// * VectorW&
 // * const MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, MatrixBP& bp, VectorW& w,
-        const MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, MatrixBP& bp, VectorW& w,
-        const MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, MatrixBP& bp, VectorW& w,
-        const MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, const MatrixBP& bp, VectorW& w,
-        const MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, const MatrixBP& bp, VectorW& w,
-        const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz, MatrixAP& ap,
+        const MatrixBP& bp, const VectorW& w, const MatrixZ& z ) {
     return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, ap, bp, w, z, optimal_workspace() );
 }
@@ -629,14 +807,16 @@ inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
 // Overloaded function for hpgvd. Its overload differs for
 // * const MatrixAP&
 // * const MatrixBP&
-// * VectorW&
+// * const VectorW&
 // * const MatrixZ&
 // * User-defined workspace
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, const MatrixBP& bp, VectorW& w,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, const MatrixBP& bp, const VectorW& w,
         const MatrixZ& z, Workspace work ) {
     return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, ap, bp, w, z, work );
@@ -646,151 +826,17 @@ inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
 // Overloaded function for hpgvd. Its overload differs for
 // * const MatrixAP&
 // * const MatrixBP&
-// * VectorW&
+// * const VectorW&
 // * const MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, const MatrixBP& bp, VectorW& w,
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+hpgvd( const fortran_int_t itype, const char jobz,
+        const MatrixAP& ap, const MatrixBP& bp, const VectorW& w,
         const MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * MatrixBP&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, MatrixBP& bp, const VectorW& w,
-        const MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * MatrixBP&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, MatrixBP& bp, const VectorW& w,
-        const MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, MatrixBP& bp, const VectorW& w,
-        const MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, MatrixBP& bp, const VectorW& w,
-        const MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, const MatrixBP& bp, const VectorW& w,
-        const MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, MatrixAP& ap, const MatrixBP& bp, const VectorW& w,
-        const MatrixZ& z ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * const MatrixBP&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, const MatrixBP& bp,
-        const VectorW& w, const MatrixZ& z, Workspace work ) {
-    return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
-            jobz, ap, bp, w, z, work );
-}
-
-//
-// Overloaded function for hpgvd. Its overload differs for
-// * const MatrixAP&
-// * const MatrixBP&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t hpgvd( const fortran_int_t itype,
-        const char jobz, const MatrixAP& ap, const MatrixBP& bp,
-        const VectorW& w, const MatrixZ& z ) {
     return hpgvd_impl< typename value< MatrixAP >::type >::invoke( itype,
             jobz, ap, bp, w, z, optimal_workspace() );
 }

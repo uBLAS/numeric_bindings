@@ -302,7 +302,9 @@ struct sycon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sycon( const MatrixA& a, const VectorIPIV& ipiv,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+sycon( const MatrixA& a, const VectorIPIV& ipiv,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, Workspace work ) {
@@ -315,7 +317,9 @@ inline std::ptrdiff_t sycon( const MatrixA& a, const VectorIPIV& ipiv,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t sycon( const MatrixA& a, const VectorIPIV& ipiv,
+inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
+        std::ptrdiff_t >::type
+sycon( const MatrixA& a, const VectorIPIV& ipiv,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond ) {

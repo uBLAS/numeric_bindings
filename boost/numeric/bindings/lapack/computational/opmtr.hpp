@@ -188,9 +188,10 @@ struct opmtr_impl {
 //
 template< typename VectorAP, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t opmtr( const char side, const char uplo,
-        const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+opmtr( const char side, const char uplo, const VectorAP& ap,
+        const VectorTAU& tau, MatrixC& c, Workspace work ) {
     return opmtr_impl< typename value< VectorAP >::type >::invoke( side,
             uplo, ap, tau, c, work );
 }
@@ -201,8 +202,10 @@ inline std::ptrdiff_t opmtr( const char side, const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename VectorAP, typename VectorTAU, typename MatrixC >
-inline std::ptrdiff_t opmtr( const char side, const char uplo,
-        const VectorAP& ap, const VectorTAU& tau, MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+opmtr( const char side, const char uplo, const VectorAP& ap,
+        const VectorTAU& tau, MatrixC& c ) {
     return opmtr_impl< typename value< VectorAP >::type >::invoke( side,
             uplo, ap, tau, c, optimal_workspace() );
 }
@@ -214,9 +217,10 @@ inline std::ptrdiff_t opmtr( const char side, const char uplo,
 //
 template< typename VectorAP, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t opmtr( const char side, const char uplo,
-        const VectorAP& ap, const VectorTAU& tau, const MatrixC& c,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+opmtr( const char side, const char uplo, const VectorAP& ap,
+        const VectorTAU& tau, const MatrixC& c, Workspace work ) {
     return opmtr_impl< typename value< VectorAP >::type >::invoke( side,
             uplo, ap, tau, c, work );
 }
@@ -227,8 +231,10 @@ inline std::ptrdiff_t opmtr( const char side, const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename VectorAP, typename VectorTAU, typename MatrixC >
-inline std::ptrdiff_t opmtr( const char side, const char uplo,
-        const VectorAP& ap, const VectorTAU& tau, const MatrixC& c ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixC >,
+        std::ptrdiff_t >::type
+opmtr( const char side, const char uplo, const VectorAP& ap,
+        const VectorTAU& tau, const MatrixC& c ) {
     return opmtr_impl< typename value< VectorAP >::type >::invoke( side,
             uplo, ap, tau, c, optimal_workspace() );
 }

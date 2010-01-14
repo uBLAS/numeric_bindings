@@ -242,9 +242,11 @@ struct herfs_impl {
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, work );
 }
@@ -259,9 +261,10 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -276,9 +279,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, work );
 }
@@ -293,9 +298,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -310,9 +317,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, work );
 }
@@ -327,9 +336,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        const VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -344,9 +355,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, work );
 }
@@ -361,9 +374,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        VectorBERR& berr ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -378,9 +393,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, work );
 }
@@ -395,9 +412,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -412,9 +431,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, work );
 }
@@ -429,9 +450,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -446,9 +469,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, work );
 }
@@ -463,9 +488,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, optimal_workspace() );
 }
@@ -480,9 +507,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, work );
 }
@@ -497,9 +526,11 @@ inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
-        const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
+        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
+        const VectorBERR& berr ) {
     return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
             ipiv, b, x, ferr, berr, optimal_workspace() );
 }

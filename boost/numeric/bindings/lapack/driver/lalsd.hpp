@@ -393,11 +393,13 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename VectorD, typename VectorE, typename MatrixB,
         typename Workspace >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n, VectorD& d,
-        VectorE& e, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixB >::type >::type rcond,
-        fortran_int_t& rank, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, VectorD& d, VectorE& e, MatrixB& b,
+        const typename remove_imaginary< typename value<
+        MatrixB >::type >::type rcond, fortran_int_t& rank,
+        Workspace work ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, work );
 }
@@ -410,11 +412,12 @@ inline std::ptrdiff_t lalsd( const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n, VectorD& d,
-        VectorE& e, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixB >::type >::type rcond,
-        fortran_int_t& rank ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, VectorD& d, VectorE& e, MatrixB& b,
+        const typename remove_imaginary< typename value<
+        MatrixB >::type >::type rcond, fortran_int_t& rank ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
@@ -428,9 +431,10 @@ inline std::ptrdiff_t lalsd( const char uplo,
 //
 template< typename VectorD, typename VectorE, typename MatrixB,
         typename Workspace >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixB& b,
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixB& b,
         const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
@@ -446,9 +450,10 @@ inline std::ptrdiff_t lalsd( const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixB& b,
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixB& b,
         const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
@@ -464,11 +469,13 @@ inline std::ptrdiff_t lalsd( const char uplo,
 //
 template< typename VectorD, typename VectorE, typename MatrixB,
         typename Workspace >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixB >::type >::type rcond,
-        fortran_int_t& rank, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixB& b,
+        const typename remove_imaginary< typename value<
+        MatrixB >::type >::type rcond, fortran_int_t& rank,
+        Workspace work ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, work );
 }
@@ -481,11 +488,12 @@ inline std::ptrdiff_t lalsd( const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixB >::type >::type rcond,
-        fortran_int_t& rank ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixB& b,
+        const typename remove_imaginary< typename value<
+        MatrixB >::type >::type rcond, fortran_int_t& rank ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
@@ -499,10 +507,11 @@ inline std::ptrdiff_t lalsd( const char uplo,
 //
 template< typename VectorD, typename VectorE, typename MatrixB,
         typename Workspace >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
@@ -517,10 +526,11 @@ inline std::ptrdiff_t lalsd( const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        MatrixB& b, const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
@@ -535,11 +545,13 @@ inline std::ptrdiff_t lalsd( const char uplo,
 //
 template< typename VectorD, typename VectorE, typename MatrixB,
         typename Workspace >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n, VectorD& d,
-        VectorE& e, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixB >::type >::type rcond,
-        fortran_int_t& rank, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixB& b,
+        const typename remove_imaginary< typename value<
+        MatrixB >::type >::type rcond, fortran_int_t& rank,
+        Workspace work ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, work );
 }
@@ -552,11 +564,12 @@ inline std::ptrdiff_t lalsd( const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n, VectorD& d,
-        VectorE& e, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixB >::type >::type rcond,
-        fortran_int_t& rank ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, VectorD& d, VectorE& e, const MatrixB& b,
+        const typename remove_imaginary< typename value<
+        MatrixB >::type >::type rcond, fortran_int_t& rank ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
@@ -570,10 +583,11 @@ inline std::ptrdiff_t lalsd( const char uplo,
 //
 template< typename VectorD, typename VectorE, typename MatrixB,
         typename Workspace >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
@@ -588,10 +602,11 @@ inline std::ptrdiff_t lalsd( const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
@@ -606,11 +621,13 @@ inline std::ptrdiff_t lalsd( const char uplo,
 //
 template< typename VectorD, typename VectorE, typename MatrixB,
         typename Workspace >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixB >::type >::type rcond,
-        fortran_int_t& rank, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const MatrixB& b, const typename remove_imaginary< typename value<
+        MatrixB >::type >::type rcond, fortran_int_t& rank,
+        Workspace work ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, work );
 }
@@ -623,11 +640,12 @@ inline std::ptrdiff_t lalsd( const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixB >::type >::type rcond,
-        fortran_int_t& rank ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const MatrixB& b, const typename remove_imaginary< typename value<
+        MatrixB >::type >::type rcond, fortran_int_t& rank ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
@@ -641,10 +659,11 @@ inline std::ptrdiff_t lalsd( const char uplo,
 //
 template< typename VectorD, typename VectorE, typename MatrixB,
         typename Workspace >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
@@ -659,10 +678,11 @@ inline std::ptrdiff_t lalsd( const char uplo,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t lalsd( const char uplo,
-        const fortran_int_t smlsiz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixB& b,
-        const typename remove_imaginary< typename value<
+inline typename boost::disable_if< detail::is_workspace< MatrixB >,
+        std::ptrdiff_t >::type
+lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const MatrixB& b, const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank ) {
     return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
             smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );

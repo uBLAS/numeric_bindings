@@ -290,8 +290,10 @@ struct steqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixZ& z, Workspace work ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, work );
 }
@@ -304,8 +306,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        VectorD& d, VectorE& e, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, VectorD& d,
+        VectorE& e, MatrixZ& z ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, optimal_workspace() );
 }
@@ -319,8 +323,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixZ& z, Workspace work ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, work );
 }
@@ -333,8 +339,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, const VectorD& d,
+        VectorE& e, MatrixZ& z ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, optimal_workspace() );
 }
@@ -348,8 +356,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixZ& z, Workspace work ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, work );
 }
@@ -362,8 +372,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        VectorD& d, const VectorE& e, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, VectorD& d,
+        const VectorE& e, MatrixZ& z ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, optimal_workspace() );
 }
@@ -377,8 +389,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixZ& z, Workspace work ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, work );
 }
@@ -391,8 +405,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, MatrixZ& z ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, optimal_workspace() );
 }
@@ -406,8 +422,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixZ& z, Workspace work ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, work );
 }
@@ -420,8 +438,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        VectorD& d, VectorE& e, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, VectorD& d,
+        VectorE& e, const MatrixZ& z ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, optimal_workspace() );
 }
@@ -435,8 +455,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixZ& z, Workspace work ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, work );
 }
@@ -449,8 +471,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        const VectorD& d, VectorE& e, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, const VectorD& d,
+        VectorE& e, const MatrixZ& z ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, optimal_workspace() );
 }
@@ -464,8 +488,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixZ& z, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixZ& z, Workspace work ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, work );
 }
@@ -478,8 +504,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        VectorD& d, const VectorE& e, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, VectorD& d,
+        const VectorE& e, const MatrixZ& z ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, optimal_workspace() );
 }
@@ -493,9 +521,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixZ& z,
-        Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixZ& z, Workspace work ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, work );
 }
@@ -508,8 +537,10 @@ inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline std::ptrdiff_t steqr( const char compz, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixZ& z ) {
+inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
+        std::ptrdiff_t >::type
+steqr( const char compz, const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixZ& z ) {
     return steqr_impl< typename value< MatrixZ >::type >::invoke( compz,
             n, d, e, z, optimal_workspace() );
 }

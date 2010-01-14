@@ -48,7 +48,7 @@ void hseqr(int n){
 
     cout << "\nHSEQR for only eigenvalues." << endl;
     ublas::matrix<double, ublas::column_major> Z_dummy(1,1);
-    lapack::hseqr_2('E', 'N', 1, n, H, values_r, values_i, Z_dummy);
+    lapack::hseqr('E', 'N', 1, n, H, values_r, values_i, Z_dummy);
     traits::detail::interlace(values_r.begin(), values_r.end(), values_i.begin(), values.begin());
     cout << "\nH:\n" << H << endl;
     cout << "\nvalues: " << values << endl;
@@ -56,7 +56,7 @@ void hseqr(int n){
     cout << "\nHSEQR for eigenvalues and Schur vectors." << endl;
     Hessenberg(H);
     cout << "H:\n" << H << endl;
-    lapack::hseqr_2('S', 'I', 1, n, H, values_r, values_i, Z);
+    lapack::hseqr('S', 'I', 1, n, H, values_r, values_i, Z);
     traits::detail::interlace(values_r.begin(), values_r.end(), values_i.begin(), values.begin());
     cout << "\nH: " << H << endl;
     cout << "\nvalues: " << values << endl;

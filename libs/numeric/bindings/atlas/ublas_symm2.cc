@@ -8,16 +8,16 @@
 #include <stddef.h>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas1.hpp>
-#include <boost/numeric/bindings/atlas/cblas2.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
+#include <boost/numeric/bindings/blas/level2.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
-namespace traits = boost::numeric::bindings::traits;
+namespace blas = boost::numeric::bindings::blas;
+namespace bindings = boost::numeric::bindings;
 
 using std::cout;
 using std::cin;
@@ -75,7 +75,7 @@ int main() {
   cout << endl; 
 
   vct_t vx (n), vy (n); 
-  atlas::set (1., vx); 
+  std::fill( bindings::begin(vx), bindings::end(vx), 1. );
   print_v (vx, "vx"); 
 
   ucsymm_t ucs (n, n); 
@@ -109,34 +109,34 @@ int main() {
   cout << endl; 
 
   // vy = symm vx 
-  atlas::spmv (ucs, vx, vy); 
+  blas::spmv( 1, ucs, vx, 0, vy ); 
   print_v (vy, "vy = ucs vx"); 
   cout << endl; 
-  atlas::spmv (1, lcs, vx, 0, vy); 
+  blas::spmv (1, lcs, vx, 0, vy); 
   print_v (vy, "vy = lcs vx"); 
   cout << endl; 
-  atlas::spmv (1., urs, vx, 0., vy); 
+  blas::spmv (1., urs, vx, 0., vy); 
   print_v (vy, "vy = urs vx"); 
   cout << endl; 
-  atlas::spmv (1.0f, lrs, vx, 0.0f, vy); 
+  blas::spmv (1.0f, lrs, vx, 0.0f, vy); 
   print_v (vy, "vy = lrs vx"); 
   cout << endl; 
 
 #ifdef F_COMPILATION_FAILURE
 
-  atlas::symv (ucs, vx, vy); 
+  blas::symv (ucs, vx, vy); 
   print_v (vy, "vy = ucs vx"); 
   cout << endl; 
 
-  atlas::hpmv (lcs, vx, vy); 
+  blas::hpmv (lcs, vx, vy); 
   print_v (vy, "vy = lcs vx"); 
   cout << endl; 
 
-  atlas::gemv (urs, vx, vy); 
+  blas::gemv (urs, vx, vy); 
   print_v (vy, "vy = urs vx"); 
   cout << endl; 
 
-  atlas::spmv (cmplx_t (1., 0.), lrs, vx, cmplx_t (0., 0.), vy); 
+  blas::spmv (cmplx_t (1., 0.), lrs, vx, cmplx_t (0., 0.), vy); 
   print_v (vy, "vy = lrs vx"); 
   cout << endl; 
 
@@ -149,7 +149,7 @@ int main() {
   size_t n2 = 3; 
 
   cvct_t cvx (n2), cvy (n2); 
-  atlas::set (1., cvx); 
+  std::fill( bindings::begin(cvx), bindings::end(cvx), 1. );
   print_v (cvx, "cvx"); 
   cout << endl; 
 
@@ -185,16 +185,16 @@ int main() {
   cout << endl; 
 
   // cvy = herm cvx 
-  atlas::hpmv (uch, cvx, cvy); 
+  blas::hpmv (1, uch, cvx, 0, cvy); 
   print_v (cvy, "cvy = uch cvx"); 
   cout << endl; 
-  atlas::hpmv (1, lch, cvx, 0, cvy); 
+  blas::hpmv (1, lch, cvx, 0, cvy); 
   print_v (cvy, "cvy = lch cvx"); 
   cout << endl; 
-  atlas::hpmv (1., urh, cvx, 0., cvy); 
+  blas::hpmv (1., urh, cvx, 0., cvy); 
   print_v (cvy, "cvy = urh cvx"); 
   cout << endl; 
-  atlas::hpmv (cmplx_t (1., 0.), lrh, cvx, cmplx_t (0., 0.), cvy); 
+  blas::hpmv (cmplx_t (1., 0.), lrh, cvx, cmplx_t (0., 0.), cvy); 
   print_v (cvy, "cvy = lrh cvx"); 
   cout << endl; 
 
@@ -235,16 +235,16 @@ int main() {
   cout << endl; 
 
   // cvy = herma cvx 
-  atlas::hemv (ucha, cvx, cvy); 
+  blas::hemv (1, ucha, cvx, 0, cvy); 
   print_v (cvy, "cvy = uch cvx"); 
   cout << endl; 
-  atlas::hemv (1, lcha, cvx, 0, cvy); 
+  blas::hemv (1, lcha, cvx, 0, cvy); 
   print_v (cvy, "cvy = lch cvx"); 
   cout << endl; 
-  atlas::hemv (1., urha, cvx, 0., cvy); 
+  blas::hemv (1., urha, cvx, 0., cvy); 
   print_v (cvy, "cvy = urh cvx"); 
   cout << endl; 
-  atlas::hemv (cmplx_t (1., 0.), lrha, cvx, cmplx_t (0., 0.), cvy); 
+  blas::hemv (cmplx_t (1., 0.), lrha, cvx, cmplx_t (0., 0.), cvy); 
   print_v (cvy, "cvy = lrh cvx"); 
   cout << endl; 
 

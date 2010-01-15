@@ -6,8 +6,8 @@
 #include <complex> 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
 #include "utils.h"
 
 #ifndef F_FLOAT

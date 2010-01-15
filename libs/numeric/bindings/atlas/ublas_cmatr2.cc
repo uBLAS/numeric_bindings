@@ -1,24 +1,23 @@
 
 // BLAS level 2 -- complex numbers
 
-//#define BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-//#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
-
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas1.hpp>
-#include <boost/numeric/bindings/atlas/cblas2.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/blas/level1.hpp>
+#include <boost/numeric/bindings/blas/level2.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/conj.hpp>
+#include <boost/numeric/bindings/io.hpp>
+#include <boost/numeric/bindings/noop.hpp>
 #ifdef F_USE_STD_VECTOR
-#include <vector>
-#include <boost/numeric/bindings/traits/std_vector.hpp> 
+#include <boost/numeric/bindings/std/vector.hpp> 
 #endif 
 #include "utils.h" 
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
 
 using std::cout;
 using std::endl; 
@@ -39,12 +38,12 @@ int main() {
   cout << endl; 
 
   vct_t vx (2);
-  atlas::set (cmplx_t (1., 0.), vx);
-  print_v (vx, "vx"); 
+  blas::set( 1, vx );
+  std::cout << "vx " << bindings::noop( vx ) << std::endl;
   vct_t vy (4); // vector size can be larger 
                 // than corresponding matrix size 
-  atlas::set (cmplx_t (0., 0.), vy); 
-  print_v (vy, "vy"); 
+  blas::set( 0, vy );
+  std::cout << "vy " << bindings::noop( vy ) << std::endl;
   cout << endl; 
 
   m_t m (3, 2);
@@ -53,10 +52,10 @@ int main() {
   cout << endl; 
 
   // vy = m vx
-  atlas::gemv (CblasNoTrans, 1.0, m, vx, 0.0, vy);
-  print_v (vy, "m vx"); 
-  atlas::gemv (m, vx, vy);
-  print_v (vy, "m vx"); 
+  blas::gemv ( 1.0, m, vx, 0.0, vy);
+  std::cout << "m vx " << bindings::noop( vy ) << std::endl;
+  blas::gemv ( 1.0, m, vx, 0.0, vy);
+  std::cout << "m vx " << bindings::noop( vy ) << std::endl;
   cout << endl; 
 
   m (0, 0) = cmplx_t (0., 1.);
@@ -69,10 +68,10 @@ int main() {
   cout << endl; 
 
   // vy = m vx
-  atlas::gemv (CblasNoTrans, 1.0, m, vx, 0.0, vy);
-  print_v (vy, "m vx"); 
-  atlas::gemv (m, vx, vy);
-  print_v (vy, "m vx"); 
+  blas::gemv ( 1.0, m, vx, 0.0, vy);
+  std::cout << "m vx " << bindings::noop( vy ) << std::endl;
+  blas::gemv ( 1.0, m, vx, 0.0, vy);
+  std::cout << "m vx " << bindings::noop( vy ) << std::endl;
   cout << endl; 
 
   m (0, 0) = cmplx_t (-1., 1.);
@@ -85,56 +84,60 @@ int main() {
   cout << endl; 
 
   // vy = m vx
-  atlas::gemv (CblasNoTrans, 1.0, m, vx, 0.0, vy);
-  print_v (vy, "m vx"); 
-  atlas::gemv (m, vx, vy);
-  print_v (vy, "m vx"); 
+  blas::gemv ( 1.0, m, vx, 0.0, vy);
+  std::cout << "m vx " << bindings::noop( vy ) << std::endl;
+  blas::gemv ( 1.0, m, vx, 0, vy);
+  std::cout << "m vx " << bindings::noop( vy ) << std::endl;
   cout << endl; 
 
-  atlas::set (cmplx_t (0., 1.), vx);
-  print_v (vx, "vx"); 
+  blas::set ( 1, vx );
+  std::cout << "vx " << bindings::noop( vx ) << std::endl;
 
   // vy = m vx
-  atlas::gemv (CblasNoTrans, 1.0, m, vx, 0.0, vy);
-  print_v (vy, "m vx"); 
-  atlas::gemv (m, vx, vy);
-  print_v (vy, "m vx"); 
+  blas::gemv ( 1.0, m, vx, 0.0, vy);
+  std::cout << "m vx " << bindings::noop( vy ) << std::endl;
+  blas::gemv ( 1.0, m, vx, 0.0, vy);
+  std::cout << "m vx " << bindings::noop( vy ) << std::endl;
   cout << endl; 
 
-  atlas::set (cmplx_t (1., 1.), vx);
-  print_v (vx, "vx"); 
+  blas::set ( 1+1i, vx );
+  std::cout << "vx " << bindings::noop( vx ) << std::endl;
 
   // vy = m vx
-  atlas::gemv (CblasNoTrans, 1.0, m, vx, 0.0, vy);
-  print_v (vy, "m vx"); 
-  atlas::gemv (m, vx, vy);
-  print_v (vy, "m vx"); 
+  blas::gemv ( 1.0, m, vx, 0.0, vy);
+  std::cout << "m vx " << bindings::noop( vy ) << std::endl;
+  blas::gemv ( 1.0, m, vx, 0.0, vy);
+  std::cout << "m vx " << bindings::noop( vy ) << std::endl;
   cout << endl; 
 
   // vx = m^H vy
-  atlas::set (cmplx_t (-1., -1.), vy); 
-  print_v (vy, "vy"); 
-  atlas::gemv (CblasConjTrans, 1.0, m, vy, 0.0, vx);
-  print_v (vx, "m^H vy"); 
+  blas::set ( -1-1i, vy );
+  std::cout << "vy " << bindings::noop( vy ) << std::endl;
+  blas::gemv ( 1.0, bindings::conj(m), vy, 0.0, vx);
+  std::cout << "m^H vy " << bindings::noop( vx ) << std::endl;
   cout << endl; 
 
   m_t mx (2, 2); 
   m_t my (3, 2); 
 
-  ublas::matrix_column<m_t> mxc0 (mx, 0), mxc1 (mx, 1); 
-  ublas::matrix_column<m_t> myc0 (my, 0), myc1 (my, 1); 
 
-  atlas::set (cmplx_t (1., 0.), mxc0);
-  atlas::set (cmplx_t (0., 0.), mxc1);
-  atlas::set (cmplx_t (0., 0.), myc0);
-  atlas::set (cmplx_t (0., 0.), myc1);
+  ublas::matrix_column<m_t> mxc0 (mx, 0), 
+                            mxc1 (mx, 1); 
+  ublas::matrix_column<m_t> myc0 (my, 0),
+                            myc1 (my, 1); 
+
+  blas::set ( 1+0i, mxc0 );
+  blas::set ( 0+0i, mxc1 );
+  blas::set ( 0+0i, myc0 );
+  blas::set ( 0+0i, myc1 );
+
   print_m (mx, "mx");
   cout << endl; 
   print_m (my, "my");
   cout << endl; 
 
   // my[.,0] = m mx[.,0] 
-  atlas::gemv (m, mxc0, myc0); 
+  blas::gemv ( 1.0, m, mxc0, 0.0, myc0); 
   print_m (my, "m mx[.,0]");
 
   cout << endl;

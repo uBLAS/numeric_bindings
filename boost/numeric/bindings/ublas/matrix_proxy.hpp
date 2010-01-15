@@ -78,7 +78,7 @@ struct adaptor< ublas::matrix_column< T >, Id, Enable > {
     > property_map;
 
     static std::ptrdiff_t size1( const Id& id ) {
-        return bindings::size1( id.data() );
+        return id.size();
     }
 
     static value_type* begin_value( Id& id ) {
@@ -88,7 +88,7 @@ struct adaptor< ublas::matrix_column< T >, Id, Enable > {
 
     static value_type* end_value( Id& id ) {
         return bindings::begin_value( id.data() ) +
-               offset( id.data(), id.size1(), id.index() );
+               offset( id.data(), size1(id), id.index() );
     }
 
     static std::ptrdiff_t stride1( const Id& id ) {

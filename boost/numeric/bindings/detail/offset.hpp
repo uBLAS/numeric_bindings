@@ -14,6 +14,7 @@
 #include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/has_linear_array.hpp>
 #include <boost/numeric/bindings/has_band_array.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 
 namespace boost {
 namespace numeric {

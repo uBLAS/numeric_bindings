@@ -122,8 +122,7 @@ void print_v (V const& v, char const* ch = 0) {
 // element access: 
 template <typename M>
 struct matr_access_traits {
-  typedef typename 
-  M::reference ref_t;
+  typedef typename bindings::value<M>::type& ref_t;
   //bindings::value<M>::type val_t;
   //typedef val_t& ref_t; 
   static ref_t elem (M& m, size_t i, size_t j) { return m (i, j); }
@@ -214,6 +213,7 @@ void print_m (M const& m, char const* ch = 0) {
   size_t sz2 = bindings::size2 (m);
   for (std::size_t i = 0 ; i < sz1 ; ++i) {
     for (std::size_t j = 0 ; j < sz2 ; ++j) {
+        std::cout << i << "  " << j << " " << std::endl;
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
       std::cout << elem_m (m, i, j) << " ";
 #else

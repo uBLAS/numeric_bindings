@@ -62,7 +62,7 @@ namespace detail {
 //
 inline void rotmg( float& d1, float& d2, float& x1, const float y1,
         float* sparam ) {
-    cblas_srotmg( &d1, &d2, &x1, &y1, sparam );
+    cblas_srotmg( &d1, &d2, &x1, y1, sparam );
 }
 
 //
@@ -72,7 +72,7 @@ inline void rotmg( float& d1, float& d2, float& x1, const float y1,
 //
 inline void rotmg( double& d1, double& d2, double& x1, const double y1,
         double* dparam ) {
-    cblas_drotmg( &d1, &d2, &x1, &y1, dparam );
+    cblas_drotmg( &d1, &d2, &x1, y1, dparam );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS

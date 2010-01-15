@@ -60,7 +60,7 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void rot( const int n, const float* x, const int incx, float* y,
+inline void rot( const int n, float* x, const int incx, float* y,
         const int incy, const float c, const float s ) {
     cblas_srot( n, x, incx, y, incy, c, s );
 }
@@ -70,7 +70,7 @@ inline void rot( const int n, const float* x, const int incx, float* y,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void rot( const int n, const double* x, const int incx, double* y,
+inline void rot( const int n, double* x, const int incx, double* y,
         const int incy, const double c, const double s ) {
     cblas_drot( n, x, incx, y, incy, c, s );
 }
@@ -81,7 +81,7 @@ inline void rot( const int n, const double* x, const int incx, double* y,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void rot( const int n, const float* x, const int incx, float* y,
+inline void rot( const int n, float* x, const int incx, float* y,
         const int incy, const float c, const float s ) {
     cublasSrot( n, x, incx, y, incy, c, s );
 }
@@ -91,7 +91,7 @@ inline void rot( const int n, const float* x, const int incx, float* y,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void rot( const int n, const double* x, const int incx, double* y,
+inline void rot( const int n, double* x, const int incx, double* y,
         const int incy, const double c, const double s ) {
     cublasDrot( n, x, incx, y, incy, c, s );
 }
@@ -102,9 +102,8 @@ inline void rot( const int n, const double* x, const int incx, double* y,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void rot( const fortran_int_t n, const float* x,
-        const fortran_int_t incx, float* y, const fortran_int_t incy,
-        const float c, const float s ) {
+inline void rot( const fortran_int_t n, float* x, const fortran_int_t incx,
+        float* y, const fortran_int_t incy, const float c, const float s ) {
     BLAS_SROT( &n, x, &incx, y, &incy, &c, &s );
 }
 
@@ -113,9 +112,8 @@ inline void rot( const fortran_int_t n, const float* x,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void rot( const fortran_int_t n, const double* x,
-        const fortran_int_t incx, double* y, const fortran_int_t incy,
-        const double c, const double s ) {
+inline void rot( const fortran_int_t n, double* x, const fortran_int_t incx,
+        double* y, const fortran_int_t incy, const double c, const double s ) {
     BLAS_DROT( &n, x, &incx, y, &incy, &c, &s );
 }
 
@@ -140,12 +138,13 @@ struct rot_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY >
-    static return_type invoke( const VectorX& x, VectorY& y,
-            const real_type c, const real_type s ) {
+    static return_type invoke( VectorX& x, VectorY& y, const real_type c,
+            const real_type s ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
         detail::rot( bindings::size(x), bindings::begin_value(x),
                 bindings::stride(x), bindings::begin_value(y),
@@ -163,6 +162,21 @@ struct rot_impl {
 
 //
 // Overloaded function for rot. Its overload differs for
+// * VectorX&
+// * VectorY&
+//
+template< typename VectorX, typename VectorY >
+inline typename rot_impl< typename value< VectorX >::type >::return_type
+rot( VectorX& x, VectorY& y, const typename remove_imaginary<
+        typename value< VectorX >::type >::type c,
+        const typename remove_imaginary< typename value<
+        VectorX >::type >::type s ) {
+    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
+}
+
+//
+// Overloaded function for rot. Its overload differs for
+// * const VectorX&
 // * VectorY&
 //
 template< typename VectorX, typename VectorY >
@@ -176,6 +190,21 @@ rot( const VectorX& x, VectorY& y, const typename remove_imaginary<
 
 //
 // Overloaded function for rot. Its overload differs for
+// * VectorX&
+// * const VectorY&
+//
+template< typename VectorX, typename VectorY >
+inline typename rot_impl< typename value< VectorX >::type >::return_type
+rot( VectorX& x, const VectorY& y, const typename remove_imaginary<
+        typename value< VectorX >::type >::type c,
+        const typename remove_imaginary< typename value<
+        VectorX >::type >::type s ) {
+    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
+}
+
+//
+// Overloaded function for rot. Its overload differs for
+// * const VectorX&
 // * const VectorY&
 //
 template< typename VectorX, typename VectorY >

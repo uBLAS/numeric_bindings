@@ -157,12 +157,12 @@ def write_functions( info_map, group, template_map, base_dir ):
     # first, see what kind of functions we have
     # needed for argument check etc.
     for subroutine in subroutines:
-      if subroutine[0] == 'S' or subroutine[0] == 'D':
+      if info_map[ subroutine ][ 'value_type' ] == 'real':
         if not cases.has_key( 'real' ):
           cases[ 'real' ] = {}
           cases[ 'real' ][ 'subroutines' ] = []
         cases[ 'real' ][ 'subroutines' ] += [ subroutine ]
-      if subroutine[0] == 'C' or subroutine[0] == 'Z':
+      if info_map[ subroutine ][ 'value_type' ] == 'complex':
         if not cases.has_key( 'complex' ):
           cases[ 'complex' ] = {}
           cases[ 'complex' ][ 'subroutines' ] = []

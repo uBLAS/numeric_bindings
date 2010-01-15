@@ -15,21 +15,22 @@
 
 #include <stddef.h>
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas1.hpp>
-#include <boost/numeric/bindings/atlas/cblas2.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
+#include <boost/numeric/bindings/blas/level1.hpp>
+#include <boost/numeric/bindings/blas/level2.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
+#include <boost/numeric/bindings/trans.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #ifdef USE_STD_VECTOR
 #include <vector>
-#include <boost/numeric/bindings/traits/std_vector.hpp> 
+#include <boost/numeric/bindings/std/vector.hpp> 
 #endif 
 #include <boost/timer.hpp>
 #include "utils.h" 
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
 
 using std::cout;
 using std::cin;
@@ -78,12 +79,12 @@ using ublas::prod;
 // general matrix: gemv()
 
 template <typename M>
-void bench_gemv (size_t n, size_t runs, char* msg) {
+void bench_gemv (size_t n, size_t runs, const char* msg) {
 
   cout << msg << endl; 
 
   vct_t x (n);
-  atlas::set (1., x);
+  blas::set (1., x);
   vct_t y (n); 
 
   M a (n, n);
@@ -100,9 +101,9 @@ void bench_gemv (size_t n, size_t runs, char* msg) {
     a (0, 2) = r; 
     a (2, 0) = r; 
 #endif 
-    atlas::gemv (a, x, y);
+    blas::gemv ( 1.0, a, x, 0.0, y);
 #ifdef PRINT
-    print_v (y, "y"); 
+    std::cout << "y " << bindings::noop( y ) << std::endl;
 #endif
   } 
   cout << "  gemv:        " << t.elapsed() << endl;  
@@ -113,9 +114,9 @@ void bench_gemv (size_t n, size_t runs, char* msg) {
     a (0, 2) = r; 
     a (2, 0) = r; 
 #endif 
-    atlas::gemv (CblasTrans, 1., a, x, 0., y);
+    blas::gemv ( 1., bindings::trans(a), x, 0., y );
 #ifdef PRINT
-    print_v (y, "y"); 
+    std::cout << "y " << bindings::noop( y ) << std::endl;
 #endif
   } 
   cout << "  gemv trans:  " << t.elapsed() << endl;  
@@ -128,7 +129,7 @@ void bench_gemv (size_t n, size_t runs, char* msg) {
 #endif 
     y = prod (a, x);
 #ifdef PRINT
-    print_v (y, "y"); 
+    std::cout << "y " << bindings::noop( y ) << std::endl;
 #endif 
   }
   cout << "  = prod:      " << t.elapsed() << endl; 
@@ -141,7 +142,7 @@ void bench_gemv (size_t n, size_t runs, char* msg) {
 #endif 
     y.assign (prod (a, x));
 #ifdef PRINT
-    print_v (y, "y"); 
+    std::cout << "y " << bindings::noop( y ) << std::endl;
 #endif
   } 
   cout << "  assign prod: " << t.elapsed() << endl; 
@@ -153,12 +154,12 @@ void bench_gemv (size_t n, size_t runs, char* msg) {
 // symmetric adaptor: symv()
 
 template <typename M, typename SA>
-void bench_symv (size_t n, size_t runs, char* msg) {
+void bench_symv (size_t n, size_t runs, const char* msg) {
 
   cout << msg << endl; 
 
   vct_t x (n);
-  atlas::set (1., x);
+  blas::set (1., x);
   vct_t y (n); 
 
   M a (n, n);
@@ -177,9 +178,9 @@ void bench_symv (size_t n, size_t runs, char* msg) {
 #ifdef MODIFY
     sa (0, 2) = r; 
 #endif 
-    atlas::symv (sa, x, y);
+    blas::symv ( 1., sa, x, 0., y);
 #ifdef PRINT
-    print_v (y, "y"); 
+    std::cout << "y " << bindings::noop( y ) << std::endl;
 #endif
   } 
   cout << "  symv:        " << t.elapsed() << endl;  
@@ -191,7 +192,7 @@ void bench_symv (size_t n, size_t runs, char* msg) {
 #endif 
     y = prod (sa, x);
 #ifdef PRINT
-    print_v (y, "y"); 
+    std::cout << "y " << bindings::noop( y ) << std::endl;
 #endif 
   }
   cout << "  = prod:      " << t.elapsed() << endl; 
@@ -203,7 +204,7 @@ void bench_symv (size_t n, size_t runs, char* msg) {
 #endif 
     y.assign (prod (sa, x));
 #ifdef PRINT
-    print_v (y, "y"); 
+    std::cout << "y " << bindings::noop( y ) << std::endl;
 #endif
   } 
   cout << "  assign prod: " << t.elapsed() << endl; 
@@ -215,12 +216,12 @@ void bench_symv (size_t n, size_t runs, char* msg) {
 // symmetric matrix: spmv()
 
 template <typename SM>
-void bench_spmv (size_t n, size_t runs, char* msg) {
+void bench_spmv (size_t n, size_t runs, const char* msg) {
 
   cout << msg << endl; 
 
   vct_t x (n);
-  atlas::set (1., x);
+  blas::set (1., x);
   vct_t y (n); 
 
   SM sa (n, n);
@@ -236,9 +237,9 @@ void bench_spmv (size_t n, size_t runs, char* msg) {
 #ifdef MODIFY
     sa (0, 2) = r; 
 #endif 
-    atlas::spmv (sa, x, y);
+    blas::spmv ( 1.0, sa, x, 0.0, y);
 #ifdef PRINT
-    print_v (y, "y"); 
+    std::cout << "y " << bindings::noop( y ) << std::endl;
 #endif
   } 
   cout << "  spmv:        " << t.elapsed() << endl;  
@@ -250,7 +251,7 @@ void bench_spmv (size_t n, size_t runs, char* msg) {
 #endif 
     y = prod (sa, x);
 #ifdef PRINT
-    print_v (y, "y"); 
+    std::cout << "y " << bindings::noop( y ) << std::endl;
 #endif 
   }
   cout << "  = prod:      " << t.elapsed() << endl; 
@@ -262,7 +263,7 @@ void bench_spmv (size_t n, size_t runs, char* msg) {
 #endif 
     y.assign (prod (sa, x));
 #ifdef PRINT
-    print_v (y, "y"); 
+    std::cout << "y " << bindings::noop( y ) << std::endl;
 #endif
   } 
   cout << "  assign prod: " << t.elapsed() << endl; 

@@ -23,13 +23,14 @@ namespace detail {
 
 template< typename Stream, typename T >
 Stream& pretty_print( Stream& os, const T& t ) {
+    namespace bindings = ::boost::numeric::bindings;
     os << "[" << size1(t) << "] ";
-    typename result_of::begin< const T >::type i = begin(t);
-    if ( i != end(t) ) {
+    typename bindings::result_of::begin< const T >::type i = bindings::begin(t);
+    if ( i != bindings::end(t) ) {
         os << *i;
         ++i;
     }
-    for( ; i != end(t); ++i ) {
+    for( ; i != bindings::end(t); ++i ) {
         os << " " << *i;
     }
     return os;
@@ -43,7 +44,7 @@ Stream& pretty_print( Stream& os, const T& t ) {
 
 template< typename T >
 std::ostream& operator<<( std::ostream& os,
-        boost::numeric::bindings::detail::adaptable_type<T> const& object ) {
+        const boost::numeric::bindings::detail::adaptable_type<T>& object ) {
     return boost::numeric::bindings::detail::pretty_print( os, object.derived() );
 }
 

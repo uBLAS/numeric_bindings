@@ -11,6 +11,7 @@
 
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptable_type.hpp>
+#include <boost/numeric/bindings/detail/offset.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/value.hpp>
@@ -51,12 +52,12 @@ struct adaptor< column_wrapper<T>, Id, Enable > {
 
     static typename result_of::begin_value< T >::type begin_value( Id& id ) {
         return bindings::begin_value( id.get() ) +
-            id.m_index * bindings::stride2( id.get() );
+               offset( id.get(), 0, id.m_index );
     }
 
     static typename result_of::end_value< T >::type end_value( Id& id ) {
-        // TODO subtract some stuff from the true end
-        return bindings::end_value( id.get() );
+        return bindings::begin_value( id.get() ) +
+               offset( id.get(), size1(id), id.m_index );
     }
 
     static typename result_of::stride1<T>::type stride1( const Id& id ) {

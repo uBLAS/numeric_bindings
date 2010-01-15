@@ -184,7 +184,6 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::size_column(t)) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
         BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
-        BOOST_ASSERT( mm >= m );
         return detail::trsna( job, howmny, bindings::begin_value(select),
                 bindings::size_column(t), bindings::begin_value(t),
                 bindings::stride_major(t), bindings::begin_value(vl),
@@ -307,7 +306,6 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::size_column(t)) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
         BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
-        BOOST_ASSERT( mm >= m );
         return detail::trsna( job, howmny, bindings::begin_value(select),
                 bindings::size_column(t), bindings::begin_value(t),
                 bindings::stride_major(t), bindings::begin_value(vl),

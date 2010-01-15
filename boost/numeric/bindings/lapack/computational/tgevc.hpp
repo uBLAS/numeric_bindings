@@ -180,7 +180,6 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::stride_major(s) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(s)) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
-        BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         return detail::tgevc( side, howmny, bindings::begin_value(select),
                 bindings::size_column(s), bindings::begin_value(s),
@@ -293,7 +292,6 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::stride_major(s) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(s)) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
-        BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         return detail::tgevc( side, howmny, bindings::begin_value(select),
                 bindings::size_column(s), bindings::begin_value(s),

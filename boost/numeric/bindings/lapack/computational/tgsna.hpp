@@ -198,7 +198,6 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 n) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
         BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
-        BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( n >= 0 );
         return detail::tgsna( job, howmny, bindings::begin_value(select), n,
                 bindings::begin_value(a), bindings::stride_major(a),
@@ -347,7 +346,6 @@ struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 n) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
         BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
-        BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( n >= 0 );
         return detail::tgsna( job, howmny, bindings::begin_value(select), n,
                 bindings::begin_value(a), bindings::stride_major(a),

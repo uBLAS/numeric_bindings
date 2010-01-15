@@ -195,7 +195,6 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::size_column(h)) );
         BOOST_ASSERT( eigsrc == 'Q' || eigsrc == 'N' );
         BOOST_ASSERT( initv == 'N' || initv == 'U' );
-        BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         return detail::hsein( side, eigsrc, initv,
                 bindings::begin_value(select), bindings::size_column(h),
@@ -323,7 +322,6 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::size_column(h)) );
         BOOST_ASSERT( eigsrc == 'Q' || eigsrc == 'N' );
         BOOST_ASSERT( initv == 'N' || initv == 'U' );
-        BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         return detail::hsein( side, eigsrc, initv,
                 bindings::begin_value(select), bindings::size_column(h),

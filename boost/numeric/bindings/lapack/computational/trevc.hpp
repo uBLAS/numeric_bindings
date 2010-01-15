@@ -169,7 +169,6 @@ struct trevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::stride_major(t) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(t)) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
-        BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         return detail::trevc( side, howmny, bindings::begin_value(select),
                 bindings::size_column(t), bindings::begin_value(t),
@@ -273,7 +272,6 @@ struct trevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::stride_major(t) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(t)) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
-        BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         return detail::trevc( side, howmny, bindings::begin_value(select),
                 bindings::size_column(t), bindings::begin_value(t),

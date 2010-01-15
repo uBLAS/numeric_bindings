@@ -126,8 +126,6 @@ struct syevr_impl {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorISUPPZ >::value) );
-        BOOST_ASSERT( bindings::size(isuppz) >= 2*std::max< std::ptrdiff_t >(1,
-                m) );
         BOOST_ASSERT( bindings::size(w) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( bindings::size_column(a) ));

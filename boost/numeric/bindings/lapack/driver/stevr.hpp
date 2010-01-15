@@ -129,8 +129,6 @@ struct stevr_impl {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorISUPPZ >::value) );
         BOOST_ASSERT( bindings::size(d) >= n );
         BOOST_ASSERT( bindings::size(e) >= std::max< std::ptrdiff_t >(1,n-1) );
-        BOOST_ASSERT( bindings::size(isuppz) >= 2*std::max< std::ptrdiff_t >(1,
-                m) );
         BOOST_ASSERT( bindings::size(w) >= n );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));

@@ -124,8 +124,8 @@ struct pttrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
-            const VectorE& e, MatrixB& b ) {
+    static std::ptrdiff_t invoke( const VectorD& d, const VectorE& e,
+            MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
@@ -136,15 +136,15 @@ struct pttrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( bindings::size(d) >= n );
-        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size(d) );
+        BOOST_ASSERT( bindings::size(d) >= 0 );
+        BOOST_ASSERT( bindings::size(e) >= bindings::size(d)-1 );
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
                 bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                n) );
-        BOOST_ASSERT( n >= 0 );
-        return detail::pttrs( n, bindings::size_column(b),
+                bindings::size(d)) );
+        return detail::pttrs( bindings::size(d), bindings::size_column(b),
                 bindings::begin_value(d), bindings::begin_value(e),
                 bindings::begin_value(b), bindings::stride_major(b) );
     }
@@ -167,24 +167,25 @@ struct pttrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const VectorD& d, const VectorE& e, MatrixB& b ) {
+    static std::ptrdiff_t invoke( const char uplo, const VectorD& d,
+            const VectorE& e, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorE >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size(d) );
+        BOOST_ASSERT( bindings::size(d) >= 0 );
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
                 bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                n) );
-        BOOST_ASSERT( n >= 0 );
-        return detail::pttrs( uplo, n, bindings::size_column(b),
-                bindings::begin_value(d), bindings::begin_value(e),
-                bindings::begin_value(b), bindings::stride_major(b) );
+                bindings::size(d)) );
+        return detail::pttrs( uplo, bindings::size(d),
+                bindings::size_column(b), bindings::begin_value(d),
+                bindings::begin_value(e), bindings::begin_value(b),
+                bindings::stride_major(b) );
     }
 
 };
@@ -204,10 +205,10 @@ struct pttrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * MatrixB&
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t pttrs( const fortran_int_t n, const VectorD& d,
-        const VectorE& e, MatrixB& b ) {
-    return pttrs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, b );
+inline std::ptrdiff_t pttrs( const VectorD& d, const VectorE& e,
+        MatrixB& b ) {
+    return pttrs_impl< typename value< VectorE >::type >::invoke( d, e,
+            b );
 }
 
 //
@@ -215,20 +216,20 @@ inline std::ptrdiff_t pttrs( const fortran_int_t n, const VectorD& d,
 // * const MatrixB&
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t pttrs( const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const MatrixB& b ) {
-    return pttrs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, b );
+inline std::ptrdiff_t pttrs( const VectorD& d, const VectorE& e,
+        const MatrixB& b ) {
+    return pttrs_impl< typename value< VectorE >::type >::invoke( d, e,
+            b );
 }
 //
 // Overloaded function for pttrs. Its overload differs for
 // * MatrixB&
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t pttrs( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, MatrixB& b ) {
+inline std::ptrdiff_t pttrs( const char uplo, const VectorD& d,
+        const VectorE& e, MatrixB& b ) {
     return pttrs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, b );
+            d, e, b );
 }
 
 //
@@ -236,10 +237,10 @@ inline std::ptrdiff_t pttrs( const char uplo, const fortran_int_t n,
 // * const MatrixB&
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t pttrs( const char uplo, const fortran_int_t n,
-        const VectorD& d, const VectorE& e, const MatrixB& b ) {
+inline std::ptrdiff_t pttrs( const char uplo, const VectorD& d,
+        const VectorE& e, const MatrixB& b ) {
     return pttrs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, b );
+            d, e, b );
 }
 
 } // namespace lapack

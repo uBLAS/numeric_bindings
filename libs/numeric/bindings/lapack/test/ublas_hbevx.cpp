@@ -11,8 +11,8 @@
 
 #include <boost/numeric/bindings/lapack/driver/hbevx.hpp>
 #include <boost/numeric/bindings/lapack/driver/sbevx.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/ublas/vector_proxy.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/ublas/banded.hpp>
@@ -27,22 +27,21 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
-namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 
 struct apply_real {
   template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-  static inline integer_t hbevx( const char jobz, const char range,
-        const integer_t n, const integer_t kd, MatrixAB& ab, MatrixQ& q,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type vl,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type vu, const integer_t il,
-        const integer_t iu, const typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+  static inline std::ptrdiff_t hbevx(
+        const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
+        const typename bindings::remove_imaginary< typename bindings::value<
+        MatrixAB >::type >::type vl, const typename bindings::remove_imaginary<
+        typename bindings::value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename bindings::remove_imaginary< typename bindings::value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return lapack::sbevx( jobz, range, n, kd, ab, q, vl, vu,
+    return lapack::sbevx( jobz, range, ab, q, vl, vu,
             il, iu, abstol, m, w, z, ifail, work );
   }
 };
@@ -50,17 +49,16 @@ struct apply_real {
 struct apply_complex {
   template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-  static inline integer_t hbevx( const char jobz, const char range,
-        const integer_t n, const integer_t kd, MatrixAB& ab, MatrixQ& q,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type vl,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type vu, const integer_t il,
-        const integer_t iu, const typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+  static inline std::ptrdiff_t hbevx(
+        const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
+        const typename bindings::remove_imaginary< typename bindings::value<
+        MatrixAB >::type >::type vl, const typename bindings::remove_imaginary<
+        typename bindings::value< MatrixAB >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename bindings::remove_imaginary< typename bindings::value<
+        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return lapack::hbevx( jobz, range, n, kd, ab, q, vl, vu,
+    return lapack::hbevx( jobz, range, ab, q, vl, vu,
             il, iu, abstol, m, w, z, ifail, work );
   }
 };
@@ -110,12 +108,12 @@ int do_memory_uplo(int n, W& workspace ) {
 
 
    // Compute Schur decomposition.
-   apply_t::hbevx( 'V', 'A', bindings::size_column( h ), traits::matrix_upper_bandwidth( h ),
+   apply_t::hbevx( 'V', 'A',
      h, q, vl, vu, il, iu, abstol, m, e1, z, ifail, workspace ) ;
 
    if (check_residual( h2, e1, z )) return 255 ;
 
-   apply_t::hbevx( 'N', 'A', bindings::size_column( h2 ), traits::matrix_upper_bandwidth( h2 ),
+   apply_t::hbevx( 'N', 'A',
      h2, q, vl, vu, il, iu, abstol, m, e2, z, ifail, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
@@ -131,7 +129,7 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::matrix_range< matrix_type> z_r( z, r, r );
    ublas::vector<integer_t> ifail_r(n-2);
 
-   apply_t::hbevx( 'V', 'A', bindings::size_column( h_r ), traits::matrix_upper_bandwidth( h_r ),
+   apply_t::hbevx( 'V', 'A',
      h_r, q, vl, vu, il, iu, abstol, m, e_r, z_r, ifail_r, workspace ) ;
 
    banded_range a2_r( a2, r, r );

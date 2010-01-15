@@ -9,8 +9,9 @@
 
 #include "../../blas/test/random.hpp"
 
-#include <boost/numeric/bindings/lapack/sytrd.hpp>
+#include <boost/numeric/bindings/lapack/computational/sytrd.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <algorithm>
@@ -20,9 +21,10 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace bindings = boost::numeric::bindings;
 
 
-template <typename T>
+template <typename T, typename UPLO>
 int do_value_type() {
    const int n = 10 ;
 
@@ -30,6 +32,7 @@ int do_value_type() {
    typedef std::complex< real_type >                                            complex_type ;
 
    typedef ublas::matrix<T, ublas::column_major> matrix_type ;
+   typedef ublas::symmetric_adaptor<matrix_type, UPLO> symmetric_type ;
    typedef ublas::vector<T>                      vector_type ;
 
    // Set matrix
@@ -49,7 +52,8 @@ int do_value_type() {
    }
 
    // Compute eigendecomposition.
-   lapack::sytrd( 'U', a, d, e, tau ) ;
+   symmetric_type s_a( a );
+   lapack::sytrd( s_a, d, e, tau ) ;
 
    for ( int i=0; i<d.size(); ++i) {
       if (std::abs( d(i) - 2.0 ) > 10 * std::numeric_limits<T>::epsilon() ) return 1 ;
@@ -65,8 +69,8 @@ int do_value_type() {
 
 int main() {
    // Run tests for different value_types
-   if (do_value_type<float>()) return 255;
-   if (do_value_type<double>()) return 255;
+   if (do_value_type<float, ublas::upper>()) return 255;
+   if (do_value_type<double, ublas::upper>()) return 255;
 
    std::cout << "Regression test succeeded\n" ;
    return 0;

@@ -8,7 +8,7 @@
 
 #include "../../blas/test/random.hpp"
 
-#include <boost/numeric/bindings/lapack/steqr.hpp>
+#include <boost/numeric/bindings/lapack/computational/steqr.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -19,6 +19,7 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace bindings = boost::numeric::bindings;
 
 
 template <typename T>

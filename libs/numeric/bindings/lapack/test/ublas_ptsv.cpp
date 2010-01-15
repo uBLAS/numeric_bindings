@@ -8,7 +8,9 @@
 
 #include "../../blas/test/random.hpp"
 
-#include <boost/numeric/bindings/lapack/ptsv.hpp>
+#include <boost/numeric/bindings/lapack/driver/ptsv.hpp>
+#include <boost/numeric/bindings/lapack/computational/pttrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/pttrs.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/ublas/operation.hpp>
@@ -21,7 +23,23 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace bindings = boost::numeric::bindings;
 
+struct apply_real {
+  template< typename VectorD, typename VectorE, typename MatrixB >
+  static inline std::ptrdiff_t pttrs( const char uplo, const VectorD& d,
+        const VectorE& e, MatrixB& b ) {
+    return lapack::pttrs( d, e, b );
+  }
+};
+
+struct apply_complex {
+  template< typename VectorD, typename VectorE, typename MatrixB >
+  static inline std::ptrdiff_t pttrs( const char uplo, const VectorD& d,
+        const VectorE& e, MatrixB& b ) {
+    return lapack::pttrs( uplo, d, e, b );
+  }
+};
 
 template <typename B, typename X>
 bool check_residual( B const& b, X const& x ) {
@@ -39,6 +57,7 @@ bool check_residual( B const& b, X const& x ) {
 
 template <typename T>
 int do_value_type() {
+   typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
    const int n = 8 ;
    typedef typename bindings::remove_imaginary<T>::type real_type ;
 
@@ -69,12 +88,12 @@ int do_value_type() {
 
    // Compute solve
    x.assign( b ) ;
-   if( lapack::pttrs( 'U', d, e, x ) ) return -2 ;
+   if( apply_t::pttrs( 'U', d, e, x ) ) return -2 ;
 
    if (!check_residual(b,x)) return 1 ;
 
    x.assign( b ) ;
-   if( lapack::pttrs( 'L', d, e, x ) ) return -3 ;
+   if( apply_t::pttrs( 'L', d, e, x ) ) return -3 ;
 
    if (!check_residual(b,x)) return 2 ;
 

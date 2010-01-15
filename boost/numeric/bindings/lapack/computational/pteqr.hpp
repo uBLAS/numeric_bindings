@@ -124,9 +124,8 @@ struct pteqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE, typename MatrixZ,
             typename WORK >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
@@ -139,17 +138,17 @@ struct pteqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
-        BOOST_ASSERT( bindings::size(d) >= n );
-        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size(d) );
+        BOOST_ASSERT( bindings::size(d) >= 0 );
+        BOOST_ASSERT( bindings::size(e) >= bindings::size(d)-1 );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( n ));
+                min_size_work( bindings::size(d) ));
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( compz == 'N' || compz == 'V' || compz == 'I' );
-        BOOST_ASSERT( n >= 0 );
-        return detail::pteqr( compz, n, bindings::begin_value(d),
-                bindings::begin_value(e), bindings::begin_value(z),
-                bindings::stride_major(z),
+        return detail::pteqr( compz, bindings::size(d),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(z), bindings::stride_major(z),
                 bindings::begin_value(work.select(real_type())) );
     }
 
@@ -161,11 +160,12 @@ struct pteqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
-        return invoke( compz, n, d, e, z, workspace( tmp_work ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                bindings::size(d) ) );
+        return invoke( compz, d, e, z, workspace( tmp_work ) );
     }
 
     //
@@ -176,10 +176,10 @@ struct pteqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( compz, n, d, e, z, minimal_workspace() );
+        return invoke( compz, d, e, z, minimal_workspace() );
     }
 
     //
@@ -208,9 +208,8 @@ struct pteqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE, typename MatrixZ,
             typename WORK >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
@@ -219,17 +218,17 @@ struct pteqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
-        BOOST_ASSERT( bindings::size(d) >= n );
-        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size(d) );
+        BOOST_ASSERT( bindings::size(d) >= 0 );
+        BOOST_ASSERT( bindings::size(e) >= bindings::size(d)-1 );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( n ));
+                min_size_work( bindings::size(d) ));
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( compz == 'N' || compz == 'V' || compz == 'I' );
-        BOOST_ASSERT( n >= 0 );
-        return detail::pteqr( compz, n, bindings::begin_value(d),
-                bindings::begin_value(e), bindings::begin_value(z),
-                bindings::stride_major(z),
+        return detail::pteqr( compz, bindings::size(d),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(z), bindings::stride_major(z),
                 bindings::begin_value(work.select(real_type())) );
     }
 
@@ -241,11 +240,12 @@ struct pteqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
-        return invoke( compz, n, d, e, z, workspace( tmp_work ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                bindings::size(d) ) );
+        return invoke( compz, d, e, z, workspace( tmp_work ) );
     }
 
     //
@@ -256,10 +256,10 @@ struct pteqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( compz, n, d, e, z, minimal_workspace() );
+        return invoke( compz, d, e, z, minimal_workspace() );
     }
 
     //
@@ -292,10 +292,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, VectorD& d,
-        VectorE& e, MatrixZ& z, Workspace work ) {
+pteqr( const char compz, VectorD& d, VectorE& e, MatrixZ& z,
+        Workspace work ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, work );
+            d, e, z, work );
 }
 
 //
@@ -308,10 +308,9 @@ pteqr( const char compz, const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, VectorD& d,
-        VectorE& e, MatrixZ& z ) {
+pteqr( const char compz, VectorD& d, VectorE& e, MatrixZ& z ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, optimal_workspace() );
+            d, e, z, optimal_workspace() );
 }
 
 //
@@ -325,10 +324,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, MatrixZ& z, Workspace work ) {
+pteqr( const char compz, const VectorD& d, VectorE& e, MatrixZ& z,
+        Workspace work ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, work );
+            d, e, z, work );
 }
 
 //
@@ -341,10 +340,9 @@ pteqr( const char compz, const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, MatrixZ& z ) {
+pteqr( const char compz, const VectorD& d, VectorE& e, MatrixZ& z ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, optimal_workspace() );
+            d, e, z, optimal_workspace() );
 }
 
 //
@@ -358,10 +356,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, MatrixZ& z, Workspace work ) {
+pteqr( const char compz, VectorD& d, const VectorE& e, MatrixZ& z,
+        Workspace work ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, work );
+            d, e, z, work );
 }
 
 //
@@ -374,10 +372,9 @@ pteqr( const char compz, const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, MatrixZ& z ) {
+pteqr( const char compz, VectorD& d, const VectorE& e, MatrixZ& z ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, optimal_workspace() );
+            d, e, z, optimal_workspace() );
 }
 
 //
@@ -391,10 +388,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, MatrixZ& z, Workspace work ) {
+pteqr( const char compz, const VectorD& d, const VectorE& e, MatrixZ& z,
+        Workspace work ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, work );
+            d, e, z, work );
 }
 
 //
@@ -407,10 +404,10 @@ pteqr( const char compz, const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, MatrixZ& z ) {
+pteqr( const char compz, const VectorD& d, const VectorE& e,
+        MatrixZ& z ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, optimal_workspace() );
+            d, e, z, optimal_workspace() );
 }
 
 //
@@ -424,10 +421,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, VectorD& d,
-        VectorE& e, const MatrixZ& z, Workspace work ) {
+pteqr( const char compz, VectorD& d, VectorE& e, const MatrixZ& z,
+        Workspace work ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, work );
+            d, e, z, work );
 }
 
 //
@@ -440,10 +437,9 @@ pteqr( const char compz, const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, VectorD& d,
-        VectorE& e, const MatrixZ& z ) {
+pteqr( const char compz, VectorD& d, VectorE& e, const MatrixZ& z ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, optimal_workspace() );
+            d, e, z, optimal_workspace() );
 }
 
 //
@@ -457,10 +453,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, const MatrixZ& z, Workspace work ) {
+pteqr( const char compz, const VectorD& d, VectorE& e, const MatrixZ& z,
+        Workspace work ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, work );
+            d, e, z, work );
 }
 
 //
@@ -473,10 +469,10 @@ pteqr( const char compz, const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, const MatrixZ& z ) {
+pteqr( const char compz, const VectorD& d, VectorE& e,
+        const MatrixZ& z ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, optimal_workspace() );
+            d, e, z, optimal_workspace() );
 }
 
 //
@@ -490,10 +486,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, const MatrixZ& z, Workspace work ) {
+pteqr( const char compz, VectorD& d, const VectorE& e, const MatrixZ& z,
+        Workspace work ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, work );
+            d, e, z, work );
 }
 
 //
@@ -506,10 +502,10 @@ pteqr( const char compz, const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, const MatrixZ& z ) {
+pteqr( const char compz, VectorD& d, const VectorE& e,
+        const MatrixZ& z ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, optimal_workspace() );
+            d, e, z, optimal_workspace() );
 }
 
 //
@@ -523,10 +519,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const MatrixZ& z, Workspace work ) {
+pteqr( const char compz, const VectorD& d, const VectorE& e,
+        const MatrixZ& z, Workspace work ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, work );
+            d, e, z, work );
 }
 
 //
@@ -539,10 +535,10 @@ pteqr( const char compz, const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-pteqr( const char compz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const MatrixZ& z ) {
+pteqr( const char compz, const VectorD& d, const VectorE& e,
+        const MatrixZ& z ) {
     return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            n, d, e, z, optimal_workspace() );
+            d, e, z, optimal_workspace() );
 }
 
 } // namespace lapack

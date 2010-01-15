@@ -141,9 +141,9 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR, typename WORK >
-    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
-            const VectorE& e, const VectorDF& df, const VectorEF& ef,
-            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+    static std::ptrdiff_t invoke( const VectorD& d, const VectorE& e,
+            const VectorDF& df, const VectorEF& ef, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -178,23 +178,23 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
-        BOOST_ASSERT( bindings::size(d) >= n );
-        BOOST_ASSERT( bindings::size(df) >= n );
-        BOOST_ASSERT( bindings::size(e) >= n-1 );
-        BOOST_ASSERT( bindings::size(ef) >= n-1 );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size(d) );
+        BOOST_ASSERT( bindings::size(d) >= 0 );
+        BOOST_ASSERT( bindings::size(df) >= bindings::size(d) );
+        BOOST_ASSERT( bindings::size(e) >= bindings::size(d)-1 );
+        BOOST_ASSERT( bindings::size(ef) >= bindings::size(d)-1 );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( n ));
+                min_size_work( bindings::size(d) ));
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
                 bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( bindings::size_minor(x) == 1 ||
                 bindings::stride_minor(x) == 1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                n) );
+                bindings::size(d)) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                n) );
-        BOOST_ASSERT( n >= 0 );
-        return detail::ptrfs( n, bindings::size_column(b),
+                bindings::size(d)) );
+        return detail::ptrfs( bindings::size(d), bindings::size_column(b),
                 bindings::begin_value(d), bindings::begin_value(e),
                 bindings::begin_value(df), bindings::begin_value(ef),
                 bindings::begin_value(b), bindings::stride_major(b),
@@ -213,14 +213,14 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
-            const VectorE& e, const VectorDF& df, const VectorEF& ef,
-            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+    static std::ptrdiff_t invoke( const VectorD& d, const VectorE& e,
+            const VectorDF& df, const VectorEF& ef, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
-        return invoke( n, d, e, df, ef, b, x, ferr, berr,
-                workspace( tmp_work ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                bindings::size(d) ) );
+        return invoke( d, e, df, ef, b, x, ferr, berr, workspace( tmp_work ) );
     }
 
     //
@@ -233,13 +233,12 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
-            const VectorE& e, const VectorDF& df, const VectorEF& ef,
-            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+    static std::ptrdiff_t invoke( const VectorD& d, const VectorE& e,
+            const VectorDF& df, const VectorEF& ef, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( n, d, e, df, ef, b, x, ferr, berr,
-                minimal_workspace() );
+        return invoke( d, e, df, ef, b, x, ferr, berr, minimal_workspace() );
     }
 
     //
@@ -270,11 +269,10 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR, typename WORK,
             typename RWORK >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const VectorD& d, const VectorE& e, const VectorDF& df,
-            const VectorEF& ef, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
-            RWORK > work ) {
+    static std::ptrdiff_t invoke( const char uplo, const VectorD& d,
+            const VectorE& e, const VectorDF& df, const VectorEF& ef,
+            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
@@ -304,30 +302,31 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
-        BOOST_ASSERT( bindings::size(d) >= n );
-        BOOST_ASSERT( bindings::size(df) >= n );
-        BOOST_ASSERT( bindings::size(e) >= n-1 );
-        BOOST_ASSERT( bindings::size(ef) >= n-1 );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size(d) );
+        BOOST_ASSERT( bindings::size(d) >= 0 );
+        BOOST_ASSERT( bindings::size(df) >= bindings::size(d) );
+        BOOST_ASSERT( bindings::size(e) >= bindings::size(d)-1 );
+        BOOST_ASSERT( bindings::size(ef) >= bindings::size(d)-1 );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_rwork( n ));
+                min_size_rwork( bindings::size(d) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( n ));
+                min_size_work( bindings::size(d) ));
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
                 bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( bindings::size_minor(x) == 1 ||
                 bindings::stride_minor(x) == 1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                n) );
+                bindings::size(d)) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                n) );
-        BOOST_ASSERT( n >= 0 );
-        return detail::ptrfs( uplo, n, bindings::size_column(b),
-                bindings::begin_value(d), bindings::begin_value(e),
-                bindings::begin_value(df), bindings::begin_value(ef),
-                bindings::begin_value(b), bindings::stride_major(b),
-                bindings::begin_value(x), bindings::stride_major(x),
-                bindings::begin_value(ferr), bindings::begin_value(berr),
+                bindings::size(d)) );
+        return detail::ptrfs( uplo, bindings::size(d),
+                bindings::size_column(b), bindings::begin_value(d),
+                bindings::begin_value(e), bindings::begin_value(df),
+                bindings::begin_value(ef), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(x),
+                bindings::stride_major(x), bindings::begin_value(ferr),
+                bindings::begin_value(berr),
                 bindings::begin_value(work.select(value_type())),
                 bindings::begin_value(work.select(real_type())) );
     }
@@ -342,14 +341,16 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const VectorD& d, const VectorE& e, const VectorDF& df,
-            const VectorEF& ef, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char uplo, const VectorD& d,
+            const VectorE& e, const VectorDF& df, const VectorEF& ef,
+            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
-        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        return invoke( uplo, n, d, e, df, ef, b, x, ferr, berr,
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                bindings::size(d) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                bindings::size(d) ) );
+        return invoke( uplo, d, e, df, ef, b, x, ferr, berr,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -363,12 +364,12 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const VectorD& d, const VectorE& e, const VectorDF& df,
-            const VectorEF& ef, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char uplo, const VectorD& d,
+            const VectorE& e, const VectorDF& df, const VectorEF& ef,
+            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( uplo, n, d, e, df, ef, b, x, ferr, berr,
+        return invoke( uplo, d, e, df, ef, b, x, ferr, berr,
                 minimal_workspace() );
     }
 
@@ -411,11 +412,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, work );
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -430,11 +431,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR >
 inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, optimal_workspace() );
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -449,12 +450,315 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, MatrixX& x,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, MatrixX& x,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr, Workspace work ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        const VectorBERR& berr ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, MatrixX& x,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, MatrixX& x,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, const MatrixX& x,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
+            df, ef, b, x, ferr, berr, optimal_workspace() );
+}
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
+        const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, work );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
+        std::ptrdiff_t >::type
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
+        const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
+}
+
+//
+// Overloaded function for ptrfs. Its overload differs for
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorDF,
+        typename VectorEF, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -469,11 +773,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR >
 inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -488,11 +792,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -507,11 +811,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR >
 inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -526,12 +830,12 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -546,11 +850,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR >
 inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -565,11 +869,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -584,11 +888,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR >
 inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -603,12 +907,12 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
         Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -623,11 +927,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR >
 inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -642,11 +946,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -661,11 +965,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR >
 inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -680,12 +984,12 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
         Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
+            d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -700,329 +1004,11 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR >
 inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
-ptrfs( const fortran_int_t n, const VectorD& d, const VectorE& e,
+ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( n, d,
-            e, df, ef, b, x, ferr, berr, optimal_workspace() );
-}
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
     return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for ptrfs. Its overload differs for
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-ptrfs( const char uplo, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const VectorDF& df, const VectorEF& ef,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            n, d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
+            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -25,6 +25,10 @@ extern "C" {
 // Value-type variants of asum
 float BLAS_SASUM( const fortran_int_t* n, const float* x,
         const fortran_int_t* incx );
+float BLAS_SCASUM( const fortran_int_t* n, const void* x,
+        const fortran_int_t* incx );
+double BLAS_DZASUM( const fortran_int_t* n, const void* x,
+        const fortran_int_t* incx );
 double BLAS_DASUM( const fortran_int_t* n, const double* x,
         const fortran_int_t* incx );
 
@@ -70,7 +74,11 @@ std::complex<double> BLAS_ZDOTU( const fortran_int_t* n, const void* x,
 // Value-type variants of nrm2
 float BLAS_SNRM2( const fortran_int_t* n, const float* x,
         const fortran_int_t* incx );
+float BLAS_SCNRM2( const fortran_int_t* n, const void* x,
+        const fortran_int_t* incx );
 double BLAS_DNRM2( const fortran_int_t* n, const double* x,
+        const fortran_int_t* incx );
+double BLAS_DZNRM2( const fortran_int_t* n, const void* x,
         const fortran_int_t* incx );
 
 // Value-type variants of rot

@@ -74,7 +74,8 @@ struct adaptor< ublas::matrix_column< T >, Id, Enable > {
         mpl::pair< tag::entity, tag::vector >,
         mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::data_structure, tag::linear_array >,
-        mpl::pair< tag::stride_type<1>, tag::contiguous >
+        // TODO in case of column major, this could be contiguous
+        mpl::pair< tag::stride_type<1>, std::ptrdiff_t >
     > property_map;
 
     static std::ptrdiff_t size1( const Id& id ) {
@@ -88,7 +89,7 @@ struct adaptor< ublas::matrix_column< T >, Id, Enable > {
 
     static value_type* end_value( Id& id ) {
         return bindings::begin_value( id.data() ) +
-               offset( id.data(), size1(id), id.index() );
+               offset( id.data(), bindings::size(id), id.index() );
     }
 
     static std::ptrdiff_t stride1( const Id& id ) {

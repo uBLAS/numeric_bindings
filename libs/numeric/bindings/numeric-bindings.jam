@@ -94,9 +94,11 @@ lib amos_lib : fortran_lib : <name>$(AMOS_LIB) <search>$(AMOS_PATH) ;
 lib atlas_lib : : <name>$(ATLAS_LIB) <search>$(ATLAS_PATH)
               : : <include>$(ATLAS_INCLUDE) ;
 lib cblas_lib : : <name>$(CBLAS_LIB) <search>$(ATLAS_PATH)
-              : : <include>$(ATLAS_INCLUDE) ;
+              : : <include>$(ATLAS_INCLUDE)
+                  <define>BOOST_NUMERIC_BINDINGS_BLAS_CBLAS ;
 lib lapack_atlas_lib : : <name>$(LAPACK_ATLAS_LIB) <search>$(ATLAS_PATH)
-                     : : <include>$(ATLAS_INCLUDE) ;
+                     : : <include>$(ATLAS_INCLUDE)
+                         <define>BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK ;
 
 lib f_blas_lib   : fortran_lib : <name>$(BLAS_LIB)   <search>$(BLAS_PATH) ;
 lib f_lapack_lib : fortran_lib : <name>$(LAPACK_LIB) <search>$(LAPACK_PATH) <use>blas_lib

@@ -6,4 +6,12 @@ $TEMPLATE[blas.group.SCASUM]
 ASUM
 $TEMPLATE[blas.value.SCASUM]
 complex
+$TEMPLATE[blas.group.DZNRM2]
+NRM2
+$TEMPLATE[blas.value.DZNRM2]
+complex
+$TEMPLATE[blas.group.SCNRM2]
+NRM2
+$TEMPLATE[blas.value.SCNRM2]
+complex
 $TEMPLATE[end]

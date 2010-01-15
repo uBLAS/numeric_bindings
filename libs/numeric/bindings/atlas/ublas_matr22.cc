@@ -5,19 +5,20 @@
 //#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas1.hpp>
-#include <boost/numeric/bindings/atlas/cblas2.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/blas/level1.hpp>
+#include <boost/numeric/bindings/blas/level2.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/trans.hpp>
 #ifdef F_USE_STD_VECTOR
 #include <vector>
-#include <boost/numeric/bindings/traits/std_vector.hpp> 
+#include <boost/numeric/bindings/std/vector.hpp> 
 #endif 
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
 
 using std::cout;
 using std::endl; 
@@ -40,40 +41,40 @@ int main() {
   cout << endl; 
 
   vct_t v (8);
-  atlas::set (1., v);
+  blas::set (1., v);
   print_v (v, "v"); 
   cout << endl; 
   vct_t vy (12); // vector size can be larger
                 // than corresponding matrix size 
 
   // vy = m v 
-  atlas::gemv (CblasNoTrans, 1.0, m, v, 0.0, vy);
+  blas::gemv ( 1.0, m, v, 0.0, vy);
   print_v (vy, "vy = m v"); 
-  atlas::gemv (1.0, m, v, 0.0, vy);
+  blas::gemv (1.0, m, v, 0.0, vy);
   print_v (vy, "vy = m v"); 
-  atlas::gemv (m, v, vy);
+  blas::gemv ( 1.0, m, v, 0.0, vy);
   print_v (vy, "vy = m v"); 
   cout << endl; 
 
-  atlas::set (1, vy); 
+  blas::set (1, vy); 
   print_v (vy, "vy"); 
 
   // v = m^T vy 
-  atlas::gemv (CblasTrans, 1.0, m, vy, 0.0, v);
+  blas::gemv ( 1.0, bindings::trans(m), vy, 0.0, v);
   print_v (v, "v = m^T vy"); 
   cout << endl; 
 
   // vy = 2.0 m v + 0.5 vy 
-  atlas::set (1., v);
+  blas::set (1., v);
   print_v (v, "v"); 
   print_v (vy, "vy"); 
-  atlas::gemv (CblasNoTrans, 2.0, m, v, 0.5, vy);
+  blas::gemv (2.0, m, v, 0.5, vy);
   print_v (vy, "vy = 2.0 m v + 0.5 vy"); 
   cout << endl; 
   cout << endl; 
 
-  atlas::set (1, v); 
-  atlas::set (0, vy); 
+  blas::set (1, v); 
+  blas::set (0, vy); 
   print_v (v, "v"); 
   print_v (vy, "vy"); 
   cout << endl; 
@@ -84,12 +85,12 @@ int main() {
   cout << endl; 
   
   // vy = m[2..8][1..7] v 
-  atlas::gemv (mr, v, vy); 
+  blas::gemv ( 1.0, mr, v, 0.0, vy); 
   print_v (vy, "vy = mr v"); 
   cout << endl; 
 
   // vy = m[2..8][1..7]^T v 
-  atlas::gemv (CblasTrans, 1.0, mr, v, 0.0, vy);
+  blas::gemv ( 1.0, bindings::trans(mr), v, 0.0, vy);
   print_v (vy, "vy = mr^T v"); 
   cout << endl; 
 
@@ -102,8 +103,8 @@ int main() {
   cout << endl; 
 
   // vy = mrr v 
-  atlas::set (0, vy); 
-  atlas::gemv (CblasNoTrans, 1.0, mrr, v, 0.0, vy);
+  blas::set (0, vy); 
+  blas::gemv ( 1.0, mrr, v, 0.0, vy);
   print_v (vy, "vy = mrr v"); 
   cout << endl; 
 
@@ -113,8 +114,8 @@ int main() {
   print_m (ms, "ms = m[2:1:4][1:2:4]");
   cout << endl; 
 
-  atlas::set (0, vy); 
-  atlas::gemv (CblasNoTrans, 1.0, ms, v, 0.0, vy);
+  blas::set (0, vy); 
+  blas::gemv ( 1.0, ms, v, 0.0, vy);
   print_v (vy, "vy = ms v"); 
   cout << endl; 
 #endif 

@@ -6,18 +6,18 @@
 
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas1.hpp>
-#include <boost/numeric/bindings/atlas/cblas2.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/blas/level1.hpp>
+#include <boost/numeric/bindings/blas/level2.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
 #ifdef F_USE_STD_VECTOR
 #include <vector>
-#include <boost/numeric/bindings/traits/std_vector.hpp> 
+#include <boost/numeric/bindings/std/vector.hpp> 
 #endif 
 #include "utils.h" 
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
 
 using std::cout;
 using std::endl; 
@@ -40,8 +40,8 @@ int main() {
   vct_t vx (2);
   vct_t vy (4); // vector size can be larger 
                 // than corresponding matrix size 
-  atlas::set (cmplx_t (1., 0.), vx);
-  atlas::set (cmplx_t (0., 2.), vy); 
+  blas::set (cmplx_t (1., 0.), vx);
+  blas::set (cmplx_t (0., 2.), vy); 
   print_v (vx, "vx"); 
   cout << endl; 
   print_v (vy, "vy"); 
@@ -53,7 +53,7 @@ int main() {
   cout << endl; 
 
   // m += x y^T
-  atlas::ger (vx, vy, m);   // bindings extension 
+  blas::gerc (1.0, vx, vy, m);   // bindings extension 
   print_m (m, "m += x y^T"); 
   cout << endl << endl; 
 
@@ -62,7 +62,7 @@ int main() {
   cout << endl; 
 
   // m += x y^T
-  atlas::geru (vx, vy, m); 
+  blas::geru ( 1.0+0.0i, vx, vy, m); 
   print_m (m, "m += x y^T"); 
   cout << endl << endl; 
 
@@ -76,7 +76,7 @@ int main() {
   cout << endl; 
 
   // m += 2 x y^T
-  atlas::geru (cmplx_t (2., 0.), vx, vy, m);  
+  blas::geru (cmplx_t (2., 0.), vx, vy, m);  
   print_m (m, "m += 2 x y^T"); 
   cout << endl << endl; 
 
@@ -90,7 +90,7 @@ int main() {
   cout << endl; 
 
   // m += x y^H
-  atlas::gerc (cmplx_t (1., 0.), vx, vy, m);   // bindings extension 
+  blas::gerc (cmplx_t (1., 0.), vx, vy, m);   // bindings extension 
   print_m (m, "m += x y^H"); 
   cout << endl << endl; 
 

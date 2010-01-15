@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/blas/level1/rotm.hpp>
 #include <boost/numeric/bindings/blas/level1/scal.hpp>
 #include <boost/numeric/bindings/blas/level1/sdot.hpp>
-#include <boost/numeric/bindings/blas/level1/srot.hpp>
+#include <boost/numeric/bindings/blas/level1/set.hpp>
 #include <boost/numeric/bindings/blas/level1/swap.hpp>
 
 #endif

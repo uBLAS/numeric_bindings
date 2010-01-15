@@ -106,13 +106,14 @@ level0_types = {
     'TRANSB': 'TransB',
     'TRANSR': 'TransR',
     'UPLO'  : 'UpLo',
-    'DIAG'  : 'Diag'
+    'DIAG'  : 'Diag',
+    'SIDE'  : 'Side'
 }
 
 def level0_type( name, properties ):
     result = cpp_type( name, properties )
     if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag', 'side' ]:
             result = level0_types[ name ]
     if name == 'INFO':
         result = None
@@ -121,21 +122,21 @@ def level0_type( name, properties ):
 def level0_typename( name, properties ):
     result = None
     if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag', 'side' ]:
             result = 'typename ' + level0_types[ name ]
     return result
 
 def call_blas_header( name, properties ):
     result = call_c_type( name, properties )
     if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag', 'side' ]:
             result = '&blas_option< ' + level0_types[ name ] + ' >::value'
     return result
 
 def call_lapack_header( name, properties ):
     result = call_c_type( name, properties )
     if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag', 'side' ]:
             result = '&lapack_option< ' + level0_types[ name ] + ' >::value'
     return result
 
@@ -390,11 +391,18 @@ def expand_nested_list( arg, arg_map, use_arg_map = True ):
       return arg
     else:
       if use_arg_map:
+        # mainly used by assert stuff
         if not arg_map.has_key( arg ):
           return '?' + arg.upper()
         else:
-          return arg_map[ arg ][ 'code' ][ 'call_level_0' ]
+          if arg_map[ arg ][ 'io' ] == [ 'output' ] and \
+             arg_map[ arg ][ 'type' ] == 'scalar':
+              return 'no_assert'
+          else:
+              return arg_map[ arg ][ 'code' ][ 'call_level_0' ]
+
       else:
+        # mainly used by workspace stuff
         return arg.lower()
     
   if arg[0] == '()':
@@ -447,7 +455,7 @@ def level1_assert( name, properties, arg_map ):
   if properties.has_key( 'assert_ge' ) and not properties.has_key( 'workspace_query_for' ):
     lhs = call_level0_type( name, properties, arg_map )
     rhs = expand_nested_list( properties[ 'assert_ge' ], arg_map )
-    if lhs != rhs:
+    if lhs != rhs and 'no_assert' not in rhs:
         result += [ "BOOST_ASSERT( " + lhs + " >= " + rhs + ' );' ]
 
   #if properties[ 'type' ] == 'vector' and properties[ 'call_level1' ] != None:
@@ -468,8 +476,10 @@ def level1_assert( name, properties, arg_map ):
   # assert_size is vector-type specific
   elif properties.has_key( 'assert_size' ) and \
        properties[ 'type' ] == 'vector':
-    result += [ "BOOST_ASSERT( $NAMESPACEsize(" + call_level1_type( name, properties ) + ") >= " + \
-      expand_nested_list( properties[ 'assert_size' ], arg_map ) + ' );' ]
+    nested_stuff = expand_nested_list( properties[ 'assert_size' ], arg_map )
+    if 'no_assert' not in nested_stuff:
+        result += [ "BOOST_ASSERT( $NAMESPACEsize(" + call_level1_type( name, properties ) + ") >= " + \
+            nested_stuff + ' );' ]
 
   if properties[ 'type' ] == 'matrix' and \
      call_level1_type( name, properties ) != None and \

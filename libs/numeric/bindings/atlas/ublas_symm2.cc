@@ -8,6 +8,7 @@
 #include <stddef.h>
 #include <iostream>
 #include <complex>
+#include <boost/numeric/bindings/blas/level1/set.hpp>
 #include <boost/numeric/bindings/blas/level2.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
@@ -75,7 +76,7 @@ int main() {
   cout << endl; 
 
   vct_t vx (n), vy (n); 
-  std::fill( bindings::begin(vx), bindings::end(vx), 1. );
+  blas::set( 1., vx );
   print_v (vx, "vx"); 
 
   ucsymm_t ucs (n, n); 
@@ -149,7 +150,7 @@ int main() {
   size_t n2 = 3; 
 
   cvct_t cvx (n2), cvy (n2); 
-  std::fill( bindings::begin(cvx), bindings::end(cvx), 1. );
+  blas::set( 1., cvx );
   print_v (cvx, "cvx"); 
   cout << endl; 
 

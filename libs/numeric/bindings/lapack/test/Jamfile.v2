@@ -57,5 +57,9 @@ alias bindings-lapack-tests :
     [ run ublas_gels.cpp ]
     [ run ublas_gelss.cpp ]
     [ run ublas_gelsd.cpp ]
+
+    [ run ublas_ptsv.cpp ]
+    [ run ublas_steqr.cpp ]
+    [ run ublas_sytrd.cpp ]
 ;
 

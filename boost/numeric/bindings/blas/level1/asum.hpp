@@ -67,6 +67,15 @@ inline float asum( const int n, const float* x, const int incx ) {
 //
 // Overloaded function for dispatching to
 // * CBLAS backend, and
+// * double value-type.
+//
+inline double asum( const int n, const double* x, const int incx ) {
+    return cblas_dasum( n, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
 // * float value-type.
 //
 inline float asum( const int n, const std::complex<float>* x,
@@ -84,15 +93,6 @@ inline double asum( const int n, const std::complex<double>* x,
     return cblas_dzasum( n, x, incx );
 }
 
-//
-// Overloaded function for dispatching to
-// * CBLAS backend, and
-// * double value-type.
-//
-inline double asum( const int n, const double* x, const int incx ) {
-    return cblas_dasum( n, x, incx );
-}
-
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
@@ -101,6 +101,15 @@ inline double asum( const int n, const double* x, const int incx ) {
 //
 inline float asum( const int n, const float* x, const int incx ) {
     return cublasSasum( n, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * double value-type.
+//
+inline double asum( const int n, const double* x, const int incx ) {
+    return cublasDasum( n, x, incx );
 }
 
 //
@@ -123,15 +132,6 @@ inline double asum( const int n, const std::complex<double>* x,
     return // NOT FOUND();
 }
 
-//
-// Overloaded function for dispatching to
-// * CUBLAS backend, and
-// * double value-type.
-//
-inline double asum( const int n, const double* x, const int incx ) {
-    return cublasDasum( n, x, incx );
-}
-
 #else
 //
 // Overloaded function for dispatching to
@@ -141,6 +141,16 @@ inline double asum( const int n, const double* x, const int incx ) {
 inline float asum( const fortran_int_t n, const float* x,
         const fortran_int_t incx ) {
     return BLAS_SASUM( &n, x, &incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
+//
+inline double asum( const fortran_int_t n, const double* x,
+        const fortran_int_t incx ) {
+    return BLAS_DASUM( &n, x, &incx );
 }
 
 //
@@ -161,16 +171,6 @@ inline float asum( const fortran_int_t n, const std::complex<float>* x,
 inline double asum( const fortran_int_t n, const std::complex<double>* x,
         const fortran_int_t incx ) {
     return BLAS_DZASUM( &n, x, &incx );
-}
-
-//
-// Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default), and
-// * double value-type.
-//
-inline double asum( const fortran_int_t n, const double* x,
-        const fortran_int_t incx ) {
-    return BLAS_DASUM( &n, x, &incx );
 }
 
 #endif

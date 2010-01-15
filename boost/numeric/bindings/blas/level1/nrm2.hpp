@@ -67,20 +67,20 @@ inline float nrm2( const int n, const float* x, const int incx ) {
 //
 // Overloaded function for dispatching to
 // * CBLAS backend, and
-// * float value-type.
+// * double value-type.
 //
-inline float nrm2( const int n, const std::complex<float>* x,
-        const int incx ) {
-    return cblas_scnrm2( n, x, incx );
+inline double nrm2( const int n, const double* x, const int incx ) {
+    return cblas_dnrm2( n, x, incx );
 }
 
 //
 // Overloaded function for dispatching to
 // * CBLAS backend, and
-// * double value-type.
+// * float value-type.
 //
-inline double nrm2( const int n, const double* x, const int incx ) {
-    return cblas_dnrm2( n, x, incx );
+inline float nrm2( const int n, const std::complex<float>* x,
+        const int incx ) {
+    return cblas_scnrm2( n, x, incx );
 }
 
 //
@@ -106,20 +106,20 @@ inline float nrm2( const int n, const float* x, const int incx ) {
 //
 // Overloaded function for dispatching to
 // * CUBLAS backend, and
-// * float value-type.
+// * double value-type.
 //
-inline float nrm2( const int n, const std::complex<float>* x,
-        const int incx ) {
-    return cublasScnrm2( n, x, incx );
+inline double nrm2( const int n, const double* x, const int incx ) {
+    return cublasDnrm2( n, x, incx );
 }
 
 //
 // Overloaded function for dispatching to
 // * CUBLAS backend, and
-// * double value-type.
+// * float value-type.
 //
-inline double nrm2( const int n, const double* x, const int incx ) {
-    return cublasDnrm2( n, x, incx );
+inline float nrm2( const int n, const std::complex<float>* x,
+        const int incx ) {
+    return cublasScnrm2( n, x, incx );
 }
 
 //
@@ -146,21 +146,21 @@ inline float nrm2( const fortran_int_t n, const float* x,
 //
 // Overloaded function for dispatching to
 // * netlib-compatible BLAS backend (the default), and
-// * float value-type.
-//
-inline float nrm2( const fortran_int_t n, const std::complex<float>* x,
-        const fortran_int_t incx ) {
-    return BLAS_SCNRM2( &n, x, &incx );
-}
-
-//
-// Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
 inline double nrm2( const fortran_int_t n, const double* x,
         const fortran_int_t incx ) {
     return BLAS_DNRM2( &n, x, &incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
+//
+inline float nrm2( const fortran_int_t n, const std::complex<float>* x,
+        const fortran_int_t incx ) {
+    return BLAS_SCNRM2( &n, x, &incx );
 }
 
 //

@@ -9,6 +9,6 @@ $TEMPLATE[rot.all.arguments]
            The increment of Y
  C        (input) DATATYPE variable alpha
  S        (input) DATATYPE variable alpha
- X        (input) DATATYPE array of length (N)
+ X        (input/output) DATATYPE array of length (N)
  Y        (output) DATATYPE array of length (N)
 $TEMPLATE[end]

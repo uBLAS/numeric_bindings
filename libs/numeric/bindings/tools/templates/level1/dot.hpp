@@ -9,4 +9,10 @@ $TEMPLATE[dot.all.arguments]
            The increment of Y
  X         (input) DATATYPE array of length (N)
  Y         (input) DATATYPE array of length (N)
+$TEMPLATE[dot.level0.gsub]
+return cblas_cdotu_sub( n, x, incx, y, incy );->std::complex<float> result;
+    cblas_cdotu_sub( n, x, incx, y, incy, &result );
+    return result;--return cblas_zdotu_sub( n, x, incx, y, incy );->std::complex<double> result;
+    cblas_zdotu_sub( n, x, incx, y, incy, &result );
+    return result;--
 $TEMPLATE[end]

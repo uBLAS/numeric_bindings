@@ -17,6 +17,13 @@ routine_value_type = \
       'D' : 'double',
       'S' : 'float' }
 
+subroutine_value_type = \
+    { 'complex,single' : 'complex<float>',
+      'complex,double' : 'complex<double>', 
+      'real,single' : 'float',
+      'real,double' : 'double'
+    }
+
 matrix_structure = \
     { 'G' : 'generic',
       'H' : 'hermitian',

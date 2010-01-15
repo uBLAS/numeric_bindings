@@ -1,3 +1,7 @@
+$TEMPLATE[blas.group.CDOTU]
+DOT
+$TEMPLATE[blas.group.ZDOTU]
+DOT
 $TEMPLATE[blas.group.DZASUM]
 ASUM
 $TEMPLATE[blas.value.DZASUM]

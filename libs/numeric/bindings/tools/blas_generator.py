@@ -77,6 +77,13 @@ def write_functions( info_map, group, template_map, base_dir ):
     for select_backend in [ 'blas_overloads', 'cblas_overloads', 'cublas_overloads' ]:
       sub_overloads = ''
       for subroutine in subroutines:
+
+        # stuff like float, complex<double>, etc.
+        subroutine_value_type = documentation. \
+            subroutine_value_type[ ",".join( [
+                info_map[ subroutine ][ 'value_type' ],
+                info_map[ subroutine ][ 'precision' ] ] ) ]
+
         sub_template = template_map[ select_backend ]
         # add the argument list here
         arg_list = []
@@ -109,7 +116,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         sub_template = sub_template.replace( "$CALL_BLAS_HEADER", ", ".join( blas_arg_list ) )
         sub_template = sub_template.replace( "$CALL_CBLAS_HEADER", ", ".join( cblas_arg_list ) )
         sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
-        sub_template = sub_template.replace( "$SPECIALIZATION", documentation.routine_value_type[ subroutine[0] ] )
+        sub_template = sub_template.replace( "$SPECIALIZATION", subroutine_value_type )
         sub_template = sub_template.replace( '$STATIC_ASSERTS', "\n    ".join( level0_static_asserts ) )
 
         if select_backend == 'blas_overloads':

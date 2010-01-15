@@ -16,26 +16,27 @@ from types import StringType
 # for debugging purposes
 import pprint
 
-
 #
-# Group subroutines on their name, with the first character removed. This will 
-# group them in the same .hpp file as well. Sort these subroutines based on 
-# routine_cmp above.
+# Group subroutines on their value and precision types.
+# Sort these subroutines based on 
+# subroutine_less in the bindings file.
 #
 def group_by_value_type( global_info_map, template_map ):
   group_map = {}
   for subroutine_name in global_info_map.keys():
-    subroutine_group_key = 'blas.group.' + subroutine_name
-    subroutine_group_name = None
-    if subroutine_group_key in template_map:
-        subroutine_group_name = template_map[ subroutine_group_key ].strip()
-    else:
-        subroutine_group_name = subroutine_name[ 1: ]
+    subroutine_group_name = global_info_map[ subroutine_name ][ 'group_name' ]
     if not group_map.has_key( subroutine_group_name ):
       group_map[ subroutine_group_name ] = []
-    group_map[ subroutine_group_name ] += [ subroutine_name ]
-  for value in group_map.values():
-    value.sort( bindings.routine_cmp )
+      group_map[ subroutine_group_name ].append( subroutine_name )
+    else:
+      insert_at = 0
+      for i in range( 0, len(group_map[ subroutine_group_name ]) ):
+          if bindings.subroutine_less( subroutine_name,
+                              group_map[ subroutine_group_name ][ i ],
+                              global_info_map ):
+              insert_at = i+1
+      group_map[ subroutine_group_name ].insert( insert_at, subroutine_name )
+
   return group_map
  
 #

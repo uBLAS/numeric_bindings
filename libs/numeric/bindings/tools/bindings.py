@@ -27,6 +27,29 @@ def routine_cmp( a, b ):
 
 
 #
+# a < b?
+# should replace the function "routine_cmp"
+#
+def subroutine_less( a, b, global_info_map ):
+
+   if global_info_map[ a ][ 'value_type' ] < \
+      global_info_map[ b ][ 'value_type' ]:
+        return True
+   if global_info_map[ a ][ 'value_type' ] > \
+      global_info_map[ b ][ 'value_type' ]:
+        return False
+
+   if global_info_map[ a ][ 'precision' ] < \
+      global_info_map[ b ][ 'precision' ]:
+        return True
+   if global_info_map[ a ][ 'precision' ] > \
+      global_info_map[ b ][ 'precision' ]:
+        return False
+
+   return False
+
+
+#
 # This routine actually does what it's named after :-).
 # Changes: 
 # * used regex matching on delimiter instead of .find

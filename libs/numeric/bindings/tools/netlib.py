@@ -895,6 +895,9 @@ def parse_file( filename, template_map ):
   subroutine_found = False
   subroutine_name = ''
   subroutine_arguments = []
+  subroutine_group_name = None
+  subroutine_value_type = None
+  subroutine_precision = None
   subroutine_return_type = None
 
   code_line_nr = 0
@@ -925,14 +928,12 @@ def parse_file( filename, template_map ):
   # Do some further analysis as to what kind of routine this is
   #
   subroutine_group_key = parser_mode.lower() + '.group.' + subroutine_name
-  subroutine_group_name = None
   if subroutine_group_key in template_map:
     subroutine_group_name = template_map[ subroutine_group_key ].strip()
   else:
     subroutine_group_name = subroutine_name[ 1: ]
 
   subroutine_value_key = parser_mode.lower() + '.value.' + subroutine_name
-  subroutine_value_type = None
   if my_has_key( subroutine_value_key, template_map ):
     subroutine_value_type = template_map[ my_has_key( subroutine_value_key, template_map ) ].strip()
   elif subroutine_name[0] == 'C' or subroutine_name[0] == 'Z':
@@ -940,10 +941,19 @@ def parse_file( filename, template_map ):
   elif subroutine_name[0] == 'S' or subroutine_name[0] == 'D':
     subroutine_value_type = 'real'
 
+  subroutine_precision_key = parser_mode.lower() + '.precision.' + subroutine_name
+  if my_has_key( subroutine_precision_key, template_map ):
+    subroutine_precision = template_map[ my_has_key( subroutine_precision_key, template_map ) ].strip()
+  elif subroutine_name[0] == 'S' or subroutine_name[0] == 'C':
+    subroutine_precision = 'single'
+  elif subroutine_name[0] == 'D' or subroutine_name[0] == 'Z':
+    subroutine_precision = 'double'
+
   print "Subroutine: ", subroutine_name
   print "Arguments:  ", len(subroutine_arguments),":",subroutine_arguments
   print "Group name: ", subroutine_group_name
   print "Variant:    ", subroutine_value_type
+  print "Precision:  ", subroutine_precision
   print "Return:     ", subroutine_return_type
 
   # Now we have the names of the arguments. The code following the subroutine statement are
@@ -1607,7 +1617,10 @@ def parse_file( filename, template_map ):
   info_map = {}
   info_map[ 'arguments' ] = subroutine_arguments
   info_map[ 'purpose' ] = subroutine_purpose
+  info_map[ 'value_type' ] = subroutine_value_type
+  info_map[ 'group_name' ] = subroutine_group_name
   info_map[ 'return_type' ] = subroutine_return_type
+  info_map[ 'precision' ] = subroutine_precision
   info_map[ 'argument_map' ] = argument_map
   info_map[ 'grouped_arguments' ] = grouped_arguments
   if subroutine_return_type != None:

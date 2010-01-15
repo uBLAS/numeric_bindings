@@ -75,6 +75,30 @@ inline double dot( const int n, const double* x, const int incx,
     return cblas_ddot( n, x, incx, y, incy );
 }
 
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
+// * complex<float> value-type.
+//
+inline std::complex<float> dot( const int n, const std::complex<float>* x,
+        const int incx, const std::complex<float>* y, const int incy ) {
+    std::complex<float> result;
+    cblas_cdotu_sub( n, x, incx, y, incy, &result );
+    return result;
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
+// * complex<double> value-type.
+//
+inline std::complex<double> dot( const int n, const std::complex<double>* x,
+        const int incx, const std::complex<double>* y, const int incy ) {
+    std::complex<double> result;
+    cblas_zdotu_sub( n, x, incx, y, incy, &result );
+    return result;
+}
+
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
@@ -96,6 +120,26 @@ inline double dot( const int n, const double* x, const int incx,
     return cublasDdot( n, x, incx, y, incy );
 }
 
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * complex<float> value-type.
+//
+inline std::complex<float> dot( const int n, const std::complex<float>* x,
+        const int incx, const std::complex<float>* y, const int incy ) {
+    return cublasCdotu( n, x, incx, y, incy );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * complex<double> value-type.
+//
+inline std::complex<double> dot( const int n, const std::complex<double>* x,
+        const int incx, const std::complex<double>* y, const int incy ) {
+    return cublasZdotu( n, x, incx, y, incy );
+}
+
 #else
 //
 // Overloaded function for dispatching to
@@ -115,6 +159,28 @@ inline float dot( const fortran_int_t n, const float* x,
 inline double dot( const fortran_int_t n, const double* x,
         const fortran_int_t incx, const double* y, const fortran_int_t incy ) {
     return BLAS_DDOT( &n, x, &incx, y, &incy );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
+//
+inline std::complex<float> dot( const fortran_int_t n,
+        const std::complex<float>* x, const fortran_int_t incx,
+        const std::complex<float>* y, const fortran_int_t incy ) {
+    return BLAS_CDOTU( &n, x, &incx, y, &incy );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
+//
+inline std::complex<double> dot( const fortran_int_t n,
+        const std::complex<double>* x, const fortran_int_t incx,
+        const std::complex<double>* y, const fortran_int_t incy ) {
+    return BLAS_ZDOTU( &n, x, &incx, y, &incy );
 }
 
 #endif

@@ -58,17 +58,15 @@ float BLAS_SDOT( const fortran_int_t* n, const float* x,
 double BLAS_DDOT( const fortran_int_t* n, const double* x,
         const fortran_int_t* incx, const double* y,
         const fortran_int_t* incy );
+std::complex<float> BLAS_CDOTU( const fortran_int_t* n, const void* x,
+        const fortran_int_t* incx, const void* y, const fortran_int_t* incy );
+std::complex<double> BLAS_ZDOTU( const fortran_int_t* n, const void* x,
+        const fortran_int_t* incx, const void* y, const fortran_int_t* incy );
 
 // Value-type variants of dotc
 std::complex<float> BLAS_CDOTC( const fortran_int_t* n, const void* x,
         const fortran_int_t* incx, const void* y, const fortran_int_t* incy );
 std::complex<double> BLAS_ZDOTC( const fortran_int_t* n, const void* x,
-        const fortran_int_t* incx, const void* y, const fortran_int_t* incy );
-
-// Value-type variants of dotu
-std::complex<float> BLAS_CDOTU( const fortran_int_t* n, const void* x,
-        const fortran_int_t* incx, const void* y, const fortran_int_t* incy );
-std::complex<double> BLAS_ZDOTU( const fortran_int_t* n, const void* x,
         const fortran_int_t* incx, const void* y, const fortran_int_t* incy );
 
 // Value-type variants of nrm2

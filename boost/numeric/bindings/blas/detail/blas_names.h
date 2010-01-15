@@ -41,14 +41,12 @@
 // Value-type variants of dot
 #define BLAS_SDOT FORTRAN_ID( sdot )
 #define BLAS_DDOT FORTRAN_ID( ddot )
+#define BLAS_CDOTU FORTRAN_ID( cdotu )
+#define BLAS_ZDOTU FORTRAN_ID( zdotu )
 
 // Value-type variants of dotc
 #define BLAS_CDOTC FORTRAN_ID( cdotc )
 #define BLAS_ZDOTC FORTRAN_ID( zdotc )
-
-// Value-type variants of dotu
-#define BLAS_CDOTU FORTRAN_ID( cdotu )
-#define BLAS_ZDOTU FORTRAN_ID( zdotu )
 
 // Value-type variants of nrm2
 #define BLAS_SNRM2 FORTRAN_ID( snrm2 )

@@ -76,7 +76,7 @@ inline double nrm2( const int n, const double* x, const int incx ) {
 //
 // Overloaded function for dispatching to
 // * CBLAS backend, and
-// * float value-type.
+// * complex<float> value-type.
 //
 inline float nrm2( const int n, const std::complex<float>* x,
         const int incx ) {
@@ -86,7 +86,7 @@ inline float nrm2( const int n, const std::complex<float>* x,
 //
 // Overloaded function for dispatching to
 // * CBLAS backend, and
-// * double value-type.
+// * complex<double> value-type.
 //
 inline double nrm2( const int n, const std::complex<double>* x,
         const int incx ) {
@@ -115,7 +115,7 @@ inline double nrm2( const int n, const double* x, const int incx ) {
 //
 // Overloaded function for dispatching to
 // * CUBLAS backend, and
-// * float value-type.
+// * complex<float> value-type.
 //
 inline float nrm2( const int n, const std::complex<float>* x,
         const int incx ) {
@@ -125,7 +125,7 @@ inline float nrm2( const int n, const std::complex<float>* x,
 //
 // Overloaded function for dispatching to
 // * CUBLAS backend, and
-// * double value-type.
+// * complex<double> value-type.
 //
 inline double nrm2( const int n, const std::complex<double>* x,
         const int incx ) {
@@ -156,7 +156,7 @@ inline double nrm2( const fortran_int_t n, const double* x,
 //
 // Overloaded function for dispatching to
 // * netlib-compatible BLAS backend (the default), and
-// * float value-type.
+// * complex<float> value-type.
 //
 inline float nrm2( const fortran_int_t n, const std::complex<float>* x,
         const fortran_int_t incx ) {
@@ -166,7 +166,7 @@ inline float nrm2( const fortran_int_t n, const std::complex<float>* x,
 //
 // Overloaded function for dispatching to
 // * netlib-compatible BLAS backend (the default), and
-// * double value-type.
+// * complex<double> value-type.
 //
 inline double nrm2( const fortran_int_t n, const std::complex<double>* x,
         const fortran_int_t incx ) {

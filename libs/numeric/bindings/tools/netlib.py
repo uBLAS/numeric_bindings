@@ -847,6 +847,9 @@ def upgrade_vector_to_matrix( name, properties, grouped ):
 #
 def parse_file( filename, template_map ):
 
+  # the current parser mode
+  parser_mode = template_map[ 'PARSERMODE' ]
+
   # for nice printing
   pp = pprint.PrettyPrinter( indent = 2 )
 
@@ -921,11 +924,20 @@ def parse_file( filename, template_map ):
   #
   # Do some further analysis as to what kind of routine this is
   #
-  subroutine_group_name = subroutine_name[ 1: ]
+  subroutine_group_key = parser_mode.lower() + '.group.' + subroutine_name
+  subroutine_group_name = None
+  if subroutine_group_key in template_map:
+    subroutine_group_name = template_map[ subroutine_group_key ].strip()
+  else:
+    subroutine_group_name = subroutine_name[ 1: ]
+
+  subroutine_value_key = parser_mode.lower() + '.value.' + subroutine_name
   subroutine_value_type = None
-  if subroutine_name[0] == 'C' or subroutine_name[0] == 'Z':
+  if my_has_key( subroutine_value_key, template_map ):
+    subroutine_value_type = template_map[ my_has_key( subroutine_value_key, template_map ) ].strip()
+  elif subroutine_name[0] == 'C' or subroutine_name[0] == 'Z':
     subroutine_value_type = 'complex'
-  if subroutine_name[0] == 'S' or subroutine_name[0] == 'D':
+  elif subroutine_name[0] == 'S' or subroutine_name[0] == 'D':
     subroutine_value_type = 'real'
 
   print "Subroutine: ", subroutine_name

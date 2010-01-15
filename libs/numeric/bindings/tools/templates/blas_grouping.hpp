@@ -1,0 +1,9 @@
+$TEMPLATE[blas.group.DZASUM]
+ASUM
+$TEMPLATE[blas.value.DZASUM]
+complex
+$TEMPLATE[blas.group.SCASUM]
+ASUM
+$TEMPLATE[blas.value.SCASUM]
+complex
+$TEMPLATE[end]

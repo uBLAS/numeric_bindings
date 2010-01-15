@@ -22,20 +22,21 @@ import pprint
 # group them in the same .hpp file as well. Sort these subroutines based on 
 # routine_cmp above.
 #
-def group_by_value_type( global_info_map ):
+def group_by_value_type( global_info_map, template_map ):
   group_map = {}
-  for i in global_info_map.keys():
-    short_name = i[ 1: ]
-    if not group_map.has_key( short_name ):
-      group_map[ short_name ] = []
-    group_map[ short_name ] += [ i ]
+  for subroutine_name in global_info_map.keys():
+    subroutine_group_key = 'blas.group.' + subroutine_name
+    subroutine_group_name = None
+    if subroutine_group_key in template_map:
+        subroutine_group_name = template_map[ subroutine_group_key ].strip()
+    else:
+        subroutine_group_name = subroutine_name[ 1: ]
+    if not group_map.has_key( subroutine_group_name ):
+      group_map[ subroutine_group_name ] = []
+    group_map[ subroutine_group_name ] += [ subroutine_name ]
   for value in group_map.values():
     value.sort( bindings.routine_cmp )
   return group_map
-  
-
-
-
  
 #
 # Write the (many) routine file(s).
@@ -497,7 +498,7 @@ cublas.parse_file( cublas_h_path, function_info_map, templates )
 print "Grouping subroutines..."
 
 value_type_groups = {}
-value_type_groups = group_by_value_type( function_info_map )
+value_type_groups = group_by_value_type( function_info_map, templates )
 
 routines = {}
 routines[ 'level1' ] = {}

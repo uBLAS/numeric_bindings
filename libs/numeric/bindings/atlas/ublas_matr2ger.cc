@@ -5,14 +5,14 @@
 //#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas1.hpp>
-#include <boost/numeric/bindings/atlas/cblas2.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/blas/level1.hpp>
+#include <boost/numeric/bindings/blas/level2.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
 #include "utils.h" 
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
 
 using std::cout;
 using std::endl; 
@@ -42,7 +42,7 @@ int main() {
   cout << endl; 
 
   // m += x y^T
-  atlas::ger (vx, vy, rm); 
+  blas::ger (1.0, vx, vy, rm); 
   print_m (rm, "m += x y^T"); 
   cout << endl << endl; 
 
@@ -50,15 +50,15 @@ int main() {
   print_m (rm, "m"); 
   cout << endl; 
 
-  atlas::set (1., vx);
-  atlas::set (1., vy);
+  blas::set (1., vx);
+  blas::set (1., vy);
   print_v (vx, "vx"); 
   cout << endl; 
   print_v (vy, "vy"); 
   cout << endl; 
 
   // m += 2 x y^T
-  atlas::ger (2., vx, vy, rm); 
+  blas::ger (2., vx, vy, rm); 
   print_m (rm, "m += 2 x y^T"); 
   cout << endl << endl; 
 
@@ -70,7 +70,7 @@ int main() {
   cout << endl; 
 
   // m += x y^T
-  atlas::ger (vx, vy, rm); 
+  blas::ger ( 1.0, vx, vy, rm); 
   print_m (rm, "m += x y^T"); 
   cout << endl << endl; 
 
@@ -88,7 +88,7 @@ int main() {
   cout << endl; 
 
   // m += x y^T
-  atlas::ger (vx, vy, cm); 
+  blas::ger ( 1.0, vx, vy, cm); 
   print_m (cm, "m += x y^T"); 
   cout << endl << endl; 
 
@@ -96,15 +96,15 @@ int main() {
   print_m (cm, "m"); 
   cout << endl; 
 
-  atlas::set (1., vx);
-  atlas::set (1., vy);
+  blas::set (1., vx);
+  blas::set (1., vy);
   print_v (vx, "vx"); 
   cout << endl; 
   print_v (vy, "vy"); 
   cout << endl; 
 
   // m += 2 x y^T
-  atlas::ger (2., vx, vy, cm); 
+  blas::ger (2., vx, vy, cm); 
   print_m (cm, "m += 2 x y^T"); 
   cout << endl << endl; 
 
@@ -116,7 +116,7 @@ int main() {
   cout << endl; 
 
   // m += x y^T
-  atlas::ger (vx, vy, cm); 
+  blas::ger (1.0, vx, vy, cm); 
   print_m (cm, "m += x y^T"); 
   cout << endl << endl; 
 

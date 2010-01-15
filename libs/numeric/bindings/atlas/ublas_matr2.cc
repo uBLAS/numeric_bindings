@@ -5,14 +5,15 @@
 //#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas1.hpp>
-#include <boost/numeric/bindings/atlas/cblas2.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/blas/level1.hpp>
+#include <boost/numeric/bindings/blas/level2.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/trans.hpp>
 #include "utils.h" 
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
 
 using std::cout;
 using std::endl; 
@@ -34,21 +35,21 @@ int main() {
   print_m (rm, "row major matrix m"); 
   cout << endl; 
 
-  atlas::set (1., vx);
+  blas::set (1., vx);
   print_v (vx, "vx"); 
   cout << endl; 
 
   // vy = m vx
-  atlas::gemv (CblasNoTrans, 1.0, rm, vx, 0.0, vy);
+  blas::gemv ( 1.0, rm, vx, 0.0, vy);
   print_v (vy, "vy = m vx"); 
   cout << endl; 
 
-  atlas::set (1., vy); 
+  blas::set (1., vy); 
   print_v (vy, "vy"); 
   cout << endl; 
 
   // vx = m^T vy
-  atlas::gemv (CblasTrans, 1.0, rm, vy, 0.0, vx);
+  blas::gemv ( 1.0, bindings::trans(rm), vy, 0.0, vx);
   print_v (vx, "vx = m^T vy"); 
   cout << endl; 
 
@@ -60,21 +61,21 @@ int main() {
   print_m (cm, "column major matrix m"); 
   cout << endl; 
 
-  atlas::set (1., vx);
+  blas::set (1., vx);
   print_v (vx, "vx"); 
   cout << endl; 
 
   // vy = m vx
-  atlas::gemv (CblasNoTrans, 1.0, cm, vx, 0.0, vy);
+  blas::gemv (1.0, cm, vx, 0.0, vy);
   print_v (vy, "vy = m vx"); 
   cout << endl; 
 
-  atlas::set (1., vy); 
+  blas::set (1., vy); 
   print_v (vy, "vy"); 
   cout << endl; 
 
   // vx = m^T vy
-  atlas::gemv (CblasTrans, 1.0, cm, vy, 0.0, vx);
+  blas::gemv ( 1.0, bindings::trans(cm), vy, 0.0, vx);
   print_v (vx, "vx = m^T vy"); 
   cout << endl; 
 

@@ -10,5 +10,9 @@ $TEMPLATE[rot.all.arguments]
  C        (input) DATATYPE variable alpha
  S        (input) DATATYPE variable alpha
  X        (input/output) DATATYPE array of length (N)
- Y        (output) DATATYPE array of length (N)
+ Y        (input/output) DATATYPE array of length (N)
+$TEMPLATE[rot.all.X.io]
+input,output
+$TEMPLATE[rot.all.Y.io]
+input,output
 $TEMPLATE[end]

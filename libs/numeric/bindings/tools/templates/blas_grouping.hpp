@@ -1,3 +1,7 @@
+$TEMPLATE[blas.group.ZDROT]
+ROT
+$TEMPLATE[blas.group.CSROT]
+ROT
 $TEMPLATE[blas.group.CDOTU]
 DOT
 $TEMPLATE[blas.group.ZDOTU]

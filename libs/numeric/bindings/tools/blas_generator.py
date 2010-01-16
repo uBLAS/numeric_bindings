@@ -97,7 +97,10 @@ def write_functions( info_map, group, template_map, base_dir ):
             print "Subroutine ", subroutine, " arg ", arg
             arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
             blas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_blas_header' ] ]
-            cblas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_cblas_header' ] ]
+            if 'call_cblas_header' in info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ]:
+                cblas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_cblas_header' ] ]
+            else:
+                print "WARNING: couldn't find cblas call."
 
             if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] != None:
                 typename_list +=  [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] ]
@@ -305,7 +308,8 @@ def write_functions( info_map, group, template_map, base_dir ):
             includes += [ '#include <boost/numeric/bindings/bandwidth.hpp>' ]
 
       # Insert the order_type() if appropriate
-      if info_map[ subroutine ][ "has_cblas_order_arg" ]:
+      if "has_cblas_order_arg" in info_map[ subroutine ] and \
+             info_map[ subroutine ][ 'has_cblas_order_arg' ]:
           level0_arg_list.insert( 0, "order()" )
 
       # Level 1 replacements
@@ -478,7 +482,8 @@ bindings_doc_target_path = '../doc/blas/'
 
 # Unable to find zdrot in cblas.h and cublas.h
 # Unable to find crotg, csrot, in cblas.h
-skip_blas_files = [ 'zdrot.f', 'crotg.f', 'zrotg.f', 'csrot.f' ]
+#skip_blas_files = []
+skip_blas_files = [ 'crotg.f', 'zrotg.f' ]
 
 templates = {}
 templates[ 'PARSERMODE' ] = 'BLAS'

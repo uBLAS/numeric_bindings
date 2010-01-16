@@ -15,7 +15,6 @@
 #include <boost/numeric/bindings/blas/level1/dotc.hpp>
 #include <boost/numeric/bindings/blas/level1/dot.hpp>
 #include <boost/numeric/bindings/blas/level1/dotu.hpp>
-#include <boost/numeric/bindings/blas/level1/drot.hpp>
 #include <boost/numeric/bindings/blas/level1/nrm2.hpp>
 #include <boost/numeric/bindings/blas/level1/rotg.hpp>
 #include <boost/numeric/bindings/blas/level1/rot.hpp>

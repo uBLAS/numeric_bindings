@@ -15,4 +15,10 @@ $TEMPLATE[rot.all.X.io]
 input,output
 $TEMPLATE[rot.all.Y.io]
 input,output
+$TEMPLATE[rot.all.INCX.trait]
+stride,X
+$TEMPLATE[rot.all.INCY.trait]
+stride,Y
+$TEMPLATE[rot.all.N.trait]
+size,X
 $TEMPLATE[end]

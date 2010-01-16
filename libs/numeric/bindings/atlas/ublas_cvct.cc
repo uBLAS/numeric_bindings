@@ -53,13 +53,13 @@ int main() {
   print_v (v1, "v1"); 
 
   cout << endl; 
-  cout << "v^T v1 = " << blas::dotc (v, v1) << " == "
+  cout << "v^T v1 = " << blas::dot (v, v1) << " == "
     << blas::dotu (v, v1) << " == "
     << inner_prod (v, v1) << endl; 
-  cout << "v^T v = " << blas::dotc (v, v) << " == "
+  cout << "v^T v = " << blas::dot (v, v) << " == "
     << blas::dotu (v, v) << " == "
     << inner_prod (v, v) << endl; 
-  cout << "v1^T v1 = " << blas::dotc (v1, v1) << " == "
+  cout << "v1^T v1 = " << blas::dot (v1, v1) << " == "
     << blas::dotu (v1, v1) << " == "
     << inner_prod (v1, v1) << endl; 
 

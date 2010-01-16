@@ -16,7 +16,6 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -25,6 +24,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>

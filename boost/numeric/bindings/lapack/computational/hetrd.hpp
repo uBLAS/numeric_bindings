@@ -16,7 +16,6 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
@@ -24,6 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -101,7 +101,7 @@ struct hetrd_impl {
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
             VectorTAU& tau, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -143,7 +143,7 @@ struct hetrd_impl {
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
             VectorTAU& tau, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work() );
         return invoke( a, d, e, tau, workspace( tmp_work ) );
     }
@@ -160,7 +160,7 @@ struct hetrd_impl {
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
             VectorTAU& tau, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         value_type opt_size_work;
         detail::hetrd( uplo(), bindings::size_column(a),
                 bindings::begin_value(a), bindings::stride_major(a),

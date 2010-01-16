@@ -16,7 +16,6 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -26,6 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -137,7 +137,7 @@ struct sytrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
@@ -165,7 +165,7 @@ struct sytrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work() );
         return invoke( a, ipiv, workspace( tmp_work ) );
     }
@@ -181,7 +181,7 @@ struct sytrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         real_type opt_size_work;
         detail::sytrf( uplo(), bindings::size_column(a),
                 bindings::begin_value(a), bindings::stride_major(a),
@@ -219,7 +219,7 @@ struct sytrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
@@ -247,7 +247,7 @@ struct sytrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work() );
         return invoke( a, ipiv, workspace( tmp_work ) );
     }
@@ -263,7 +263,7 @@ struct sytrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         value_type opt_size_work;
         detail::sytrf( uplo(), bindings::size_column(a),
                 bindings::begin_value(a), bindings::stride_major(a),

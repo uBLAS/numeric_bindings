@@ -17,13 +17,13 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -134,8 +134,8 @@ struct tbtrs_impl {
     static std::ptrdiff_t invoke( const fortran_int_t kd,
             const MatrixAB& ab, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
         typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
+        typedef typename result_of::uplo_tag< MatrixAB, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,

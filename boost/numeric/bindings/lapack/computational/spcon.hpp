@@ -16,7 +16,6 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -25,6 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -138,7 +138,7 @@ struct spcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const real_type anorm, real_type& rcond, detail::workspace2< WORK,
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ap) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( bindings::size_column(ap) ));
@@ -162,7 +162,7 @@ struct spcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(ap) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -182,7 +182,7 @@ struct spcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         return invoke( ap, ipiv, anorm, rcond, minimal_workspace() );
     }
 
@@ -223,7 +223,7 @@ struct spcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const real_type anorm, real_type& rcond, detail::workspace1<
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ap) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
                 min_size_work( bindings::size_column(ap) ));
@@ -244,7 +244,7 @@ struct spcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(ap) ) );
         return invoke( ap, ipiv, anorm, rcond, workspace( tmp_work ) );
@@ -261,7 +261,7 @@ struct spcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         return invoke( ap, ipiv, anorm, rcond, minimal_workspace() );
     }
 

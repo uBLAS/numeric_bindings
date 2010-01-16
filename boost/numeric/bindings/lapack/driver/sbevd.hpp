@@ -17,7 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
@@ -25,6 +24,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -105,7 +105,7 @@ struct sbevd_impl {
             MatrixZ& z, const fortran_int_t liwork, detail::workspace2<
             WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
@@ -152,7 +152,7 @@ struct sbevd_impl {
             MatrixZ& z, const fortran_int_t liwork,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work( jobz,
                 bindings::size_column(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -173,7 +173,7 @@ struct sbevd_impl {
             MatrixZ& z, const fortran_int_t liwork,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
         detail::sbevd( jobz, uplo(), bindings::size_column(ab),

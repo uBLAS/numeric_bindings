@@ -16,7 +16,6 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -24,6 +23,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -129,7 +129,7 @@ struct lantr_impl {
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
@@ -156,7 +156,7 @@ struct lantr_impl {
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -174,7 +174,7 @@ struct lantr_impl {
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         return invoke( norm, a, minimal_workspace() );
     }

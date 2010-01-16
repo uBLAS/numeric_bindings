@@ -16,7 +16,6 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -26,6 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -144,7 +144,7 @@ struct sysv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -183,7 +183,7 @@ struct sysv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work() );
         return invoke( a, ipiv, b, workspace( tmp_work ) );
     }
@@ -199,7 +199,7 @@ struct sysv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         real_type opt_size_work;
         detail::sysv( uplo(), bindings::size_column(a),
                 bindings::size_column(b), bindings::begin_value(a),
@@ -240,7 +240,7 @@ struct sysv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -279,7 +279,7 @@ struct sysv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work() );
         return invoke( a, ipiv, b, workspace( tmp_work ) );
     }
@@ -295,7 +295,7 @@ struct sysv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         value_type opt_size_work;
         detail::sysv( uplo(), bindings::size_column(a),
                 bindings::size_column(b), bindings::begin_value(a),

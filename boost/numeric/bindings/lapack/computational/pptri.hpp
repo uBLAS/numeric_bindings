@@ -16,11 +16,11 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -114,7 +114,7 @@ struct pptri_impl {
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( MatrixAP& ap ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
         BOOST_ASSERT( bindings::size_column(ap) >= 0 );
         return detail::pptri( uplo(), bindings::size_column(ap),

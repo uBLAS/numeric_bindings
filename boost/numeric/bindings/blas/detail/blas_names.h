@@ -57,6 +57,8 @@
 // Value-type variants of rot
 #define BLAS_SROT FORTRAN_ID( srot )
 #define BLAS_DROT FORTRAN_ID( drot )
+#define BLAS_CSROT FORTRAN_ID( csrot )
+#define BLAS_ZDROT FORTRAN_ID( zdrot )
 
 // Value-type variants of rotg
 #define BLAS_SROTG FORTRAN_ID( srotg )

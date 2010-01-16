@@ -16,7 +16,6 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
@@ -24,6 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -113,7 +113,7 @@ struct syevr_impl {
             MatrixZ& z, VectorISUPPZ& isuppz, detail::workspace2< WORK,
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -166,7 +166,7 @@ struct syevr_impl {
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorISUPPZ& isuppz, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -190,7 +190,7 @@ struct syevr_impl {
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorISUPPZ& isuppz, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
         detail::syevr( jobz, range, uplo(), bindings::size_column(a),

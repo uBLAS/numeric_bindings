@@ -277,9 +277,9 @@ struct gemm_impl {
     static return_type invoke( const value_type alpha, const MatrixA& a,
             const MatrixB& b, const value_type beta, MatrixC& c ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_order< MatrixC >::type order;
-        typedef typename result_of::trans_tag< MatrixA, order >::type transa;
         typedef typename result_of::trans_tag< MatrixB, order >::type transb;
+        typedef typename result_of::trans_tag< MatrixA, order >::type transa;
+        typedef typename result_of::data_order< MatrixC >::type order;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixB >::type >::type >::value) );

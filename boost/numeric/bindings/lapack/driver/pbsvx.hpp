@@ -17,7 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -26,6 +25,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -160,7 +160,7 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
@@ -246,7 +246,7 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -270,7 +270,7 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         return invoke( fact, ab, afb, equed, s, b, x, rcond, ferr, berr,
                 minimal_workspace() );
     }
@@ -315,7 +315,7 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorS >::type >::type,
                 typename remove_const< typename value<
@@ -397,7 +397,7 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(ab) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -421,7 +421,7 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         return invoke( fact, ab, afb, equed, s, b, x, rcond, ferr, berr,
                 minimal_workspace() );
     }

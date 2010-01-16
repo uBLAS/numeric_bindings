@@ -17,7 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
@@ -27,6 +26,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -143,7 +143,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixAB& ab, real_type& rcond, detail::workspace2< WORK,
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( bindings::size_column(ab) ));
@@ -172,7 +172,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
             const MatrixAB& ab, real_type& rcond, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(ab) ) );
@@ -192,7 +192,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
             const MatrixAB& ab, real_type& rcond, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         return invoke( norm, kd, ab, rcond, minimal_workspace() );
     }
@@ -234,7 +234,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixAB& ab, real_type& rcond, detail::workspace2< WORK,
             RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_rwork( bindings::size_column(ab) ));
@@ -263,7 +263,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
             const MatrixAB& ab, real_type& rcond, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(ab) ) );
@@ -283,7 +283,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
             const MatrixAB& ab, real_type& rcond, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         return invoke( norm, kd, ab, rcond, minimal_workspace() );
     }

@@ -16,13 +16,13 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -95,7 +95,7 @@ struct hptri_impl {
     static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ap) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
@@ -117,7 +117,7 @@ struct hptri_impl {
     static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(ap) ) );
         return invoke( ap, ipiv, workspace( tmp_work ) );
@@ -134,7 +134,7 @@ struct hptri_impl {
     static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         return invoke( ap, ipiv, minimal_workspace() );
     }
 

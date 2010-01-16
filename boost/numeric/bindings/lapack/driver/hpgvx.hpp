@@ -16,13 +16,13 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -116,7 +116,7 @@ struct hpgvx_impl {
             MatrixZ& z, VectorIFAIL& ifail, detail::workspace3< WORK, RWORK,
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
@@ -169,7 +169,7 @@ struct hpgvx_impl {
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(ap) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -196,7 +196,7 @@ struct hpgvx_impl {
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         return invoke( itype, jobz, range, ap, bp, vl, vu, il, iu, abstol, m,
                 w, z, ifail, minimal_workspace() );
     }

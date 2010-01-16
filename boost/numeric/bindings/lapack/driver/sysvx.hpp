@@ -16,7 +16,6 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -26,6 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -161,7 +161,7 @@ struct sysvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -238,7 +238,7 @@ struct sysvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -262,7 +262,7 @@ struct sysvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( bindings::size_column(a) ) );
@@ -320,7 +320,7 @@ struct sysvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorFERR >::type >::type,
                 typename remove_const< typename value<
@@ -393,7 +393,7 @@ struct sysvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -417,7 +417,7 @@ struct sysvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 bindings::size_column(a) ) );

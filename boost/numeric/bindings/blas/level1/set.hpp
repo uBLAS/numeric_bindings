@@ -8,8 +8,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_EXT_SET_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_EXT_SET_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SET_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SET_HPP
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>

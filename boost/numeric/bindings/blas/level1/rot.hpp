@@ -75,6 +75,28 @@ inline void rot( const int n, double* x, const int incx, double* y,
     cblas_drot( n, x, incx, y, incy, c, s );
 }
 
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
+// * complex<float> value-type.
+//
+inline void rot( const int n, std::complex<float>* x, const int incx,
+        std::complex<float>* y, const int incy, const float c,
+        const float s ) {
+    // NOT FOUND();
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
+// * complex<double> value-type.
+//
+inline void rot( const int n, std::complex<double>* x, const int incx,
+        std::complex<double>* y, const int incy, const double c,
+        const double s ) {
+    // NOT FOUND();
+}
+
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
@@ -94,6 +116,28 @@ inline void rot( const int n, float* x, const int incx, float* y,
 inline void rot( const int n, double* x, const int incx, double* y,
         const int incy, const double c, const double s ) {
     cublasDrot( n, x, incx, y, incy, c, s );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * complex<float> value-type.
+//
+inline void rot( const int n, std::complex<float>* x, const int incx,
+        std::complex<float>* y, const int incy, const float c,
+        const float s ) {
+    cublasCsrot( n, x, incx, y, incy, c, s );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * complex<double> value-type.
+//
+inline void rot( const int n, std::complex<double>* x, const int incx,
+        std::complex<double>* y, const int incy, const double c,
+        const double s ) {
+    // NOT FOUND();
 }
 
 #else
@@ -117,6 +161,28 @@ inline void rot( const fortran_int_t n, double* x, const fortran_int_t incx,
     BLAS_DROT( &n, x, &incx, y, &incy, &c, &s );
 }
 
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
+//
+inline void rot( const fortran_int_t n, std::complex<float>* x,
+        const fortran_int_t incx, std::complex<float>* y,
+        const fortran_int_t incy, const float c, const float s ) {
+    BLAS_CSROT( &n, x, &incx, y, &incy, &c, &s );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
+//
+inline void rot( const fortran_int_t n, std::complex<double>* x,
+        const fortran_int_t incx, std::complex<double>* y,
+        const fortran_int_t incy, const double c, const double s ) {
+    BLAS_ZDROT( &n, x, &incx, y, &incy, &c, &s );
+}
+
 #endif
 
 } // namespace detail
@@ -138,17 +204,16 @@ struct rot_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY >
-    static return_type invoke( VectorX& x, VectorY& y, const real_type c,
+    static return_type invoke( const std::ptrdiff_t n, VectorX& x,
+            const std::ptrdiff_t incx, VectorY& y,
+            const std::ptrdiff_t incy, const real_type c,
             const real_type s ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
-        detail::rot( bindings::size(x), bindings::begin_value(x),
-                bindings::stride(x), bindings::begin_value(y),
-                bindings::stride(y), c, s );
+        detail::rot( n, bindings::begin_value(x), incx,
+                bindings::begin_value(y), incy, c, s );
     }
 };
 
@@ -167,11 +232,14 @@ struct rot_impl {
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename value< VectorX >::type >::return_type
-rot( VectorX& x, VectorY& y, const typename remove_imaginary<
+rot( const std::ptrdiff_t n, VectorX& x,
+        const std::ptrdiff_t incx, VectorY& y,
+        const std::ptrdiff_t incy, const typename remove_imaginary<
         typename value< VectorX >::type >::type c,
         const typename remove_imaginary< typename value<
         VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
+    rot_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
+            incy, c, s );
 }
 
 //
@@ -181,11 +249,14 @@ rot( VectorX& x, VectorY& y, const typename remove_imaginary<
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename value< VectorX >::type >::return_type
-rot( const VectorX& x, VectorY& y, const typename remove_imaginary<
+rot( const std::ptrdiff_t n, const VectorX& x,
+        const std::ptrdiff_t incx, VectorY& y,
+        const std::ptrdiff_t incy, const typename remove_imaginary<
         typename value< VectorX >::type >::type c,
         const typename remove_imaginary< typename value<
         VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
+    rot_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
+            incy, c, s );
 }
 
 //
@@ -195,11 +266,14 @@ rot( const VectorX& x, VectorY& y, const typename remove_imaginary<
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename value< VectorX >::type >::return_type
-rot( VectorX& x, const VectorY& y, const typename remove_imaginary<
+rot( const std::ptrdiff_t n, VectorX& x,
+        const std::ptrdiff_t incx, const VectorY& y,
+        const std::ptrdiff_t incy, const typename remove_imaginary<
         typename value< VectorX >::type >::type c,
         const typename remove_imaginary< typename value<
         VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
+    rot_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
+            incy, c, s );
 }
 
 //
@@ -209,11 +283,14 @@ rot( VectorX& x, const VectorY& y, const typename remove_imaginary<
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename value< VectorX >::type >::return_type
-rot( const VectorX& x, const VectorY& y,
+rot( const std::ptrdiff_t n, const VectorX& x,
+        const std::ptrdiff_t incx, const VectorY& y,
+        const std::ptrdiff_t incy, const typename remove_imaginary<
+        typename value< VectorX >::type >::type c,
         const typename remove_imaginary< typename value<
-        VectorX >::type >::type c, const typename remove_imaginary<
-        typename value< VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
+        VectorX >::type >::type s ) {
+    rot_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
+            incy, c, s );
 }
 
 } // namespace blas

@@ -511,8 +511,12 @@ def typedef_type( name, properties, arg_map ):
         if properties[ 'trait_type' ] == 'uplo':
             matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
                 arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
-            result = 'typedef typename result_of::data_side< ' + \
+            if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
+                result = 'typedef typename result_of::uplo_tag< ' + \
                     matrix_type + ' >::type ' + name.lower() + ';'
+            else:
+                result = 'typedef typename result_of::uplo_tag< ' + \
+                    matrix_type + ', trans >::type ' + name.lower() + ';'
         if properties[ 'trait_type' ] == 'diag':
             matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
                 arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )

@@ -253,7 +253,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       # Add an include in case of the uplo or diag options
       #
       if 'UPLO' in info_map[ subroutine ][ 'arguments' ]:
-        includes += [ '#include <boost/numeric/bindings/data_side.hpp>' ]
+        includes += [ '#include <boost/numeric/bindings/uplo_tag.hpp>' ]
       if 'DIAG' in info_map[ subroutine ][ 'arguments' ]:
         includes += [ '#include <boost/numeric/bindings/diag_tag.hpp>' ]
 
@@ -301,7 +301,14 @@ def write_functions( info_map, group, template_map, base_dir ):
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_assert' ] != []:
           level1_assert_list += info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_assert' ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] != None:
-          typedef_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] ]
+          # make sure trans tags always preceed other tags, as they may be dependant
+          if 'TRANS' in arg:
+              at_i = 0
+              if len(typedef_list)>0 and '_order<' in typedef_list[0]:
+                at_i = 1
+              typedef_list.insert( at_i, info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] )
+          else:
+              typedef_list.append( info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] )
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] != None:
           level2_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] ]
         if 'banded' in info_map[ subroutine ][ 'argument_map' ][ arg ]:
@@ -482,8 +489,7 @@ bindings_doc_target_path = '../doc/blas/'
 
 # Unable to find zdrot in cblas.h and cublas.h
 # Unable to find crotg, csrot, in cblas.h
-#skip_blas_files = []
-skip_blas_files = [ 'crotg.f', 'zrotg.f' ]
+skip_blas_files = []
 
 templates = {}
 templates[ 'PARSERMODE' ] = 'BLAS'

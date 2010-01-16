@@ -271,8 +271,8 @@ struct trsm_impl {
     static return_type invoke( const char side, const value_type alpha,
             const MatrixA& a, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::trans_tag< MatrixA, order >::type transa;
         typedef typename result_of::data_order< MatrixB >::type order;
+        typedef typename result_of::trans_tag< MatrixA, order >::type transa;
         typedef typename result_of::uplo_tag< MatrixA, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<

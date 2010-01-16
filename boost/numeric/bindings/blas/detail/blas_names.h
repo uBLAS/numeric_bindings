@@ -63,6 +63,8 @@
 // Value-type variants of rotg
 #define BLAS_SROTG FORTRAN_ID( srotg )
 #define BLAS_DROTG FORTRAN_ID( drotg )
+#define BLAS_CROTG FORTRAN_ID( crotg )
+#define BLAS_ZROTG FORTRAN_ID( zrotg )
 
 // Value-type variants of rotm
 #define BLAS_SROTM FORTRAN_ID( srotm )

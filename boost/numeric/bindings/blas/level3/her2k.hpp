@@ -175,8 +175,8 @@ struct her2k_impl {
     static return_type invoke( const value_type alpha, const MatrixA& a,
             const MatrixB& b, const real_type beta, MatrixC& c ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::data_order< MatrixB >::type order;
+        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixC >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<

@@ -73,6 +73,26 @@ inline void rotg( double& a, double& b, double& c, double& s ) {
     cblas_drotg( &a, &b, &c, &s );
 }
 
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
+// * complex<float> value-type.
+//
+inline void rotg( std::complex<float>& a, std::complex<float>& b, float& c,
+        std::complex<float>& s ) {
+    // NOT FOUND();
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
+// * complex<double> value-type.
+//
+inline void rotg( std::complex<double>& a, std::complex<double>& b, double& c,
+        std::complex<double>& s ) {
+    // NOT FOUND();
+}
+
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
@@ -92,6 +112,26 @@ inline void rotg( double& a, double& b, double& c, double& s ) {
     cublasDrotg( &a, &b, &c, &s );
 }
 
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * complex<float> value-type.
+//
+inline void rotg( std::complex<float>& a, std::complex<float>& b, float& c,
+        std::complex<float>& s ) {
+    // NOT FOUND();
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * complex<double> value-type.
+//
+inline void rotg( std::complex<double>& a, std::complex<double>& b, double& c,
+        std::complex<double>& s ) {
+    // NOT FOUND();
+}
+
 #else
 //
 // Overloaded function for dispatching to
@@ -109,6 +149,26 @@ inline void rotg( float& a, float& b, float& c, float& s ) {
 //
 inline void rotg( double& a, double& b, double& c, double& s ) {
     BLAS_DROTG( &a, &b, &c, &s );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
+//
+inline void rotg( std::complex<float>& a, std::complex<float>& b, float& c,
+        std::complex<float>& s ) {
+    BLAS_CROTG( &a, &b, &c, &s );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
+//
+inline void rotg( std::complex<double>& a, std::complex<double>& b, double& c,
+        std::complex<double>& s ) {
+    BLAS_ZROTG( &a, &b, &c, &s );
 }
 
 #endif
@@ -131,8 +191,8 @@ struct rotg_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    static return_type invoke( real_type& a, real_type& b, real_type& c,
-            real_type& s ) {
+    static return_type invoke( value_type& a, value_type& b, real_type& c,
+            value_type& s ) {
         namespace bindings = ::boost::numeric::bindings;
         detail::rotg( a, b, c, s );
     }

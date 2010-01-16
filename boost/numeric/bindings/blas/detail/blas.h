@@ -93,6 +93,8 @@ void BLAS_ZDROT( const fortran_int_t* n, void* x, const fortran_int_t* incx,
 // Value-type variants of rotg
 void BLAS_SROTG( float* a, float* b, float* c, float* s );
 void BLAS_DROTG( double* a, double* b, double* c, double* s );
+void BLAS_CROTG( void* a, void* b, float* c, void* s );
+void BLAS_ZROTG( void* a, void* b, double* c, void* s );
 
 // Value-type variants of rotm
 void BLAS_SROTM( const fortran_int_t* n, float* x, const fortran_int_t* incx,

@@ -31,6 +31,7 @@ int do_value_type() {
 
    typedef ublas::matrix<T, ublas::column_major> matrix_type ;
    typedef ublas::vector<T>                      vector_type ;
+   real_type safety_factor (1.5);
 
    // Set matrix
    matrix_type z( n, n );
@@ -47,14 +48,14 @@ int do_value_type() {
      for (int j=0; j<d.size(); ++j) {
        sum += z(i,j)*z(i,j) * d(j) ;
      }
-     if (std::abs( sum - 2.0 ) > 10 * std::numeric_limits<T>::epsilon() ) return 1 ;
+     if (std::abs( sum - 2.0 ) > safety_factor*10 * std::numeric_limits<T>::epsilon() ) return 1 ;
 
      if (i>0) {
        sum = 0.0 ;
        for (int j=0; j<d.size(); ++j) {
          sum += z(i-1,j)*z(i,j) * d(j) ;
        }
-       if (std::abs( sum + 1.0 ) > 10 * std::numeric_limits<T>::epsilon() ) return 1 ;
+       if (std::abs( sum + 1.0 ) > safety_factor*10 * std::numeric_limits<T>::epsilon() ) return 1 ;
      }
    }
 
@@ -65,7 +66,9 @@ int do_value_type() {
 
 int main() {
    // Run tests for different value_types
+   std::cout << "float\n" ;
    if (do_value_type<float>()) return 255;
+   std::cout << "double\n" ;
    if (do_value_type<double>()) return 255;
 
    std::cout << "Regression test succeeded\n" ;

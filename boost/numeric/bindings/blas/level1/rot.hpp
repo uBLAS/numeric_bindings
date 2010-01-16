@@ -204,16 +204,15 @@ struct rot_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY >
-    static return_type invoke( const std::ptrdiff_t n, VectorX& x,
-            const std::ptrdiff_t incx, VectorY& y,
-            const std::ptrdiff_t incy, const real_type c,
+    static return_type invoke( VectorX& x, VectorY& y, const real_type c,
             const real_type s ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        detail::rot( n, bindings::begin_value(x), incx,
-                bindings::begin_value(y), incy, c, s );
+        detail::rot( bindings::size(x), bindings::begin_value(x),
+                bindings::stride(x), bindings::begin_value(y),
+                bindings::stride(y), c, s );
     }
 };
 
@@ -232,14 +231,11 @@ struct rot_impl {
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename value< VectorX >::type >::return_type
-rot( const std::ptrdiff_t n, VectorX& x,
-        const std::ptrdiff_t incx, VectorY& y,
-        const std::ptrdiff_t incy, const typename remove_imaginary<
+rot( VectorX& x, VectorY& y, const typename remove_imaginary<
         typename value< VectorX >::type >::type c,
         const typename remove_imaginary< typename value<
         VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
-            incy, c, s );
+    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
 }
 
 //
@@ -249,14 +245,11 @@ rot( const std::ptrdiff_t n, VectorX& x,
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename value< VectorX >::type >::return_type
-rot( const std::ptrdiff_t n, const VectorX& x,
-        const std::ptrdiff_t incx, VectorY& y,
-        const std::ptrdiff_t incy, const typename remove_imaginary<
+rot( const VectorX& x, VectorY& y, const typename remove_imaginary<
         typename value< VectorX >::type >::type c,
         const typename remove_imaginary< typename value<
         VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
-            incy, c, s );
+    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
 }
 
 //
@@ -266,14 +259,11 @@ rot( const std::ptrdiff_t n, const VectorX& x,
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename value< VectorX >::type >::return_type
-rot( const std::ptrdiff_t n, VectorX& x,
-        const std::ptrdiff_t incx, const VectorY& y,
-        const std::ptrdiff_t incy, const typename remove_imaginary<
+rot( VectorX& x, const VectorY& y, const typename remove_imaginary<
         typename value< VectorX >::type >::type c,
         const typename remove_imaginary< typename value<
         VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
-            incy, c, s );
+    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
 }
 
 //
@@ -283,14 +273,11 @@ rot( const std::ptrdiff_t n, VectorX& x,
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename value< VectorX >::type >::return_type
-rot( const std::ptrdiff_t n, const VectorX& x,
-        const std::ptrdiff_t incx, const VectorY& y,
-        const std::ptrdiff_t incy, const typename remove_imaginary<
-        typename value< VectorX >::type >::type c,
+rot( const VectorX& x, const VectorY& y,
         const typename remove_imaginary< typename value<
-        VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
-            incy, c, s );
+        VectorX >::type >::type c, const typename remove_imaginary<
+        typename value< VectorX >::type >::type s ) {
+    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
 }
 
 } // namespace blas

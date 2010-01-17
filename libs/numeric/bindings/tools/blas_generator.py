@@ -503,7 +503,8 @@ for root, dirs, files in os.walk( template_src_path ):
 
 function_info_map = {}
 for lapack_file in os.listdir( lapack_src_path ):
-  right_file = re.compile( '^[cdsz].+\.f$' )
+  # right file includes i for iamax
+  right_file = re.compile( '^[cdszi].+\.f$' )
   if right_file.match( lapack_file ) != None and lapack_file not in skip_blas_files:
     print "Parsing", lapack_file, "..."
     key, value = netlib.parse_file( os.path.join( lapack_src_path, lapack_file ), templates )

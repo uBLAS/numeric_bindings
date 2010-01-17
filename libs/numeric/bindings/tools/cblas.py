@@ -28,7 +28,7 @@ def parse_file( filename, info_map, template_map ):
     pp = pprint.PrettyPrinter( indent = 2 )
     source = open( filename ).read() 
 
-    for match in re.compile( '(void|float|int|double) +' + prefix + '([^\(]+)\(([^\)]+)\)', re.M | re.S ).findall( source ):
+    for match in re.compile( '(void|float|int|double|CBLAS_INDEX) +' + prefix + '([^\(]+)\(([^\)]+)\)', re.M | re.S ).findall( source ):
         print "----"
         return_type  = match[0]
         fortran_routine = match[1].split("_sub")[0].upper().strip()

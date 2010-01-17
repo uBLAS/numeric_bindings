@@ -18,7 +18,7 @@ def parse_file( filename, info_map, template_map ):
     pp = pprint.PrettyPrinter( indent = 2 )
     source = open( filename ).read() 
 
-    for match in re.compile( '^(cuComplex|cuDoubleComplex|float|double|void) ?CUBLASAPI ?cublas([SDCZ][a-z0-9]+) ?\(([^\)]+)\)', re.M | re.S ).findall( source ):
+    for match in re.compile( '^(cuComplex|cuDoubleComplex|float|double|void|int) ?CUBLASAPI ?cublas([SDCZI][a-z0-9]+) ?\(([^\)]+)\)', re.M | re.S ).findall( source ):
         print "----"
 
         return_type  = match[0]

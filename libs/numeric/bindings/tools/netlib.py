@@ -906,7 +906,7 @@ def parse_file( filename, template_map ):
 
   code_line_nr = 0
   while code_line_nr < len(code) and not subroutine_found:
-    match_subroutine_name = re.compile( '(DOUBLE\s+COMPLEX\s+FUNCTION|COMPLEX\s+FUNCTION|DOUBLE\s+PRECISION\s+FUNCTION|REAL\s+FUNCTION|SUBROUTINE)[\s]+([A-Z0-9]+)\(([^\)]+)' ).search( code[ code_line_nr ] )
+    match_subroutine_name = re.compile( '(INTEGER\s+FUNCTION|DOUBLE\s+COMPLEX\s+FUNCTION|COMPLEX\s+FUNCTION|DOUBLE\s+PRECISION\s+FUNCTION|REAL\s+FUNCTION|SUBROUTINE)[\s]+([A-Z0-9]+)\(([^\)]+)' ).search( code[ code_line_nr ] )
     if match_subroutine_name != None:
       subroutine_found = True
       subroutine_name = match_subroutine_name.group( 2 )

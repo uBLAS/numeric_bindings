@@ -107,7 +107,9 @@ def write_blas_dispatch_table( subroutines, info_map ):
             cublas_routine = 'Unavailable'
 
         result += "[  "
-        result += "[`" + routine_value_type[ subroutine[0] ] + "`]"
+        result += "[`" + subroutine_value_type[ ",".join( [
+                info_map[ subroutine ][ 'value_type' ],
+                info_map[ subroutine ][ 'precision' ] ] ) ] + "`]"
         result += "[" + subroutine + "]"
         result += "[" + cblas_routine + "]"
         result += "[" + cublas_routine + "]"

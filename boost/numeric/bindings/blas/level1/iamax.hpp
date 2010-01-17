@@ -179,6 +179,29 @@ inline std::ptrdiff_t iamax( const fortran_int_t n,
 
 } // namespace detail
 
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to iamax.
+//
+template< typename Value >
+struct iamax_impl {
+
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef std::ptrdiff_t return_type;
+
+    //
+    // Static member function that
+    // * Deduces the required arguments for dispatching to BLAS, and
+    // * Asserts that most arguments make sense.
+    //
+    template< typename VectorX >
+    static return_type invoke( const VectorX& x ) {
+        namespace bindings = ::boost::numeric::bindings;
+        return detail::iamax( bindings::size(x),
+                bindings::begin_value(x), bindings::stride(x) );
+    }
+};
 
 //
 // Functions for direct use. These functions are overloaded for temporaries,
@@ -187,6 +210,15 @@ inline std::ptrdiff_t iamax( const fortran_int_t n,
 // documentation, the const-overloads are collapsed to avoid a large number of
 // prototypes which are very similar.
 //
+
+//
+// Overloaded function for iamax. Its overload differs for
+//
+template< typename VectorX >
+inline typename iamax_impl< typename value< VectorX >::type >::return_type
+iamax( const VectorX& x ) {
+    return iamax_impl< typename value< VectorX >::type >::invoke( x );
+}
 
 } // namespace blas
 } // namespace bindings

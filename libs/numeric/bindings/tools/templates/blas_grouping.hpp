@@ -30,4 +30,12 @@ $TEMPLATE[blas.value.SCNRM2]
 complex
 $TEMPLATE[blas.precision.SCNRM2]
 single
+$TEMPLATE[blas.group.ZDSCAL]
+SCAL
+$TEMPLATE[blas.value.ZDSCAL]
+complex+real
+$TEMPLATE[blas.group.CSSCAL]
+SCAL
+$TEMPLATE[blas.value.CSSCAL]
+complex+real
 $TEMPLATE[end]

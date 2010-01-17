@@ -41,7 +41,7 @@ def parse_file( filename, info_map, template_map ):
             #pp.pprint( info_map[ blas_routine ] )
 
             # read aliases, if they are there
-            my_key = blas_routine[ 1: ].lower() + '.all.cblas_alias'
+            my_key = info_map[ blas_routine ][ 'group_name' ].lower() + '.all.cblas_alias'
             alias_map = {}
             print my_key
             if netlib.my_has_key( my_key, template_map ) != None:

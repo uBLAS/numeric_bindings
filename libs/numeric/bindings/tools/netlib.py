@@ -777,7 +777,7 @@ def match_assert_ge( argument_map, text_field ):
 #
 def my_has_key( key_name, template_map ):
   # try, e.g., gelsd.all.
-  m_all_key = key_name.replace( ".complex", ".all" ).replace( ".real", ".all" )
+  m_all_key = key_name.replace(".complex+real",".all").replace( ".complex", ".all" ).replace( ".real", ".all" )
   if template_map.has_key( key_name ):
     print "using key ", key_name
     return key_name
@@ -1013,10 +1013,11 @@ def parse_file( filename, template_map ):
       # try to find the original argument with value type
       # it's either from a complex or double variant, 
       # not as cleanly applied as we might say
-      if subroutine_value_type == 'complex':
-        prefixes = [ 'C', 'Z' ]
-      else:
-        prefixes = [ 'S', 'D' ]
+      prefixes = []
+      if 'complex' in subroutine_value_type:
+        prefixes += [ 'C', 'Z' ]
+      if 'real' in subroutine_value_type:
+        prefixes += [ 'S', 'D' ]
       # determine the original name
       argument_with_value_type = None
       for prefix in prefixes:

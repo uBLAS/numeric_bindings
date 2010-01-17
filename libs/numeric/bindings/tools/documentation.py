@@ -21,7 +21,9 @@ subroutine_value_type = \
     { 'complex,single' : 'complex<float>',
       'complex,double' : 'complex<double>', 
       'real,single' : 'float',
-      'real,double' : 'double'
+      'real,double' : 'double',
+      'complex+real,single' : 'combined float and complex<float>',
+      'complex+real,double' : 'combined double and complex<double>'
     }
 
 matrix_structure = \

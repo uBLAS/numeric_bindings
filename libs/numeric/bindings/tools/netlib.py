@@ -1639,6 +1639,16 @@ def parse_file( filename, template_map ):
     info_map[ 'level1_return_type' ] = 'void'
     info_map[ 'return_statement' ] = ''
 
+  # Enable overrides of direct info-map stuff.
+  for key_name in [ 'level1_return_type' ]:
+        my_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + key_name
+        if my_has_key( my_key, template_map ):
+            user_value = template_map[ my_has_key( my_key, template_map ) ].strip()
+            if user_value == 'None':
+                user_value = None
+            info_map[ key_name ] = user_value
+
+
   #
   # Pass / check user-defined stuff right here.
   #

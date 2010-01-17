@@ -8,4 +8,6 @@ $TEMPLATE[iamax.all.INCX.trait]
 stride,X
 $TEMPLATE[iamax.all.N.trait]
 size,X
+$TEMPLATE[iamax.all.level1_return_type]
+std::ptrdiff_t
 $TEMPLATE[end]

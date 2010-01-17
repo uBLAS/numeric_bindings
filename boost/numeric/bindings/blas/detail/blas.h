@@ -69,6 +69,16 @@ std::complex<float> BLAS_CDOTC( const fortran_int_t* n, const void* x,
 std::complex<double> BLAS_ZDOTC( const fortran_int_t* n, const void* x,
         const fortran_int_t* incx, const void* y, const fortran_int_t* incy );
 
+// Value-type variants of iamax
+fortran_int_t BLAS_ISAMAX( const fortran_int_t* n, const float* x,
+        const fortran_int_t* incx );
+fortran_int_t BLAS_IDAMAX( const fortran_int_t* n, const double* x,
+        const fortran_int_t* incx );
+fortran_int_t BLAS_ICAMAX( const fortran_int_t* n, const void* x,
+        const fortran_int_t* incx );
+fortran_int_t BLAS_IZAMAX( const fortran_int_t* n, const void* x,
+        const fortran_int_t* incx );
+
 // Value-type variants of nrm2
 float BLAS_SNRM2( const fortran_int_t* n, const float* x,
         const fortran_int_t* incx );
@@ -112,6 +122,10 @@ void BLAS_DROTMG( double* d1, double* d2, double* x1, const double* y1,
 void BLAS_SSCAL( const fortran_int_t* n, const float* a, float* x,
         const fortran_int_t* incx );
 void BLAS_DSCAL( const fortran_int_t* n, const double* a, double* x,
+        const fortran_int_t* incx );
+void BLAS_CSSCAL( const fortran_int_t* n, const float* a, void* x,
+        const fortran_int_t* incx );
+void BLAS_ZDSCAL( const fortran_int_t* n, const double* a, void* x,
         const fortran_int_t* incx );
 void BLAS_CSCAL( const fortran_int_t* n, const void* a, void* x,
         const fortran_int_t* incx );

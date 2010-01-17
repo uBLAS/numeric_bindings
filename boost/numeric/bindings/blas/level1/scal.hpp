@@ -76,6 +76,26 @@ inline void scal( const int n, const double a, double* x, const int incx ) {
 //
 // Overloaded function for dispatching to
 // * CBLAS backend, and
+// * combined float and complex<float> value-type.
+//
+inline void scal( const int n, const float a, std::complex<float>* x,
+        const int incx ) {
+    cblas_csscal( n, a, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
+// * combined double and complex<double> value-type.
+//
+inline void scal( const int n, const double a, std::complex<double>* x,
+        const int incx ) {
+    cblas_zdscal( n, a, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
 // * complex<float> value-type.
 //
 inline void scal( const int n, const std::complex<float> a,
@@ -110,6 +130,26 @@ inline void scal( const int n, const float a, float* x, const int incx ) {
 //
 inline void scal( const int n, const double a, double* x, const int incx ) {
     cublasDscal( n, a, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * combined float and complex<float> value-type.
+//
+inline void scal( const int n, const float a, std::complex<float>* x,
+        const int incx ) {
+    cublasCsscal( n, a, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * combined double and complex<double> value-type.
+//
+inline void scal( const int n, const double a, std::complex<double>* x,
+        const int incx ) {
+    // NOT FOUND();
 }
 
 //
@@ -151,6 +191,26 @@ inline void scal( const fortran_int_t n, const float a, float* x,
 inline void scal( const fortran_int_t n, const double a, double* x,
         const fortran_int_t incx ) {
     BLAS_DSCAL( &n, &a, x, &incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * combined float and complex<float> value-type.
+//
+inline void scal( const fortran_int_t n, const float a,
+        std::complex<float>* x, const fortran_int_t incx ) {
+    BLAS_CSSCAL( &n, &a, x, &incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * combined double and complex<double> value-type.
+//
+inline void scal( const fortran_int_t n, const double a,
+        std::complex<double>* x, const fortran_int_t incx ) {
+    BLAS_ZDSCAL( &n, &a, x, &incx );
 }
 
 //

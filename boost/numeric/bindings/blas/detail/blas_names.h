@@ -48,6 +48,12 @@
 #define BLAS_CDOTC FORTRAN_ID( cdotc )
 #define BLAS_ZDOTC FORTRAN_ID( zdotc )
 
+// Value-type variants of iamax
+#define BLAS_ISAMAX FORTRAN_ID( isamax )
+#define BLAS_IDAMAX FORTRAN_ID( idamax )
+#define BLAS_ICAMAX FORTRAN_ID( icamax )
+#define BLAS_IZAMAX FORTRAN_ID( izamax )
+
 // Value-type variants of nrm2
 #define BLAS_SNRM2 FORTRAN_ID( snrm2 )
 #define BLAS_DNRM2 FORTRAN_ID( dnrm2 )
@@ -77,6 +83,8 @@
 // Value-type variants of scal
 #define BLAS_SSCAL FORTRAN_ID( sscal )
 #define BLAS_DSCAL FORTRAN_ID( dscal )
+#define BLAS_CSSCAL FORTRAN_ID( csscal )
+#define BLAS_ZDSCAL FORTRAN_ID( zdscal )
 #define BLAS_CSCAL FORTRAN_ID( cscal )
 #define BLAS_ZSCAL FORTRAN_ID( zscal )
 

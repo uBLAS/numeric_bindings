@@ -784,7 +784,7 @@ def my_has_key( key_name, template_map ):
   if template_map.has_key( m_all_key ):
     print "using key ", m_all_key
     return m_all_key
-  print "tried keys ", key_name, "and", m_all_key,", no results"
+  #print "tried keys ", key_name, "and", m_all_key,", no results"
   return None
 
 
@@ -1551,11 +1551,6 @@ def parse_file( filename, template_map ):
   #
   argument_map.update( user_defined_arg_map )
 
-
-  print "Argument map: "  
-  pp.pprint( argument_map )
-
-
   #
   # Make a back-reference for 
   # * workspace queries
@@ -1610,11 +1605,18 @@ def parse_file( filename, template_map ):
     argument_properties[ 'code' ][ 'user_defined_init' ] = user_defined_type( argument_name, argument_properties, argument_map )
     argument_properties[ 'code' ][ 'typedef' ] = typedef_type( argument_name, argument_properties, argument_map )
 
-  print "Argument map: "  
-  pp.pprint( argument_map )
-
-  print "Grouped arguments: "
-  pp.pprint( grouped_arguments )
+  # Pass 3
+  # Try to see if a template overrides the code
+  for argument_name, argument_properties in argument_map.iteritems():
+    for call_type in [ 'level_1', 'level_1_type', 'level_1_static_assert', 'level_2' ]:
+        my_key = subroutine_group_name.lower() + '.' + subroutine_value_type + \
+            '.' + argument_name + '.code.' + call_type
+        print "Looking for key ", my_key
+        if my_has_key( my_key, template_map ):
+            user_code = template_map[ my_has_key( my_key, template_map ) ].strip()
+            if user_code == 'None':
+                user_code = None
+            argument_properties[ 'code' ][ call_type ] = user_code
 
   #
   # create a dict object
@@ -1667,6 +1669,9 @@ def parse_file( filename, template_map ):
   
   #subroutine_description.replace( subroutine_name, subroutine_name[ 1: ] )
   #info_map[ 'description' ] = subroutine_description
+
+  print "Value of info_map['" + subroutine_name + "']: "  
+  pp.pprint( info_map )
   
   return subroutine_name, info_map
 

@@ -9,6 +9,16 @@ $TEMPLATE[scal.all.arguments]
  A         (input) DATATYPE
 $TEMPLATE[scal.all.cblas_alias]
 A,ALPHA
+$TEMPLATE[scal.all.first_typename]
+VectorX
+$TEMPLATE[scal.complex.A.code.level_1]
+const ScalarA a
+$TEMPLATE[scal.complex.A.code.level_1_type]
+typename ScalarA
+$TEMPLATE[scal.complex.A.code.level_1_static_assert]
+None
+$TEMPLATE[scal.complex.A.code.level_2]
+const ScalarA a
 $TEMPLATE[scal.friendly_name]
 scale
 $TEMPLATE[end]

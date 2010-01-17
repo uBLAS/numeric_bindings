@@ -271,14 +271,17 @@ def write_functions( info_map, group, template_map, base_dir ):
           arg_A = static_asserts[0]
           for arg_B in static_asserts[1:]:
             print "Adding static assert for argA", arg_A, " argb", arg_B
-            assert_line = 'BOOST_STATIC_ASSERT( (is_same< ' + \
-                'typename remove_const< typename value< ' + info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type, ' + \
-                'typename remove_const< typename value< ' + info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type' \
-                ' >::value) );'
-            if not has_comment:
-                #level1_static_assert_list += [ '// Here, we assert... ' ]
-                has_comment = True
-            level1_static_assert_list += [ assert_line ]
+            arg_left = info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ]
+            arg_right = info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ]
+            if arg_left != None and arg_right != None:
+                assert_line = 'BOOST_STATIC_ASSERT( (is_same< ' + \
+                    'typename remove_const< typename value< ' + arg_left + ' >::type >::type, ' + \
+                    'typename remove_const< typename value< ' + arg_right + ' >::type >::type' \
+                    ' >::value) );'
+                if not has_comment:
+                    #level1_static_assert_list += [ '// Here, we assert... ' ]
+                    has_comment = True
+                level1_static_assert_list += [ assert_line ]
 
       # Make sure the mutable stuff is mutable
       if 'output' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ]:
@@ -357,8 +360,13 @@ def write_functions( info_map, group, template_map, base_dir ):
       #level2_template = level2_template.replace( "$LEVEL2", ", ".join( level2_arg_list ) )
 
       if len(level1_type_arg_list)>0:
-        first_typename = level1_type_arg_list[0].split(" ")[-1]
-        first_typename_datatype = first_typename[0:6].lower() # 'matrix' or 'vector'
+        my_key = group_name.lower() + '.' + value_type + '.first_typename'
+        if netlib.my_has_key( my_key, template_map ):
+            first_typename = template_map[ netlib.my_has_key( \
+                my_key, template_map ) ].strip()
+        else:
+            first_typename = level1_type_arg_list[0].split(" ")[-1]
+        first_typename_datatype = first_typename[0:6].lower() # 'matrix' or 'vector' or 'scalar'
       else:
         level1_type_arg_list.insert( 0, 'typename Value' )
         first_typename = 'Value'

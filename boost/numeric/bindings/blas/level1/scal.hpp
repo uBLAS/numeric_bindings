@@ -253,8 +253,8 @@ struct scal_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX >
-    static return_type invoke( const value_type a, VectorX& x ) {
+    template< typename ScalarA, typename VectorX >
+    static return_type invoke( const ScalarA a, VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         detail::scal( bindings::size(x), a, bindings::begin_value(x),
@@ -274,9 +274,9 @@ struct scal_impl {
 // Overloaded function for scal. Its overload differs for
 // * VectorX&
 //
-template< typename VectorX >
+template< typename ScalarA, typename VectorX >
 inline typename scal_impl< typename value< VectorX >::type >::return_type
-scal( const typename value< VectorX >::type a, VectorX& x ) {
+scal( const ScalarA a, VectorX& x ) {
     scal_impl< typename value< VectorX >::type >::invoke( a, x );
 }
 
@@ -284,9 +284,9 @@ scal( const typename value< VectorX >::type a, VectorX& x ) {
 // Overloaded function for scal. Its overload differs for
 // * const VectorX&
 //
-template< typename VectorX >
+template< typename ScalarA, typename VectorX >
 inline typename scal_impl< typename value< VectorX >::type >::return_type
-scal( const typename value< VectorX >::type a, const VectorX& x ) {
+scal( const ScalarA a, const VectorX& x ) {
     scal_impl< typename value< VectorX >::type >::invoke( a, x );
 }
 

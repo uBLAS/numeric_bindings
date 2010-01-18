@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -152,20 +152,20 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorS >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorSEP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSEP >::value) );
@@ -278,16 +278,16 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorS >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorS >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorSEP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSEP >::value) );
@@ -400,8 +400,9 @@ trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
         VectorSEP& sep, const fortran_int_t mm, fortran_int_t& m,
         Workspace work ) {
-    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
-            howmny, select, t, vl, vr, s, sep, mm, m, work );
+    return trsna_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( job, howmny, select, t, vl, vr, s, sep,
+            mm, m, work );
 }
 
 //
@@ -417,8 +418,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorSEP >,
 trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
         VectorSEP& sep, const fortran_int_t mm, fortran_int_t& m ) {
-    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
-            howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
+    return trsna_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( job, howmny, select, t, vl, vr, s, sep,
+            mm, m, optimal_workspace() );
 }
 
 //
@@ -436,8 +438,9 @@ trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const VectorS& s, VectorSEP& sep, const fortran_int_t mm,
         fortran_int_t& m, Workspace work ) {
-    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
-            howmny, select, t, vl, vr, s, sep, mm, m, work );
+    return trsna_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( job, howmny, select, t, vl, vr, s, sep,
+            mm, m, work );
 }
 
 //
@@ -454,8 +457,9 @@ trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const VectorS& s, VectorSEP& sep, const fortran_int_t mm,
         fortran_int_t& m ) {
-    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
-            howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
+    return trsna_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( job, howmny, select, t, vl, vr, s, sep,
+            mm, m, optimal_workspace() );
 }
 
 //
@@ -473,8 +477,9 @@ trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
         const VectorSEP& sep, const fortran_int_t mm,
         fortran_int_t& m, Workspace work ) {
-    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
-            howmny, select, t, vl, vr, s, sep, mm, m, work );
+    return trsna_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( job, howmny, select, t, vl, vr, s, sep,
+            mm, m, work );
 }
 
 //
@@ -491,8 +496,9 @@ trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
         const VectorSEP& sep, const fortran_int_t mm,
         fortran_int_t& m ) {
-    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
-            howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
+    return trsna_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( job, howmny, select, t, vl, vr, s, sep,
+            mm, m, optimal_workspace() );
 }
 
 //
@@ -510,8 +516,9 @@ trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const VectorS& s, const VectorSEP& sep, const fortran_int_t mm,
         fortran_int_t& m, Workspace work ) {
-    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
-            howmny, select, t, vl, vr, s, sep, mm, m, work );
+    return trsna_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( job, howmny, select, t, vl, vr, s, sep,
+            mm, m, work );
 }
 
 //
@@ -528,8 +535,9 @@ trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const VectorS& s, const VectorSEP& sep, const fortran_int_t mm,
         fortran_int_t& m ) {
-    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
-            howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
+    return trsna_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( job, howmny, select, t, vl, vr, s, sep,
+            mm, m, optimal_workspace() );
 }
 
 } // namespace lapack

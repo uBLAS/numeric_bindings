@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -135,12 +135,12 @@ struct gbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             real_type& rowcnd, real_type& colcnd, real_type& amax ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
@@ -182,8 +182,8 @@ struct gbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             real_type& rowcnd, real_type& colcnd, real_type& amax ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorR >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorR >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
@@ -222,13 +222,13 @@ struct gbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixAB, typename VectorR, typename VectorC >
 inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r, VectorC& c,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rowcnd, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& colcnd,
-        typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type& colcnd,
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& amax ) {
-    return gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r,
-            c, rowcnd, colcnd, amax );
+    return gbequ_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, r, c, rowcnd, colcnd, amax );
 }
 
 //
@@ -238,13 +238,13 @@ inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r, VectorC& c,
 //
 template< typename MatrixAB, typename VectorR, typename VectorC >
 inline std::ptrdiff_t gbequ( const MatrixAB& ab, const VectorR& r,
-        VectorC& c, typename remove_imaginary< typename value<
+        VectorC& c, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rowcnd, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& colcnd,
-        typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type& colcnd,
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& amax ) {
-    return gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r,
-            c, rowcnd, colcnd, amax );
+    return gbequ_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, r, c, rowcnd, colcnd, amax );
 }
 
 //
@@ -254,13 +254,13 @@ inline std::ptrdiff_t gbequ( const MatrixAB& ab, const VectorR& r,
 //
 template< typename MatrixAB, typename VectorR, typename VectorC >
 inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r,
-        const VectorC& c, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rowcnd, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& colcnd,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& amax ) {
-    return gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r,
-            c, rowcnd, colcnd, amax );
+        const VectorC& c, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rowcnd,
+        typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type& colcnd, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& amax ) {
+    return gbequ_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, r, c, rowcnd, colcnd, amax );
 }
 
 //
@@ -270,13 +270,13 @@ inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r,
 //
 template< typename MatrixAB, typename VectorR, typename VectorC >
 inline std::ptrdiff_t gbequ( const MatrixAB& ab, const VectorR& r,
-        const VectorC& c, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rowcnd, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& colcnd,
-        typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& amax ) {
-    return gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r,
-            c, rowcnd, colcnd, amax );
+        const VectorC& c, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rowcnd,
+        typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type& colcnd, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& amax ) {
+    return gbequ_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, r, c, rowcnd, colcnd, amax );
 }
 
 } // namespace lapack

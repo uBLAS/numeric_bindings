@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -124,8 +124,8 @@ struct gbsv_impl {
     static std::ptrdiff_t invoke( MatrixAB& ab, VectorIPIV& ipiv, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
@@ -169,8 +169,8 @@ struct gbsv_impl {
 //
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( MatrixAB& ab, VectorIPIV& ipiv, MatrixB& b ) {
-    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv, b );
+    return gbsv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv, b );
 }
 
 //
@@ -182,8 +182,8 @@ inline std::ptrdiff_t gbsv( MatrixAB& ab, VectorIPIV& ipiv, MatrixB& b ) {
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( const MatrixAB& ab, VectorIPIV& ipiv,
         MatrixB& b ) {
-    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv, b );
+    return gbsv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv, b );
 }
 
 //
@@ -195,8 +195,8 @@ inline std::ptrdiff_t gbsv( const MatrixAB& ab, VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( MatrixAB& ab, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv, b );
+    return gbsv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv, b );
 }
 
 //
@@ -208,8 +208,8 @@ inline std::ptrdiff_t gbsv( MatrixAB& ab, const VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( const MatrixAB& ab, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv, b );
+    return gbsv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv, b );
 }
 
 //
@@ -221,8 +221,8 @@ inline std::ptrdiff_t gbsv( const MatrixAB& ab, const VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( MatrixAB& ab, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv, b );
+    return gbsv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv, b );
 }
 
 //
@@ -234,8 +234,8 @@ inline std::ptrdiff_t gbsv( MatrixAB& ab, VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( const MatrixAB& ab, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv, b );
+    return gbsv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv, b );
 }
 
 //
@@ -247,8 +247,8 @@ inline std::ptrdiff_t gbsv( const MatrixAB& ab, VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( MatrixAB& ab, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv, b );
+    return gbsv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv, b );
 }
 
 //
@@ -260,8 +260,8 @@ inline std::ptrdiff_t gbsv( MatrixAB& ab, const VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( const MatrixAB& ab, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv, b );
+    return gbsv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv, b );
 }
 
 } // namespace lapack

@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -137,8 +137,8 @@ struct pbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorS >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_ASSERT( bindings::bandwidth(ab, uplo()) >= 0 );
@@ -206,11 +206,11 @@ struct pbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixAB, typename VectorS >
 inline std::ptrdiff_t pbequ( const MatrixAB& ab, VectorS& s,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& scond, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& amax ) {
-    return pbequ_impl< typename value< MatrixAB >::type >::invoke( ab, s,
-            scond, amax );
+        typename bindings::value_type< MatrixAB >::type >::type& amax ) {
+    return pbequ_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, s, scond, amax );
 }
 
 //
@@ -219,11 +219,11 @@ inline std::ptrdiff_t pbequ( const MatrixAB& ab, VectorS& s,
 //
 template< typename MatrixAB, typename VectorS >
 inline std::ptrdiff_t pbequ( const MatrixAB& ab, const VectorS& s,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& scond, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& amax ) {
-    return pbequ_impl< typename value< MatrixAB >::type >::invoke( ab, s,
-            scond, amax );
+        typename bindings::value_type< MatrixAB >::type >::type& amax ) {
+    return pbequ_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, s, scond, amax );
 }
 
 } // namespace lapack

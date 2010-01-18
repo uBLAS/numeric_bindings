@@ -113,7 +113,7 @@ struct adaptor< ublas::matrix_slice< T >, Id, Enable > {
 template< typename T, typename Id, typename Enable >
 struct adaptor< ublas::matrix_column< T >, Id, Enable > {
 
-    typedef typename copy_const< Id, typename value<T>::type >::type value_type;
+    typedef typename copy_const< Id, typename bindings::value_type< T>::type >::type value_type;
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::vector >,
@@ -147,7 +147,7 @@ struct adaptor< ublas::matrix_column< T >, Id, Enable > {
 template< typename T, typename Id, typename Enable >
 struct adaptor< ublas::matrix_row< T >, Id, Enable > {
 
-    typedef typename copy_const< Id, typename value<T>::type >::type value_type;
+    typedef typename copy_const< Id, typename bindings::value_type< T>::type >::type value_type;
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::vector >,

@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -131,8 +131,8 @@ struct gebak_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorSCALE& scale, MatrixV& v ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorSCALE >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorSCALE >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixV >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
         BOOST_ASSERT( bindings::size(scale) >= bindings::size_row(v) );
@@ -206,8 +206,8 @@ template< typename VectorSCALE, typename MatrixV >
 inline std::ptrdiff_t gebak( const char job, const char side,
         const fortran_int_t ilo, const fortran_int_t ihi,
         const VectorSCALE& scale, MatrixV& v ) {
-    return gebak_impl< typename value< MatrixV >::type >::invoke( job,
-            side, ilo, ihi, scale, v );
+    return gebak_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( job, side, ilo, ihi, scale, v );
 }
 
 //
@@ -218,8 +218,8 @@ template< typename VectorSCALE, typename MatrixV >
 inline std::ptrdiff_t gebak( const char job, const char side,
         const fortran_int_t ilo, const fortran_int_t ihi,
         const VectorSCALE& scale, const MatrixV& v ) {
-    return gebak_impl< typename value< MatrixV >::type >::invoke( job,
-            side, ilo, ihi, scale, v );
+    return gebak_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( job, side, ilo, ihi, scale, v );
 }
 
 } // namespace lapack

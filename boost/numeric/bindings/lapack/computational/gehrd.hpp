@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -132,8 +132,8 @@ struct gehrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAU >::value) );
@@ -220,8 +220,8 @@ struct gehrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAU >::value) );
@@ -308,8 +308,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gehrd( const fortran_int_t ilo, const fortran_int_t ihi,
         MatrixA& a, VectorTAU& tau, Workspace work ) {
-    return gehrd_impl< typename value< MatrixA >::type >::invoke( ilo,
-            ihi, a, tau, work );
+    return gehrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ilo, ihi, a, tau, work );
 }
 
 //
@@ -323,8 +323,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 gehrd( const fortran_int_t ilo, const fortran_int_t ihi,
         MatrixA& a, VectorTAU& tau ) {
-    return gehrd_impl< typename value< MatrixA >::type >::invoke( ilo,
-            ihi, a, tau, optimal_workspace() );
+    return gehrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ilo, ihi, a, tau, optimal_workspace() );
 }
 
 //
@@ -338,8 +338,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gehrd( const fortran_int_t ilo, const fortran_int_t ihi,
         const MatrixA& a, VectorTAU& tau, Workspace work ) {
-    return gehrd_impl< typename value< MatrixA >::type >::invoke( ilo,
-            ihi, a, tau, work );
+    return gehrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ilo, ihi, a, tau, work );
 }
 
 //
@@ -353,8 +353,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 gehrd( const fortran_int_t ilo, const fortran_int_t ihi,
         const MatrixA& a, VectorTAU& tau ) {
-    return gehrd_impl< typename value< MatrixA >::type >::invoke( ilo,
-            ihi, a, tau, optimal_workspace() );
+    return gehrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ilo, ihi, a, tau, optimal_workspace() );
 }
 
 //
@@ -368,8 +368,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gehrd( const fortran_int_t ilo, const fortran_int_t ihi,
         MatrixA& a, const VectorTAU& tau, Workspace work ) {
-    return gehrd_impl< typename value< MatrixA >::type >::invoke( ilo,
-            ihi, a, tau, work );
+    return gehrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ilo, ihi, a, tau, work );
 }
 
 //
@@ -383,8 +383,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 gehrd( const fortran_int_t ilo, const fortran_int_t ihi,
         MatrixA& a, const VectorTAU& tau ) {
-    return gehrd_impl< typename value< MatrixA >::type >::invoke( ilo,
-            ihi, a, tau, optimal_workspace() );
+    return gehrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ilo, ihi, a, tau, optimal_workspace() );
 }
 
 //
@@ -398,8 +398,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gehrd( const fortran_int_t ilo, const fortran_int_t ihi,
         const MatrixA& a, const VectorTAU& tau, Workspace work ) {
-    return gehrd_impl< typename value< MatrixA >::type >::invoke( ilo,
-            ihi, a, tau, work );
+    return gehrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ilo, ihi, a, tau, work );
 }
 
 //
@@ -413,8 +413,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 gehrd( const fortran_int_t ilo, const fortran_int_t ihi,
         const MatrixA& a, const VectorTAU& tau ) {
-    return gehrd_impl< typename value< MatrixA >::type >::invoke( ilo,
-            ihi, a, tau, optimal_workspace() );
+    return gehrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ilo, ihi, a, tau, optimal_workspace() );
 }
 
 } // namespace lapack

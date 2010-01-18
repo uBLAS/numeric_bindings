@@ -27,7 +27,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -323,10 +323,10 @@ template< typename MatrixAB, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tbcon( const char norm, const fortran_int_t kd, const MatrixAB& ab,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, Workspace work ) {
-    return tbcon_impl< typename value< MatrixAB >::type >::invoke( norm,
-            kd, ab, rcond, work );
+    return tbcon_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( norm, kd, ab, rcond, work );
 }
 
 //
@@ -337,10 +337,11 @@ template< typename MatrixAB >
 inline typename boost::disable_if< detail::is_workspace< MatrixAB >,
         std::ptrdiff_t >::type
 tbcon( const char norm, const fortran_int_t kd, const MatrixAB& ab,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond ) {
-    return tbcon_impl< typename value< MatrixAB >::type >::invoke( norm,
-            kd, ab, rcond, optimal_workspace() );
+    return tbcon_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( norm, kd, ab, rcond,
+            optimal_workspace() );
 }
 
 } // namespace lapack

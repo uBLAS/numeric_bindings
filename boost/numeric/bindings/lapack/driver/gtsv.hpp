@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -119,16 +119,16 @@ struct gtsv_impl {
             VectorD& d, VectorDU& du, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDL >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
@@ -172,8 +172,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
         VectorD& d, VectorDU& du, MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -187,8 +187,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n,
         const VectorDL& dl, VectorD& d, VectorDU& du, MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -202,8 +202,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
         const VectorD& d, VectorDU& du, MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -217,8 +217,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n,
         const VectorDL& dl, const VectorD& d, VectorDU& du, MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -232,8 +232,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
         VectorD& d, const VectorDU& du, MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -247,8 +247,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n,
         const VectorDL& dl, VectorD& d, const VectorDU& du, MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -262,8 +262,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
         const VectorD& d, const VectorDU& du, MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -278,8 +278,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
 inline std::ptrdiff_t gtsv( const fortran_int_t n,
         const VectorDL& dl, const VectorD& d, const VectorDU& du,
         MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -293,8 +293,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
         VectorD& d, VectorDU& du, const MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -308,8 +308,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n,
         const VectorDL& dl, VectorD& d, VectorDU& du, const MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -323,8 +323,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
         const VectorD& d, VectorDU& du, const MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -339,8 +339,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
 inline std::ptrdiff_t gtsv( const fortran_int_t n,
         const VectorDL& dl, const VectorD& d, VectorDU& du,
         const MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -354,8 +354,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
         VectorD& d, const VectorDU& du, const MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -370,8 +370,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
 inline std::ptrdiff_t gtsv( const fortran_int_t n,
         const VectorDL& dl, VectorD& d, const VectorDU& du,
         const MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -385,8 +385,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
         const VectorD& d, const VectorDU& du, const MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 //
@@ -401,8 +401,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
 inline std::ptrdiff_t gtsv( const fortran_int_t n,
         const VectorDL& dl, const VectorD& d, const VectorDU& du,
         const MatrixB& b ) {
-    return gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, b );
+    return gtsv_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, b );
 }
 
 } // namespace lapack

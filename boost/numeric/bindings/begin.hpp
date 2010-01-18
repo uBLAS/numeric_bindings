@@ -14,7 +14,7 @@
 #include <boost/numeric/bindings/detail/generate_functions.hpp>
 #include <boost/numeric/bindings/rank.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <iostream>
 
 namespace boost {
@@ -28,7 +28,7 @@ struct begin_impl {};
 
 template< typename T >
 struct begin_impl< T, tag::value > {
-    typedef typename value<T>::type* result_type;
+    typedef typename bindings::value_type< T>::type* result_type;
 
     static result_type invoke( T& t ) {
         return adaptor_access<T>::begin_value( t );
@@ -42,7 +42,7 @@ struct begin_impl<T, tag::index<Dimension> > {
     typedef tag::index<Dimension> tag_type;
 
     typedef linear_iterator<
-        typename value<T>::type,
+        typename bindings::value_type< T>::type,
         typename result_of::stride< T, tag_type >::type
     > result_type;
 

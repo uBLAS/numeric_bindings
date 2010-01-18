@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -324,11 +324,12 @@ template< typename MatrixAB, typename VectorIPIV, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbcon( const char norm, const MatrixAB& ab, const VectorIPIV& ipiv,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type anorm, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, Workspace work ) {
-    return gbcon_impl< typename value< MatrixAB >::type >::invoke( norm,
-            ab, ipiv, anorm, rcond, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        Workspace work ) {
+    return gbcon_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( norm, ab, ipiv, anorm, rcond, work );
 }
 
 //
@@ -339,11 +340,12 @@ template< typename MatrixAB, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 gbcon( const char norm, const MatrixAB& ab, const VectorIPIV& ipiv,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type anorm, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond ) {
-    return gbcon_impl< typename value< MatrixAB >::type >::invoke( norm,
-            ab, ipiv, anorm, rcond, optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond ) {
+    return gbcon_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( norm, ab, ipiv, anorm, rcond,
+            optimal_workspace() );
 }
 
 } // namespace lapack

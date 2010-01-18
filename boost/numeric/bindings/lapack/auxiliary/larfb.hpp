@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -151,12 +151,12 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixV >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixV >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixV >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixV >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
@@ -245,12 +245,12 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixV >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixV >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixV >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixV >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
@@ -338,8 +338,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larfb( const char side, const char direct, const char storev,
         const MatrixV& v, const MatrixT& t, MatrixC& c, Workspace work ) {
-    return larfb_impl< typename value< MatrixV >::type >::invoke( side,
-            direct, storev, v, t, c, work );
+    return larfb_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( side, direct, storev, v, t, c, work );
 }
 
 //
@@ -352,8 +352,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 larfb( const char side, const char direct, const char storev,
         const MatrixV& v, const MatrixT& t, MatrixC& c ) {
-    return larfb_impl< typename value< MatrixV >::type >::invoke( side,
-            direct, storev, v, t, c, optimal_workspace() );
+    return larfb_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( side, direct, storev, v, t, c,
+            optimal_workspace() );
 }
 
 //
@@ -368,8 +369,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 larfb( const char side, const char direct, const char storev,
         const MatrixV& v, const MatrixT& t, const MatrixC& c,
         Workspace work ) {
-    return larfb_impl< typename value< MatrixV >::type >::invoke( side,
-            direct, storev, v, t, c, work );
+    return larfb_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( side, direct, storev, v, t, c, work );
 }
 
 //
@@ -382,8 +383,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 larfb( const char side, const char direct, const char storev,
         const MatrixV& v, const MatrixT& t, const MatrixC& c ) {
-    return larfb_impl< typename value< MatrixV >::type >::invoke( side,
-            direct, storev, v, t, c, optimal_workspace() );
+    return larfb_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( side, direct, storev, v, t, c,
+            optimal_workspace() );
 }
 
 } // namespace lapack

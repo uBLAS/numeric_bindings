@@ -10,7 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_IS_MUTABLE_HPP
 
 #include <boost/type_traits/is_same.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 
 namespace boost {
 namespace numeric {
@@ -19,8 +19,8 @@ namespace bindings {
 template< typename T >
 struct is_mutable:
         is_same<
-            typename value<T>::type, 
-            typename remove_const< typename value<T>::type >::type 
+            typename bindings::value_type< T>::type, 
+            typename remove_const< typename bindings::value_type< T>::type >::type 
         > {};
 
 } // namespace bindings

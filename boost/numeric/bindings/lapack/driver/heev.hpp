@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -201,8 +201,8 @@ template< typename MatrixA, typename VectorW, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 heev( const char jobz, MatrixA& a, VectorW& w, Workspace work ) {
-    return heev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
+    return heev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, work );
 }
 
 //
@@ -215,8 +215,8 @@ template< typename MatrixA, typename VectorW >
 inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 heev( const char jobz, MatrixA& a, VectorW& w ) {
-    return heev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
+    return heev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
 }
 
 //
@@ -229,8 +229,8 @@ template< typename MatrixA, typename VectorW, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 heev( const char jobz, const MatrixA& a, VectorW& w, Workspace work ) {
-    return heev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
+    return heev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, work );
 }
 
 //
@@ -243,8 +243,8 @@ template< typename MatrixA, typename VectorW >
 inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 heev( const char jobz, const MatrixA& a, VectorW& w ) {
-    return heev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
+    return heev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
 }
 
 //
@@ -257,8 +257,8 @@ template< typename MatrixA, typename VectorW, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 heev( const char jobz, MatrixA& a, const VectorW& w, Workspace work ) {
-    return heev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
+    return heev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, work );
 }
 
 //
@@ -271,8 +271,8 @@ template< typename MatrixA, typename VectorW >
 inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 heev( const char jobz, MatrixA& a, const VectorW& w ) {
-    return heev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
+    return heev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
 }
 
 //
@@ -286,8 +286,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 heev( const char jobz, const MatrixA& a, const VectorW& w,
         Workspace work ) {
-    return heev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
+    return heev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, work );
 }
 
 //
@@ -300,8 +300,8 @@ template< typename MatrixA, typename VectorW >
 inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 heev( const char jobz, const MatrixA& a, const VectorW& w ) {
-    return heev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
+    return heev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
 }
 
 } // namespace lapack

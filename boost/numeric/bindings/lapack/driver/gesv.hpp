@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -188,8 +188,8 @@ struct gesv_impl {
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
@@ -231,8 +231,8 @@ struct gesv_impl {
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
-    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b );
+    return gesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b );
 }
 
 //
@@ -244,8 +244,8 @@ inline std::ptrdiff_t gesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( const MatrixA& a, VectorIPIV& ipiv,
         MatrixB& b ) {
-    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b );
+    return gesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b );
 }
 
 //
@@ -257,8 +257,8 @@ inline std::ptrdiff_t gesv( const MatrixA& a, VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( MatrixA& a, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b );
+    return gesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b );
 }
 
 //
@@ -270,8 +270,8 @@ inline std::ptrdiff_t gesv( MatrixA& a, const VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( const MatrixA& a, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b );
+    return gesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b );
 }
 
 //
@@ -283,8 +283,8 @@ inline std::ptrdiff_t gesv( const MatrixA& a, const VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b );
+    return gesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b );
 }
 
 //
@@ -296,8 +296,8 @@ inline std::ptrdiff_t gesv( MatrixA& a, VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( const MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b );
+    return gesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b );
 }
 
 //
@@ -309,8 +309,8 @@ inline std::ptrdiff_t gesv( const MatrixA& a, VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b );
+    return gesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b );
 }
 
 //
@@ -322,8 +322,8 @@ inline std::ptrdiff_t gesv( MatrixA& a, const VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( const MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b );
+    return gesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b );
 }
 
 } // namespace lapack

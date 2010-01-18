@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -215,9 +215,11 @@ struct iamax_impl {
 // Overloaded function for iamax. Its overload differs for
 //
 template< typename VectorX >
-inline typename iamax_impl< typename value< VectorX >::type >::return_type
+inline typename iamax_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
 iamax( const VectorX& x ) {
-    return iamax_impl< typename value< VectorX >::type >::invoke( x );
+    return iamax_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( x );
 }
 
 } // namespace blas

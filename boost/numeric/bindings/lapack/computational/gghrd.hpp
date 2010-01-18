@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -135,16 +135,16 @@ struct gghrd_impl {
             MatrixZ& z ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -197,8 +197,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, MatrixA& a, MatrixB& b, MatrixQ& q,
         MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -213,8 +213,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, const MatrixA& a, MatrixB& b, MatrixQ& q,
         MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -229,8 +229,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, MatrixA& a, const MatrixB& b, MatrixQ& q,
         MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -245,8 +245,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, const MatrixA& a, const MatrixB& b,
         MatrixQ& q, MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -261,8 +261,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, MatrixA& a, MatrixB& b, const MatrixQ& q,
         MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -277,8 +277,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, const MatrixA& a, MatrixB& b,
         const MatrixQ& q, MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -293,8 +293,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, MatrixA& a, const MatrixB& b,
         const MatrixQ& q, MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -309,8 +309,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, const MatrixA& a, const MatrixB& b,
         const MatrixQ& q, MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -325,8 +325,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, MatrixA& a, MatrixB& b, MatrixQ& q,
         const MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -341,8 +341,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, const MatrixA& a, MatrixB& b, MatrixQ& q,
         const MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -357,8 +357,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, MatrixA& a, const MatrixB& b, MatrixQ& q,
         const MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -373,8 +373,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, const MatrixA& a, const MatrixB& b,
         MatrixQ& q, const MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -389,8 +389,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, MatrixA& a, MatrixB& b, const MatrixQ& q,
         const MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -405,8 +405,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, const MatrixA& a, MatrixB& b,
         const MatrixQ& q, const MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -421,8 +421,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, MatrixA& a, const MatrixB& b,
         const MatrixQ& q, const MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 //
@@ -437,8 +437,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t ilo, const MatrixA& a, const MatrixB& b,
         const MatrixQ& q, const MatrixZ& z ) {
-    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
-            compz, ilo, a, b, q, z );
+    return gghrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( compq, compz, ilo, a, b, q, z );
 }
 
 } // namespace lapack

@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -128,12 +128,12 @@ struct pttrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bindings::size(d) >= bindings::size(d) );
@@ -171,8 +171,8 @@ struct pttrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorE& e, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorE >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorE >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bindings::size(d) >= bindings::size(d) );
@@ -207,8 +207,8 @@ struct pttrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t pttrs( const VectorD& d, const VectorE& e,
         MatrixB& b ) {
-    return pttrs_impl< typename value< VectorE >::type >::invoke( d, e,
-            b );
+    return pttrs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, b );
 }
 
 //
@@ -218,8 +218,8 @@ inline std::ptrdiff_t pttrs( const VectorD& d, const VectorE& e,
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t pttrs( const VectorD& d, const VectorE& e,
         const MatrixB& b ) {
-    return pttrs_impl< typename value< VectorE >::type >::invoke( d, e,
-            b );
+    return pttrs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, b );
 }
 //
 // Overloaded function for pttrs. Its overload differs for
@@ -228,8 +228,8 @@ inline std::ptrdiff_t pttrs( const VectorD& d, const VectorE& e,
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t pttrs( const char uplo, const VectorD& d,
         const VectorE& e, MatrixB& b ) {
-    return pttrs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, b );
+    return pttrs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, b );
 }
 
 //
@@ -239,8 +239,8 @@ inline std::ptrdiff_t pttrs( const char uplo, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t pttrs( const char uplo, const VectorD& d,
         const VectorE& e, const MatrixB& b ) {
-    return pttrs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, b );
+    return pttrs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, b );
 }
 
 } // namespace lapack

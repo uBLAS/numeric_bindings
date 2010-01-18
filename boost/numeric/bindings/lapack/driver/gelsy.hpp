@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -144,8 +144,8 @@ struct gelsy_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -248,8 +248,8 @@ struct gelsy_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -370,11 +370,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gelsy( MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, work );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank, work );
 }
 
 //
@@ -388,10 +388,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT >
 inline typename boost::disable_if< detail::is_workspace< VectorJPVT >,
         std::ptrdiff_t >::type
 gelsy( MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, optimal_workspace() );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank,
+            optimal_workspace() );
 }
 
 //
@@ -406,11 +407,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gelsy( const MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, work );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank, work );
 }
 
 //
@@ -424,10 +425,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT >
 inline typename boost::disable_if< detail::is_workspace< VectorJPVT >,
         std::ptrdiff_t >::type
 gelsy( const MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, optimal_workspace() );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank,
+            optimal_workspace() );
 }
 
 //
@@ -442,11 +444,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gelsy( MatrixA& a, const MatrixB& b, VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, work );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank, work );
 }
 
 //
@@ -460,10 +462,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT >
 inline typename boost::disable_if< detail::is_workspace< VectorJPVT >,
         std::ptrdiff_t >::type
 gelsy( MatrixA& a, const MatrixB& b, VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, optimal_workspace() );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank,
+            optimal_workspace() );
 }
 
 //
@@ -478,11 +481,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gelsy( const MatrixA& a, const MatrixB& b, VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, work );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank, work );
 }
 
 //
@@ -496,10 +499,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT >
 inline typename boost::disable_if< detail::is_workspace< VectorJPVT >,
         std::ptrdiff_t >::type
 gelsy( const MatrixA& a, const MatrixB& b, VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, optimal_workspace() );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank,
+            optimal_workspace() );
 }
 
 //
@@ -514,11 +518,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gelsy( MatrixA& a, MatrixB& b, const VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, work );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank, work );
 }
 
 //
@@ -532,10 +536,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT >
 inline typename boost::disable_if< detail::is_workspace< VectorJPVT >,
         std::ptrdiff_t >::type
 gelsy( MatrixA& a, MatrixB& b, const VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, optimal_workspace() );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank,
+            optimal_workspace() );
 }
 
 //
@@ -550,11 +555,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gelsy( const MatrixA& a, MatrixB& b, const VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, work );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank, work );
 }
 
 //
@@ -568,10 +573,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT >
 inline typename boost::disable_if< detail::is_workspace< VectorJPVT >,
         std::ptrdiff_t >::type
 gelsy( const MatrixA& a, MatrixB& b, const VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, optimal_workspace() );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank,
+            optimal_workspace() );
 }
 
 //
@@ -586,11 +592,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gelsy( MatrixA& a, const MatrixB& b, const VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, work );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank, work );
 }
 
 //
@@ -604,10 +610,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT >
 inline typename boost::disable_if< detail::is_workspace< VectorJPVT >,
         std::ptrdiff_t >::type
 gelsy( MatrixA& a, const MatrixB& b, const VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, optimal_workspace() );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank,
+            optimal_workspace() );
 }
 
 //
@@ -622,11 +629,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gelsy( const MatrixA& a, const MatrixB& b, const VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, work );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank, work );
 }
 
 //
@@ -640,10 +647,11 @@ template< typename MatrixA, typename MatrixB, typename VectorJPVT >
 inline typename boost::disable_if< detail::is_workspace< VectorJPVT >,
         std::ptrdiff_t >::type
 gelsy( const MatrixA& a, const MatrixB& b, const VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsy_impl< typename value< MatrixA >::type >::invoke( a, b,
-            jpvt, rcond, rank, optimal_workspace() );
+    return gelsy_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, jpvt, rcond, rank,
+            optimal_workspace() );
 }
 
 } // namespace lapack

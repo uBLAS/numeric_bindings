@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -112,8 +112,8 @@ struct lacgv_impl {
 template< typename VectorX >
 inline std::ptrdiff_t lacgv( const fortran_int_t n, VectorX& x,
         const fortran_int_t incx ) {
-    return lacgv_impl< typename value< VectorX >::type >::invoke( n, x,
-            incx );
+    return lacgv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, incx );
 }
 
 //
@@ -123,8 +123,8 @@ inline std::ptrdiff_t lacgv( const fortran_int_t n, VectorX& x,
 template< typename VectorX >
 inline std::ptrdiff_t lacgv( const fortran_int_t n, const VectorX& x,
         const fortran_int_t incx ) {
-    return lacgv_impl< typename value< VectorX >::type >::invoke( n, x,
-            incx );
+    return lacgv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, incx );
 }
 
 } // namespace lapack

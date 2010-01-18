@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -166,28 +166,28 @@ struct tgsja_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& ncycle, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBETA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixV >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -310,24 +310,24 @@ struct tgsja_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& ncycle, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorALPHA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorALPHA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBETA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixV >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -452,76 +452,20 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
         Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
@@ -536,77 +480,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -621,21 +509,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
         Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -650,21 +538,21 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * MatrixV&
@@ -678,21 +566,22 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
-        MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
+        Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * MatrixV&
@@ -706,19 +595,76 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
-        MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
+        Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -733,21 +679,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -762,78 +708,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
-        MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
-        MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -848,15 +738,131 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -878,14 +884,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -906,14 +912,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -934,14 +941,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -963,14 +971,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -992,14 +1000,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -1020,14 +1028,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -1048,14 +1057,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -1077,14 +1087,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -1106,14 +1116,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -1134,14 +1144,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -1162,14 +1173,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -1191,14 +1203,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -1220,14 +1232,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -1248,71 +1260,73 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -1334,14 +1348,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -1362,76 +1376,20 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
         Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
@@ -1446,77 +1404,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -1531,21 +1433,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
         Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -1560,21 +1462,21 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
 // * MatrixV&
@@ -1588,21 +1490,22 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
+        Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
 // * MatrixV&
@@ -1616,19 +1519,76 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
+        Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -1643,21 +1603,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -1672,78 +1632,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -1758,15 +1662,131 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -1788,14 +1808,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -1816,14 +1836,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -1844,14 +1865,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -1873,14 +1895,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -1902,14 +1924,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -1930,14 +1952,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -1958,14 +1981,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -1987,14 +2011,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -2016,14 +2040,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -2044,14 +2068,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -2072,14 +2097,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -2101,14 +2127,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -2130,14 +2156,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -2158,71 +2184,73 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -2244,14 +2272,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -2272,76 +2300,20 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
         Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
@@ -2356,77 +2328,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -2441,21 +2357,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
         Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -2470,21 +2386,21 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * const MatrixV&
@@ -2498,22 +2414,22 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
         Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * const MatrixV&
@@ -2527,19 +2443,76 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
+        Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -2554,21 +2527,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -2583,79 +2556,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -2670,21 +2586,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -2699,15 +2615,131 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -2728,14 +2760,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -2756,14 +2789,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -2785,14 +2819,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -2814,14 +2848,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -2842,14 +2876,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -2870,14 +2905,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -2899,14 +2935,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -2928,14 +2964,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -2956,15 +2992,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -2985,14 +3021,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -3014,14 +3051,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -3043,14 +3080,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -3071,72 +3108,73 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -3158,14 +3196,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -3186,76 +3224,20 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
@@ -3270,78 +3252,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -3356,21 +3282,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -3385,22 +3311,22 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
 // * const MatrixV&
@@ -3414,22 +3340,22 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
 // * const MatrixV&
@@ -3443,19 +3369,78 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -3470,21 +3455,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -3499,79 +3484,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -3586,15 +3514,131 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -3616,14 +3660,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -3644,14 +3688,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -3672,14 +3717,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -3701,14 +3747,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -3730,14 +3776,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -3758,14 +3804,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -3786,14 +3833,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -3815,14 +3863,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -3844,14 +3892,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -3872,15 +3920,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -3901,14 +3949,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -3930,14 +3979,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -3959,14 +4008,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -3987,72 +4036,73 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -4074,14 +4124,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -4102,76 +4152,20 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
         Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
@@ -4186,77 +4180,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -4271,21 +4209,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
         Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -4300,21 +4238,21 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * MatrixV&
@@ -4328,21 +4266,22 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
+        Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * MatrixV&
@@ -4356,19 +4295,76 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
+        Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -4383,21 +4379,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -4412,78 +4408,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -4498,21 +4438,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -4527,15 +4467,131 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -4556,14 +4612,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -4584,14 +4641,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -4613,14 +4671,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -4642,14 +4700,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -4670,14 +4728,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -4698,14 +4757,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -4727,14 +4787,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -4756,14 +4816,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -4784,15 +4844,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -4813,14 +4873,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -4842,14 +4903,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -4871,14 +4932,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -4899,72 +4960,73 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -4986,14 +5048,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -5014,76 +5076,20 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
@@ -5098,78 +5104,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -5184,21 +5134,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -5213,22 +5163,22 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
 // * MatrixV&
@@ -5242,22 +5192,22 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
 // * MatrixV&
@@ -5271,19 +5221,78 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -5298,21 +5307,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -5327,79 +5336,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -5414,21 +5366,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -5443,358 +5395,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -5802,124 +5411,9 @@ tgsja( const char jobu, const char jobv, const char jobq,
 // * MatrixA&
 // * const MatrixB&
 // * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
-        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
 // * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
+// * const MatrixU&
+// * MatrixV&
 // * const MatrixQ&
 // * User-defined workspace
 //
@@ -5930,24 +5424,25 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
+// * const MatrixB&
+// * const VectorALPHA&
 // * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
+// * const MatrixU&
+// * MatrixV&
 // * const MatrixQ&
 // * Default workspace-type (optimal)
 //
@@ -5958,19 +5453,542 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
@@ -5985,21 +6003,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
@@ -6014,78 +6032,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
-        fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
-        fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -6100,21 +6062,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -6129,22 +6091,22 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * const MatrixV&
@@ -6158,22 +6120,22 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
 // * const MatrixV&
@@ -6187,19 +6149,78 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -6214,21 +6235,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -6243,79 +6264,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -6330,21 +6294,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * MatrixU&
@@ -6359,15 +6323,131 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -6388,14 +6468,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -6416,14 +6497,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -6445,14 +6527,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -6474,14 +6556,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -6502,14 +6584,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -6530,14 +6613,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -6559,14 +6643,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -6588,14 +6672,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -6616,15 +6700,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -6645,14 +6729,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -6674,14 +6759,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -6703,14 +6788,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -6731,72 +6816,73 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -6818,14 +6904,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -6846,76 +6932,20 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
@@ -6930,78 +6960,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
-        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
-        const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -7016,21 +6990,21 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -7045,22 +7019,22 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
 // * const MatrixV&
@@ -7074,22 +7048,22 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const VectorALPHA&
+// * const MatrixB&
+// * VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
 // * const MatrixV&
@@ -7103,19 +7077,78 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixU& u, const MatrixV& v, const MatrixQ& q,
+        fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -7130,21 +7163,21 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
@@ -7159,79 +7192,22 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
 // Overloaded function for tgsja. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * const VectorALPHA&
 // * VectorBETA&
 // * const MatrixU&
@@ -7246,15 +7222,131 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -7276,14 +7368,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -7304,14 +7396,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -7332,14 +7425,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -7361,14 +7455,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -7390,14 +7484,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -7418,14 +7512,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -7446,14 +7541,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, VectorALPHA& alpha,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -7475,14 +7571,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -7504,14 +7600,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -7532,15 +7628,15 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -7561,14 +7657,15 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -7590,14 +7687,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -7619,14 +7716,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 //
@@ -7647,72 +7744,73 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle,
-        Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb,
-        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
-        const MatrixV& v, const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsja. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorALPHA&
-// * const VectorBETA&
-// * const MatrixU&
-// * const MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorALPHA,
-        typename VectorBETA, typename MatrixU, typename MatrixV,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsja( const char jobu, const char jobv, const char jobq,
-        const fortran_int_t k, const fortran_int_t l,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            work );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsja. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixU&
+// * const MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixU, typename MatrixV,
+        typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t k, const fortran_int_t l,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, const VectorALPHA& alpha,
+        const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
+        const MatrixQ& q, fortran_int_t& ncycle, Workspace work ) {
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, work );
 }
 
 //
@@ -7734,14 +7832,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
 tgsja( const char jobu, const char jobv, const char jobq,
         const fortran_int_t k, const fortran_int_t l,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, fortran_int_t& ncycle ) {
-    return tgsja_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v, q, ncycle,
-            optimal_workspace() );
+    return tgsja_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -271,10 +271,10 @@ template< typename VectorX, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 lacon( const fortran_int_t n, VectorX& x, typename remove_imaginary<
-        typename value< VectorX >::type >::type& est, fortran_int_t& kase,
-        Workspace work ) {
-    return lacon_impl< typename value< VectorX >::type >::invoke( n, x,
-            est, kase, work );
+        typename bindings::value_type< VectorX >::type >::type& est,
+        fortran_int_t& kase, Workspace work ) {
+    return lacon_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, est, kase, work );
 }
 
 //
@@ -286,10 +286,10 @@ template< typename VectorX >
 inline typename boost::disable_if< detail::is_workspace< VectorX >,
         std::ptrdiff_t >::type
 lacon( const fortran_int_t n, VectorX& x, typename remove_imaginary<
-        typename value< VectorX >::type >::type& est,
+        typename bindings::value_type< VectorX >::type >::type& est,
         fortran_int_t& kase ) {
-    return lacon_impl< typename value< VectorX >::type >::invoke( n, x,
-            est, kase, optimal_workspace() );
+    return lacon_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, est, kase, optimal_workspace() );
 }
 
 //
@@ -301,11 +301,11 @@ template< typename VectorX, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 lacon( const fortran_int_t n, const VectorX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type& est, fortran_int_t& kase,
         Workspace work ) {
-    return lacon_impl< typename value< VectorX >::type >::invoke( n, x,
-            est, kase, work );
+    return lacon_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, est, kase, work );
 }
 
 //
@@ -317,10 +317,10 @@ template< typename VectorX >
 inline typename boost::disable_if< detail::is_workspace< VectorX >,
         std::ptrdiff_t >::type
 lacon( const fortran_int_t n, const VectorX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type& est, fortran_int_t& kase ) {
-    return lacon_impl< typename value< VectorX >::type >::invoke( n, x,
-            est, kase, optimal_workspace() );
+    return lacon_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, est, kase, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -145,20 +145,20 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -260,16 +260,16 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             detail::workspace1< RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixVT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixVT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixVT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixVT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -374,8 +374,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -393,8 +393,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -412,8 +413,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -431,8 +432,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -451,8 +453,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -470,8 +472,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -490,8 +493,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -509,8 +512,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -529,8 +533,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -548,8 +552,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -568,8 +573,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -587,8 +592,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -607,8 +613,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -626,8 +632,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -646,8 +653,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -665,8 +672,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -685,8 +693,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -704,8 +712,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -724,8 +733,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -743,8 +752,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -763,8 +773,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -782,8 +792,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -802,8 +813,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -821,8 +832,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -841,8 +853,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -860,8 +872,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -880,8 +893,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -899,8 +912,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -919,8 +933,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -938,8 +952,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -958,8 +973,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -977,8 +992,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, const MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -997,8 +1013,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1016,8 +1032,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1036,8 +1053,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1055,8 +1072,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1075,8 +1093,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1094,8 +1112,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1114,8 +1133,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1133,8 +1152,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1153,8 +1173,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1172,8 +1192,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1192,8 +1213,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1211,8 +1232,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1231,8 +1253,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1250,8 +1272,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1270,8 +1293,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1289,8 +1312,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, const MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1309,8 +1333,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1328,8 +1352,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1348,8 +1373,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1367,8 +1392,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1387,8 +1413,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1406,8 +1432,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1426,8 +1453,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1445,8 +1472,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1465,8 +1493,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, const MatrixVT& vt, const MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1484,8 +1512,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         VectorE& e, const MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1504,8 +1533,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, const MatrixVT& vt, const MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1523,8 +1552,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         VectorE& e, const MatrixVT& vt, const MatrixU& u, const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1543,8 +1573,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1563,8 +1593,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
 bdsqr( const char uplo, const fortran_int_t n, VectorD& d,
         const VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 //
@@ -1583,8 +1614,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, work );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c, work );
 }
 
 //
@@ -1603,8 +1634,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
 bdsqr( const char uplo, const fortran_int_t n, const VectorD& d,
         const VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c ) {
-    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
-            n, d, e, vt, u, c, optimal_workspace() );
+    return bdsqr_impl< typename bindings::value_type<
+            MatrixVT >::type >::invoke( uplo, n, d, e, vt, u, c,
+            optimal_workspace() );
 }
 
 } // namespace lapack

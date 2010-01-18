@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -133,8 +133,8 @@ struct ppequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorS >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_ASSERT( bindings::size_column(ap) >= 0 );
@@ -190,11 +190,11 @@ struct ppequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixAP, typename VectorS >
 inline std::ptrdiff_t ppequ( const MatrixAP& ap, VectorS& s,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& scond, typename remove_imaginary<
-        typename value< MatrixAP >::type >::type& amax ) {
-    return ppequ_impl< typename value< MatrixAP >::type >::invoke( ap, s,
-            scond, amax );
+        typename bindings::value_type< MatrixAP >::type >::type& amax ) {
+    return ppequ_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, s, scond, amax );
 }
 
 //
@@ -203,11 +203,11 @@ inline std::ptrdiff_t ppequ( const MatrixAP& ap, VectorS& s,
 //
 template< typename MatrixAP, typename VectorS >
 inline std::ptrdiff_t ppequ( const MatrixAP& ap, const VectorS& s,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& scond, typename remove_imaginary<
-        typename value< MatrixAP >::type >::type& amax ) {
-    return ppequ_impl< typename value< MatrixAP >::type >::invoke( ap, s,
-            scond, amax );
+        typename bindings::value_type< MatrixAP >::type >::type& amax ) {
+    return ppequ_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, s, scond, amax );
 }
 
 } // namespace lapack

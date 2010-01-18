@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -173,8 +173,8 @@ template< typename MatrixA, typename VectorIPIV, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hetri( MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
-    return hetri_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, work );
+    return hetri_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, work );
 }
 
 //
@@ -186,8 +186,8 @@ template< typename MatrixA, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 hetri( MatrixA& a, const VectorIPIV& ipiv ) {
-    return hetri_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, optimal_workspace() );
+    return hetri_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
 }
 
 //
@@ -199,8 +199,8 @@ template< typename MatrixA, typename VectorIPIV, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hetri( const MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
-    return hetri_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, work );
+    return hetri_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, work );
 }
 
 //
@@ -212,8 +212,8 @@ template< typename MatrixA, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 hetri( const MatrixA& a, const VectorIPIV& ipiv ) {
-    return hetri_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, optimal_workspace() );
+    return hetri_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
 }
 
 } // namespace lapack

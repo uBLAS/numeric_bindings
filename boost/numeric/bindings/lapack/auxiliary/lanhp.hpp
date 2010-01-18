@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -161,8 +161,8 @@ template< typename MatrixAP, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 lanhp( const char norm, const MatrixAP& ap, Workspace work ) {
-    return lanhp_impl< typename value< MatrixAP >::type >::invoke( norm,
-            ap, work );
+    return lanhp_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( norm, ap, work );
 }
 
 //
@@ -173,8 +173,8 @@ template< typename MatrixAP >
 inline typename boost::disable_if< detail::is_workspace< MatrixAP >,
         std::ptrdiff_t >::type
 lanhp( const char norm, const MatrixAP& ap ) {
-    return lanhp_impl< typename value< MatrixAP >::type >::invoke( norm,
-            ap, optimal_workspace() );
+    return lanhp_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( norm, ap, optimal_workspace() );
 }
 
 } // namespace lapack

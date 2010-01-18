@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -126,8 +126,8 @@ struct ppsv_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -161,8 +161,8 @@ struct ppsv_impl {
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t ppsv( MatrixAP& ap, MatrixB& b ) {
-    return ppsv_impl< typename value< MatrixAP >::type >::invoke( ap,
-            b );
+    return ppsv_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b );
 }
 
 //
@@ -172,8 +172,8 @@ inline std::ptrdiff_t ppsv( MatrixAP& ap, MatrixB& b ) {
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t ppsv( const MatrixAP& ap, MatrixB& b ) {
-    return ppsv_impl< typename value< MatrixAP >::type >::invoke( ap,
-            b );
+    return ppsv_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b );
 }
 
 //
@@ -183,8 +183,8 @@ inline std::ptrdiff_t ppsv( const MatrixAP& ap, MatrixB& b ) {
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t ppsv( MatrixAP& ap, const MatrixB& b ) {
-    return ppsv_impl< typename value< MatrixAP >::type >::invoke( ap,
-            b );
+    return ppsv_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b );
 }
 
 //
@@ -194,8 +194,8 @@ inline std::ptrdiff_t ppsv( MatrixAP& ap, const MatrixB& b ) {
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t ppsv( const MatrixAP& ap, const MatrixB& b ) {
-    return ppsv_impl< typename value< MatrixAP >::type >::invoke( ap,
-            b );
+    return ppsv_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b );
 }
 
 } // namespace lapack

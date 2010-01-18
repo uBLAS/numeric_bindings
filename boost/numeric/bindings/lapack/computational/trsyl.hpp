@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -142,12 +142,12 @@ struct trsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixC& c, real_type& scale ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
@@ -196,12 +196,12 @@ struct trsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixC& c, real_type& scale ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
@@ -246,10 +246,11 @@ template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline std::ptrdiff_t trsyl( const char trana, const char tranb,
         const fortran_int_t isgn, const fortran_int_t m,
         const fortran_int_t n, const MatrixA& a, const MatrixB& b,
-        MatrixC& c, typename remove_imaginary< typename value<
+        MatrixC& c, typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scale ) {
-    return trsyl_impl< typename value< MatrixA >::type >::invoke( trana,
-            tranb, isgn, m, n, a, b, c, scale );
+    return trsyl_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( trana, tranb, isgn, m, n, a, b, c,
+            scale );
 }
 
 //
@@ -260,10 +261,11 @@ template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline std::ptrdiff_t trsyl( const char trana, const char tranb,
         const fortran_int_t isgn, const fortran_int_t m,
         const fortran_int_t n, const MatrixA& a, const MatrixB& b,
-        const MatrixC& c, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& scale ) {
-    return trsyl_impl< typename value< MatrixA >::type >::invoke( trana,
-            tranb, isgn, m, n, a, b, c, scale );
+        const MatrixC& c, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& scale ) {
+    return trsyl_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( trana, tranb, isgn, m, n, a, b, c,
+            scale );
 }
 
 } // namespace lapack

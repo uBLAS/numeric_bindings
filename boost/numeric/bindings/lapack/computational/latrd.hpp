@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -139,16 +139,16 @@ struct latrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -191,12 +191,12 @@ struct latrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -239,8 +239,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         VectorE& e, VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -254,8 +254,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
         VectorE& e, VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -269,8 +269,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         const VectorE& e, VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -284,8 +284,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
         const VectorE& e, VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -299,8 +299,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -314,8 +314,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
         VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -329,8 +329,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         const VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -344,8 +344,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
         const VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -359,8 +359,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         VectorE& e, VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -374,8 +374,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
         VectorE& e, VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -389,8 +389,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         const VectorE& e, VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -404,8 +404,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
         const VectorE& e, VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -419,8 +419,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -434,8 +434,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
         VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -449,8 +449,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         const VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 //
@@ -464,8 +464,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
         const VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
-            e, tau, w );
+    return latrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( nb, a, e, tau, w );
 }
 
 } // namespace lapack

@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/rank.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/numeric/bindings/has_linear_array.hpp>
 #include <boost/ref.hpp>
 

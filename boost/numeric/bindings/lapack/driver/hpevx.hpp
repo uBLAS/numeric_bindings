@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -115,8 +115,8 @@ struct hpevx_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
@@ -237,15 +237,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -261,16 +262,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -286,15 +287,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -310,16 +312,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -335,15 +337,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -359,16 +362,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -384,15 +387,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -408,16 +412,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -433,15 +437,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -457,16 +462,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -482,15 +487,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -506,16 +512,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -531,16 +537,17 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -556,16 +563,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -581,16 +588,17 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -606,16 +614,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -631,15 +639,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -655,16 +664,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -680,15 +689,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -704,16 +714,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -729,16 +739,17 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -754,16 +765,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -779,16 +790,17 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -804,16 +816,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -829,15 +841,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -853,16 +866,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -878,15 +891,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -902,16 +916,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -927,16 +941,17 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -952,16 +967,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -977,16 +992,17 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1002,16 +1018,16 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type vu,
+        typename bindings::value_type< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return hpevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return hpevx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
+            abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 } // namespace lapack

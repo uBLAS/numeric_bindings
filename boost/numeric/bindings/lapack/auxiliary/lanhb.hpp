@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -172,8 +172,8 @@ template< typename MatrixAB, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 lanhb( const char norm, const MatrixAB& ab, Workspace work ) {
-    return lanhb_impl< typename value< MatrixAB >::type >::invoke( norm,
-            ab, work );
+    return lanhb_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( norm, ab, work );
 }
 
 //
@@ -184,8 +184,8 @@ template< typename MatrixAB >
 inline typename boost::disable_if< detail::is_workspace< MatrixAB >,
         std::ptrdiff_t >::type
 lanhb( const char norm, const MatrixAB& ab ) {
-    return lanhb_impl< typename value< MatrixAB >::type >::invoke( norm,
-            ab, optimal_workspace() );
+    return lanhb_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( norm, ab, optimal_workspace() );
 }
 
 } // namespace lapack

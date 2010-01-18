@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -151,28 +151,28 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             MatrixVR& vr, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHAR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHAI >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBETA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -294,24 +294,24 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBETA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -447,8 +447,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -470,8 +471,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -493,8 +495,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -516,8 +519,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -539,8 +543,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -562,8 +567,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -585,8 +591,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -608,8 +615,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -631,8 +639,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -654,8 +663,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -677,8 +687,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -700,8 +711,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -723,8 +735,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -746,8 +759,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -769,8 +783,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -792,8 +807,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -815,8 +831,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -838,8 +855,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -861,8 +879,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -884,8 +903,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -907,8 +927,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -930,8 +951,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -953,8 +975,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -976,8 +999,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -999,8 +1023,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1022,8 +1047,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1045,8 +1071,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1068,8 +1095,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1091,8 +1119,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1114,8 +1143,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1138,8 +1168,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1162,8 +1193,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1185,8 +1217,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1208,8 +1241,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1231,8 +1265,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1254,8 +1289,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1277,8 +1313,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1300,8 +1337,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1323,8 +1361,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1346,8 +1385,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1369,8 +1409,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1392,8 +1433,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1415,8 +1457,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1438,8 +1481,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1461,8 +1505,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1484,8 +1529,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1507,8 +1553,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1530,8 +1577,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1553,8 +1601,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1576,8 +1625,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1599,8 +1649,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1622,8 +1673,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1645,8 +1697,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1668,8 +1721,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1691,8 +1745,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1714,8 +1769,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1737,8 +1793,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1760,8 +1817,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1783,8 +1841,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1806,8 +1865,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1829,8 +1889,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1852,8 +1913,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1876,8 +1938,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1900,8 +1963,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1923,8 +1987,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1946,8 +2011,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1969,8 +2035,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -1992,8 +2059,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2015,8 +2083,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2038,8 +2107,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2061,8 +2131,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2084,8 +2155,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2107,8 +2179,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2130,8 +2203,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2153,8 +2227,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2176,8 +2251,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2199,8 +2275,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2222,8 +2299,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2245,8 +2323,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2268,8 +2347,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2291,8 +2371,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2314,8 +2395,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2337,8 +2419,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2360,8 +2443,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2383,8 +2467,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2406,8 +2491,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2429,8 +2515,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2452,8 +2539,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2475,8 +2563,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2498,8 +2587,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2521,8 +2611,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2544,8 +2635,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2567,8 +2659,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2590,8 +2683,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2614,8 +2708,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2638,8 +2733,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2661,8 +2757,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2684,8 +2781,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2707,8 +2805,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2730,8 +2829,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2753,8 +2853,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2776,8 +2877,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2800,8 +2902,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2823,8 +2926,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2847,8 +2951,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2870,8 +2975,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2894,8 +3000,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2917,8 +3024,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2941,8 +3049,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -2964,8 +3073,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2988,8 +3098,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3011,8 +3122,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3035,8 +3147,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3058,8 +3171,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3082,8 +3196,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3105,8 +3220,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3129,8 +3245,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3152,8 +3269,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3176,8 +3294,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3199,8 +3318,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3223,8 +3343,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3246,8 +3367,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3270,8 +3392,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3293,8 +3416,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3317,8 +3441,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3340,8 +3465,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3364,8 +3490,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3388,8 +3515,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3411,8 +3539,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3434,8 +3563,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3457,8 +3587,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3480,8 +3611,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3503,8 +3635,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3526,8 +3659,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3549,8 +3683,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3572,8 +3707,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3595,8 +3731,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3618,8 +3755,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3641,8 +3779,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3664,8 +3803,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3687,8 +3827,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3710,8 +3851,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3733,8 +3875,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3756,8 +3899,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3779,8 +3923,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3802,8 +3947,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3825,8 +3971,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3848,8 +3995,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3871,8 +4019,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3894,8 +4043,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3917,8 +4067,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3940,8 +4091,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3963,8 +4115,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -3986,8 +4139,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4009,8 +4163,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4032,8 +4187,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4055,8 +4211,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4078,8 +4235,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4102,8 +4260,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4126,8 +4285,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4149,8 +4309,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4172,8 +4333,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4195,8 +4357,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4218,8 +4381,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4241,8 +4405,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4264,8 +4429,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4288,8 +4454,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4311,8 +4478,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4335,8 +4503,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4358,8 +4527,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4382,8 +4552,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4405,8 +4576,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4429,8 +4601,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4452,8 +4625,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4476,8 +4650,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4499,8 +4674,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4523,8 +4699,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4546,8 +4723,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4570,8 +4748,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4593,8 +4772,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4617,8 +4797,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4640,8 +4821,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4664,8 +4846,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4687,8 +4870,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4711,8 +4895,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4734,8 +4919,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4758,8 +4944,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4781,8 +4968,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4805,8 +4993,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4828,8 +5017,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4852,8 +5042,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4876,8 +5067,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4899,8 +5091,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4922,8 +5115,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4945,8 +5139,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -4968,8 +5163,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4991,8 +5187,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5014,8 +5211,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5038,8 +5236,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5061,8 +5260,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5084,8 +5284,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5107,8 +5308,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5130,8 +5332,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5153,8 +5356,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5176,8 +5380,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5199,8 +5404,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5223,8 +5429,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5246,8 +5453,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5269,8 +5477,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5292,8 +5501,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5315,8 +5525,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5338,8 +5549,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5361,8 +5573,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5384,8 +5597,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5408,8 +5622,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5431,8 +5646,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5455,8 +5671,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5478,8 +5695,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5502,8 +5720,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5525,8 +5744,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5549,8 +5769,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5572,8 +5793,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5596,8 +5818,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5620,8 +5843,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5643,8 +5867,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5666,8 +5891,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5689,8 +5915,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5712,8 +5939,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5735,8 +5963,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5758,8 +5987,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5782,8 +6012,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5805,8 +6036,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5829,8 +6061,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5852,8 +6085,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5876,8 +6110,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5899,8 +6134,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5923,8 +6159,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5946,8 +6183,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5970,8 +6208,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -5993,8 +6232,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6017,8 +6257,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -6040,8 +6281,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6064,8 +6306,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -6087,8 +6330,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6111,8 +6355,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -6134,8 +6379,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6158,8 +6404,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -6181,8 +6428,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6205,8 +6453,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -6228,8 +6477,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6252,8 +6502,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -6275,8 +6526,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6299,8 +6551,9 @@ gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -6322,8 +6575,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6346,8 +6600,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, work );
 }
 
 //
@@ -6370,8 +6625,9 @@ gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, optimal_workspace() );
 }
 //
 // Overloaded function for gegv. Its overload differs for
@@ -6391,8 +6647,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6411,8 +6668,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
         std::ptrdiff_t >::type
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6433,8 +6691,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6453,8 +6712,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
         std::ptrdiff_t >::type
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6475,8 +6735,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6495,8 +6756,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
         std::ptrdiff_t >::type
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6517,8 +6779,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6538,8 +6801,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6560,8 +6824,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6581,8 +6846,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6603,8 +6869,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6624,8 +6891,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6646,8 +6914,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6667,8 +6936,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6689,8 +6959,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6710,8 +6981,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6732,8 +7004,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6753,8 +7026,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6775,8 +7049,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6796,8 +7071,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6818,8 +7094,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6839,8 +7116,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6861,8 +7139,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6882,8 +7161,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6904,8 +7184,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6925,8 +7206,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6947,8 +7229,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -6968,8 +7251,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -6990,8 +7274,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7011,8 +7296,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7033,8 +7319,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7054,8 +7341,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7076,8 +7364,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7097,8 +7386,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7119,8 +7409,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7140,8 +7431,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7162,8 +7454,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7183,8 +7476,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7205,8 +7499,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7226,8 +7521,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7248,8 +7544,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7269,8 +7566,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7291,8 +7589,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7312,8 +7611,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7334,8 +7634,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7355,8 +7656,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7377,8 +7679,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7398,8 +7701,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7420,8 +7724,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7441,8 +7746,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7463,8 +7769,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7484,8 +7791,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7506,8 +7814,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7527,8 +7836,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7549,8 +7859,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7570,8 +7881,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7592,8 +7904,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7613,8 +7926,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7635,8 +7949,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7656,8 +7971,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7678,8 +7994,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7699,8 +8016,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7721,8 +8039,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7742,8 +8061,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7764,8 +8084,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7785,8 +8106,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7807,8 +8129,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7828,8 +8151,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7850,8 +8174,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7871,8 +8196,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7893,8 +8219,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7914,8 +8241,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7936,8 +8264,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -7957,8 +8286,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -7979,8 +8309,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8000,8 +8331,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8022,8 +8354,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8043,8 +8376,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8065,8 +8399,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8086,8 +8421,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8108,8 +8444,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8129,8 +8466,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8151,8 +8489,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8172,8 +8511,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8194,8 +8534,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8215,8 +8556,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8237,8 +8579,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8258,8 +8601,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8280,8 +8624,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8301,8 +8646,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8323,8 +8669,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8344,8 +8691,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8366,8 +8714,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8387,8 +8736,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8409,8 +8759,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8430,8 +8781,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8452,8 +8804,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8473,8 +8826,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8495,8 +8849,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8516,8 +8871,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8538,8 +8894,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8559,8 +8916,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8581,8 +8939,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8602,8 +8961,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8624,8 +8984,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8645,8 +9006,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8667,8 +9029,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8688,8 +9051,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8710,8 +9074,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8731,8 +9096,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8753,8 +9119,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8774,8 +9141,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8796,8 +9164,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8817,8 +9186,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8839,8 +9209,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8860,8 +9231,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8882,8 +9254,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8903,8 +9276,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8925,8 +9299,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8946,8 +9321,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -8968,8 +9344,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -8989,8 +9366,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -9011,8 +9389,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -9032,8 +9411,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -9054,8 +9434,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -9075,8 +9456,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, MatrixA& a, const MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 //
@@ -9097,8 +9479,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, work );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, work );
 }
 
 //
@@ -9118,8 +9501,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 gegv( const char jobvl, const char jobvr, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
-            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
+    return gegv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvl, jobvr, a, b, alpha, beta, vl,
+            vr, optimal_workspace() );
 }
 
 } // namespace lapack

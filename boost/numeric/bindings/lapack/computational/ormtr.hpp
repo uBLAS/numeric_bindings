@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -108,12 +108,12 @@ struct ormtr_impl {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixA, trans >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
@@ -212,8 +212,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ormtr( const char side, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c, Workspace work ) {
-    return ormtr_impl< typename value< MatrixA >::type >::invoke( side,
-            a, tau, c, work );
+    return ormtr_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( side, a, tau, c, work );
 }
 
 //
@@ -226,8 +226,8 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 ormtr( const char side, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c ) {
-    return ormtr_impl< typename value< MatrixA >::type >::invoke( side,
-            a, tau, c, optimal_workspace() );
+    return ormtr_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
 }
 
 //
@@ -241,8 +241,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ormtr( const char side, const MatrixA& a, const VectorTAU& tau,
         const MatrixC& c, Workspace work ) {
-    return ormtr_impl< typename value< MatrixA >::type >::invoke( side,
-            a, tau, c, work );
+    return ormtr_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( side, a, tau, c, work );
 }
 
 //
@@ -255,8 +255,8 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 ormtr( const char side, const MatrixA& a, const VectorTAU& tau,
         const MatrixC& c ) {
-    return ormtr_impl< typename value< MatrixA >::type >::invoke( side,
-            a, tau, c, optimal_workspace() );
+    return ormtr_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
 }
 
 } // namespace lapack

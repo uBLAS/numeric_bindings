@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -168,44 +168,44 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDLF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDUF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDU2 >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorFERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
@@ -337,40 +337,40 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorFERR >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorFERR >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDLF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDUF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDU2 >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
@@ -502,8 +502,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -523,9 +524,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDU& du, const VectorDLF& dlf, const VectorDF& df,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -547,8 +548,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -569,9 +571,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -593,8 +595,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -615,9 +618,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -639,8 +642,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -661,9 +665,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -685,8 +689,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -707,9 +712,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -731,8 +736,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -753,9 +759,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -777,8 +783,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -799,9 +806,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -823,8 +830,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -845,9 +853,9 @@ gtrfs( const fortran_int_t n, const VectorDL& dl, const VectorD& d,
         const VectorDUF& duf, const VectorDU2& du2, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
+    return gtrfs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, dlf, df, duf, du2, ipiv,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

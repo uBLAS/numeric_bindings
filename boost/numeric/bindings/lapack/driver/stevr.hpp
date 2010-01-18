@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -111,16 +111,16 @@ struct stevr_impl {
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -245,14 +245,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -270,15 +272,15 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -296,14 +298,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -321,15 +325,15 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -347,14 +351,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -372,15 +378,15 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -398,14 +404,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -423,15 +431,15 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -449,14 +457,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -474,15 +484,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -500,14 +511,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -525,15 +538,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -551,14 +565,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -576,15 +592,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -602,14 +619,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -627,15 +646,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -653,14 +673,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -678,15 +700,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -704,14 +727,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -729,15 +754,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -755,14 +781,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -780,15 +808,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -806,14 +835,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -831,15 +862,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -857,15 +889,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -883,15 +916,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -909,15 +943,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -935,15 +970,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -961,15 +997,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -987,15 +1024,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1013,15 +1051,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1039,15 +1078,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1065,14 +1105,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1090,15 +1132,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1116,14 +1159,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1141,15 +1186,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1167,14 +1213,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1192,15 +1240,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1218,14 +1267,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1243,15 +1294,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1269,15 +1321,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1295,15 +1348,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1321,15 +1375,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1347,15 +1402,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1373,15 +1429,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1399,15 +1456,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1425,15 +1483,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1451,15 +1510,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1477,15 +1537,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1503,15 +1564,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1529,15 +1591,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1555,15 +1618,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1581,15 +1645,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1607,15 +1672,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1633,15 +1699,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1659,15 +1726,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1685,15 +1753,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1711,15 +1780,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1737,15 +1807,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1763,15 +1834,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1789,15 +1861,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1815,15 +1888,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 //
@@ -1841,15 +1915,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
-        Workspace work ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz, Workspace work ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1867,15 +1942,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
         std::ptrdiff_t >::type
 stevr( const char jobz, const char range, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename value< VectorD >::type >::invoke( jobz,
-            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-            optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorISUPPZ& isuppz ) {
+    return stevr_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
+            abstol, m, w, z, isuppz, optimal_workspace() );
 }
 
 } // namespace lapack

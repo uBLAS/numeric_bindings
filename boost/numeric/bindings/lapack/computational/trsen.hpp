@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -105,12 +105,12 @@ struct trsen_impl {
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
@@ -214,10 +214,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         MatrixT& t, MatrixQ& q, VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep,
+        Workspace work ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
 }
@@ -235,10 +236,10 @@ inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         MatrixT& t, MatrixQ& q, VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
 }
@@ -256,10 +257,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         const MatrixT& t, MatrixQ& q, VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep,
+        Workspace work ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
 }
@@ -277,10 +279,10 @@ inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         const MatrixT& t, MatrixQ& q, VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
 }
@@ -298,10 +300,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         MatrixT& t, const MatrixQ& q, VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep,
+        Workspace work ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
 }
@@ -319,10 +322,10 @@ inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         MatrixT& t, const MatrixQ& q, VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
 }
@@ -340,10 +343,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         const MatrixT& t, const MatrixQ& q, VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep,
+        Workspace work ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
 }
@@ -361,10 +365,10 @@ inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         const MatrixT& t, const MatrixQ& q, VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
 }
@@ -382,10 +386,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         MatrixT& t, MatrixQ& q, const VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep,
+        Workspace work ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
 }
@@ -403,10 +408,10 @@ inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         MatrixT& t, MatrixQ& q, const VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
 }
@@ -424,10 +429,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         const MatrixT& t, MatrixQ& q, const VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep,
+        Workspace work ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
 }
@@ -445,10 +451,10 @@ inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         const MatrixT& t, MatrixQ& q, const VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
 }
@@ -466,10 +472,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         MatrixT& t, const MatrixQ& q, const VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep,
+        Workspace work ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
 }
@@ -487,10 +494,10 @@ inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         MatrixT& t, const MatrixQ& q, const VectorW& w, fortran_int_t& m,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    return trsen_impl< typename value<
+        typename bindings::value_type< VectorSELECT >::type >::type& sep ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
 }
@@ -508,10 +515,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         const MatrixT& t, const MatrixQ& q, const VectorW& w,
-        fortran_int_t& m, typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    return trsen_impl< typename value<
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< VectorSELECT >::type >::type& s,
+        typename remove_imaginary< typename bindings::value_type<
+        VectorSELECT >::type >::type& sep, Workspace work ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, work );
 }
@@ -529,10 +537,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 trsen( const char job, const char compq, const VectorSELECT& select,
         const MatrixT& t, const MatrixQ& q, const VectorW& w,
-        fortran_int_t& m, typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    return trsen_impl< typename value<
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< VectorSELECT >::type >::type& s,
+        typename remove_imaginary< typename bindings::value_type<
+        VectorSELECT >::type >::type& sep ) {
+    return trsen_impl< typename bindings::value_type<
             VectorSELECT >::type >::invoke( job, compq, select, t, q, w, m, s,
             sep, optimal_workspace() );
 }

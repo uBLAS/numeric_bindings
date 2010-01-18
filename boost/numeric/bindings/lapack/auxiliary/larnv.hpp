@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -140,8 +140,8 @@ struct larnv_impl {
 template< typename VectorISEED, typename VectorX >
 inline std::ptrdiff_t larnv( const fortran_int_t idist,
         VectorISEED& iseed, const fortran_int_t n, VectorX& x ) {
-    return larnv_impl< typename value< VectorX >::type >::invoke( idist,
-            iseed, n, x );
+    return larnv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( idist, iseed, n, x );
 }
 
 //
@@ -152,8 +152,8 @@ inline std::ptrdiff_t larnv( const fortran_int_t idist,
 template< typename VectorISEED, typename VectorX >
 inline std::ptrdiff_t larnv( const fortran_int_t idist,
         const VectorISEED& iseed, const fortran_int_t n, VectorX& x ) {
-    return larnv_impl< typename value< VectorX >::type >::invoke( idist,
-            iseed, n, x );
+    return larnv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( idist, iseed, n, x );
 }
 
 //
@@ -164,8 +164,8 @@ inline std::ptrdiff_t larnv( const fortran_int_t idist,
 template< typename VectorISEED, typename VectorX >
 inline std::ptrdiff_t larnv( const fortran_int_t idist,
         VectorISEED& iseed, const fortran_int_t n, const VectorX& x ) {
-    return larnv_impl< typename value< VectorX >::type >::invoke( idist,
-            iseed, n, x );
+    return larnv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( idist, iseed, n, x );
 }
 
 //
@@ -177,8 +177,8 @@ template< typename VectorISEED, typename VectorX >
 inline std::ptrdiff_t larnv( const fortran_int_t idist,
         const VectorISEED& iseed, const fortran_int_t n,
         const VectorX& x ) {
-    return larnv_impl< typename value< VectorX >::type >::invoke( idist,
-            iseed, n, x );
+    return larnv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( idist, iseed, n, x );
 }
 
 } // namespace lapack

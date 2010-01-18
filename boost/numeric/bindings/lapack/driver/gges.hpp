@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -162,28 +162,28 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             MatrixVSR& vsr, detail::workspace2< WORK, BWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHAR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHAI >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBETA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVSL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVSR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -331,24 +331,24 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             BWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBETA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVSL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVSR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -510,9 +510,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -535,9 +535,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -560,9 +560,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -585,9 +585,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -610,9 +610,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -635,9 +635,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -660,9 +660,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -685,9 +685,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -710,9 +710,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -735,9 +735,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -761,9 +761,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -787,9 +787,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -813,9 +813,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -839,9 +839,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -865,9 +865,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -891,9 +891,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -916,9 +916,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -941,9 +941,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -967,9 +967,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -993,9 +993,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1019,9 +1019,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1045,9 +1045,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1071,9 +1071,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1097,9 +1097,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1122,9 +1122,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1147,9 +1147,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1173,9 +1173,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1199,9 +1199,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1225,9 +1225,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1251,9 +1251,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1277,9 +1277,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1303,9 +1303,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1328,9 +1328,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1353,9 +1353,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1379,9 +1379,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1404,9 +1404,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1430,9 +1430,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1455,9 +1455,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1481,9 +1481,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1506,9 +1506,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1532,9 +1532,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1557,9 +1557,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1583,9 +1583,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1609,9 +1609,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1635,9 +1635,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1661,9 +1661,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1687,9 +1687,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1713,9 +1713,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1739,9 +1739,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1764,9 +1764,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1790,9 +1790,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1816,9 +1816,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1842,9 +1842,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1868,9 +1868,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1894,9 +1894,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1920,9 +1920,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1946,9 +1946,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -1971,9 +1971,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -1997,9 +1997,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2023,9 +2023,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2049,9 +2049,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2075,9 +2075,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2101,9 +2101,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2127,9 +2127,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2152,9 +2152,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2177,9 +2177,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2203,9 +2203,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2228,9 +2228,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2254,9 +2254,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2279,9 +2279,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2305,9 +2305,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2330,9 +2330,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2355,9 +2355,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2380,9 +2380,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2406,9 +2406,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2432,9 +2432,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2458,9 +2458,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2484,9 +2484,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2510,9 +2510,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2536,9 +2536,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2561,9 +2561,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2586,9 +2586,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2612,9 +2612,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2638,9 +2638,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2664,9 +2664,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2690,9 +2690,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2716,9 +2716,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2742,9 +2742,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2768,9 +2768,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2793,9 +2793,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2819,9 +2819,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2845,9 +2845,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2871,9 +2871,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2897,9 +2897,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2923,9 +2923,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2949,9 +2949,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -2974,9 +2974,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -2999,9 +2999,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3025,9 +3025,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3050,9 +3050,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3076,9 +3076,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3101,9 +3101,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3127,9 +3127,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3152,9 +3152,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3178,9 +3178,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3203,9 +3203,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3229,9 +3229,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3255,9 +3255,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3281,9 +3281,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3307,9 +3307,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3333,9 +3333,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3359,9 +3359,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3385,9 +3385,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3410,9 +3410,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3436,9 +3436,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3462,9 +3462,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3488,9 +3488,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3514,9 +3514,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3540,9 +3540,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3566,9 +3566,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3592,9 +3592,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3617,9 +3617,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3643,9 +3643,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3669,9 +3669,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3695,9 +3695,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3721,9 +3721,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3747,9 +3747,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3773,9 +3773,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3798,9 +3798,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3823,9 +3823,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3849,9 +3849,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3874,9 +3874,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3900,9 +3900,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3925,9 +3925,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -3951,9 +3951,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -3976,9 +3976,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4001,9 +4001,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4026,9 +4026,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4052,9 +4052,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4078,9 +4078,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4104,9 +4104,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4130,9 +4130,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4156,9 +4156,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4182,9 +4182,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4207,9 +4207,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4232,9 +4232,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4258,9 +4258,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4284,9 +4284,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4310,9 +4310,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4336,9 +4336,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4362,9 +4362,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4388,9 +4388,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4414,9 +4414,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4439,9 +4439,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4465,9 +4465,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4491,9 +4491,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4517,9 +4517,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4543,9 +4543,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4569,9 +4569,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4595,9 +4595,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4620,9 +4620,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4645,9 +4645,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4671,9 +4671,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4696,9 +4696,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4722,9 +4722,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4747,9 +4747,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4773,9 +4773,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4798,9 +4798,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4824,9 +4824,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4849,9 +4849,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4875,9 +4875,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4901,9 +4901,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4927,9 +4927,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -4953,9 +4953,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -4979,9 +4979,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5005,9 +5005,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5031,9 +5031,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5056,9 +5056,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5082,9 +5082,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5108,9 +5108,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5134,9 +5134,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5160,9 +5160,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5186,9 +5186,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5212,9 +5212,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5238,9 +5238,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5263,9 +5263,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5289,9 +5289,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5315,9 +5315,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5341,9 +5341,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5367,9 +5367,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5393,9 +5393,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5419,9 +5419,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5444,9 +5444,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5469,9 +5469,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5495,9 +5495,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5520,9 +5520,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5546,9 +5546,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5571,9 +5571,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5597,9 +5597,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5622,9 +5622,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5647,9 +5647,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5672,9 +5672,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5698,9 +5698,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5724,9 +5724,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5750,9 +5750,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5776,9 +5776,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5802,9 +5802,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5828,9 +5828,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5853,9 +5853,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5878,9 +5878,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5904,9 +5904,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5930,9 +5930,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -5956,9 +5956,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -5982,9 +5982,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6008,9 +6008,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6034,9 +6034,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6060,9 +6060,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6085,9 +6085,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6111,9 +6111,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6137,9 +6137,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6163,9 +6163,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6189,9 +6189,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6215,9 +6215,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6241,9 +6241,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6266,9 +6266,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6291,9 +6291,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6317,9 +6317,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6342,9 +6342,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6368,9 +6368,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6393,9 +6393,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6419,9 +6419,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6444,9 +6444,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6470,9 +6470,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6495,9 +6495,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6521,9 +6521,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6547,9 +6547,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6573,9 +6573,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6599,9 +6599,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6625,9 +6625,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6651,9 +6651,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6677,9 +6677,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6702,9 +6702,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6728,9 +6728,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6754,9 +6754,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6780,9 +6780,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6806,9 +6806,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6832,9 +6832,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6858,9 +6858,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6884,9 +6884,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6909,9 +6909,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6935,9 +6935,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -6961,9 +6961,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -6987,9 +6987,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -7013,9 +7013,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7039,9 +7039,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, work );
 }
 
 //
@@ -7065,9 +7065,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alphar, alphai, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
 //
 // Overloaded function for gges. Its overload differs for
@@ -7088,8 +7088,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7110,9 +7111,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7134,8 +7135,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7156,9 +7158,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7180,8 +7182,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7202,9 +7205,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7226,8 +7229,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7248,9 +7252,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7272,8 +7276,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7294,9 +7299,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7318,8 +7323,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7340,9 +7346,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7364,8 +7370,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7386,9 +7393,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7410,8 +7417,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7432,9 +7440,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7456,8 +7464,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7478,9 +7487,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7502,8 +7511,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7524,9 +7534,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7548,8 +7558,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7570,9 +7581,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7594,8 +7605,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7616,9 +7628,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7640,8 +7652,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7662,9 +7675,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7687,8 +7700,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7709,9 +7723,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7734,8 +7748,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7756,9 +7771,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7781,8 +7796,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7803,9 +7819,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7827,8 +7843,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7849,9 +7866,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7873,8 +7890,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7895,9 +7913,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7919,8 +7937,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7941,9 +7960,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -7965,8 +7984,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -7987,9 +8007,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8011,8 +8031,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8033,9 +8054,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8057,8 +8078,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8079,9 +8101,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8103,8 +8125,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8125,9 +8148,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8149,8 +8172,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8171,9 +8195,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8195,8 +8219,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8217,9 +8242,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8241,8 +8266,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8263,9 +8289,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8287,8 +8313,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8309,9 +8336,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8333,8 +8360,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8355,9 +8383,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8379,8 +8407,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8401,9 +8430,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8426,8 +8455,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8448,9 +8478,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8473,8 +8503,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8495,9 +8526,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8520,8 +8551,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8542,9 +8574,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8566,8 +8598,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8588,9 +8621,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8612,8 +8645,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8634,9 +8668,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8658,8 +8692,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8680,9 +8715,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8704,8 +8739,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8726,9 +8762,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8750,8 +8786,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8772,9 +8809,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8796,8 +8833,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8818,9 +8856,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8842,8 +8880,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8864,9 +8903,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8888,8 +8927,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8910,9 +8950,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8934,8 +8974,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -8956,9 +8997,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -8980,8 +9021,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9002,9 +9044,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9026,8 +9068,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9048,9 +9091,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9072,8 +9115,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9094,9 +9138,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9118,8 +9162,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9140,9 +9185,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9165,8 +9210,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9187,9 +9233,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9212,8 +9258,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9234,9 +9281,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9259,8 +9306,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9281,9 +9329,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9305,8 +9353,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9327,9 +9376,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9351,8 +9400,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9373,9 +9423,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9397,8 +9447,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9419,9 +9470,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9443,8 +9494,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9465,9 +9517,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9489,8 +9541,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9511,9 +9564,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9535,8 +9588,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9557,9 +9611,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9581,8 +9635,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9603,9 +9658,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9627,8 +9682,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9649,9 +9705,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9673,8 +9729,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9695,9 +9752,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9719,8 +9776,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9741,9 +9799,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9765,8 +9823,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9787,9 +9846,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9811,8 +9870,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9833,9 +9893,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9857,8 +9917,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9879,9 +9940,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9904,8 +9965,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9926,9 +9988,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9951,8 +10013,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -9973,9 +10036,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 //
@@ -9998,8 +10061,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr, work );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, work );
 }
 
 //
@@ -10020,9 +10084,9 @@ gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
-    return gges_impl< typename value< MatrixA >::type >::invoke( jobvsl,
-            jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl, vsr,
-            optimal_workspace() );
+    return gges_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, optimal_workspace() );
 }
 
 } // namespace lapack

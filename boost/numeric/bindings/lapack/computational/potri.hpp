@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -208,7 +208,8 @@ struct potri_impl {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t potri( MatrixA& a ) {
-    return potri_impl< typename value< MatrixA >::type >::invoke( a );
+    return potri_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a );
 }
 
 //
@@ -217,7 +218,8 @@ inline std::ptrdiff_t potri( MatrixA& a ) {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t potri( const MatrixA& a ) {
-    return potri_impl< typename value< MatrixA >::type >::invoke( a );
+    return potri_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a );
 }
 
 } // namespace lapack

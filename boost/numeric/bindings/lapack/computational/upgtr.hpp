@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -98,12 +98,12 @@ struct upgtr_impl {
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
         BOOST_ASSERT( bindings::size(ap) >=
@@ -182,8 +182,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 upgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
         MatrixQ& q, Workspace work ) {
-    return upgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
-            ap, tau, q, work );
+    return upgtr_impl< typename bindings::value_type<
+            VectorAP >::type >::invoke( uplo, ap, tau, q, work );
 }
 
 //
@@ -196,8 +196,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 upgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
         MatrixQ& q ) {
-    return upgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
-            ap, tau, q, optimal_workspace() );
+    return upgtr_impl< typename bindings::value_type<
+            VectorAP >::type >::invoke( uplo, ap, tau, q,
+            optimal_workspace() );
 }
 
 //
@@ -211,8 +212,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 upgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
         const MatrixQ& q, Workspace work ) {
-    return upgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
-            ap, tau, q, work );
+    return upgtr_impl< typename bindings::value_type<
+            VectorAP >::type >::invoke( uplo, ap, tau, q, work );
 }
 
 //
@@ -225,8 +226,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 upgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
         const MatrixQ& q ) {
-    return upgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
-            ap, tau, q, optimal_workspace() );
+    return upgtr_impl< typename bindings::value_type<
+            VectorAP >::type >::invoke( uplo, ap, tau, q,
+            optimal_workspace() );
 }
 
 } // namespace lapack

@@ -14,7 +14,7 @@
 #include <boost/numeric/bindings/detail/offset.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/ref.hpp>
 
 namespace boost {
@@ -37,7 +37,7 @@ struct column_wrapper:
 template< typename T, typename Id, typename Enable >
 struct adaptor< column_wrapper<T>, Id, Enable > {
 
-    typedef typename value<T>::type value_type;
+    typedef typename bindings::value_type< T>::type value_type;
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::vector >,

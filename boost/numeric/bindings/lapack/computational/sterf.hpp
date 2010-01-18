@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -87,8 +87,8 @@ struct sterf_impl {
             VectorE& e ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -118,8 +118,8 @@ struct sterf_impl {
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t sterf( const fortran_int_t n, VectorD& d,
         VectorE& e ) {
-    return sterf_impl< typename value< VectorD >::type >::invoke( n, d,
-            e );
+    return sterf_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, e );
 }
 
 //
@@ -130,8 +130,8 @@ inline std::ptrdiff_t sterf( const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t sterf( const fortran_int_t n, const VectorD& d,
         VectorE& e ) {
-    return sterf_impl< typename value< VectorD >::type >::invoke( n, d,
-            e );
+    return sterf_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, e );
 }
 
 //
@@ -142,8 +142,8 @@ inline std::ptrdiff_t sterf( const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t sterf( const fortran_int_t n, VectorD& d,
         const VectorE& e ) {
-    return sterf_impl< typename value< VectorD >::type >::invoke( n, d,
-            e );
+    return sterf_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, e );
 }
 
 //
@@ -154,8 +154,8 @@ inline std::ptrdiff_t sterf( const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t sterf( const fortran_int_t n, const VectorD& d,
         const VectorE& e ) {
-    return sterf_impl< typename value< VectorD >::type >::invoke( n, d,
-            e );
+    return sterf_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, e );
 }
 
 } // namespace lapack

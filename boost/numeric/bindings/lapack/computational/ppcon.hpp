@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -298,11 +298,11 @@ template< typename MatrixAP, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ppcon( const MatrixAP& ap, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type anorm,
-        typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAP >::type >::type anorm,
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, Workspace work ) {
-    return ppcon_impl< typename value< MatrixAP >::type >::invoke( ap,
-            anorm, rcond, work );
+    return ppcon_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, anorm, rcond, work );
 }
 
 //
@@ -313,11 +313,12 @@ template< typename MatrixAP >
 inline typename boost::disable_if< detail::is_workspace< MatrixAP >,
         std::ptrdiff_t >::type
 ppcon( const MatrixAP& ap, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type anorm,
-        typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAP >::type >::type anorm,
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond ) {
-    return ppcon_impl< typename value< MatrixAP >::type >::invoke( ap,
-            anorm, rcond, optimal_workspace() );
+    return ppcon_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, anorm, rcond,
+            optimal_workspace() );
 }
 
 } // namespace lapack

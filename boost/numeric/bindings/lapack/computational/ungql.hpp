@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -97,8 +97,8 @@ struct ungql_impl {
             const VectorTAU& tau, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(tau) >= k );
@@ -182,8 +182,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ungql( const fortran_int_t m, const fortran_int_t n,
         const fortran_int_t k, MatrixA& a, const VectorTAU& tau,
         Workspace work ) {
-    return ungql_impl< typename value< MatrixA >::type >::invoke( m, n,
-            k, a, tau, work );
+    return ungql_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( m, n, k, a, tau, work );
 }
 
 //
@@ -196,8 +196,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 ungql( const fortran_int_t m, const fortran_int_t n,
         const fortran_int_t k, MatrixA& a, const VectorTAU& tau ) {
-    return ungql_impl< typename value< MatrixA >::type >::invoke( m, n,
-            k, a, tau, optimal_workspace() );
+    return ungql_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( m, n, k, a, tau, optimal_workspace() );
 }
 
 //
@@ -211,8 +211,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ungql( const fortran_int_t m, const fortran_int_t n,
         const fortran_int_t k, const MatrixA& a, const VectorTAU& tau,
         Workspace work ) {
-    return ungql_impl< typename value< MatrixA >::type >::invoke( m, n,
-            k, a, tau, work );
+    return ungql_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( m, n, k, a, tau, work );
 }
 
 //
@@ -225,8 +225,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 ungql( const fortran_int_t m, const fortran_int_t n,
         const fortran_int_t k, const MatrixA& a, const VectorTAU& tau ) {
-    return ungql_impl< typename value< MatrixA >::type >::invoke( m, n,
-            k, a, tau, optimal_workspace() );
+    return ungql_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( m, n, k, a, tau, optimal_workspace() );
 }
 
 } // namespace lapack

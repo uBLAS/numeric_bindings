@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -134,20 +134,20 @@ struct gttrs_impl {
             const VectorDU2& du2, const VectorIPIV& ipiv, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDU2 >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorDL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorDL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bindings::size(d) >= n );
@@ -188,8 +188,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
 inline std::ptrdiff_t gttrs( const fortran_int_t n,
         const VectorDL& dl, const VectorD& d, const VectorDU& du,
         const VectorDU2& du2, const VectorIPIV& ipiv, MatrixB& b ) {
-    return gttrs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, du2, ipiv, b );
+    return gttrs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, du2, ipiv, b );
 }
 
 //
@@ -201,8 +201,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
 inline std::ptrdiff_t gttrs( const fortran_int_t n,
         const VectorDL& dl, const VectorD& d, const VectorDU& du,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b ) {
-    return gttrs_impl< typename value< VectorDL >::type >::invoke( n, dl,
-            d, du, du2, ipiv, b );
+    return gttrs_impl< typename bindings::value_type<
+            VectorDL >::type >::invoke( n, dl, d, du, du2, ipiv, b );
 }
 
 } // namespace lapack

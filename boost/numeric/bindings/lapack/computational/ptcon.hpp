@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -127,8 +127,8 @@ struct ptcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_ASSERT( bindings::size(d) >= bindings::size(d) );
         BOOST_ASSERT( bindings::size(d) >= 0 );
@@ -266,11 +266,12 @@ template< typename VectorD, typename VectorE, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ptcon( const VectorD& d, const VectorE& e,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorE >::type >::type anorm, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond, Workspace work ) {
-    return ptcon_impl< typename value< VectorE >::type >::invoke( d, e,
-            anorm, rcond, work );
+        typename bindings::value_type< VectorE >::type >::type& rcond,
+        Workspace work ) {
+    return ptcon_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, anorm, rcond, work );
 }
 
 //
@@ -281,11 +282,12 @@ template< typename VectorD, typename VectorE >
 inline typename boost::disable_if< detail::is_workspace< VectorE >,
         std::ptrdiff_t >::type
 ptcon( const VectorD& d, const VectorE& e,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorE >::type >::type anorm, typename remove_imaginary<
-        typename value< VectorE >::type >::type& rcond ) {
-    return ptcon_impl< typename value< VectorE >::type >::invoke( d, e,
-            anorm, rcond, optimal_workspace() );
+        typename bindings::value_type< VectorE >::type >::type& rcond ) {
+    return ptcon_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, anorm, rcond,
+            optimal_workspace() );
 }
 
 } // namespace lapack

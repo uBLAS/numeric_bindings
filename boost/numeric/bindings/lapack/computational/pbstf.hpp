@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -150,7 +150,8 @@ struct pbstf_impl {
 //
 template< typename MatrixAB >
 inline std::ptrdiff_t pbstf( MatrixAB& ab ) {
-    return pbstf_impl< typename value< MatrixAB >::type >::invoke( ab );
+    return pbstf_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab );
 }
 
 //
@@ -159,7 +160,8 @@ inline std::ptrdiff_t pbstf( MatrixAB& ab ) {
 //
 template< typename MatrixAB >
 inline std::ptrdiff_t pbstf( const MatrixAB& ab ) {
-    return pbstf_impl< typename value< MatrixAB >::type >::invoke( ab );
+    return pbstf_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab );
 }
 
 } // namespace lapack

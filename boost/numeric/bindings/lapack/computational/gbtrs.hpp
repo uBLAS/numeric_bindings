@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -134,8 +134,8 @@ struct gbtrs_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower_op(ab, trans()) >= 0 );
@@ -178,8 +178,8 @@ struct gbtrs_impl {
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbtrs( const MatrixAB& ab, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return gbtrs_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv, b );
+    return gbtrs_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv, b );
 }
 
 //
@@ -189,8 +189,8 @@ inline std::ptrdiff_t gbtrs( const MatrixAB& ab, const VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbtrs( const MatrixAB& ab, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    return gbtrs_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv, b );
+    return gbtrs_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv, b );
 }
 
 } // namespace lapack

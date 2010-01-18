@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -136,28 +136,28 @@ struct labrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
@@ -213,24 +213,24 @@ struct labrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
@@ -291,8 +291,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -310,8 +310,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -329,8 +329,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -349,8 +349,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -368,8 +368,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -388,8 +388,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -408,8 +408,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -428,8 +428,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -447,8 +447,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -466,8 +466,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -485,8 +485,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -505,8 +505,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -524,8 +524,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -544,8 +544,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -564,8 +564,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -584,8 +584,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -603,8 +603,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -622,8 +622,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -641,8 +641,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -661,8 +661,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -680,8 +680,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -700,8 +700,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -720,8 +720,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -740,8 +740,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -760,8 +760,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -780,8 +780,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -800,8 +800,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -820,8 +820,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -840,8 +840,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -860,8 +860,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -880,8 +880,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -900,8 +900,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -919,8 +919,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -938,8 +938,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -957,8 +957,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -977,8 +977,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -996,8 +996,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1016,8 +1016,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1036,8 +1036,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1056,8 +1056,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1076,8 +1076,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1096,8 +1096,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1116,8 +1116,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1136,8 +1136,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1156,8 +1156,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1176,8 +1176,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1196,8 +1196,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1216,8 +1216,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1236,8 +1236,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1256,8 +1256,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1276,8 +1276,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1296,8 +1296,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1316,8 +1316,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1336,8 +1336,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1356,8 +1356,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1376,8 +1376,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1396,8 +1396,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1416,8 +1416,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1436,8 +1436,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1456,8 +1456,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1476,8 +1476,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1496,8 +1496,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1516,8 +1516,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1536,8 +1536,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1555,8 +1555,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1574,8 +1574,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1593,8 +1593,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1613,8 +1613,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1632,8 +1632,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1652,8 +1652,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1672,8 +1672,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1692,8 +1692,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1712,8 +1712,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1732,8 +1732,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1752,8 +1752,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1772,8 +1772,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1792,8 +1792,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1812,8 +1812,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1832,8 +1832,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1852,8 +1852,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1872,8 +1872,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1892,8 +1892,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1912,8 +1912,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1932,8 +1932,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1952,8 +1952,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1972,8 +1972,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -1992,8 +1992,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2012,8 +2012,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2032,8 +2032,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2052,8 +2052,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2072,8 +2072,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2092,8 +2092,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2112,8 +2112,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2132,8 +2132,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2152,8 +2152,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2172,8 +2172,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2192,8 +2192,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2212,8 +2212,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2232,8 +2232,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2252,8 +2252,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2272,8 +2272,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2292,8 +2292,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2312,8 +2312,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2332,8 +2332,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2352,8 +2352,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2372,8 +2372,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2392,8 +2392,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2412,8 +2412,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2432,8 +2432,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2452,8 +2452,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2472,8 +2472,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2492,8 +2492,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2512,8 +2512,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2532,8 +2532,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2552,8 +2552,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2572,8 +2572,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2592,8 +2592,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2612,8 +2612,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2632,8 +2632,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2652,8 +2652,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2672,8 +2672,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2692,8 +2692,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2712,8 +2712,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2732,8 +2732,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2752,8 +2752,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2772,8 +2772,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2792,8 +2792,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 //
@@ -2812,8 +2812,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, x, y );
+    return labrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, x, y );
 }
 
 } // namespace lapack

@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -101,16 +101,16 @@ struct sytrd_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
@@ -206,8 +206,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -223,8 +223,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -241,8 +241,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -258,8 +258,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -276,8 +276,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -293,8 +293,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -311,8 +311,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -328,8 +328,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -346,8 +346,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -363,8 +363,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -381,8 +381,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -398,8 +398,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -416,8 +416,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -433,8 +433,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -451,8 +451,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAU& tau, Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -469,8 +469,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -487,8 +487,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -504,8 +504,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -522,8 +522,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -539,8 +539,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -557,8 +557,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -574,8 +574,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -592,8 +592,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAU& tau, Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -610,8 +610,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -628,8 +628,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAU& tau,
         Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -645,8 +645,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -663,8 +663,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAU& tau, Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -681,8 +681,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -699,8 +699,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAU& tau, Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -717,8 +717,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 //
@@ -735,8 +735,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAU& tau, Workspace work ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, work );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, work );
 }
 
 //
@@ -753,8 +753,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAU& tau ) {
-    return sytrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tau, optimal_workspace() );
+    return sytrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }
 
 } // namespace lapack

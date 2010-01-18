@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -142,12 +142,12 @@ struct latrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorCNORM >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorCNORM >::value) );
@@ -190,8 +190,8 @@ struct latrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorCNORM >::value) );
@@ -229,9 +229,10 @@ struct latrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixA, typename VectorX, typename VectorCNORM >
 inline std::ptrdiff_t latrs( const char uplo, const char normin,
         const MatrixA& a, VectorX& x, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& scale, VectorCNORM& cnorm ) {
-    return latrs_impl< typename value< MatrixA >::type >::invoke( uplo,
-            normin, a, x, scale, cnorm );
+        typename bindings::value_type< MatrixA >::type >::type& scale,
+        VectorCNORM& cnorm ) {
+    return latrs_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( uplo, normin, a, x, scale, cnorm );
 }
 
 //
@@ -242,9 +243,10 @@ inline std::ptrdiff_t latrs( const char uplo, const char normin,
 template< typename MatrixA, typename VectorX, typename VectorCNORM >
 inline std::ptrdiff_t latrs( const char uplo, const char normin,
         const MatrixA& a, const VectorX& x, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& scale, VectorCNORM& cnorm ) {
-    return latrs_impl< typename value< MatrixA >::type >::invoke( uplo,
-            normin, a, x, scale, cnorm );
+        typename bindings::value_type< MatrixA >::type >::type& scale,
+        VectorCNORM& cnorm ) {
+    return latrs_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( uplo, normin, a, x, scale, cnorm );
 }
 
 //
@@ -255,10 +257,10 @@ inline std::ptrdiff_t latrs( const char uplo, const char normin,
 template< typename MatrixA, typename VectorX, typename VectorCNORM >
 inline std::ptrdiff_t latrs( const char uplo, const char normin,
         const MatrixA& a, VectorX& x, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& scale,
+        typename bindings::value_type< MatrixA >::type >::type& scale,
         const VectorCNORM& cnorm ) {
-    return latrs_impl< typename value< MatrixA >::type >::invoke( uplo,
-            normin, a, x, scale, cnorm );
+    return latrs_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( uplo, normin, a, x, scale, cnorm );
 }
 
 //
@@ -269,10 +271,10 @@ inline std::ptrdiff_t latrs( const char uplo, const char normin,
 template< typename MatrixA, typename VectorX, typename VectorCNORM >
 inline std::ptrdiff_t latrs( const char uplo, const char normin,
         const MatrixA& a, const VectorX& x, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& scale,
+        typename bindings::value_type< MatrixA >::type >::type& scale,
         const VectorCNORM& cnorm ) {
-    return latrs_impl< typename value< MatrixA >::type >::invoke( uplo,
-            normin, a, x, scale, cnorm );
+    return latrs_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( uplo, normin, a, x, scale, cnorm );
 }
 
 } // namespace lapack

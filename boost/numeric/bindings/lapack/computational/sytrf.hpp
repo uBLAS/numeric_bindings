@@ -26,7 +26,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -302,8 +302,8 @@ template< typename MatrixA, typename VectorIPIV, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrf( MatrixA& a, VectorIPIV& ipiv, Workspace work ) {
-    return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, work );
+    return sytrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, work );
 }
 
 //
@@ -316,8 +316,8 @@ template< typename MatrixA, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 sytrf( MatrixA& a, VectorIPIV& ipiv ) {
-    return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, optimal_workspace() );
+    return sytrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
 }
 
 //
@@ -330,8 +330,8 @@ template< typename MatrixA, typename VectorIPIV, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrf( const MatrixA& a, VectorIPIV& ipiv, Workspace work ) {
-    return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, work );
+    return sytrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, work );
 }
 
 //
@@ -344,8 +344,8 @@ template< typename MatrixA, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 sytrf( const MatrixA& a, VectorIPIV& ipiv ) {
-    return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, optimal_workspace() );
+    return sytrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
 }
 
 //
@@ -358,8 +358,8 @@ template< typename MatrixA, typename VectorIPIV, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrf( MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
-    return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, work );
+    return sytrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, work );
 }
 
 //
@@ -372,8 +372,8 @@ template< typename MatrixA, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 sytrf( MatrixA& a, const VectorIPIV& ipiv ) {
-    return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, optimal_workspace() );
+    return sytrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
 }
 
 //
@@ -386,8 +386,8 @@ template< typename MatrixA, typename VectorIPIV, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sytrf( const MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
-    return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, work );
+    return sytrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, work );
 }
 
 //
@@ -400,8 +400,8 @@ template< typename MatrixA, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 sytrf( const MatrixA& a, const VectorIPIV& ipiv ) {
-    return sytrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, optimal_workspace() );
+    return sytrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
 }
 
 } // namespace lapack

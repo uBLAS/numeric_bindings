@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -146,16 +146,16 @@ struct gees_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             WORK, BWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorWR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorWI >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVS >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWR >::value) );
@@ -279,12 +279,12 @@ struct gees_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             BWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVS >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
@@ -420,8 +420,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
         Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -438,8 +439,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -457,8 +459,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorWR& wr, VectorWI& wi,
         MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -476,8 +479,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorWR& wr, VectorWI& wi,
         MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -495,8 +499,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
         MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -514,8 +519,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
         MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -533,8 +539,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorWR& wr,
         VectorWI& wi, MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -552,8 +559,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorWR& wr,
         VectorWI& wi, MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -571,8 +579,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
         MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -590,8 +599,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
         MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -609,8 +619,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
         const VectorWI& wi, MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -628,8 +639,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
         const VectorWI& wi, MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -647,8 +659,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
         MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -666,8 +679,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
         MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -685,8 +699,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorWR& wr,
         const VectorWI& wi, MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -704,8 +719,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorWR& wr,
         const VectorWI& wi, MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -723,8 +739,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorWR& wr, VectorWI& wi,
         const MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -742,8 +759,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorWR& wr, VectorWI& wi,
         const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -761,8 +779,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorWR& wr, VectorWI& wi,
         const MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -780,8 +799,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorWR& wr, VectorWI& wi,
         const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -799,8 +819,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
         const MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -818,8 +839,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorWR& wr, VectorWI& wi,
         const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -837,8 +859,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorWR& wr,
         VectorWI& wi, const MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -856,8 +879,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorWR& wr,
         VectorWI& wi, const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -875,8 +899,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
         const MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -894,8 +919,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorWR& wr, const VectorWI& wi,
         const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -913,8 +939,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
         const VectorWI& wi, const MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -932,8 +959,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
         const VectorWI& wi, const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -951,8 +979,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
         const MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -970,8 +999,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorWR& wr, const VectorWI& wi,
         const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 
 //
@@ -989,8 +1019,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorWR& wr,
         const VectorWI& wi, const MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, work );
 }
 
 //
@@ -1008,8 +1039,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorWR& wr,
         const VectorWI& wi, const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, wr, wi, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
+            vs, optimal_workspace() );
 }
 //
 // Overloaded function for gees. Its overload differs for
@@ -1024,8 +1056,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorW& w, MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            work );
 }
 
 //
@@ -1040,8 +1073,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorW& w, MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            optimal_workspace() );
 }
 
 //
@@ -1058,8 +1092,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
         Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            work );
 }
 
 //
@@ -1074,8 +1109,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorW& w, MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            optimal_workspace() );
 }
 
 //
@@ -1092,8 +1128,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorW& w, MatrixVS& vs,
         Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            work );
 }
 
 //
@@ -1108,8 +1145,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorW& w, MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            optimal_workspace() );
 }
 
 //
@@ -1126,8 +1164,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorW& w,
         MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            work );
 }
 
 //
@@ -1143,8 +1182,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorW& w,
         MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            optimal_workspace() );
 }
 
 //
@@ -1161,8 +1201,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorW& w, const MatrixVS& vs,
         Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            work );
 }
 
 //
@@ -1177,8 +1218,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, VectorW& w, const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            optimal_workspace() );
 }
 
 //
@@ -1195,8 +1237,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorW& w,
         const MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            work );
 }
 
 //
@@ -1212,8 +1255,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, VectorW& w,
         const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            optimal_workspace() );
 }
 
 //
@@ -1230,8 +1274,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorW& w, const MatrixVS& vs,
         Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            work );
 }
 
 //
@@ -1246,8 +1291,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
 gees( const char jobvs, const char sort, logical_t* select, MatrixA& a,
         fortran_int_t& sdim, const VectorW& w, const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            optimal_workspace() );
 }
 
 //
@@ -1264,8 +1310,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorW& w,
         const MatrixVS& vs, Workspace work ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, work );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            work );
 }
 
 //
@@ -1281,8 +1328,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
 gees( const char jobvs, const char sort, logical_t* select,
         const MatrixA& a, fortran_int_t& sdim, const VectorW& w,
         const MatrixVS& vs ) {
-    return gees_impl< typename value< MatrixA >::type >::invoke( jobvs,
-            sort, select, a, sdim, w, vs, optimal_workspace() );
+    return gees_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
+            optimal_workspace() );
 }
 
 } // namespace lapack

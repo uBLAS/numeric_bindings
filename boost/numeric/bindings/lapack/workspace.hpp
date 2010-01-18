@@ -18,7 +18,7 @@
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/traits/type.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <memory>
 
 namespace boost {
@@ -56,7 +56,7 @@ namespace lapack {
             {}
 
           public:
-            typedef typename value<W>::type value_type ;
+            typedef typename bindings::value_type< W>::type value_type ;
             W& select( value_type const& ) { return w_ ; }
 
           private:
@@ -72,10 +72,10 @@ namespace lapack {
             {}
 
           public:
-            typedef typename value<W>::type w_value_type ;
+            typedef typename bindings::value_type< W>::type w_value_type ;
             W& select( w_value_type const& ) { return w_ ; }
 
-            typedef typename value<WRI>::type wri_value_type ;
+            typedef typename bindings::value_type< WRI>::type wri_value_type ;
             WRI& select( wri_value_type const& ) { return wri_ ; }
 
           private:
@@ -93,13 +93,13 @@ namespace lapack {
             {}
 
           public:
-            typedef typename value<W>::type w_value_type ;
+            typedef typename bindings::value_type< W>::type w_value_type ;
             W& select( w_value_type const& ) { return w_ ; }
 
-            typedef typename value<WR>::type wr_value_type ;
+            typedef typename bindings::value_type< WR>::type wr_value_type ;
             WR& select( wr_value_type const& ) { return wr_ ; }
 
-            typedef typename value<WI>::type wi_value_type ;
+            typedef typename bindings::value_type< WI>::type wi_value_type ;
             WI& select( wi_value_type const& ) { return wi_ ; }
 
           private:
@@ -119,16 +119,16 @@ namespace lapack {
             {}
 
           public:
-            typedef typename value<W>::type w_value_type ;
+            typedef typename bindings::value_type< W>::type w_value_type ;
             W& select( w_value_type const& ) { return w_ ; }
 
-            typedef typename value<WR>::type wr_value_type ;
+            typedef typename bindings::value_type< WR>::type wr_value_type ;
             WR& select( wr_value_type const& ) { return wr_ ; }
 
-            typedef typename value<WI>::type wi_value_type ;
+            typedef typename bindings::value_type< WI>::type wi_value_type ;
             WI& select( wi_value_type const& ) { return wi_ ; }
 
-            typedef typename value<WB>::type wb_value_type ;
+            typedef typename bindings::value_type< WB>::type wb_value_type ;
             WB& select( wb_value_type const& ) { return wb_ ; }
 
           private:

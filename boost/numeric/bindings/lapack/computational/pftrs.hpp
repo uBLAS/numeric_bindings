@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -127,8 +127,8 @@ struct pftrs_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< VectorA, order >::type transr;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bindings::size(a) >= n*(n+1)/2 );
@@ -162,8 +162,8 @@ struct pftrs_impl {
 template< typename VectorA, typename MatrixB >
 inline std::ptrdiff_t pftrs( const char uplo, const fortran_int_t n,
         const VectorA& a, MatrixB& b ) {
-    return pftrs_impl< typename value< VectorA >::type >::invoke( uplo,
-            n, a, b );
+    return pftrs_impl< typename bindings::value_type<
+            VectorA >::type >::invoke( uplo, n, a, b );
 }
 
 //
@@ -173,8 +173,8 @@ inline std::ptrdiff_t pftrs( const char uplo, const fortran_int_t n,
 template< typename VectorA, typename MatrixB >
 inline std::ptrdiff_t pftrs( const char uplo, const fortran_int_t n,
         const VectorA& a, const MatrixB& b ) {
-    return pftrs_impl< typename value< VectorA >::type >::invoke( uplo,
-            n, a, b );
+    return pftrs_impl< typename bindings::value_type<
+            VectorA >::type >::invoke( uplo, n, a, b );
 }
 
 } // namespace lapack

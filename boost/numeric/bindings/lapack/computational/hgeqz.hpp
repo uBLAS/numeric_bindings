@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -156,28 +156,28 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHAR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHAI >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBETA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixH >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
@@ -299,24 +299,24 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixZ& z, detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBETA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixH >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
@@ -454,8 +454,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -478,9 +479,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -503,8 +504,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -527,9 +529,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -552,8 +554,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -576,9 +579,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -601,8 +604,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -625,9 +629,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -650,8 +654,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -674,9 +679,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -699,8 +704,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -723,9 +729,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -748,8 +754,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -772,9 +779,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -797,8 +804,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -821,9 +829,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -846,8 +854,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -870,9 +879,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -895,8 +904,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -919,9 +929,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -944,8 +954,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -968,9 +979,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -993,8 +1004,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1017,9 +1029,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1042,8 +1054,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1066,9 +1079,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1091,8 +1104,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1115,9 +1129,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1140,8 +1154,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1164,9 +1179,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1189,8 +1204,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1213,9 +1229,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1238,8 +1254,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1262,9 +1279,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1287,8 +1304,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1311,9 +1329,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1336,8 +1354,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1360,9 +1379,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1385,8 +1404,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1409,9 +1429,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1434,8 +1454,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1458,9 +1479,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1483,8 +1504,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1507,9 +1529,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1532,8 +1554,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1556,9 +1579,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1581,8 +1604,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1605,9 +1629,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1630,8 +1654,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1654,9 +1679,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1679,8 +1704,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1703,9 +1729,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1728,8 +1754,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1752,9 +1779,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1777,8 +1804,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1801,9 +1829,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1826,8 +1854,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1850,9 +1879,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1875,8 +1904,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1899,9 +1929,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1924,8 +1954,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1948,9 +1979,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -1973,8 +2004,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -1997,9 +2029,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2022,8 +2054,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2046,9 +2079,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2071,8 +2104,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2095,9 +2129,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2120,8 +2154,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2144,9 +2179,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2169,8 +2204,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2193,9 +2229,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2218,8 +2254,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2242,9 +2279,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2267,8 +2304,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2291,9 +2329,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2316,8 +2354,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2340,9 +2379,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2365,8 +2404,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2389,9 +2429,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2414,8 +2454,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2438,9 +2479,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2463,8 +2504,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2487,9 +2529,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2512,8 +2554,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2536,9 +2579,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2561,8 +2604,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2585,9 +2629,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2610,8 +2654,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2634,9 +2679,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2659,8 +2704,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2683,9 +2729,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2708,8 +2754,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2732,9 +2779,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2757,8 +2804,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2781,9 +2829,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2806,8 +2854,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2830,9 +2879,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2855,8 +2904,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2879,9 +2929,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2904,8 +2954,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2928,9 +2979,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -2953,8 +3004,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -2977,9 +3029,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3003,8 +3055,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3027,9 +3080,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3053,8 +3106,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3077,9 +3131,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3103,8 +3157,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3127,9 +3182,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3153,8 +3208,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3177,9 +3233,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3203,8 +3259,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3227,9 +3284,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3253,8 +3310,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3277,9 +3335,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3303,8 +3361,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3327,9 +3386,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3353,8 +3412,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3377,9 +3437,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3403,8 +3463,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3427,9 +3488,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3453,8 +3514,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3477,9 +3539,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3503,8 +3565,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3527,9 +3590,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3553,8 +3616,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3577,9 +3641,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3602,8 +3666,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3626,9 +3691,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3651,8 +3716,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3675,9 +3741,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3700,8 +3766,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3724,9 +3791,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3749,8 +3816,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3773,9 +3841,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3798,8 +3866,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3822,9 +3891,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3847,8 +3916,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3871,9 +3941,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3896,8 +3966,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3920,9 +3991,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3945,8 +4016,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -3969,9 +4041,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -3994,8 +4066,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4018,9 +4091,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4043,8 +4116,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4067,9 +4141,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4092,8 +4166,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4116,9 +4191,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4141,8 +4216,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4165,9 +4241,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4190,8 +4266,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4214,9 +4291,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4239,8 +4316,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4263,9 +4341,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4288,8 +4366,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4312,9 +4391,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4337,8 +4416,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4361,9 +4441,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4386,8 +4466,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4410,9 +4491,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4435,8 +4516,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4459,9 +4541,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4484,8 +4566,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4508,9 +4591,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4533,8 +4616,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4557,9 +4641,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4583,8 +4667,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4607,9 +4692,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4633,8 +4718,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4657,9 +4743,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4683,8 +4769,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4707,9 +4794,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4733,8 +4820,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4757,9 +4845,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4783,8 +4871,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4807,9 +4896,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4833,8 +4922,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4857,9 +4947,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4883,8 +4973,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4907,9 +4998,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4933,8 +5024,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -4957,9 +5049,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -4983,8 +5075,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5007,9 +5100,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5033,8 +5126,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5057,9 +5151,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5083,8 +5177,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5107,9 +5202,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5133,8 +5228,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5157,9 +5253,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5182,8 +5278,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5206,9 +5303,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5231,8 +5328,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5255,9 +5353,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5280,8 +5378,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5304,9 +5403,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5329,8 +5428,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5353,9 +5453,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5378,8 +5478,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5402,9 +5503,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5427,8 +5528,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5451,9 +5553,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5476,8 +5578,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5500,9 +5603,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5525,8 +5628,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5549,9 +5653,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5574,8 +5678,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5598,9 +5703,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5623,8 +5728,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5647,9 +5753,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5672,8 +5778,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5696,9 +5803,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5721,8 +5828,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5745,9 +5853,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5771,8 +5879,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5795,9 +5904,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5821,8 +5930,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5845,9 +5955,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5871,8 +5981,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5895,9 +6006,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5921,8 +6032,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5945,9 +6057,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -5970,8 +6082,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -5994,9 +6107,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6019,8 +6132,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6043,9 +6157,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6068,8 +6182,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6092,9 +6207,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6117,8 +6232,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6141,9 +6257,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6167,8 +6283,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6191,9 +6308,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6217,8 +6334,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6241,9 +6359,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6267,8 +6385,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6291,9 +6410,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6317,8 +6436,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6341,9 +6461,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6367,8 +6487,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6391,9 +6512,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6417,8 +6538,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6441,9 +6563,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6467,8 +6589,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6491,9 +6614,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6517,8 +6640,9 @@ hgeqz( const char job, const char compq, const char compz,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6541,9 +6665,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6567,8 +6691,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6591,9 +6716,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6617,8 +6742,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6641,9 +6767,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6667,8 +6793,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6691,9 +6818,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6717,8 +6844,9 @@ hgeqz( const char job, const char compq, const char compz,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, work );
 }
 
 //
@@ -6741,9 +6869,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHAR& alphar, const VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-            optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
+            alphai, beta, q, z, optimal_workspace() );
 }
 //
 // Overloaded function for hgeqz. Its overload differs for
@@ -6764,8 +6892,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -6785,8 +6914,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6808,8 +6938,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -6829,8 +6960,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6852,8 +6984,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -6873,8 +7006,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6896,8 +7030,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -6917,8 +7052,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6940,8 +7076,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -6961,8 +7098,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -6984,8 +7122,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7005,8 +7144,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7028,8 +7168,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7049,8 +7190,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7072,8 +7214,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7093,8 +7236,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7116,8 +7260,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7137,8 +7282,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7160,8 +7306,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7181,8 +7328,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7204,8 +7352,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7225,8 +7374,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7248,8 +7398,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7269,8 +7420,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7292,8 +7444,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7314,8 +7467,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7337,8 +7491,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7359,8 +7514,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7382,8 +7538,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7404,8 +7561,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7427,8 +7585,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7449,8 +7608,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7472,8 +7632,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7493,8 +7654,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7516,8 +7678,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7537,8 +7700,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7560,8 +7724,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7581,8 +7746,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7604,8 +7770,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7625,8 +7792,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7648,8 +7816,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7670,8 +7839,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7693,8 +7863,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7715,8 +7886,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7738,8 +7910,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7760,8 +7933,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7783,8 +7957,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7805,8 +7980,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7828,8 +8004,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7850,8 +8027,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7873,8 +8051,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7895,8 +8074,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7918,8 +8098,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7940,8 +8121,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -7963,8 +8145,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -7985,8 +8168,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8008,8 +8192,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8030,8 +8215,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8053,8 +8239,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8075,8 +8262,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8098,8 +8286,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8120,8 +8309,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8143,8 +8333,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8165,8 +8356,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8188,8 +8380,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8209,8 +8402,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8232,8 +8426,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8253,8 +8448,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8276,8 +8472,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8297,8 +8494,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8320,8 +8518,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
         Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8341,8 +8540,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8364,8 +8564,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8386,8 +8587,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8409,8 +8611,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8431,8 +8634,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8454,8 +8658,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8476,8 +8681,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8499,8 +8705,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8521,8 +8728,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8544,8 +8752,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8566,8 +8775,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8589,8 +8799,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8611,8 +8822,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8634,8 +8846,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8656,8 +8869,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8679,8 +8893,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8701,8 +8916,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8724,8 +8940,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8746,8 +8963,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8769,8 +8987,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8791,8 +9010,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8814,8 +9034,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8836,8 +9057,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8859,8 +9081,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8881,8 +9104,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8904,8 +9128,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8926,8 +9151,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8949,8 +9175,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -8971,8 +9198,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -8994,8 +9222,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9016,8 +9245,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9039,8 +9269,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9061,8 +9292,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9084,8 +9316,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9106,8 +9339,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9129,8 +9363,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9151,8 +9386,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9174,8 +9410,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9196,8 +9433,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9219,8 +9457,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9241,8 +9480,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9264,8 +9504,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9286,8 +9527,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9309,8 +9551,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9331,8 +9574,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9354,8 +9598,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9376,8 +9621,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9399,8 +9645,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9421,8 +9668,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9444,8 +9692,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9466,8 +9715,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9489,8 +9739,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9511,8 +9762,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9534,8 +9786,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9556,8 +9809,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 //
@@ -9579,8 +9833,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, Workspace work ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, work );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, work );
 }
 
 //
@@ -9601,8 +9856,9 @@ hgeqz( const char job, const char compq, const char compz,
         const fortran_int_t ilo, const MatrixH& h, const MatrixT& t,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z ) {
-    return hgeqz_impl< typename value< MatrixH >::type >::invoke( job,
-            compq, compz, ilo, h, t, alpha, beta, q, z, optimal_workspace() );
+    return hgeqz_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alpha,
+            beta, q, z, optimal_workspace() );
 }
 
 } // namespace lapack

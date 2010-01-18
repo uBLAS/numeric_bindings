@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -147,12 +147,12 @@ struct trevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSELECT >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
@@ -248,12 +248,12 @@ struct trevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixT >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixT >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
@@ -364,8 +364,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         MatrixT& t, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -383,8 +384,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         MatrixT& t, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -402,8 +404,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         MatrixT& t, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -421,8 +424,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         MatrixT& t, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -440,8 +444,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -459,8 +464,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -478,8 +484,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -497,8 +504,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -516,8 +524,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -535,8 +544,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -554,8 +564,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -573,8 +584,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -592,8 +604,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -611,8 +624,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -630,8 +644,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -649,8 +664,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -668,8 +684,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -687,8 +704,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -706,8 +724,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -725,8 +744,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -744,8 +764,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         const MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -763,8 +784,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         const MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -782,8 +804,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -801,8 +824,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -820,8 +844,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -839,8 +864,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -858,8 +884,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -877,8 +904,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -896,8 +924,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -915,8 +944,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 //
@@ -934,8 +964,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, work );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            work );
 }
 
 //
@@ -953,8 +984,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 trevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return trevc_impl< typename value< MatrixT >::type >::invoke( side,
-            howmny, select, t, vl, vr, mm, m, optimal_workspace() );
+    return trevc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( side, howmny, select, t, vl, vr, mm, m,
+            optimal_workspace() );
 }
 
 } // namespace lapack

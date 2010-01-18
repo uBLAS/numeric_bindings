@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -147,16 +147,16 @@ struct tgexc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& ifst, fortran_int_t& ilst ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -211,16 +211,16 @@ struct tgexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -308,8 +308,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -324,8 +324,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         const MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -340,8 +340,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         MatrixA& a, const MatrixB& b, MatrixQ& q, MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -356,8 +356,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         const MatrixA& a, const MatrixB& b, MatrixQ& q, MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -372,8 +372,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         MatrixA& a, MatrixB& b, const MatrixQ& q, MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -388,8 +388,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         const MatrixA& a, MatrixB& b, const MatrixQ& q, MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -404,8 +404,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         MatrixA& a, const MatrixB& b, const MatrixQ& q, MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -420,8 +420,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         const MatrixA& a, const MatrixB& b, const MatrixQ& q, MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -436,8 +436,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         MatrixA& a, MatrixB& b, MatrixQ& q, const MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -452,8 +452,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         const MatrixA& a, MatrixB& b, MatrixQ& q, const MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -468,8 +468,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         MatrixA& a, const MatrixB& b, MatrixQ& q, const MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -484,8 +484,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         const MatrixA& a, const MatrixB& b, MatrixQ& q, const MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -500,8 +500,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         MatrixA& a, MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -516,8 +516,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         const MatrixA& a, MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -532,8 +532,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         MatrixA& a, const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 
 //
@@ -548,8 +548,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
         const MatrixA& a, const MatrixB& b, const MatrixQ& q,
         const MatrixZ& z, fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst );
 }
 //
 // Overloaded function for tgexc. Its overload differs for
@@ -566,8 +566,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         MatrixB& b, MatrixQ& q, MatrixZ& z, const fortran_int_t ifst,
         fortran_int_t& ilst, Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -585,8 +586,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         MatrixB& b, MatrixQ& q, MatrixZ& z, const fortran_int_t ifst,
         fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -604,8 +606,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         MatrixB& b, MatrixQ& q, MatrixZ& z, const fortran_int_t ifst,
         fortran_int_t& ilst, Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -623,8 +626,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         MatrixB& b, MatrixQ& q, MatrixZ& z, const fortran_int_t ifst,
         fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -643,8 +647,9 @@ tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         const MatrixB& b, MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -662,8 +667,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         const MatrixB& b, MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -682,8 +688,9 @@ tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         const MatrixB& b, MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -701,8 +708,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         const MatrixB& b, MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -721,8 +729,9 @@ tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         MatrixB& b, const MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -740,8 +749,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         MatrixB& b, const MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -760,8 +770,9 @@ tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         MatrixB& b, const MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -779,8 +790,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         MatrixB& b, const MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -799,8 +811,9 @@ tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         const MatrixB& b, const MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -818,8 +831,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         const MatrixB& b, const MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -838,8 +852,9 @@ tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         const MatrixB& b, const MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -857,8 +872,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         const MatrixB& b, const MatrixQ& q, MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -877,8 +893,9 @@ tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         MatrixB& b, MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -896,8 +913,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         MatrixB& b, MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -916,8 +934,9 @@ tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         MatrixB& b, MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -935,8 +954,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         MatrixB& b, MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -955,8 +975,9 @@ tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         const MatrixB& b, MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -974,8 +995,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         const MatrixB& b, MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -994,8 +1016,9 @@ tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         const MatrixB& b, MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -1013,8 +1036,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         const MatrixB& b, MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -1033,8 +1057,9 @@ tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -1052,8 +1077,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -1072,8 +1098,9 @@ tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -1091,8 +1118,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -1111,8 +1139,9 @@ tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -1130,8 +1159,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, MatrixA& a,
         const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 //
@@ -1150,8 +1180,9 @@ tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst,
         Workspace work ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, work );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            work );
 }
 
 //
@@ -1169,8 +1200,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 tgexc( const logical_t wantq, const logical_t wantz, const MatrixA& a,
         const MatrixB& b, const MatrixQ& q, const MatrixZ& z,
         const fortran_int_t ifst, fortran_int_t& ilst ) {
-    return tgexc_impl< typename value< MatrixA >::type >::invoke( wantq,
-            wantz, a, b, q, z, ifst, ilst, optimal_workspace() );
+    return tgexc_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
+            optimal_workspace() );
 }
 
 } // namespace lapack

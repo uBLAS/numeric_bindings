@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -108,20 +108,20 @@ struct larrb_impl {
             detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorLLD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorWGAP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorWERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWGAP >::value) );
@@ -229,17 +229,18 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, VectorW& w, VectorWGAP& wgap,
-        VectorWERR& werr, const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist, Workspace work ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, work );
+        VectorWERR& werr, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type spdiam, const fortran_int_t twist,
+        Workspace work ) {
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist, work );
 }
 
 //
@@ -255,17 +256,18 @@ inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, VectorW& w, VectorWGAP& wgap,
-        VectorWERR& werr, const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, optimal_workspace() );
+        VectorWERR& werr, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type spdiam, const fortran_int_t twist ) {
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist,
+            optimal_workspace() );
 }
 
 //
@@ -281,17 +283,18 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, const VectorW& w, VectorWGAP& wgap,
-        VectorWERR& werr, const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist, Workspace work ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, work );
+        VectorWERR& werr, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type spdiam, const fortran_int_t twist,
+        Workspace work ) {
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist, work );
 }
 
 //
@@ -307,17 +310,18 @@ inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, const VectorW& w, VectorWGAP& wgap,
-        VectorWERR& werr, const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, optimal_workspace() );
+        VectorWERR& werr, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type spdiam, const fortran_int_t twist ) {
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist,
+            optimal_workspace() );
 }
 
 //
@@ -333,17 +337,18 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, VectorW& w, const VectorWGAP& wgap,
-        VectorWERR& werr, const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist, Workspace work ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, work );
+        VectorWERR& werr, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type spdiam, const fortran_int_t twist,
+        Workspace work ) {
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist, work );
 }
 
 //
@@ -359,17 +364,18 @@ inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, VectorW& w, const VectorWGAP& wgap,
-        VectorWERR& werr, const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
-        const fortran_int_t twist ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, optimal_workspace() );
+        VectorWERR& werr, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type spdiam, const fortran_int_t twist ) {
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist,
+            optimal_workspace() );
 }
 
 //
@@ -385,18 +391,18 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, const VectorW& w,
         const VectorWGAP& wgap, VectorWERR& werr,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
+        typename bindings::value_type< VectorD >::type >::type spdiam,
         const fortran_int_t twist, Workspace work ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, work );
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist, work );
 }
 
 //
@@ -412,18 +418,19 @@ inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, const VectorW& w,
         const VectorWGAP& wgap, VectorWERR& werr,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
+        typename bindings::value_type< VectorD >::type >::type spdiam,
         const fortran_int_t twist ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, optimal_workspace() );
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist,
+            optimal_workspace() );
 }
 
 //
@@ -439,18 +446,18 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, VectorW& w, VectorWGAP& wgap,
         const VectorWERR& werr, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type spdiam, const fortran_int_t twist,
         Workspace work ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, work );
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist, work );
 }
 
 //
@@ -466,17 +473,18 @@ inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, VectorW& w, VectorWGAP& wgap,
         const VectorWERR& werr, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type spdiam, const fortran_int_t twist ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, optimal_workspace() );
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist,
+            optimal_workspace() );
 }
 
 //
@@ -492,18 +500,18 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, const VectorW& w, VectorWGAP& wgap,
         const VectorWERR& werr, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type spdiam, const fortran_int_t twist,
         Workspace work ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, work );
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist, work );
 }
 
 //
@@ -519,17 +527,18 @@ inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, const VectorW& w, VectorWGAP& wgap,
         const VectorWERR& werr, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type spdiam, const fortran_int_t twist ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, optimal_workspace() );
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist,
+            optimal_workspace() );
 }
 
 //
@@ -545,18 +554,18 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, VectorW& w, const VectorWGAP& wgap,
         const VectorWERR& werr, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type spdiam, const fortran_int_t twist,
         Workspace work ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, work );
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist, work );
 }
 
 //
@@ -572,17 +581,18 @@ inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, VectorW& w, const VectorWGAP& wgap,
         const VectorWERR& werr, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type spdiam, const fortran_int_t twist ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, optimal_workspace() );
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist,
+            optimal_workspace() );
 }
 
 //
@@ -598,18 +608,18 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, const VectorW& w,
         const VectorWGAP& wgap, const VectorWERR& werr,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
+        typename bindings::value_type< VectorD >::type >::type spdiam,
         const fortran_int_t twist, Workspace work ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, work );
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist, work );
 }
 
 //
@@ -625,18 +635,19 @@ inline typename boost::disable_if< detail::is_workspace< VectorWERR >,
         std::ptrdiff_t >::type
 larrb( const fortran_int_t n, const VectorD& d, const VectorLLD& lld,
         const fortran_int_t ifirst, const fortran_int_t ilast,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type rtol1, const typename remove_imaginary<
-        typename value< VectorD >::type >::type rtol2,
+        typename bindings::value_type< VectorD >::type >::type rtol2,
         const fortran_int_t offset, const VectorW& w,
         const VectorWGAP& wgap, const VectorWERR& werr,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type pivmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type spdiam,
+        typename bindings::value_type< VectorD >::type >::type spdiam,
         const fortran_int_t twist ) {
-    return larrb_impl< typename value< VectorD >::type >::invoke( n, d,
-            lld, ifirst, ilast, rtol1, rtol2, offset, w, wgap, werr, pivmin,
-            spdiam, twist, optimal_workspace() );
+    return larrb_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( n, d, lld, ifirst, ilast, rtol1, rtol2,
+            offset, w, wgap, werr, pivmin, spdiam, twist,
+            optimal_workspace() );
 }
 
 } // namespace lapack

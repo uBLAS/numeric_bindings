@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -172,11 +172,11 @@ struct larfg_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename VectorX >
 inline std::ptrdiff_t larfg( const fortran_int_t n,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type& alpha, VectorX& x, typename remove_imaginary<
-        typename value< VectorX >::type >::type& tau ) {
-    return larfg_impl< typename value< VectorX >::type >::invoke( n,
-            alpha, x, tau );
+        typename bindings::value_type< VectorX >::type >::type& tau ) {
+    return larfg_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, alpha, x, tau );
 }
 
 //
@@ -185,23 +185,23 @@ inline std::ptrdiff_t larfg( const fortran_int_t n,
 //
 template< typename VectorX >
 inline std::ptrdiff_t larfg( const fortran_int_t n,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type& alpha, const VectorX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type& tau ) {
-    return larfg_impl< typename value< VectorX >::type >::invoke( n,
-            alpha, x, tau );
+    return larfg_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, alpha, x, tau );
 }
 //
 // Overloaded function for larfg. Its overload differs for
 // * VectorX&
 //
 template< typename VectorX >
-inline std::ptrdiff_t larfg( const fortran_int_t n, typename value<
-        VectorX >::type& alpha, VectorX& x, typename value<
-        VectorX >::type& tau ) {
-    return larfg_impl< typename value< VectorX >::type >::invoke( n,
-            alpha, x, tau );
+inline std::ptrdiff_t larfg( const fortran_int_t n,
+        typename bindings::value_type< VectorX >::type& alpha, VectorX& x,
+        typename bindings::value_type< VectorX >::type& tau ) {
+    return larfg_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, alpha, x, tau );
 }
 
 //
@@ -209,11 +209,12 @@ inline std::ptrdiff_t larfg( const fortran_int_t n, typename value<
 // * const VectorX&
 //
 template< typename VectorX >
-inline std::ptrdiff_t larfg( const fortran_int_t n, typename value<
-        VectorX >::type& alpha, const VectorX& x, typename value<
+inline std::ptrdiff_t larfg( const fortran_int_t n,
+        typename bindings::value_type< VectorX >::type& alpha,
+        const VectorX& x, typename bindings::value_type<
         VectorX >::type& tau ) {
-    return larfg_impl< typename value< VectorX >::type >::invoke( n,
-            alpha, x, tau );
+    return larfg_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, alpha, x, tau );
 }
 
 } // namespace lapack

@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -128,12 +128,12 @@ struct pteqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixZ& z, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -212,8 +212,8 @@ struct pteqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixZ& z, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -294,8 +294,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 pteqr( const char compz, VectorD& d, VectorE& e, MatrixZ& z,
         Workspace work ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, work );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -309,8 +309,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 pteqr( const char compz, VectorD& d, VectorE& e, MatrixZ& z ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, optimal_workspace() );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -326,8 +326,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 pteqr( const char compz, const VectorD& d, VectorE& e, MatrixZ& z,
         Workspace work ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, work );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -341,8 +341,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 pteqr( const char compz, const VectorD& d, VectorE& e, MatrixZ& z ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, optimal_workspace() );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -358,8 +358,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 pteqr( const char compz, VectorD& d, const VectorE& e, MatrixZ& z,
         Workspace work ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, work );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -373,8 +373,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 pteqr( const char compz, VectorD& d, const VectorE& e, MatrixZ& z ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, optimal_workspace() );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -390,8 +390,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 pteqr( const char compz, const VectorD& d, const VectorE& e, MatrixZ& z,
         Workspace work ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, work );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -406,8 +406,8 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 pteqr( const char compz, const VectorD& d, const VectorE& e,
         MatrixZ& z ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, optimal_workspace() );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -423,8 +423,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 pteqr( const char compz, VectorD& d, VectorE& e, const MatrixZ& z,
         Workspace work ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, work );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -438,8 +438,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 pteqr( const char compz, VectorD& d, VectorE& e, const MatrixZ& z ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, optimal_workspace() );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -455,8 +455,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 pteqr( const char compz, const VectorD& d, VectorE& e, const MatrixZ& z,
         Workspace work ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, work );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -471,8 +471,8 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 pteqr( const char compz, const VectorD& d, VectorE& e,
         const MatrixZ& z ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, optimal_workspace() );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -488,8 +488,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 pteqr( const char compz, VectorD& d, const VectorE& e, const MatrixZ& z,
         Workspace work ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, work );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -504,8 +504,8 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 pteqr( const char compz, VectorD& d, const VectorE& e,
         const MatrixZ& z ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, optimal_workspace() );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -521,8 +521,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 pteqr( const char compz, const VectorD& d, const VectorE& e,
         const MatrixZ& z, Workspace work ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, work );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -537,8 +537,8 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 pteqr( const char compz, const VectorD& d, const VectorE& e,
         const MatrixZ& z ) {
-    return pteqr_impl< typename value< MatrixZ >::type >::invoke( compz,
-            d, e, z, optimal_workspace() );
+    return pteqr_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -163,12 +163,14 @@ struct ger_impl {
             const VectorY& y, MatrixA& a ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                VectorX >::type >::type, typename remove_const<
-                typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                VectorX >::type >::type, typename remove_const<
-                typename value< MatrixA >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< VectorX >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< VectorX >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                MatrixA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -193,12 +195,13 @@ struct ger_impl {
 // * MatrixA&
 //
 template< typename VectorX, typename VectorY, typename MatrixA >
-inline typename ger_impl< typename value< VectorX >::type >::return_type
-ger( const typename remove_imaginary< typename value<
+inline typename ger_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
+ger( const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type alpha, const VectorX& x, const VectorY& y,
         MatrixA& a ) {
-    ger_impl< typename value< VectorX >::type >::invoke( alpha, x, y,
-            a );
+    ger_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( alpha, x, y, a );
 }
 
 //
@@ -206,12 +209,13 @@ ger( const typename remove_imaginary< typename value<
 // * const MatrixA&
 //
 template< typename VectorX, typename VectorY, typename MatrixA >
-inline typename ger_impl< typename value< VectorX >::type >::return_type
-ger( const typename remove_imaginary< typename value<
+inline typename ger_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
+ger( const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type alpha, const VectorX& x, const VectorY& y,
         const MatrixA& a ) {
-    ger_impl< typename value< VectorX >::type >::invoke( alpha, x, y,
-            a );
+    ger_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( alpha, x, y, a );
 }
 
 } // namespace blas

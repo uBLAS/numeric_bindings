@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -103,16 +103,16 @@ struct sbgv_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixBB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixBB >::value) );
@@ -210,8 +210,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb, VectorW& w,
         MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -228,8 +228,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb, VectorW& w,
         MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -246,8 +247,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, MatrixBB& bb, VectorW& w,
         MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -264,8 +265,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, MatrixBB& bb, VectorW& w,
         MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -282,8 +284,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, const MatrixBB& bb, VectorW& w,
         MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -300,8 +302,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, const MatrixBB& bb, VectorW& w,
         MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -318,8 +321,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, const MatrixBB& bb,
         VectorW& w, MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -336,8 +339,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, const MatrixBB& bb,
         VectorW& w, MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -354,8 +358,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb, const VectorW& w,
         MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -372,8 +376,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb, const VectorW& w,
         MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -390,8 +395,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, MatrixBB& bb,
         const VectorW& w, MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -408,8 +413,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, MatrixBB& bb,
         const VectorW& w, MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -426,8 +432,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, const MatrixBB& bb,
         const VectorW& w, MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -444,8 +450,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, const MatrixBB& bb,
         const VectorW& w, MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -462,8 +469,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, const MatrixBB& bb,
         const VectorW& w, MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -480,8 +487,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, const MatrixBB& bb,
         const VectorW& w, MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -498,8 +506,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb, VectorW& w,
         const MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -516,8 +524,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb, VectorW& w,
         const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -534,8 +543,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, MatrixBB& bb, VectorW& w,
         const MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -552,8 +561,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, MatrixBB& bb, VectorW& w,
         const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -570,8 +580,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, const MatrixBB& bb, VectorW& w,
         const MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -588,8 +598,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, const MatrixBB& bb, VectorW& w,
         const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -606,8 +617,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, const MatrixBB& bb,
         VectorW& w, const MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -624,8 +635,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, const MatrixBB& bb,
         VectorW& w, const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -642,8 +654,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb, const VectorW& w,
         const MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -660,8 +672,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb, const VectorW& w,
         const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -678,8 +691,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, MatrixBB& bb,
         const VectorW& w, const MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -696,8 +709,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, MatrixBB& bb,
         const VectorW& w, const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -714,8 +728,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, const MatrixBB& bb,
         const VectorW& w, const MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -732,8 +746,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, MatrixAB& ab, const MatrixBB& bb,
         const VectorW& w, const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -750,8 +765,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, const MatrixBB& bb,
         const VectorW& w, const MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, work );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z, work );
 }
 
 //
@@ -768,8 +783,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbgv( const char jobz, const MatrixAB& ab, const MatrixBB& bb,
         const VectorW& w, const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            ab, bb, w, z, optimal_workspace() );
+    return sbgv_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, ab, bb, w, z,
+            optimal_workspace() );
 }
 
 } // namespace lapack

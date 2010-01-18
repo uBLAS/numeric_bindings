@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -248,9 +248,10 @@ struct tpsv_impl {
         typedef typename result_of::trans_tag< MatrixAP, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixAP, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixAP >::type >::type, typename remove_const<
-                typename value< VectorX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         detail::tpsv( order(), uplo(), trans(), diag(),
                 bindings::size_column_op(ap, trans()),
@@ -272,10 +273,11 @@ struct tpsv_impl {
 // * VectorX&
 //
 template< typename MatrixAP, typename VectorX >
-inline typename tpsv_impl< typename value<
+inline typename tpsv_impl< typename bindings::value_type<
         MatrixAP >::type >::return_type
 tpsv( const MatrixAP& ap, VectorX& x ) {
-    tpsv_impl< typename value< MatrixAP >::type >::invoke( ap, x );
+    tpsv_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, x );
 }
 
 //
@@ -283,10 +285,11 @@ tpsv( const MatrixAP& ap, VectorX& x ) {
 // * const VectorX&
 //
 template< typename MatrixAP, typename VectorX >
-inline typename tpsv_impl< typename value<
+inline typename tpsv_impl< typename bindings::value_type<
         MatrixAP >::type >::return_type
 tpsv( const MatrixAP& ap, const VectorX& x ) {
-    tpsv_impl< typename value< MatrixAP >::type >::invoke( ap, x );
+    tpsv_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, x );
 }
 
 } // namespace blas

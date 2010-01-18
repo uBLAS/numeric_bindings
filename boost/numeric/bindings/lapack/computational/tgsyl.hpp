@@ -26,7 +26,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -169,24 +169,24 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixF >::value) );
@@ -321,24 +321,24 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixF >::value) );
@@ -471,11 +471,13 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
         MatrixC& c, const MatrixD& d, const MatrixE& e, MatrixF& f,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& dif, Workspace work ) {
-    return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            a, b, c, d, e, f, scale, dif, work );
+        typename bindings::value_type< MatrixA >::type >::type& dif,
+        Workspace work ) {
+    return tgsyl_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
+            work );
 }
 
 //
@@ -490,11 +492,12 @@ inline typename boost::disable_if< detail::is_workspace< MatrixF >,
         std::ptrdiff_t >::type
 tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
         MatrixC& c, const MatrixD& d, const MatrixE& e, MatrixF& f,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& dif ) {
-    return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            a, b, c, d, e, f, scale, dif, optimal_workspace() );
+        typename bindings::value_type< MatrixA >::type >::type& dif ) {
+    return tgsyl_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
+            optimal_workspace() );
 }
 
 //
@@ -510,11 +513,13 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
         const MatrixC& c, const MatrixD& d, const MatrixE& e, MatrixF& f,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& dif, Workspace work ) {
-    return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            a, b, c, d, e, f, scale, dif, work );
+        typename bindings::value_type< MatrixA >::type >::type& dif,
+        Workspace work ) {
+    return tgsyl_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
+            work );
 }
 
 //
@@ -529,11 +534,12 @@ inline typename boost::disable_if< detail::is_workspace< MatrixF >,
         std::ptrdiff_t >::type
 tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
         const MatrixC& c, const MatrixD& d, const MatrixE& e, MatrixF& f,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& dif ) {
-    return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            a, b, c, d, e, f, scale, dif, optimal_workspace() );
+        typename bindings::value_type< MatrixA >::type >::type& dif ) {
+    return tgsyl_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
+            optimal_workspace() );
 }
 
 //
@@ -549,11 +555,13 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
         MatrixC& c, const MatrixD& d, const MatrixE& e, const MatrixF& f,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& dif, Workspace work ) {
-    return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            a, b, c, d, e, f, scale, dif, work );
+        typename bindings::value_type< MatrixA >::type >::type& dif,
+        Workspace work ) {
+    return tgsyl_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
+            work );
 }
 
 //
@@ -568,11 +576,12 @@ inline typename boost::disable_if< detail::is_workspace< MatrixF >,
         std::ptrdiff_t >::type
 tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
         MatrixC& c, const MatrixD& d, const MatrixE& e, const MatrixF& f,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& dif ) {
-    return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            a, b, c, d, e, f, scale, dif, optimal_workspace() );
+        typename bindings::value_type< MatrixA >::type >::type& dif ) {
+    return tgsyl_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
+            optimal_workspace() );
 }
 
 //
@@ -588,11 +597,13 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
         const MatrixC& c, const MatrixD& d, const MatrixE& e,
-        const MatrixF& f, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& dif, Workspace work ) {
-    return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            a, b, c, d, e, f, scale, dif, work );
+        const MatrixF& f, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& scale,
+        typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type& dif, Workspace work ) {
+    return tgsyl_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
+            work );
 }
 
 //
@@ -607,11 +618,13 @@ inline typename boost::disable_if< detail::is_workspace< MatrixF >,
         std::ptrdiff_t >::type
 tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
         const MatrixC& c, const MatrixD& d, const MatrixE& e,
-        const MatrixF& f, typename remove_imaginary< typename value<
-        MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& dif ) {
-    return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            a, b, c, d, e, f, scale, dif, optimal_workspace() );
+        const MatrixF& f, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& scale,
+        typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type& dif ) {
+    return tgsyl_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
+            optimal_workspace() );
 }
 
 } // namespace lapack

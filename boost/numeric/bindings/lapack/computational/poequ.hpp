@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -124,8 +124,8 @@ struct poequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             real_type& scond, real_type& amax ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorS >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
@@ -188,11 +188,11 @@ struct poequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixA, typename VectorS >
 inline std::ptrdiff_t poequ( const MatrixA& a, VectorS& s,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scond, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& amax ) {
-    return poequ_impl< typename value< MatrixA >::type >::invoke( a, s,
-            scond, amax );
+        typename bindings::value_type< MatrixA >::type >::type& amax ) {
+    return poequ_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, s, scond, amax );
 }
 
 //
@@ -201,11 +201,11 @@ inline std::ptrdiff_t poequ( const MatrixA& a, VectorS& s,
 //
 template< typename MatrixA, typename VectorS >
 inline std::ptrdiff_t poequ( const MatrixA& a, const VectorS& s,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scond, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& amax ) {
-    return poequ_impl< typename value< MatrixA >::type >::invoke( a, s,
-            scond, amax );
+        typename bindings::value_type< MatrixA >::type >::type& amax ) {
+    return poequ_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, s, scond, amax );
 }
 
 } // namespace lapack

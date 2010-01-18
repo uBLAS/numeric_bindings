@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -159,28 +159,28 @@ struct ggsvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorALPHA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBETA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixV >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -313,24 +313,24 @@ struct ggsvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             RWORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorALPHA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorALPHA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBETA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixV >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -481,8 +481,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
         MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -505,9 +506,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
         MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -530,8 +531,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -554,9 +556,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -579,8 +581,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -603,9 +606,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -628,8 +631,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -652,9 +656,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -677,8 +681,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
         MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -701,9 +706,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
         MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -726,8 +731,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -750,9 +756,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -775,8 +781,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -799,9 +806,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -824,8 +831,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -848,9 +856,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -873,8 +881,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u, MatrixV& v,
         MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -897,9 +906,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u, MatrixV& v,
         MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -922,8 +931,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -946,9 +956,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -971,8 +981,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -995,9 +1006,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1020,8 +1031,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1044,9 +1056,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1069,8 +1081,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1093,9 +1106,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1118,8 +1131,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1142,9 +1156,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1167,8 +1181,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1191,9 +1206,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1216,8 +1231,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1240,9 +1256,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1265,8 +1281,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u, MatrixV& v,
         MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1289,9 +1306,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u, MatrixV& v,
         MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1314,8 +1331,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1338,9 +1356,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1363,8 +1381,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1387,9 +1406,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1412,8 +1431,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1436,9 +1456,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1461,8 +1481,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1485,9 +1506,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1510,8 +1531,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1534,9 +1556,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1559,8 +1581,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1583,9 +1606,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1608,8 +1631,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1632,9 +1656,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1657,8 +1681,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1681,9 +1706,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1706,8 +1731,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1730,9 +1756,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1755,8 +1781,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1779,9 +1806,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1804,8 +1831,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1828,9 +1856,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1853,8 +1881,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1877,9 +1906,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1902,8 +1931,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1926,9 +1956,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1951,8 +1981,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -1975,9 +2006,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2000,8 +2031,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2024,9 +2056,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2049,8 +2081,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, const MatrixV& v,
         MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2073,9 +2106,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, const MatrixV& v,
         MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2098,8 +2131,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2122,9 +2156,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2147,8 +2181,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2171,9 +2206,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2196,8 +2231,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2220,9 +2256,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2245,8 +2281,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2269,9 +2306,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2294,8 +2331,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2318,9 +2356,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2343,8 +2381,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2367,9 +2406,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2392,8 +2431,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2416,9 +2456,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2441,8 +2481,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2465,9 +2506,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2490,8 +2531,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2514,9 +2556,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2539,8 +2581,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2563,9 +2606,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2588,8 +2631,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2612,9 +2656,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2637,8 +2681,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2661,9 +2706,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2686,8 +2731,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2710,9 +2756,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2735,8 +2781,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2759,9 +2806,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2784,8 +2831,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2808,9 +2856,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2833,8 +2881,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2857,9 +2906,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2882,8 +2931,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2906,9 +2956,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2931,8 +2981,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -2955,9 +3006,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -2980,8 +3031,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3004,9 +3056,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3029,8 +3081,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3053,9 +3106,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3078,8 +3131,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3102,9 +3156,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3127,8 +3181,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3151,9 +3206,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3176,8 +3231,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3200,9 +3256,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3225,8 +3281,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3249,9 +3306,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3274,8 +3331,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3298,9 +3356,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3323,8 +3381,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3347,9 +3406,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3372,8 +3431,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3396,9 +3456,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3421,8 +3481,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3445,9 +3506,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3470,8 +3531,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3494,9 +3556,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3519,8 +3581,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3543,9 +3606,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3568,8 +3631,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3592,9 +3656,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3617,8 +3681,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3641,9 +3706,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3666,8 +3731,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3690,9 +3756,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3715,8 +3781,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3739,9 +3806,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3764,8 +3831,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3788,9 +3856,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3813,8 +3881,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3837,9 +3906,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3862,8 +3931,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3886,9 +3956,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3911,8 +3981,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3935,9 +4006,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -3960,8 +4031,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -3984,9 +4056,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4009,8 +4081,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u, MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4033,9 +4106,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4058,8 +4131,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4082,9 +4156,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4107,8 +4181,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4131,9 +4206,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4156,8 +4231,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4180,9 +4256,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4205,8 +4281,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4229,9 +4306,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4254,8 +4331,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4278,9 +4356,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4303,8 +4381,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4327,9 +4406,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4352,8 +4431,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4376,9 +4456,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4401,8 +4481,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u, MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4425,9 +4506,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4450,8 +4531,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4474,9 +4556,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4499,8 +4581,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4523,9 +4606,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4548,8 +4631,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4572,9 +4656,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4597,8 +4681,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4621,9 +4706,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4646,8 +4731,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4670,9 +4756,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4695,8 +4781,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4719,9 +4806,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4744,8 +4831,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4768,9 +4856,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4793,8 +4881,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4817,9 +4906,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4842,8 +4931,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4866,9 +4956,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4891,8 +4981,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4915,9 +5006,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4940,8 +5031,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -4964,9 +5056,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -4989,8 +5081,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5013,9 +5106,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5038,8 +5131,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5062,9 +5156,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5087,8 +5181,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5111,9 +5206,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5136,8 +5231,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5160,9 +5256,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5185,8 +5281,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5209,9 +5306,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5234,8 +5331,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5258,9 +5356,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5283,8 +5381,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5307,9 +5406,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5332,8 +5431,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5356,9 +5456,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5381,8 +5481,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5405,9 +5506,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5430,8 +5531,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5454,9 +5556,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5479,8 +5581,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5503,9 +5606,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5528,8 +5631,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5552,9 +5656,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5577,8 +5681,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5601,9 +5706,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5626,8 +5731,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5650,9 +5756,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5675,8 +5781,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5699,9 +5806,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5724,8 +5831,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5748,9 +5856,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5773,8 +5881,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5797,9 +5906,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5822,8 +5931,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5846,9 +5956,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5871,8 +5981,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5895,9 +6006,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5920,8 +6031,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5944,9 +6056,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -5969,8 +6081,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -5993,9 +6106,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6018,8 +6131,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6042,9 +6156,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6068,8 +6182,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6092,9 +6207,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6118,8 +6233,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6142,9 +6258,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6167,8 +6283,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6191,9 +6308,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6217,8 +6334,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6241,9 +6359,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6267,8 +6385,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6291,9 +6410,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6317,8 +6436,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6341,9 +6461,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6366,8 +6486,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6390,9 +6511,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6416,8 +6537,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6440,9 +6562,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6466,8 +6588,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6490,9 +6613,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6516,8 +6639,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6540,9 +6664,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6565,8 +6689,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, const MatrixQ& q, Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6589,9 +6714,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a, MatrixB& b,
         const VectorALPHA& alpha, const VectorBETA& beta, const MatrixU& u,
         const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6615,8 +6740,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6639,9 +6765,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6665,8 +6791,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6689,9 +6816,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 //
@@ -6715,8 +6842,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q, work );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, work );
 }
 
 //
@@ -6739,9 +6867,9 @@ ggsvd( const char jobu, const char jobv, const char jobq,
         fortran_int_t& k, fortran_int_t& l, const MatrixA& a,
         const MatrixB& b, const VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixU& u, const MatrixV& v, const MatrixQ& q ) {
-    return ggsvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
-            optimal_workspace() );
+    return ggsvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, k, l, a, b, alpha,
+            beta, u, v, q, optimal_workspace() );
 }
 
 } // namespace lapack

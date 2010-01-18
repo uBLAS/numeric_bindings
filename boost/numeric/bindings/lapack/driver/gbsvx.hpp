@@ -26,7 +26,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -167,32 +167,32 @@ struct gbsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixAFB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorFERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAFB >::value) );
@@ -329,28 +329,28 @@ struct gbsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorR >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorR >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorR >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorR >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorFERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorR >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorR >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixAFB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAFB >::value) );
@@ -492,11 +492,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -519,11 +520,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -547,11 +548,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -574,11 +576,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -602,11 +604,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -629,11 +632,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -657,11 +660,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -684,11 +688,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -712,11 +716,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -739,11 +744,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -767,11 +773,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -794,11 +801,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -822,11 +830,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -849,11 +858,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -877,11 +887,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -904,11 +915,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -932,11 +944,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -959,11 +972,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -987,11 +1000,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1014,11 +1028,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1042,11 +1057,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1069,11 +1085,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1097,11 +1114,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1124,11 +1142,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1152,11 +1171,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1179,11 +1199,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1207,11 +1228,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1234,11 +1256,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1262,11 +1285,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1289,11 +1313,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1317,11 +1342,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1344,11 +1370,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1372,11 +1399,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1399,11 +1427,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1427,11 +1455,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1454,11 +1483,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1482,11 +1512,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1509,11 +1540,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1537,11 +1569,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1564,11 +1597,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1592,11 +1626,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1619,11 +1654,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1647,11 +1683,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1674,11 +1711,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1702,11 +1740,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1729,11 +1768,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1757,11 +1797,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1784,11 +1825,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1812,11 +1854,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1839,11 +1882,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1867,11 +1910,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1894,11 +1938,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1922,11 +1967,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -1949,11 +1995,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1977,11 +2024,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2004,11 +2052,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2033,10 +2082,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2060,11 +2110,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2089,10 +2139,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2116,11 +2167,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2145,10 +2196,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2172,11 +2224,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2201,10 +2253,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2228,11 +2281,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2256,11 +2309,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2283,11 +2337,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2312,10 +2366,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2339,11 +2394,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2368,10 +2423,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2395,11 +2451,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2424,10 +2480,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2451,11 +2508,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2480,10 +2537,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2507,11 +2565,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2536,10 +2594,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2563,11 +2622,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2592,10 +2651,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2619,11 +2679,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2648,10 +2708,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2675,11 +2736,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2703,11 +2764,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2730,11 +2792,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2759,10 +2821,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2786,11 +2849,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2815,10 +2878,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2842,11 +2906,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2871,10 +2935,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2898,11 +2963,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2927,10 +2992,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -2954,11 +3020,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2983,10 +3049,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3010,11 +3077,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3039,10 +3106,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3066,11 +3134,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3095,10 +3163,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3122,11 +3191,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3150,11 +3219,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3177,11 +3247,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3206,10 +3276,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3233,11 +3304,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3262,10 +3333,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3289,11 +3361,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3318,10 +3390,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3345,11 +3418,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3374,10 +3447,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3401,11 +3475,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3430,10 +3504,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3457,11 +3532,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3486,10 +3561,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3513,11 +3589,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3542,10 +3618,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3569,11 +3646,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3597,11 +3674,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3624,11 +3702,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3653,10 +3731,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3680,11 +3759,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3709,10 +3788,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3736,11 +3816,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3765,10 +3845,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3792,11 +3873,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3821,11 +3902,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3849,11 +3931,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3878,11 +3960,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3906,11 +3989,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3935,11 +4018,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -3963,11 +4047,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3992,11 +4076,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4020,11 +4105,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4048,11 +4133,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4075,11 +4161,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4103,11 +4189,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4130,11 +4217,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4158,11 +4246,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4185,11 +4274,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4213,11 +4303,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4240,11 +4331,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4269,10 +4361,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4296,11 +4389,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4325,10 +4418,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4352,11 +4446,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4381,10 +4475,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4408,11 +4503,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4437,10 +4532,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4464,11 +4560,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4492,11 +4588,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4519,11 +4616,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4548,10 +4646,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4575,11 +4674,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4604,10 +4703,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4631,11 +4731,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4660,10 +4760,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4687,11 +4788,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4716,10 +4817,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4743,11 +4845,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4772,10 +4874,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4799,11 +4902,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4828,10 +4931,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4855,11 +4959,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4884,10 +4988,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4911,11 +5016,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4939,11 +5044,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -4966,11 +5072,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4995,10 +5102,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5022,11 +5130,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5051,10 +5159,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5078,11 +5187,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5107,10 +5216,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5134,11 +5244,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5163,10 +5273,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5190,11 +5301,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5219,10 +5330,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5246,11 +5358,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5275,10 +5387,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5302,11 +5415,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5331,10 +5444,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5358,11 +5472,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5386,11 +5500,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5413,11 +5528,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5442,10 +5558,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5469,11 +5586,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5498,10 +5615,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5525,11 +5643,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5554,10 +5672,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5581,11 +5700,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5610,11 +5729,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5638,11 +5758,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5667,11 +5787,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5695,11 +5816,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5724,11 +5845,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5752,11 +5874,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5781,11 +5903,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5809,11 +5932,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5837,11 +5960,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5864,11 +5988,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5893,10 +6018,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5920,11 +6046,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5949,10 +6075,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -5976,11 +6103,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6005,10 +6132,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6032,11 +6160,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6061,10 +6189,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6088,11 +6217,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6117,10 +6246,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6144,11 +6274,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6173,10 +6303,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6200,11 +6331,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6229,10 +6360,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6256,11 +6388,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6284,11 +6416,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6311,11 +6444,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6340,10 +6474,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6367,11 +6502,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6396,10 +6531,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6423,11 +6559,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6452,10 +6588,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6479,11 +6616,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6508,10 +6645,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6535,11 +6673,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6564,10 +6702,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6591,11 +6730,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6620,10 +6759,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6647,11 +6787,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6676,10 +6816,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6703,11 +6844,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6731,11 +6872,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6758,11 +6900,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6787,10 +6930,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6814,11 +6958,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6843,10 +6987,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6870,11 +7015,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6899,10 +7044,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6926,11 +7072,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6955,10 +7101,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -6982,11 +7129,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7011,10 +7158,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7038,11 +7186,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7067,10 +7215,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7094,11 +7243,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7123,10 +7272,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7150,11 +7300,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7178,11 +7328,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7205,11 +7356,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7234,10 +7386,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7261,11 +7414,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7290,10 +7443,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7317,11 +7471,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7346,10 +7500,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7373,11 +7528,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7402,11 +7557,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7430,11 +7586,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7459,11 +7615,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7487,11 +7644,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7516,11 +7673,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7544,11 +7702,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7573,11 +7731,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7601,11 +7760,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7629,11 +7788,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7656,12 +7816,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7685,11 +7845,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7712,12 +7873,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7741,11 +7902,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7768,12 +7930,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7797,11 +7959,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7824,12 +7987,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7853,11 +8016,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7880,12 +8044,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7909,11 +8073,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7936,12 +8101,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -7965,11 +8130,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -7992,12 +8158,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8021,11 +8187,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8048,12 +8215,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8077,11 +8244,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8104,12 +8272,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8133,11 +8301,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8160,12 +8329,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8189,11 +8358,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8216,12 +8386,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8245,11 +8415,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8272,12 +8443,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8301,11 +8472,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8328,12 +8500,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8357,11 +8529,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8384,12 +8557,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8413,11 +8586,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8440,12 +8614,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8469,11 +8643,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8496,12 +8671,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8525,11 +8700,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8552,12 +8728,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8581,11 +8757,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8608,12 +8785,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8637,11 +8814,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8664,12 +8842,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8693,11 +8871,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8720,12 +8899,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8749,11 +8928,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8776,12 +8956,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8805,11 +8985,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8832,12 +9013,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8861,11 +9042,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8888,12 +9070,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8917,11 +9099,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -8944,12 +9127,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -8973,11 +9156,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9000,12 +9184,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9029,11 +9213,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9056,12 +9241,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9085,11 +9270,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9112,12 +9298,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9141,11 +9327,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9168,12 +9355,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9198,10 +9385,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9225,11 +9413,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9254,10 +9442,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9281,11 +9470,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9310,10 +9499,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9337,11 +9527,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9366,10 +9556,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9393,11 +9584,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9421,11 +9612,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9448,12 +9640,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9478,10 +9670,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9505,11 +9698,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9534,10 +9727,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9561,11 +9755,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9590,10 +9784,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9617,11 +9812,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9646,10 +9841,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9673,11 +9869,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9702,10 +9898,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9729,11 +9926,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9758,10 +9955,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9785,11 +9983,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9814,10 +10012,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9841,11 +10040,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9869,11 +10068,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9896,12 +10096,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9926,10 +10126,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -9953,11 +10154,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -9982,10 +10183,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10009,11 +10211,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10038,10 +10240,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10065,11 +10268,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10094,10 +10297,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10121,11 +10325,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10150,10 +10354,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10177,11 +10382,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10206,10 +10411,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10233,11 +10439,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10262,10 +10468,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10289,11 +10496,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10317,11 +10524,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10344,12 +10552,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10374,10 +10582,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10401,11 +10610,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10430,10 +10639,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10457,11 +10667,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10486,10 +10696,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10513,11 +10724,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10542,10 +10753,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10569,11 +10781,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10598,10 +10810,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10625,11 +10838,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10654,10 +10867,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10681,11 +10895,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10710,10 +10924,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10737,11 +10952,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10765,11 +10980,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10792,12 +11008,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10822,10 +11038,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10849,11 +11066,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10878,10 +11095,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10905,11 +11123,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10934,10 +11152,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -10961,11 +11180,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -10990,11 +11209,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11018,12 +11238,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11048,11 +11268,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11076,12 +11297,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11106,11 +11327,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11134,12 +11356,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11164,11 +11386,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11192,12 +11415,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11221,11 +11444,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11248,12 +11472,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11277,11 +11501,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11304,12 +11529,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11333,11 +11558,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11360,12 +11586,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11389,11 +11615,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11416,12 +11643,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11446,10 +11673,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11473,11 +11701,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11502,10 +11730,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11529,11 +11758,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11558,10 +11787,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11585,11 +11815,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11614,10 +11844,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11641,11 +11872,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11669,11 +11900,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11696,12 +11928,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11726,10 +11958,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11753,11 +11986,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11782,10 +12015,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11809,11 +12043,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11838,10 +12072,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11865,11 +12100,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11894,10 +12129,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11921,11 +12157,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -11950,10 +12186,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -11977,11 +12214,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12006,10 +12243,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12033,11 +12271,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12062,10 +12300,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12089,11 +12328,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12117,11 +12356,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12144,12 +12384,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12174,10 +12414,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12201,11 +12442,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12230,10 +12471,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12257,11 +12499,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12286,10 +12528,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12313,11 +12556,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12342,10 +12585,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12369,11 +12613,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12398,10 +12642,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12425,11 +12670,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12454,10 +12699,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12481,11 +12727,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12510,10 +12756,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12537,11 +12784,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12565,11 +12812,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12592,12 +12840,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12622,10 +12870,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12649,11 +12898,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12678,10 +12927,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12705,11 +12955,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12734,10 +12984,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12761,11 +13012,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12790,11 +13041,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12818,12 +13070,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12848,11 +13100,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12876,12 +13129,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12906,11 +13159,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12934,12 +13188,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -12964,11 +13218,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -12992,12 +13247,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13021,11 +13276,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13048,12 +13304,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13078,10 +13334,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13105,11 +13362,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13134,10 +13391,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13161,11 +13419,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13190,10 +13448,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13217,11 +13476,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13246,10 +13505,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13273,11 +13533,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13302,10 +13562,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13329,11 +13590,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13358,10 +13619,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13385,11 +13647,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13414,10 +13676,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13441,11 +13704,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13469,11 +13732,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13496,12 +13760,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13526,10 +13790,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13553,11 +13818,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13582,10 +13847,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13609,11 +13875,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13638,10 +13904,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13665,11 +13932,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13694,10 +13961,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13721,11 +13989,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13750,10 +14018,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13777,11 +14046,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13806,10 +14075,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13833,11 +14103,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13862,10 +14132,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13889,11 +14160,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13917,11 +14188,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -13944,12 +14216,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -13974,10 +14246,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14001,11 +14274,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14030,10 +14303,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14057,11 +14331,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14086,10 +14360,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14113,11 +14388,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14142,10 +14417,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14169,11 +14445,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14198,10 +14474,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14225,11 +14502,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14254,10 +14531,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14281,11 +14559,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14310,10 +14588,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14337,11 +14616,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14365,11 +14644,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14392,12 +14672,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14422,10 +14702,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14449,11 +14730,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14478,10 +14759,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14505,11 +14787,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14534,10 +14816,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14561,11 +14844,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14590,11 +14873,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14618,12 +14902,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14648,11 +14932,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14676,12 +14961,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14706,11 +14991,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14734,12 +15020,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14764,11 +15050,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14792,12 +15079,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14821,11 +15108,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14848,12 +15136,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14877,11 +15165,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14904,12 +15193,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14933,11 +15222,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -14960,12 +15250,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -14989,11 +15279,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15016,12 +15307,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15045,11 +15336,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15072,12 +15364,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15101,11 +15393,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15128,12 +15421,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15157,11 +15450,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15184,12 +15478,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15213,11 +15507,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15240,12 +15535,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15269,11 +15564,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15296,12 +15592,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15325,11 +15621,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15352,12 +15649,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15381,11 +15678,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15408,12 +15706,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15437,11 +15735,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15464,12 +15763,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15493,11 +15792,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15520,12 +15820,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15549,11 +15849,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15576,12 +15877,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15605,11 +15906,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15632,12 +15934,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15661,11 +15963,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15688,12 +15991,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15717,11 +16020,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15744,12 +16048,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15773,11 +16077,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15800,12 +16105,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15829,11 +16134,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15856,12 +16162,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15885,11 +16191,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15912,12 +16219,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15941,11 +16248,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -15968,12 +16276,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -15997,11 +16305,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16024,12 +16333,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16053,11 +16362,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16080,12 +16390,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16109,11 +16419,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16136,12 +16447,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16165,11 +16476,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16192,12 +16504,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16221,11 +16533,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16248,12 +16561,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16277,11 +16590,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16304,12 +16618,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16333,11 +16647,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16360,12 +16675,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16390,10 +16705,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16417,11 +16733,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16446,10 +16762,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16473,11 +16790,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16502,10 +16819,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16529,11 +16847,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16558,10 +16876,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16585,11 +16904,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16613,11 +16932,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16640,12 +16960,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16670,10 +16990,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16697,11 +17018,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16726,10 +17047,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16753,11 +17075,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16782,10 +17104,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16809,11 +17132,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16838,10 +17161,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16865,11 +17189,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16894,10 +17218,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16921,11 +17246,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -16950,10 +17275,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -16977,11 +17303,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17006,10 +17332,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17033,11 +17360,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17061,11 +17388,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17088,12 +17416,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17118,10 +17446,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17145,11 +17474,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17174,10 +17503,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17201,11 +17531,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17230,10 +17560,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17257,11 +17588,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17286,10 +17617,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17313,11 +17645,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17342,10 +17674,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17369,11 +17702,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17398,10 +17731,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17425,11 +17759,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17454,10 +17788,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17481,11 +17816,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17509,11 +17844,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17536,12 +17872,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17566,10 +17902,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17593,11 +17930,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17622,10 +17959,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17649,11 +17987,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17678,10 +18016,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17705,11 +18044,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17734,10 +18073,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17761,11 +18101,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17790,10 +18130,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17817,11 +18158,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17846,10 +18187,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17873,11 +18215,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17902,10 +18244,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17929,11 +18272,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -17957,11 +18300,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -17984,12 +18328,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18014,10 +18358,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18041,11 +18386,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18070,10 +18415,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18097,11 +18443,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18126,10 +18472,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18153,11 +18500,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18182,11 +18529,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18210,12 +18558,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18240,11 +18588,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18268,12 +18617,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18298,11 +18647,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18326,12 +18676,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18356,11 +18706,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18384,12 +18735,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18413,11 +18764,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18440,12 +18792,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18469,11 +18821,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18496,12 +18849,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18525,11 +18878,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18552,12 +18906,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18581,11 +18935,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18608,12 +18963,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18638,10 +18993,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18665,11 +19021,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18694,10 +19050,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18721,11 +19078,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18750,10 +19107,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18777,11 +19135,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18806,10 +19164,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18833,11 +19192,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18861,11 +19220,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18888,12 +19248,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18918,10 +19278,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -18945,11 +19306,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -18974,10 +19335,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19001,11 +19363,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19030,10 +19392,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19057,11 +19420,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19086,10 +19449,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19113,11 +19477,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19142,10 +19506,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19169,11 +19534,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19198,10 +19563,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19225,11 +19591,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19254,10 +19620,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19281,11 +19648,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19309,11 +19676,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19336,12 +19704,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19366,10 +19734,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19393,11 +19762,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19422,10 +19791,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19449,11 +19819,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19478,10 +19848,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19505,11 +19876,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19534,10 +19905,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19561,11 +19933,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19590,10 +19962,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19617,11 +19990,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19646,10 +20019,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19673,11 +20047,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19702,10 +20076,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19729,11 +20104,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19757,11 +20132,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19784,12 +20160,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19814,10 +20190,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19841,11 +20218,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19870,10 +20247,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19897,11 +20275,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19926,10 +20304,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -19953,11 +20332,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -19982,11 +20361,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20010,12 +20390,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20040,11 +20420,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20068,12 +20449,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20098,11 +20479,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20126,12 +20508,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20156,11 +20538,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20184,12 +20567,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20213,11 +20596,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20240,12 +20624,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20270,10 +20654,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20297,11 +20682,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20326,10 +20711,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20353,11 +20739,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20382,10 +20768,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20409,11 +20796,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20438,10 +20825,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20465,11 +20853,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20494,10 +20882,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20521,11 +20910,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20550,10 +20939,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20577,11 +20967,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20606,10 +20996,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20633,11 +21024,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20661,11 +21052,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20688,12 +21080,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20718,10 +21110,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20745,11 +21138,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20774,10 +21167,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20801,11 +21195,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20830,10 +21224,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20857,11 +21252,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20886,10 +21281,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20913,11 +21309,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20942,10 +21338,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -20969,11 +21366,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -20998,10 +21395,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21025,11 +21423,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21054,10 +21452,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21081,11 +21480,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21109,11 +21508,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21136,12 +21536,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21166,10 +21566,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21193,11 +21594,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21222,10 +21623,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21249,11 +21651,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21278,10 +21680,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21305,11 +21708,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21334,10 +21737,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21361,11 +21765,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21390,10 +21794,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21417,11 +21822,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21446,10 +21851,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21473,11 +21879,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21502,10 +21908,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21529,11 +21936,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21557,11 +21964,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21584,12 +21992,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21614,10 +22022,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21641,11 +22050,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21670,10 +22079,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21697,11 +22107,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21726,10 +22136,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21753,11 +22164,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21782,11 +22193,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21810,12 +22222,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21840,11 +22252,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21868,12 +22281,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21898,11 +22311,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21926,12 +22340,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -21956,11 +22370,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -21984,12 +22399,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22013,11 +22428,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22040,12 +22456,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22069,11 +22485,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22096,12 +22513,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22125,11 +22542,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22152,12 +22570,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22181,11 +22599,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22208,12 +22627,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22237,11 +22656,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22264,12 +22684,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22293,11 +22713,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22320,12 +22741,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22349,11 +22770,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22376,12 +22798,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22405,11 +22827,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22432,12 +22855,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22461,11 +22884,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22488,12 +22912,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22517,11 +22941,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22544,12 +22969,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22573,11 +22998,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22600,12 +23026,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22629,11 +23055,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22656,12 +23083,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22685,11 +23112,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22712,12 +23140,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22741,11 +23169,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22768,12 +23197,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22797,11 +23226,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22824,12 +23254,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22853,11 +23283,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22880,12 +23311,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22909,11 +23340,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22936,12 +23368,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -22965,11 +23397,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -22992,12 +23425,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23021,11 +23454,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23048,12 +23482,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23077,11 +23511,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23104,12 +23539,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23133,11 +23568,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23160,12 +23596,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23189,11 +23625,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23216,12 +23653,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23245,11 +23682,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23272,12 +23710,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23301,11 +23739,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23328,12 +23767,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23357,11 +23796,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23384,12 +23824,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23413,11 +23853,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23440,12 +23881,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23469,11 +23910,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23496,12 +23938,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23525,11 +23967,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23552,12 +23995,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
-        MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        MatrixB& b, MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23582,10 +24025,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23609,11 +24053,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23638,10 +24082,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23665,11 +24110,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23694,10 +24139,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23721,11 +24167,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23750,10 +24196,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23777,11 +24224,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23805,11 +24252,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23832,12 +24280,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23862,10 +24310,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23889,11 +24338,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23918,10 +24367,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -23945,11 +24395,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -23974,10 +24424,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24001,11 +24452,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24030,10 +24481,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24057,11 +24509,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24086,10 +24538,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24113,11 +24566,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24142,10 +24595,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24169,11 +24623,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24198,10 +24652,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24225,11 +24680,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24253,11 +24708,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24280,12 +24736,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24310,10 +24766,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24337,11 +24794,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24366,10 +24823,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24393,11 +24851,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24422,10 +24880,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24449,11 +24908,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24478,10 +24937,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24505,11 +24965,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24534,10 +24994,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24561,11 +25022,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24590,10 +25051,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24617,11 +25079,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24646,10 +25108,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24673,11 +25136,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24701,11 +25164,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24728,12 +25192,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24758,10 +25222,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24785,11 +25250,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24814,10 +25279,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24841,11 +25307,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24870,10 +25336,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24897,11 +25364,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24926,10 +25393,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -24953,11 +25421,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -24982,10 +25450,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25009,11 +25478,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25038,10 +25507,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25065,11 +25535,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25094,10 +25564,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25121,11 +25592,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25149,11 +25620,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25176,12 +25648,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename value<
+        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25206,10 +25678,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25233,11 +25706,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25262,10 +25735,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25289,11 +25763,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25318,10 +25792,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25345,11 +25820,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25374,11 +25849,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25402,12 +25878,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25432,11 +25908,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25460,12 +25937,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25490,11 +25967,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25518,12 +25996,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25548,11 +26026,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25576,12 +26055,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25605,11 +26084,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25632,12 +26112,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25661,11 +26141,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25688,12 +26169,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25717,11 +26198,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25744,12 +26226,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25773,11 +26255,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25800,12 +26283,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25830,10 +26313,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25857,11 +26341,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25886,10 +26370,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25913,11 +26398,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25942,10 +26427,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -25969,11 +26455,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -25998,10 +26484,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26025,11 +26512,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26053,11 +26540,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26080,12 +26568,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26110,10 +26598,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26137,11 +26626,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26166,10 +26655,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26193,11 +26683,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26222,10 +26712,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26249,11 +26740,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26278,10 +26769,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26305,11 +26797,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26334,10 +26826,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26361,11 +26854,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26390,10 +26883,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26417,11 +26911,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26446,10 +26940,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26473,11 +26968,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26501,11 +26996,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26528,12 +27024,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26558,10 +27054,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26585,11 +27082,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26614,10 +27111,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26641,11 +27139,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26670,10 +27168,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26697,11 +27196,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26726,10 +27225,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26753,11 +27253,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26782,10 +27282,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26809,11 +27310,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26838,10 +27339,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26865,11 +27367,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26894,10 +27396,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26921,11 +27424,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -26949,11 +27452,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -26976,12 +27480,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27006,10 +27510,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27033,11 +27538,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27062,10 +27567,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27089,11 +27595,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27118,10 +27624,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27145,11 +27652,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27174,11 +27681,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27202,12 +27710,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27232,11 +27740,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27260,12 +27769,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27290,11 +27799,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27318,12 +27828,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27348,11 +27858,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27376,12 +27887,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27405,11 +27916,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27432,12 +27944,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27462,10 +27974,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27489,11 +28002,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27518,10 +28031,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27545,11 +28059,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27574,10 +28088,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27601,11 +28116,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27630,10 +28145,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27657,11 +28173,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27686,10 +28202,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27713,11 +28230,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27742,10 +28259,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27769,11 +28287,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27798,10 +28316,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27825,11 +28344,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27853,11 +28372,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27880,12 +28400,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27910,10 +28430,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27937,11 +28458,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -27966,10 +28487,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -27993,11 +28515,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28022,10 +28544,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28049,11 +28572,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28078,10 +28601,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28105,11 +28629,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28134,10 +28658,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28161,11 +28686,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28190,10 +28715,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28217,11 +28743,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28246,10 +28772,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28273,11 +28800,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28301,11 +28828,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28328,12 +28856,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28358,10 +28886,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28385,11 +28914,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28414,10 +28943,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28441,11 +28971,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28470,10 +29000,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28497,11 +29028,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28526,10 +29057,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28553,11 +29085,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28582,10 +29114,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28609,11 +29142,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28638,10 +29171,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28665,11 +29199,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28694,10 +29228,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28721,11 +29256,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28749,11 +29284,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28776,12 +29312,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv,
         char& equed, const VectorR& r, const VectorC& c, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+        const MatrixX& x, typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        const VectorFERR& ferr, const VectorBERR& berr ) {
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28806,10 +29342,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28833,11 +29370,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28862,10 +29399,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28889,11 +29427,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28918,10 +29456,11 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -28945,11 +29484,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond,
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -28974,11 +29513,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -29002,12 +29542,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -29032,11 +29572,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -29060,12 +29601,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -29090,11 +29631,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -29118,12 +29660,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -29148,11 +29690,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, work );
 }
 
 //
@@ -29176,12 +29719,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gbsvx( const char fact, const MatrixAB& ab, const MatrixAFB& afb,
         const VectorIPIV& ipiv, char& equed, const VectorR& r,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return gbsvx_impl< typename value< MatrixAB >::type >::invoke( fact,
-            ab, afb, ipiv, equed, r, c, b, x, rcond, ferr, berr,
-            optimal_workspace() );
+    return gbsvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( fact, ab, afb, ipiv, equed, r, c, b,
+            x, rcond, ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

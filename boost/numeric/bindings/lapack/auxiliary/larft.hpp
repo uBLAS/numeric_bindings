@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -122,12 +122,12 @@ struct larft_impl {
             const VectorTAU& tau, MatrixT& t ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixV >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixV >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixV >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixV >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
@@ -167,8 +167,8 @@ template< typename MatrixV, typename VectorTAU, typename MatrixT >
 inline std::ptrdiff_t larft( const char direct, const char storev,
         const fortran_int_t n, const fortran_int_t k, MatrixV& v,
         const VectorTAU& tau, MatrixT& t ) {
-    return larft_impl< typename value< MatrixV >::type >::invoke( direct,
-            storev, n, k, v, tau, t );
+    return larft_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( direct, storev, n, k, v, tau, t );
 }
 
 //
@@ -180,8 +180,8 @@ template< typename MatrixV, typename VectorTAU, typename MatrixT >
 inline std::ptrdiff_t larft( const char direct, const char storev,
         const fortran_int_t n, const fortran_int_t k,
         const MatrixV& v, const VectorTAU& tau, MatrixT& t ) {
-    return larft_impl< typename value< MatrixV >::type >::invoke( direct,
-            storev, n, k, v, tau, t );
+    return larft_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( direct, storev, n, k, v, tau, t );
 }
 
 //
@@ -193,8 +193,8 @@ template< typename MatrixV, typename VectorTAU, typename MatrixT >
 inline std::ptrdiff_t larft( const char direct, const char storev,
         const fortran_int_t n, const fortran_int_t k, MatrixV& v,
         const VectorTAU& tau, const MatrixT& t ) {
-    return larft_impl< typename value< MatrixV >::type >::invoke( direct,
-            storev, n, k, v, tau, t );
+    return larft_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( direct, storev, n, k, v, tau, t );
 }
 
 //
@@ -206,8 +206,8 @@ template< typename MatrixV, typename VectorTAU, typename MatrixT >
 inline std::ptrdiff_t larft( const char direct, const char storev,
         const fortran_int_t n, const fortran_int_t k,
         const MatrixV& v, const VectorTAU& tau, const MatrixT& t ) {
-    return larft_impl< typename value< MatrixV >::type >::invoke( direct,
-            storev, n, k, v, tau, t );
+    return larft_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( direct, storev, n, k, v, tau, t );
 }
 
 } // namespace lapack

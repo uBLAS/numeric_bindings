@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -163,9 +163,10 @@ struct her_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                VectorX >::type >::type, typename remove_const<
-                typename value< MatrixA >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< VectorX >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                MatrixA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -188,10 +189,12 @@ struct her_impl {
 // * MatrixA&
 //
 template< typename VectorX, typename MatrixA >
-inline typename her_impl< typename value< VectorX >::type >::return_type
-her( const typename remove_imaginary< typename value<
+inline typename her_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
+her( const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type alpha, const VectorX& x, MatrixA& a ) {
-    her_impl< typename value< VectorX >::type >::invoke( alpha, x, a );
+    her_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( alpha, x, a );
 }
 
 //
@@ -199,10 +202,12 @@ her( const typename remove_imaginary< typename value<
 // * const MatrixA&
 //
 template< typename VectorX, typename MatrixA >
-inline typename her_impl< typename value< VectorX >::type >::return_type
-her( const typename remove_imaginary< typename value<
+inline typename her_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
+her( const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type alpha, const VectorX& x, const MatrixA& a ) {
-    her_impl< typename value< VectorX >::type >::invoke( alpha, x, a );
+    her_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( alpha, x, a );
 }
 
 } // namespace blas

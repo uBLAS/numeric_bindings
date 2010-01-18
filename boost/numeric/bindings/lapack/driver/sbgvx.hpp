@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -118,20 +118,20 @@ struct sbgvx_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixBB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixBB >::value) );
@@ -262,15 +262,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -288,16 +290,16 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -317,14 +319,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -343,15 +347,15 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -371,14 +375,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -397,15 +403,15 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -425,14 +431,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -451,15 +459,15 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -478,15 +486,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -504,16 +514,16 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -533,14 +543,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -559,15 +571,15 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -587,14 +599,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -613,15 +627,15 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -641,14 +655,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -667,15 +683,15 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -694,15 +710,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -720,16 +738,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -749,14 +768,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -775,15 +796,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -803,14 +825,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -829,15 +853,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -857,14 +882,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -883,15 +910,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -910,15 +938,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -936,16 +966,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -965,14 +996,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -991,15 +1024,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1019,14 +1053,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1045,15 +1081,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1073,14 +1110,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1099,15 +1138,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1126,15 +1166,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1152,16 +1194,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1181,14 +1224,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1207,15 +1252,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1235,14 +1281,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1261,15 +1309,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1289,14 +1338,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1315,15 +1366,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1342,15 +1394,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1368,16 +1422,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1397,14 +1452,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1423,15 +1480,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1451,14 +1509,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1477,15 +1537,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1505,14 +1566,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1531,15 +1594,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1558,16 +1622,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1585,16 +1650,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1614,15 +1680,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1641,15 +1708,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1669,15 +1737,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1696,15 +1765,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1724,15 +1794,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1751,15 +1822,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1778,16 +1850,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1805,16 +1878,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1834,15 +1908,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1861,15 +1936,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1889,15 +1965,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1916,15 +1993,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1944,15 +2022,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1971,15 +2050,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -1998,15 +2078,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2024,16 +2106,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2053,14 +2136,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2079,15 +2164,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2107,14 +2193,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2133,15 +2221,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2161,14 +2250,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2187,15 +2278,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2214,15 +2306,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2240,16 +2334,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2269,14 +2364,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2295,15 +2392,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2323,14 +2421,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2349,15 +2449,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2377,14 +2478,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2403,15 +2506,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2430,16 +2534,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2457,16 +2562,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2486,15 +2592,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2513,15 +2620,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2541,15 +2649,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2568,15 +2677,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2596,15 +2706,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2623,15 +2734,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2650,16 +2762,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2677,16 +2790,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2706,15 +2820,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2733,15 +2848,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2761,15 +2877,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2788,15 +2905,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2816,15 +2934,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2843,15 +2962,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2870,15 +2990,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2896,16 +3018,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2925,15 +3048,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2952,15 +3076,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -2980,15 +3105,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3007,15 +3133,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3035,15 +3162,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3062,15 +3190,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3089,15 +3218,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3115,16 +3246,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3144,15 +3276,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3171,15 +3304,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3199,15 +3333,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3226,15 +3361,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3254,15 +3390,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3281,15 +3418,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3308,16 +3446,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3335,16 +3474,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3364,15 +3504,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3391,15 +3532,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3419,15 +3561,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3446,15 +3589,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3474,15 +3618,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3501,15 +3646,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3528,16 +3674,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3555,16 +3702,17 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        const MatrixQ& q, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAB >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3584,15 +3732,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3611,15 +3760,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3639,15 +3789,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3666,15 +3817,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -3694,15 +3846,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3721,15 +3874,16 @@ inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 sbgvx( const char jobz, const char range, const MatrixAB& ab,
         const MatrixBB& bb, const MatrixQ& q, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vl,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixAB >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type abstol,
+        fortran_int_t& m, const VectorW& w, const MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    return sbgvx_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( jobz, range, ab, bb, q, vl, vu, il,
+            iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
 } // namespace lapack

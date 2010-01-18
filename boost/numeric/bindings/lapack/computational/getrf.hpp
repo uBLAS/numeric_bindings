@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -217,8 +217,8 @@ struct getrf_impl {
 //
 template< typename MatrixA, typename VectorIPIV >
 inline std::ptrdiff_t getrf( MatrixA& a, VectorIPIV& ipiv ) {
-    return getrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv );
+    return getrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv );
 }
 
 //
@@ -228,8 +228,8 @@ inline std::ptrdiff_t getrf( MatrixA& a, VectorIPIV& ipiv ) {
 //
 template< typename MatrixA, typename VectorIPIV >
 inline std::ptrdiff_t getrf( const MatrixA& a, VectorIPIV& ipiv ) {
-    return getrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv );
+    return getrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv );
 }
 
 //
@@ -239,8 +239,8 @@ inline std::ptrdiff_t getrf( const MatrixA& a, VectorIPIV& ipiv ) {
 //
 template< typename MatrixA, typename VectorIPIV >
 inline std::ptrdiff_t getrf( MatrixA& a, const VectorIPIV& ipiv ) {
-    return getrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv );
+    return getrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv );
 }
 
 //
@@ -250,8 +250,8 @@ inline std::ptrdiff_t getrf( MatrixA& a, const VectorIPIV& ipiv ) {
 //
 template< typename MatrixA, typename VectorIPIV >
 inline std::ptrdiff_t getrf( const MatrixA& a, const VectorIPIV& ipiv ) {
-    return getrf_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv );
+    return getrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv );
 }
 
 } // namespace lapack

@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -112,24 +112,24 @@ struct laebz_impl {
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE2 >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixAB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorNVAL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorNVAL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixNAB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorNVAL >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
@@ -245,131 +245,22 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        VectorC& c, fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
-        std::ptrdiff_t >::type
-laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
-        const fortran_int_t n, const fortran_int_t minp,
-        const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        VectorC& c, fortran_int_t& mout, MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
-        const fortran_int_t n, const fortran_int_t minp,
-        const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        MatrixAB& ab, VectorC& c, fortran_int_t& mout, MatrixNAB& nab,
-        Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
-        std::ptrdiff_t >::type
-laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
-        const fortran_int_t n, const fortran_int_t minp,
-        const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        MatrixAB& ab, VectorC& c, fortran_int_t& mout, MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * const MatrixAB&
-// * VectorC&
-// * MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
-        const fortran_int_t n, const fortran_int_t minp,
-        const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval,
-        const MatrixAB& ab, VectorC& c, fortran_int_t& mout,
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, MatrixAB& ab, VectorC& c, fortran_int_t& mout,
         MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
 // Overloaded function for laebz. Its overload differs for
 // * VectorNVAL&
-// * const MatrixAB&
+// * MatrixAB&
 // * VectorC&
 // * MatrixNAB&
 // * Default workspace-type (optimal)
@@ -382,16 +273,131 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval,
-        const MatrixAB& ab, VectorC& c, fortran_int_t& mout,
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, MatrixAB& ab, VectorC& c, fortran_int_t& mout,
         MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for laebz. Its overload differs for
+// * const VectorNVAL&
+// * MatrixAB&
+// * VectorC&
+// * MatrixNAB&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorE2,
+        typename VectorNVAL, typename MatrixAB, typename VectorC,
+        typename MatrixNAB, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
+        const fortran_int_t n, const fortran_int_t minp,
+        const fortran_int_t nbmin, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type reltol, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
+}
+
+//
+// Overloaded function for laebz. Its overload differs for
+// * const VectorNVAL&
+// * MatrixAB&
+// * VectorC&
+// * MatrixNAB&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorE2,
+        typename VectorNVAL, typename MatrixAB, typename VectorC,
+        typename MatrixNAB >
+inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
+        std::ptrdiff_t >::type
+laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
+        const fortran_int_t n, const fortran_int_t minp,
+        const fortran_int_t nbmin, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type reltol, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for laebz. Its overload differs for
+// * VectorNVAL&
+// * const MatrixAB&
+// * VectorC&
+// * MatrixNAB&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorE2,
+        typename VectorNVAL, typename MatrixAB, typename VectorC,
+        typename MatrixNAB, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
+        const fortran_int_t n, const fortran_int_t minp,
+        const fortran_int_t nbmin, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type reltol, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
+}
+
+//
+// Overloaded function for laebz. Its overload differs for
+// * VectorNVAL&
+// * const MatrixAB&
+// * VectorC&
+// * MatrixNAB&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorE2,
+        typename VectorNVAL, typename MatrixAB, typename VectorC,
+        typename MatrixNAB >
+inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
+        std::ptrdiff_t >::type
+laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
+        const fortran_int_t n, const fortran_int_t minp,
+        const fortran_int_t nbmin, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type reltol, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -410,16 +416,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        const MatrixAB& ab, VectorC& c, fortran_int_t& mout,
-        MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -438,16 +444,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        const MatrixAB& ab, VectorC& c, fortran_int_t& mout,
-        MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -466,16 +473,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        const VectorC& c, fortran_int_t& mout, MatrixNAB& nab,
-        Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -494,15 +501,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        const VectorC& c, fortran_int_t& mout, MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -521,16 +530,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -549,16 +558,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -577,16 +587,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval,
-        const MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, const MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -605,16 +615,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval,
-        const MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, const MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -633,16 +644,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        const MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, const MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -661,16 +672,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        const MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, const MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -689,71 +701,73 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        VectorC& c, fortran_int_t& mout, const MatrixNAB& nab,
-        Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * const MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
-        std::ptrdiff_t >::type
-laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
-        const fortran_int_t n, const fortran_int_t minp,
-        const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        VectorC& c, fortran_int_t& mout, const MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * const MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
-        const fortran_int_t n, const fortran_int_t minp,
-        const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        MatrixAB& ab, VectorC& c, fortran_int_t& mout,
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, MatrixAB& ab, VectorC& c, fortran_int_t& mout,
         const MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
+}
+
+//
+// Overloaded function for laebz. Its overload differs for
+// * VectorNVAL&
+// * MatrixAB&
+// * VectorC&
+// * const MatrixNAB&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorE2,
+        typename VectorNVAL, typename MatrixAB, typename VectorC,
+        typename MatrixNAB >
+inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
+        std::ptrdiff_t >::type
+laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
+        const fortran_int_t n, const fortran_int_t minp,
+        const fortran_int_t nbmin, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type reltol, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, MatrixAB& ab, VectorC& c, fortran_int_t& mout,
+        const MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for laebz. Its overload differs for
+// * const VectorNVAL&
+// * MatrixAB&
+// * VectorC&
+// * const MatrixNAB&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorE2,
+        typename VectorNVAL, typename MatrixAB, typename VectorC,
+        typename MatrixNAB, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
+        const fortran_int_t n, const fortran_int_t minp,
+        const fortran_int_t nbmin, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
+        VectorD >::type >::type reltol, const typename remove_imaginary<
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -772,16 +786,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        MatrixAB& ab, VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -800,16 +815,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval,
-        const MatrixAB& ab, VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -828,16 +843,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval,
-        const MatrixAB& ab, VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -856,16 +872,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        const MatrixAB& ab, VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -884,16 +900,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        const MatrixAB& ab, VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -912,16 +929,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        const VectorC& c, fortran_int_t& mout, const MatrixNAB& nab,
-        Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -940,15 +957,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        const VectorC& c, fortran_int_t& mout, const MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -967,16 +986,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -995,16 +1014,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -1023,16 +1043,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval,
-        const MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, const MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -1051,16 +1071,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, VectorNVAL& nval,
-        const MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        VectorNVAL& nval, const MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 //
@@ -1079,16 +1100,16 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        const MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab, Workspace work ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, work );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, const MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, work );
 }
 
 //
@@ -1107,16 +1128,17 @@ inline typename boost::disable_if< detail::is_workspace< MatrixNAB >,
 laebz( const fortran_int_t ijob, const fortran_int_t nitmax,
         const fortran_int_t n, const fortran_int_t minp,
         const fortran_int_t nbmin, const typename remove_imaginary<
-        typename value< VectorD >::type >::type abstol,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorD >::type >::type abstol,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type reltol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type pivmin, const VectorD& d,
-        const VectorE& e, const VectorE2& e2, const VectorNVAL& nval,
-        const MatrixAB& ab, const VectorC& c, fortran_int_t& mout,
-        const MatrixNAB& nab ) {
-    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
-            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
-            ab, c, mout, nab, optimal_workspace() );
+        typename bindings::value_type< VectorD >::type >::type pivmin,
+        const VectorD& d, const VectorE& e, const VectorE2& e2,
+        const VectorNVAL& nval, const MatrixAB& ab, const VectorC& c,
+        fortran_int_t& mout, const MatrixNAB& nab ) {
+    return laebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( ijob, nitmax, n, minp, nbmin, abstol,
+            reltol, pivmin, d, e, e2, nval, ab, c, mout, nab,
+            optimal_workspace() );
 }
 
 } // namespace lapack

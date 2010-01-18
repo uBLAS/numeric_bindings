@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -275,9 +275,11 @@ struct scal_impl {
 // * VectorX&
 //
 template< typename ScalarA, typename VectorX >
-inline typename scal_impl< typename value< VectorX >::type >::return_type
+inline typename scal_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
 scal( const ScalarA a, VectorX& x ) {
-    scal_impl< typename value< VectorX >::type >::invoke( a, x );
+    scal_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( a, x );
 }
 
 //
@@ -285,9 +287,11 @@ scal( const ScalarA a, VectorX& x ) {
 // * const VectorX&
 //
 template< typename ScalarA, typename VectorX >
-inline typename scal_impl< typename value< VectorX >::type >::return_type
+inline typename scal_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
 scal( const ScalarA a, const VectorX& x ) {
-    scal_impl< typename value< VectorX >::type >::invoke( a, x );
+    scal_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( a, x );
 }
 
 } // namespace blas

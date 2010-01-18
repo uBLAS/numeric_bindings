@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -127,8 +127,8 @@ struct gebal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorSCALE& scale ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorSCALE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSCALE >::value) );
@@ -198,8 +198,8 @@ struct gebal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixA, typename VectorSCALE >
 inline std::ptrdiff_t gebal( const char job, MatrixA& a,
         fortran_int_t& ilo, fortran_int_t& ihi, VectorSCALE& scale ) {
-    return gebal_impl< typename value< MatrixA >::type >::invoke( job, a,
-            ilo, ihi, scale );
+    return gebal_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( job, a, ilo, ihi, scale );
 }
 
 //
@@ -210,8 +210,8 @@ inline std::ptrdiff_t gebal( const char job, MatrixA& a,
 template< typename MatrixA, typename VectorSCALE >
 inline std::ptrdiff_t gebal( const char job, const MatrixA& a,
         fortran_int_t& ilo, fortran_int_t& ihi, VectorSCALE& scale ) {
-    return gebal_impl< typename value< MatrixA >::type >::invoke( job, a,
-            ilo, ihi, scale );
+    return gebal_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( job, a, ilo, ihi, scale );
 }
 
 //
@@ -223,8 +223,8 @@ template< typename MatrixA, typename VectorSCALE >
 inline std::ptrdiff_t gebal( const char job, MatrixA& a,
         fortran_int_t& ilo, fortran_int_t& ihi,
         const VectorSCALE& scale ) {
-    return gebal_impl< typename value< MatrixA >::type >::invoke( job, a,
-            ilo, ihi, scale );
+    return gebal_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( job, a, ilo, ihi, scale );
 }
 
 //
@@ -236,8 +236,8 @@ template< typename MatrixA, typename VectorSCALE >
 inline std::ptrdiff_t gebal( const char job, const MatrixA& a,
         fortran_int_t& ilo, fortran_int_t& ihi,
         const VectorSCALE& scale ) {
-    return gebal_impl< typename value< MatrixA >::type >::invoke( job, a,
-            ilo, ihi, scale );
+    return gebal_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( job, a, ilo, ihi, scale );
 }
 
 } // namespace lapack

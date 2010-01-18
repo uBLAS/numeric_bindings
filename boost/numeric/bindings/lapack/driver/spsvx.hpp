@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -153,24 +153,24 @@ struct spsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixAFP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorFERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAFP >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
@@ -289,20 +289,20 @@ struct spsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorFERR >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorFERR >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixAFP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAFP >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
@@ -422,11 +422,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -445,10 +446,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -467,11 +469,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -490,10 +493,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -512,11 +516,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -535,10 +540,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -557,11 +563,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -580,10 +587,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -602,11 +610,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -625,10 +634,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -647,11 +657,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -670,10 +681,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -692,11 +704,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -715,10 +728,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -737,11 +751,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -760,10 +775,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -782,11 +798,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -805,11 +822,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -828,11 +846,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -851,11 +870,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -874,11 +894,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -897,11 +918,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -920,11 +942,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -943,11 +966,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -966,11 +990,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -989,11 +1014,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1012,11 +1038,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1035,11 +1062,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1058,11 +1086,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1081,11 +1110,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1104,11 +1134,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1127,11 +1158,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1150,11 +1182,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1173,11 +1206,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1196,11 +1230,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1219,11 +1254,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1242,11 +1278,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1265,11 +1302,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1288,11 +1326,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1311,11 +1350,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1334,11 +1374,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1357,11 +1398,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1380,11 +1422,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1403,11 +1446,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1426,11 +1470,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1449,11 +1494,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1472,11 +1518,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1495,11 +1542,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1518,11 +1566,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1541,11 +1590,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1564,11 +1614,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1587,11 +1638,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1610,11 +1662,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1633,11 +1686,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1656,11 +1710,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1679,11 +1734,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1702,11 +1758,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1725,11 +1782,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1748,11 +1806,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1771,11 +1830,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1794,11 +1854,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1817,11 +1878,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1840,11 +1902,12 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, work );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, work );
 }
 
 //
@@ -1863,11 +1926,12 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 spsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename value<
+        typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return spsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
-            ap, afp, ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
+    return spsvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
+            ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

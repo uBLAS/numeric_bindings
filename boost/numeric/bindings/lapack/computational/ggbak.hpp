@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -138,12 +138,12 @@ struct ggbak_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixV& v ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorLSCALE >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorLSCALE >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorRSCALE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorLSCALE >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorLSCALE >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixV >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
         BOOST_ASSERT( bindings::size(lscale) >= bindings::size_row(v) );
@@ -186,8 +186,8 @@ struct ggbak_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixV& v ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorLSCALE >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorLSCALE >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorRSCALE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
         BOOST_ASSERT( bindings::size(lscale) >= bindings::size_row(v) );
@@ -226,8 +226,9 @@ template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
 inline std::ptrdiff_t ggbak( const char job, const char side,
         const fortran_int_t ilo, const fortran_int_t ihi,
         const VectorLSCALE& lscale, const VectorRSCALE& rscale, MatrixV& v ) {
-    return ggbak_impl< typename value< MatrixV >::type >::invoke( job,
-            side, ilo, ihi, lscale, rscale, v );
+    return ggbak_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( job, side, ilo, ihi, lscale, rscale,
+            v );
 }
 
 //
@@ -239,8 +240,9 @@ inline std::ptrdiff_t ggbak( const char job, const char side,
         const fortran_int_t ilo, const fortran_int_t ihi,
         const VectorLSCALE& lscale, const VectorRSCALE& rscale,
         const MatrixV& v ) {
-    return ggbak_impl< typename value< MatrixV >::type >::invoke( job,
-            side, ilo, ihi, lscale, rscale, v );
+    return ggbak_impl< typename bindings::value_type<
+            MatrixV >::type >::invoke( job, side, ilo, ihi, lscale, rscale,
+            v );
 }
 
 } // namespace lapack

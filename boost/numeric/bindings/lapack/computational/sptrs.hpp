@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -129,8 +129,8 @@ struct sptrs_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ap) );
@@ -165,8 +165,8 @@ struct sptrs_impl {
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sptrs( const MatrixAP& ap, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return sptrs_impl< typename value< MatrixAP >::type >::invoke( ap,
-            ipiv, b );
+    return sptrs_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, ipiv, b );
 }
 
 //
@@ -176,8 +176,8 @@ inline std::ptrdiff_t sptrs( const MatrixAP& ap, const VectorIPIV& ipiv,
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sptrs( const MatrixAP& ap, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    return sptrs_impl< typename value< MatrixAP >::type >::invoke( ap,
-            ipiv, b );
+    return sptrs_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, ipiv, b );
 }
 
 } // namespace lapack

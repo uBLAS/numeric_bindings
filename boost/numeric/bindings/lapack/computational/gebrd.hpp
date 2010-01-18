@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -133,20 +133,20 @@ struct gebrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
@@ -252,16 +252,16 @@ struct gebrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
@@ -370,8 +370,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -389,8 +389,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -408,8 +409,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -427,8 +428,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -446,8 +448,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -465,8 +467,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -484,8 +487,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -503,8 +506,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -522,8 +526,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -541,8 +545,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -560,8 +565,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -579,8 +584,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -598,8 +604,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -617,8 +623,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -636,8 +643,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -655,8 +662,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -674,8 +682,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -693,8 +701,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -712,8 +721,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -731,8 +740,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -750,8 +760,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -769,8 +779,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -788,8 +799,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -807,8 +818,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -826,8 +838,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAUQ& tauq,
         VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -845,8 +857,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAUQ& tauq,
         VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -864,8 +877,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -883,8 +896,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -902,8 +916,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -921,8 +935,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -940,8 +955,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -959,8 +974,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -978,8 +994,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -997,8 +1013,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1016,8 +1033,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1035,8 +1052,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1054,8 +1072,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1073,8 +1091,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1092,8 +1111,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1111,8 +1130,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1130,8 +1150,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1149,8 +1169,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1168,8 +1189,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1187,8 +1208,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1206,8 +1228,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1225,8 +1247,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, const VectorE& e, VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1244,8 +1267,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1263,8 +1286,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1282,8 +1306,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1301,8 +1325,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1320,8 +1345,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1339,8 +1364,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1358,8 +1384,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1377,8 +1403,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, VectorE& e, const VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1396,8 +1423,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1415,8 +1442,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1434,8 +1462,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAUQ& tauq,
         const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1453,8 +1481,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, const VectorE& e, const VectorTAUQ& tauq,
         const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1472,8 +1501,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1491,8 +1520,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1510,8 +1540,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1529,8 +1559,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 //
@@ -1548,8 +1579,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, work );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
 }
 
 //
@@ -1567,8 +1598,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( const MatrixA& a, const VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
-            e, tauq, taup, optimal_workspace() );
+    return gebrd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, d, e, tauq, taup,
+            optimal_workspace() );
 }
 
 } // namespace lapack

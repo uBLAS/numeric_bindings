@@ -15,7 +15,7 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 
 namespace boost {
@@ -38,7 +38,7 @@ namespace blas {
 //
 template< typename VectorX >
 inline void
-set( const typename value< VectorX >::type a, VectorX& x ) {
+set( const typename bindings::value_type<  VectorX >::type a, VectorX& x ) {
     BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
     std::fill( bindings::begin(x), bindings::end(x), a );
 }
@@ -49,7 +49,7 @@ set( const typename value< VectorX >::type a, VectorX& x ) {
 //
 template< typename VectorX >
 inline void
-set( const typename value< const VectorX >::type a,  const VectorX& x ) {
+set( const typename bindings::value_type<  const VectorX >::type a,  const VectorX& x ) {
     BOOST_STATIC_ASSERT( (bindings::is_mutable< const VectorX >::value) );
     std::fill( bindings::begin(x), bindings::end(x), a );
 }

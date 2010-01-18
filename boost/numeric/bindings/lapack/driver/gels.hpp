@@ -26,7 +26,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -145,8 +145,8 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -249,8 +249,8 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -352,8 +352,8 @@ template< typename MatrixA, typename MatrixB, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gels( MatrixA& a, MatrixB& b, Workspace work ) {
-    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
-            work );
+    return gels_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, work );
 }
 
 //
@@ -366,8 +366,8 @@ template< typename MatrixA, typename MatrixB >
 inline typename boost::disable_if< detail::is_workspace< MatrixB >,
         std::ptrdiff_t >::type
 gels( MatrixA& a, MatrixB& b ) {
-    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
-            optimal_workspace() );
+    return gels_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, optimal_workspace() );
 }
 
 //
@@ -380,8 +380,8 @@ template< typename MatrixA, typename MatrixB, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gels( const MatrixA& a, MatrixB& b, Workspace work ) {
-    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
-            work );
+    return gels_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, work );
 }
 
 //
@@ -394,8 +394,8 @@ template< typename MatrixA, typename MatrixB >
 inline typename boost::disable_if< detail::is_workspace< MatrixB >,
         std::ptrdiff_t >::type
 gels( const MatrixA& a, MatrixB& b ) {
-    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
-            optimal_workspace() );
+    return gels_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, optimal_workspace() );
 }
 
 //
@@ -408,8 +408,8 @@ template< typename MatrixA, typename MatrixB, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gels( MatrixA& a, const MatrixB& b, Workspace work ) {
-    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
-            work );
+    return gels_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, work );
 }
 
 //
@@ -422,8 +422,8 @@ template< typename MatrixA, typename MatrixB >
 inline typename boost::disable_if< detail::is_workspace< MatrixB >,
         std::ptrdiff_t >::type
 gels( MatrixA& a, const MatrixB& b ) {
-    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
-            optimal_workspace() );
+    return gels_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, optimal_workspace() );
 }
 
 //
@@ -436,8 +436,8 @@ template< typename MatrixA, typename MatrixB, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gels( const MatrixA& a, const MatrixB& b, Workspace work ) {
-    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
-            work );
+    return gels_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, work );
 }
 
 //
@@ -450,8 +450,8 @@ template< typename MatrixA, typename MatrixB >
 inline typename boost::disable_if< detail::is_workspace< MatrixB >,
         std::ptrdiff_t >::type
 gels( const MatrixA& a, const MatrixB& b ) {
-    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
-            optimal_workspace() );
+    return gels_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, optimal_workspace() );
 }
 
 } // namespace lapack

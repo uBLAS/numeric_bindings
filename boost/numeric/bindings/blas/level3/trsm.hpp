@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -275,9 +275,10 @@ struct trsm_impl {
         typedef typename result_of::trans_tag< MatrixA, order >::type transa;
         typedef typename result_of::uplo_tag< MatrixA, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixA >::type >::type, typename remove_const<
-                typename value< MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -304,11 +305,12 @@ struct trsm_impl {
 // * MatrixB&
 //
 template< typename MatrixA, typename MatrixB >
-inline typename trsm_impl< typename value< MatrixA >::type >::return_type
-trsm( const char side, const typename value< MatrixA >::type alpha,
-        const MatrixA& a, MatrixB& b ) {
-    trsm_impl< typename value< MatrixA >::type >::invoke( side, alpha,
-            a, b );
+inline typename trsm_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
+trsm( const char side, const typename bindings::value_type<
+        MatrixA >::type alpha, const MatrixA& a, MatrixB& b ) {
+    trsm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( side, alpha, a, b );
 }
 
 //
@@ -316,11 +318,12 @@ trsm( const char side, const typename value< MatrixA >::type alpha,
 // * const MatrixB&
 //
 template< typename MatrixA, typename MatrixB >
-inline typename trsm_impl< typename value< MatrixA >::type >::return_type
-trsm( const char side, const typename value< MatrixA >::type alpha,
-        const MatrixA& a, const MatrixB& b ) {
-    trsm_impl< typename value< MatrixA >::type >::invoke( side, alpha,
-            a, b );
+inline typename trsm_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
+trsm( const char side, const typename bindings::value_type<
+        MatrixA >::type alpha, const MatrixA& a, const MatrixB& b ) {
+    trsm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( side, alpha, a, b );
 }
 
 } // namespace blas

@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -166,12 +166,14 @@ struct spmv_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAP >::type order;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixAP >::type >::type, typename remove_const<
-                typename value< VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixAP >::type >::type, typename remove_const<
-                typename value< VectorY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
         detail::spmv( order(), uplo(), bindings::size_column(ap), alpha,
                 bindings::begin_value(ap), bindings::begin_value(x),
@@ -193,14 +195,14 @@ struct spmv_impl {
 // * VectorY&
 //
 template< typename MatrixAP, typename VectorX, typename VectorY >
-inline typename spmv_impl< typename value<
+inline typename spmv_impl< typename bindings::value_type<
         MatrixAP >::type >::return_type
-spmv( const typename remove_imaginary< typename value<
+spmv( const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type alpha, const MatrixAP& ap, const VectorX& x,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type beta, VectorY& y ) {
-    spmv_impl< typename value< MatrixAP >::type >::invoke( alpha, ap, x,
-            beta, y );
+    spmv_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( alpha, ap, x, beta, y );
 }
 
 //
@@ -208,14 +210,14 @@ spmv( const typename remove_imaginary< typename value<
 // * const VectorY&
 //
 template< typename MatrixAP, typename VectorX, typename VectorY >
-inline typename spmv_impl< typename value<
+inline typename spmv_impl< typename bindings::value_type<
         MatrixAP >::type >::return_type
-spmv( const typename remove_imaginary< typename value<
+spmv( const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type alpha, const MatrixAP& ap, const VectorX& x,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type beta, const VectorY& y ) {
-    spmv_impl< typename value< MatrixAP >::type >::invoke( alpha, ap, x,
-            beta, y );
+    spmv_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( alpha, ap, x, beta, y );
 }
 
 } // namespace blas

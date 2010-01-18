@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -108,12 +108,12 @@ struct hbgst_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixBB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
@@ -217,8 +217,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hbgst( const char vect, MatrixAB& ab, const MatrixBB& bb, MatrixX& x,
         Workspace work ) {
-    return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, bb, x, work );
+    return hbgst_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, bb, x, work );
 }
 
 //
@@ -231,8 +231,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixX >
 inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 hbgst( const char vect, MatrixAB& ab, const MatrixBB& bb, MatrixX& x ) {
-    return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, bb, x, optimal_workspace() );
+    return hbgst_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, bb, x, optimal_workspace() );
 }
 
 //
@@ -247,8 +247,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
         MatrixX& x, Workspace work ) {
-    return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, bb, x, work );
+    return hbgst_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, bb, x, work );
 }
 
 //
@@ -262,8 +262,8 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 hbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
         MatrixX& x ) {
-    return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, bb, x, optimal_workspace() );
+    return hbgst_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, bb, x, optimal_workspace() );
 }
 
 //
@@ -278,8 +278,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hbgst( const char vect, MatrixAB& ab, const MatrixBB& bb,
         const MatrixX& x, Workspace work ) {
-    return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, bb, x, work );
+    return hbgst_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, bb, x, work );
 }
 
 //
@@ -293,8 +293,8 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 hbgst( const char vect, MatrixAB& ab, const MatrixBB& bb,
         const MatrixX& x ) {
-    return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, bb, x, optimal_workspace() );
+    return hbgst_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, bb, x, optimal_workspace() );
 }
 
 //
@@ -309,8 +309,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 hbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
         const MatrixX& x, Workspace work ) {
-    return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, bb, x, work );
+    return hbgst_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, bb, x, work );
 }
 
 //
@@ -324,8 +324,8 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 hbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
         const MatrixX& x ) {
-    return hbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, bb, x, optimal_workspace() );
+    return hbgst_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, bb, x, optimal_workspace() );
 }
 
 } // namespace lapack

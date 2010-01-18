@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -215,7 +215,8 @@ struct trtri_impl {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t trtri( MatrixA& a ) {
-    return trtri_impl< typename value< MatrixA >::type >::invoke( a );
+    return trtri_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a );
 }
 
 //
@@ -224,7 +225,8 @@ inline std::ptrdiff_t trtri( MatrixA& a ) {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t trtri( const MatrixA& a ) {
-    return trtri_impl< typename value< MatrixA >::type >::invoke( a );
+    return trtri_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a );
 }
 
 } // namespace lapack

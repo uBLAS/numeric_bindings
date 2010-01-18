@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -102,16 +102,16 @@ struct sbtrd_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
@@ -204,8 +204,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
         Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -222,8 +222,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
         MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -240,8 +241,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
         MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -258,8 +259,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
         MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -276,8 +278,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, const VectorD& d, VectorE& e,
         MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -294,8 +296,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, const VectorD& d, VectorE& e,
         MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -312,8 +315,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, const VectorD& d, VectorE& e,
         MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -330,8 +333,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, const VectorD& d, VectorE& e,
         MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -348,8 +352,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, VectorD& d, const VectorE& e,
         MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -366,8 +370,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, VectorD& d, const VectorE& e,
         MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -384,8 +389,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, VectorD& d, const VectorE& e,
         MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -402,8 +407,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, VectorD& d, const VectorE& e,
         MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -420,8 +426,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, const VectorD& d, const VectorE& e,
         MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -438,8 +444,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, const VectorD& d, const VectorE& e,
         MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -456,8 +463,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, const VectorD& d,
         const VectorE& e, MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -474,8 +481,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, const VectorD& d,
         const VectorE& e, MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -492,8 +500,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
         const MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -510,8 +518,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
         const MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -528,8 +537,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
         const MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -546,8 +555,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
         const MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -564,8 +574,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, const VectorD& d, VectorE& e,
         const MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -582,8 +592,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, const VectorD& d, VectorE& e,
         const MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -600,8 +611,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, const VectorD& d, VectorE& e,
         const MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -618,8 +629,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, const VectorD& d, VectorE& e,
         const MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -636,8 +648,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, VectorD& d, const VectorE& e,
         const MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -654,8 +666,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, VectorD& d, const VectorE& e,
         const MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -672,8 +685,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, VectorD& d, const VectorE& e,
         const MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -690,8 +703,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, VectorD& d, const VectorE& e,
         const MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -708,8 +722,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, const VectorD& d, const VectorE& e,
         const MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -726,8 +740,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, const VectorD& d, const VectorE& e,
         const MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 //
@@ -744,8 +759,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, const VectorD& d,
         const VectorE& e, const MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, work );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
 }
 
 //
@@ -762,8 +777,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, const MatrixAB& ab, const VectorD& d,
         const VectorE& e, const MatrixQ& q ) {
-    return sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect,
-            ab, d, e, q, optimal_workspace() );
+    return sbtrd_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( vect, ab, d, e, q,
+            optimal_workspace() );
 }
 
 } // namespace lapack

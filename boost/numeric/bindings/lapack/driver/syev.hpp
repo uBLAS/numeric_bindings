@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -100,8 +100,8 @@ struct syev_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
@@ -187,8 +187,8 @@ template< typename MatrixA, typename VectorW, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syev( const char jobz, MatrixA& a, VectorW& w, Workspace work ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
+    return syev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, work );
 }
 
 //
@@ -201,8 +201,8 @@ template< typename MatrixA, typename VectorW >
 inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 syev( const char jobz, MatrixA& a, VectorW& w ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
+    return syev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
 }
 
 //
@@ -215,8 +215,8 @@ template< typename MatrixA, typename VectorW, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syev( const char jobz, const MatrixA& a, VectorW& w, Workspace work ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
+    return syev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, work );
 }
 
 //
@@ -229,8 +229,8 @@ template< typename MatrixA, typename VectorW >
 inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 syev( const char jobz, const MatrixA& a, VectorW& w ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
+    return syev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
 }
 
 //
@@ -243,8 +243,8 @@ template< typename MatrixA, typename VectorW, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syev( const char jobz, MatrixA& a, const VectorW& w, Workspace work ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
+    return syev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, work );
 }
 
 //
@@ -257,8 +257,8 @@ template< typename MatrixA, typename VectorW >
 inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 syev( const char jobz, MatrixA& a, const VectorW& w ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
+    return syev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
 }
 
 //
@@ -272,8 +272,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syev( const char jobz, const MatrixA& a, const VectorW& w,
         Workspace work ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, work );
+    return syev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, work );
 }
 
 //
@@ -286,8 +286,8 @@ template< typename MatrixA, typename VectorW >
 inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 syev( const char jobz, const MatrixA& a, const VectorW& w ) {
-    return syev_impl< typename value< MatrixA >::type >::invoke( jobz,
-            a, w, optimal_workspace() );
+    return syev_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -27,7 +27,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -154,20 +154,20 @@ struct tprfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorFERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
@@ -279,16 +279,16 @@ struct tprfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorFERR >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorFERR >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
@@ -397,8 +397,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tprfs( const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
-            x, ferr, berr, work );
+    return tprfs_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b, x, ferr, berr, work );
 }
 
 //
@@ -413,8 +413,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 tprfs( const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
-            x, ferr, berr, optimal_workspace() );
+    return tprfs_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -429,8 +430,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tprfs( const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
-            x, ferr, berr, work );
+    return tprfs_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b, x, ferr, berr, work );
 }
 
 //
@@ -445,8 +446,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 tprfs( const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
-            x, ferr, berr, optimal_workspace() );
+    return tprfs_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -461,8 +463,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tprfs( const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
-            x, ferr, berr, work );
+    return tprfs_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b, x, ferr, berr, work );
 }
 
 //
@@ -477,8 +479,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 tprfs( const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
-            x, ferr, berr, optimal_workspace() );
+    return tprfs_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -493,8 +496,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 tprfs( const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
-            x, ferr, berr, work );
+    return tprfs_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b, x, ferr, berr, work );
 }
 
 //
@@ -509,8 +512,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 tprfs( const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
-            x, ferr, berr, optimal_workspace() );
+    return tprfs_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 } // namespace lapack

@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -142,16 +142,16 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorTAUB& taub, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAUA >::value) );
@@ -255,16 +255,16 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorTAUB& taub, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAUB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAUA >::value) );
@@ -371,8 +371,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b, VectorTAUB& taub,
         Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -388,8 +388,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
 inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b, VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -406,8 +406,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, VectorTAUA& taua, MatrixB& b, VectorTAUB& taub,
         Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -424,8 +424,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, VectorTAUA& taua, MatrixB& b,
         VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -442,8 +442,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, const VectorTAUA& taua, MatrixB& b, VectorTAUB& taub,
         Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -460,8 +460,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, const VectorTAUA& taua, MatrixB& b,
         VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -478,8 +478,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, const VectorTAUA& taua, MatrixB& b,
         VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -496,8 +496,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, const VectorTAUA& taua, MatrixB& b,
         VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -514,8 +514,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, VectorTAUA& taua, const MatrixB& b, VectorTAUB& taub,
         Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -532,8 +532,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, VectorTAUA& taua, const MatrixB& b,
         VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -550,8 +550,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, VectorTAUA& taua, const MatrixB& b,
         VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -568,8 +568,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, VectorTAUA& taua, const MatrixB& b,
         VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -586,8 +586,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
         VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -604,8 +604,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
         VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -622,8 +622,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
         VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -640,8 +640,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
         VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -658,8 +658,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b, const VectorTAUB& taub,
         Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -676,8 +676,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
         const VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -694,8 +694,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, VectorTAUA& taua, MatrixB& b,
         const VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -712,8 +712,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, VectorTAUA& taua, MatrixB& b,
         const VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -730,8 +730,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, const VectorTAUA& taua, MatrixB& b,
         const VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -748,8 +748,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, const VectorTAUA& taua, MatrixB& b,
         const VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -766,8 +766,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, const VectorTAUA& taua, MatrixB& b,
         const VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -784,8 +784,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, const VectorTAUA& taua, MatrixB& b,
         const VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -802,8 +802,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, VectorTAUA& taua, const MatrixB& b,
         const VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -820,8 +820,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, VectorTAUA& taua, const MatrixB& b,
         const VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -838,8 +838,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, VectorTAUA& taua, const MatrixB& b,
         const VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -856,8 +856,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, VectorTAUA& taua, const MatrixB& b,
         const VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -874,8 +874,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
         const VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -892,8 +892,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
         const VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -910,8 +910,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
         const VectorTAUB& taub, Workspace work ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, work );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, work );
 }
 
 //
@@ -928,8 +928,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggqrf( const MatrixA& a, const VectorTAUA& taua, const MatrixB& b,
         const VectorTAUB& taub ) {
-    return ggqrf_impl< typename value< MatrixA >::type >::invoke( a,
-            taua, b, taub, optimal_workspace() );
+    return ggqrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }
 
 } // namespace lapack

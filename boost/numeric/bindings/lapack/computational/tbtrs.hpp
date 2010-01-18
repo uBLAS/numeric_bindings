@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -138,8 +138,8 @@ struct tbtrs_impl {
         typedef typename result_of::uplo_tag< MatrixAB, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
@@ -178,8 +178,8 @@ struct tbtrs_impl {
 template< typename MatrixAB, typename MatrixB >
 inline std::ptrdiff_t tbtrs( const fortran_int_t kd,
         const MatrixAB& ab, MatrixB& b ) {
-    return tbtrs_impl< typename value< MatrixAB >::type >::invoke( kd,
-            ab, b );
+    return tbtrs_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( kd, ab, b );
 }
 
 //
@@ -189,8 +189,8 @@ inline std::ptrdiff_t tbtrs( const fortran_int_t kd,
 template< typename MatrixAB, typename MatrixB >
 inline std::ptrdiff_t tbtrs( const fortran_int_t kd,
         const MatrixAB& ab, const MatrixB& b ) {
-    return tbtrs_impl< typename value< MatrixAB >::type >::invoke( kd,
-            ab, b );
+    return tbtrs_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( kd, ab, b );
 }
 
 } // namespace lapack

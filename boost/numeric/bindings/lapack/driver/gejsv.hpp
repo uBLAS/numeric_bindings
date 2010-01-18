@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -235,8 +235,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gejsv( const char joba, const char jobu, const char jobv,
         const char jobr, const char jobt, const char jobp, MatrixA& a,
         const fortran_int_t lwork, Workspace work ) {
-    return gejsv_impl< typename value< MatrixA >::type >::invoke( joba,
-            jobu, jobv, jobr, jobt, jobp, a, lwork, work );
+    return gejsv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
+            lwork, work );
 }
 
 //
@@ -250,8 +251,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixA >,
 gejsv( const char joba, const char jobu, const char jobv,
         const char jobr, const char jobt, const char jobp, MatrixA& a,
         const fortran_int_t lwork ) {
-    return gejsv_impl< typename value< MatrixA >::type >::invoke( joba,
-            jobu, jobv, jobr, jobt, jobp, a, lwork, optimal_workspace() );
+    return gejsv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
+            lwork, optimal_workspace() );
 }
 
 //
@@ -265,8 +267,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gejsv( const char joba, const char jobu, const char jobv,
         const char jobr, const char jobt, const char jobp, const MatrixA& a,
         const fortran_int_t lwork, Workspace work ) {
-    return gejsv_impl< typename value< MatrixA >::type >::invoke( joba,
-            jobu, jobv, jobr, jobt, jobp, a, lwork, work );
+    return gejsv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
+            lwork, work );
 }
 
 //
@@ -280,8 +283,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixA >,
 gejsv( const char joba, const char jobu, const char jobv,
         const char jobr, const char jobt, const char jobp, const MatrixA& a,
         const fortran_int_t lwork ) {
-    return gejsv_impl< typename value< MatrixA >::type >::invoke( joba,
-            jobu, jobv, jobr, jobt, jobp, a, lwork, optimal_workspace() );
+    return gejsv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
+            lwork, optimal_workspace() );
 }
 
 } // namespace lapack

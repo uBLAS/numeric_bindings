@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -254,9 +254,10 @@ struct tbmv_impl {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixA, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixA >::type >::type, typename remove_const<
-                typename value< VectorX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -280,9 +281,11 @@ struct tbmv_impl {
 // * VectorX&
 //
 template< typename MatrixA, typename VectorX >
-inline typename tbmv_impl< typename value< MatrixA >::type >::return_type
+inline typename tbmv_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
 tbmv( const std::ptrdiff_t k, const MatrixA& a, VectorX& x ) {
-    tbmv_impl< typename value< MatrixA >::type >::invoke( k, a, x );
+    tbmv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( k, a, x );
 }
 
 //
@@ -290,9 +293,11 @@ tbmv( const std::ptrdiff_t k, const MatrixA& a, VectorX& x ) {
 // * const VectorX&
 //
 template< typename MatrixA, typename VectorX >
-inline typename tbmv_impl< typename value< MatrixA >::type >::return_type
+inline typename tbmv_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
 tbmv( const std::ptrdiff_t k, const MatrixA& a, const VectorX& x ) {
-    tbmv_impl< typename value< MatrixA >::type >::invoke( k, a, x );
+    tbmv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( k, a, x );
 }
 
 } // namespace blas

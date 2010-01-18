@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -145,16 +145,16 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorS >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
@@ -267,12 +267,12 @@ struct gesvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
@@ -408,8 +408,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, VectorS& s,
         MatrixU& u, MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -426,8 +426,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, VectorS& s,
         MatrixU& u, MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -444,8 +445,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a, VectorS& s,
         MatrixU& u, MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -462,8 +463,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a, VectorS& s,
         MatrixU& u, MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -480,8 +482,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, const VectorS& s,
         MatrixU& u, MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -498,8 +500,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, const VectorS& s,
         MatrixU& u, MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -516,8 +519,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a,
         const VectorS& s, MatrixU& u, MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -534,8 +537,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a,
         const VectorS& s, MatrixU& u, MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -552,8 +556,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, VectorS& s,
         const MatrixU& u, MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -570,8 +574,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, VectorS& s,
         const MatrixU& u, MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -588,8 +593,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a, VectorS& s,
         const MatrixU& u, MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -606,8 +611,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a, VectorS& s,
         const MatrixU& u, MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -624,8 +630,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, const VectorS& s,
         const MatrixU& u, MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -642,8 +648,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, const VectorS& s,
         const MatrixU& u, MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -660,8 +667,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a,
         const VectorS& s, const MatrixU& u, MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -678,8 +685,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a,
         const VectorS& s, const MatrixU& u, MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -696,8 +704,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, VectorS& s,
         MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -714,8 +722,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, VectorS& s,
         MatrixU& u, const MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -732,8 +741,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a, VectorS& s,
         MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -750,8 +759,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a, VectorS& s,
         MatrixU& u, const MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -768,8 +778,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, const VectorS& s,
         MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -786,8 +796,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, const VectorS& s,
         MatrixU& u, const MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -804,8 +815,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a,
         const VectorS& s, MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -822,8 +833,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a,
         const VectorS& s, MatrixU& u, const MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -840,8 +852,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, VectorS& s,
         const MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -858,8 +870,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, VectorS& s,
         const MatrixU& u, const MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -876,8 +889,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a, VectorS& s,
         const MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -894,8 +907,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a, VectorS& s,
         const MatrixU& u, const MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -912,8 +926,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, const VectorS& s,
         const MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -930,8 +944,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, MatrixA& a, const VectorS& s,
         const MatrixU& u, const MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 //
@@ -949,8 +964,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 gesvd( const char jobu, const char jobvt, const MatrixA& a,
         const VectorS& s, const MatrixU& u, const MatrixVT& vt,
         Workspace work ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, work );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt, work );
 }
 
 //
@@ -967,8 +982,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesvd( const char jobu, const char jobvt, const MatrixA& a,
         const VectorS& s, const MatrixU& u, const MatrixVT& vt ) {
-    return gesvd_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobvt, a, s, u, vt, optimal_workspace() );
+    return gesvd_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobvt, a, s, u, vt,
+            optimal_workspace() );
 }
 
 } // namespace lapack

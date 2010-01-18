@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -147,32 +147,32 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorEF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorFERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
@@ -275,28 +275,28 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorDF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorFERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorE >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorE >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorEF >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorE >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorE >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorE >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorE >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
@@ -415,8 +415,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -434,8 +434,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -453,8 +454,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -472,8 +473,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -491,8 +493,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -510,8 +512,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -529,8 +532,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -548,8 +551,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -567,8 +571,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -586,8 +590,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -605,8 +610,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -624,8 +629,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -643,8 +649,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -662,8 +668,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -681,8 +688,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr, work );
 }
 
 //
@@ -700,8 +707,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
         const VectorEF& ef, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( d, e,
-            df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 //
 // Overloaded function for ptrfs. Its overload differs for
@@ -718,8 +726,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            work );
 }
 
 //
@@ -737,8 +746,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -757,8 +767,9 @@ ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            work );
 }
 
 //
@@ -776,8 +787,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -795,8 +807,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            work );
 }
 
 //
@@ -814,8 +827,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -834,8 +848,9 @@ ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            work );
 }
 
 //
@@ -853,8 +868,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -872,8 +888,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            work );
 }
 
 //
@@ -891,8 +908,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -911,8 +929,9 @@ ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
         Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            work );
 }
 
 //
@@ -930,8 +949,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -949,8 +969,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            work );
 }
 
 //
@@ -968,8 +989,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 //
@@ -988,8 +1010,9 @@ ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
         Workspace work ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, work );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            work );
 }
 
 //
@@ -1007,8 +1030,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 ptrfs( const char uplo, const VectorD& d, const VectorE& e,
         const VectorDF& df, const VectorEF& ef, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
-    return ptrfs_impl< typename value< VectorE >::type >::invoke( uplo,
-            d, e, df, ef, b, x, ferr, berr, optimal_workspace() );
+    return ptrfs_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( uplo, d, e, df, ef, b, x, ferr, berr,
+            optimal_workspace() );
 }
 
 } // namespace lapack

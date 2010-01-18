@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -145,16 +145,16 @@ struct hseqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorWR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorWI >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixH >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWR >::value) );
@@ -247,12 +247,12 @@ struct hseqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixH >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
@@ -339,8 +339,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
         MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -358,8 +359,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
         MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -377,8 +379,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
         VectorWI& wi, MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -396,8 +399,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
         VectorWI& wi, MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -415,8 +419,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorWR& wr,
         VectorWI& wi, MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -434,8 +439,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorWR& wr,
         VectorWI& wi, MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -453,8 +459,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorWR& wr,
         VectorWI& wi, MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -472,8 +479,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorWR& wr,
         VectorWI& wi, MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -491,8 +499,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -510,8 +519,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -529,8 +539,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -548,8 +559,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -567,8 +579,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -586,8 +599,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -605,8 +619,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -624,8 +639,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -643,8 +659,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
         const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -662,8 +679,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
         const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -681,8 +699,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
         VectorWI& wi, const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -700,8 +719,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
         VectorWI& wi, const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -719,8 +739,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorWR& wr,
         VectorWI& wi, const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -738,8 +759,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorWR& wr,
         VectorWI& wi, const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -757,8 +779,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorWR& wr,
         VectorWI& wi, const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -776,8 +799,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorWR& wr,
         VectorWI& wi, const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -795,8 +819,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -814,8 +839,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -833,8 +859,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -852,8 +879,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -871,8 +899,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -890,8 +919,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 
 //
@@ -909,8 +939,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            work );
 }
 
 //
@@ -928,8 +959,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, wr, wi, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
+            optimal_workspace() );
 }
 //
 // Overloaded function for hseqr. Its overload differs for
@@ -945,8 +977,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorW& w, MatrixZ& z,
         Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
 }
 
 //
@@ -961,8 +993,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorW& w, MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -979,8 +1012,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorW& w, MatrixZ& z,
         Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
 }
 
 //
@@ -996,8 +1029,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorW& w,
         MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -1014,8 +1048,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorW& w, MatrixZ& z,
         Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
 }
 
 //
@@ -1031,8 +1065,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorW& w,
         MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -1049,8 +1084,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorW& w,
         MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
 }
 
 //
@@ -1066,8 +1101,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorW& w,
         MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -1084,8 +1120,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorW& w, const MatrixZ& z,
         Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
 }
 
 //
@@ -1101,8 +1137,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorW& w,
         const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -1119,8 +1156,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorW& w,
         const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
 }
 
 //
@@ -1136,8 +1173,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, VectorW& w,
         const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -1154,8 +1192,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorW& w,
         const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
 }
 
 //
@@ -1171,8 +1209,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, const VectorW& w,
         const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
+            optimal_workspace() );
 }
 
 //
@@ -1189,8 +1228,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorW& w,
         const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, work );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
 }
 
 //
@@ -1206,8 +1245,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixH& h, const VectorW& w,
         const MatrixZ& z ) {
-    return hseqr_impl< typename value< MatrixH >::type >::invoke( job,
-            compz, ilo, ihi, h, w, z, optimal_workspace() );
+    return hseqr_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
+            optimal_workspace() );
 }
 
 } // namespace lapack

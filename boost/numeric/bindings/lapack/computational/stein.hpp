@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -145,24 +145,24 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorIBLOCK >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorIBLOCK >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorISPLIT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorIBLOCK >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorIBLOCK >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorIFAIL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAIL >::value) );
@@ -271,20 +271,20 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorIBLOCK >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorIBLOCK >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorISPLIT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorIBLOCK >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorIBLOCK >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorIFAIL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAIL >::value) );
@@ -393,8 +393,9 @@ stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
         const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         VectorIFAIL& ifail, Workspace work ) {
-    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
-            e, m, w, iblock, isplit, z, ifail, work );
+    return stein_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
+            ifail, work );
 }
 
 //
@@ -412,8 +413,9 @@ stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
         const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         VectorIFAIL& ifail ) {
-    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
-            e, m, w, iblock, isplit, z, ifail, optimal_workspace() );
+    return stein_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
+            ifail, optimal_workspace() );
 }
 
 //
@@ -431,8 +433,9 @@ stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
         const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
-            e, m, w, iblock, isplit, z, ifail, work );
+    return stein_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
+            ifail, work );
 }
 
 //
@@ -450,8 +453,9 @@ stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
         const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         const MatrixZ& z, VectorIFAIL& ifail ) {
-    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
-            e, m, w, iblock, isplit, z, ifail, optimal_workspace() );
+    return stein_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
+            ifail, optimal_workspace() );
 }
 
 //
@@ -469,8 +473,9 @@ stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
         const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         const VectorIFAIL& ifail, Workspace work ) {
-    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
-            e, m, w, iblock, isplit, z, ifail, work );
+    return stein_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
+            ifail, work );
 }
 
 //
@@ -488,8 +493,9 @@ stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
         const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         const VectorIFAIL& ifail ) {
-    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
-            e, m, w, iblock, isplit, z, ifail, optimal_workspace() );
+    return stein_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
+            ifail, optimal_workspace() );
 }
 
 //
@@ -507,8 +513,9 @@ stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
         const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
-            e, m, w, iblock, isplit, z, ifail, work );
+    return stein_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
+            ifail, work );
 }
 
 //
@@ -526,8 +533,9 @@ stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
         const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
-            e, m, w, iblock, isplit, z, ifail, optimal_workspace() );
+    return stein_impl< typename bindings::value_type<
+            MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
+            ifail, optimal_workspace() );
 }
 
 } // namespace lapack

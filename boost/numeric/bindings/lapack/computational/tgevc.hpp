@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -151,16 +151,16 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& m, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixS >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixS >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixS >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixS >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixS >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixS >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
@@ -261,16 +261,16 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& m, detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixS >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixS >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixS >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixS >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixS >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixS >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
@@ -383,8 +383,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
-            howmny, select, s, p, vl, vr, mm, m, work );
+    return tgevc_impl< typename bindings::value_type<
+            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
+            m, work );
 }
 
 //
@@ -400,8 +401,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 tgevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
-            howmny, select, s, p, vl, vr, mm, m, optimal_workspace() );
+    return tgevc_impl< typename bindings::value_type<
+            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
+            m, optimal_workspace() );
 }
 
 //
@@ -417,8 +419,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
-            howmny, select, s, p, vl, vr, mm, m, work );
+    return tgevc_impl< typename bindings::value_type<
+            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
+            m, work );
 }
 
 //
@@ -434,8 +437,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 tgevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
-            howmny, select, s, p, vl, vr, mm, m, optimal_workspace() );
+    return tgevc_impl< typename bindings::value_type<
+            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
+            m, optimal_workspace() );
 }
 
 //
@@ -451,8 +455,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 tgevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
-            howmny, select, s, p, vl, vr, mm, m, work );
+    return tgevc_impl< typename bindings::value_type<
+            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
+            m, work );
 }
 
 //
@@ -468,8 +473,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 tgevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
-            howmny, select, s, p, vl, vr, mm, m, optimal_workspace() );
+    return tgevc_impl< typename bindings::value_type<
+            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
+            m, optimal_workspace() );
 }
 
 //
@@ -486,8 +492,9 @@ tgevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl,
         const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
         Workspace work ) {
-    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
-            howmny, select, s, p, vl, vr, mm, m, work );
+    return tgevc_impl< typename bindings::value_type<
+            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
+            m, work );
 }
 
 //
@@ -504,8 +511,9 @@ tgevc( const char side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl,
         const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m ) {
-    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
-            howmny, select, s, p, vl, vr, mm, m, optimal_workspace() );
+    return tgevc_impl< typename bindings::value_type<
+            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
+            m, optimal_workspace() );
 }
 
 } // namespace lapack

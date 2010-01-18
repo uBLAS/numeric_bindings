@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -105,12 +105,12 @@ struct upmtr_impl {
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
@@ -191,8 +191,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 upmtr( const char side, const char uplo, const VectorAP& ap,
         const VectorTAU& tau, MatrixC& c, Workspace work ) {
-    return upmtr_impl< typename value< VectorAP >::type >::invoke( side,
-            uplo, ap, tau, c, work );
+    return upmtr_impl< typename bindings::value_type<
+            VectorAP >::type >::invoke( side, uplo, ap, tau, c, work );
 }
 
 //
@@ -205,8 +205,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 upmtr( const char side, const char uplo, const VectorAP& ap,
         const VectorTAU& tau, MatrixC& c ) {
-    return upmtr_impl< typename value< VectorAP >::type >::invoke( side,
-            uplo, ap, tau, c, optimal_workspace() );
+    return upmtr_impl< typename bindings::value_type<
+            VectorAP >::type >::invoke( side, uplo, ap, tau, c,
+            optimal_workspace() );
 }
 
 //
@@ -220,8 +221,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 upmtr( const char side, const char uplo, const VectorAP& ap,
         const VectorTAU& tau, const MatrixC& c, Workspace work ) {
-    return upmtr_impl< typename value< VectorAP >::type >::invoke( side,
-            uplo, ap, tau, c, work );
+    return upmtr_impl< typename bindings::value_type<
+            VectorAP >::type >::invoke( side, uplo, ap, tau, c, work );
 }
 
 //
@@ -234,8 +235,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 upmtr( const char side, const char uplo, const VectorAP& ap,
         const VectorTAU& tau, const MatrixC& c ) {
-    return upmtr_impl< typename value< VectorAP >::type >::invoke( side,
-            uplo, ap, tau, c, optimal_workspace() );
+    return upmtr_impl< typename bindings::value_type<
+            VectorAP >::type >::invoke( side, uplo, ap, tau, c,
+            optimal_workspace() );
 }
 
 } // namespace lapack

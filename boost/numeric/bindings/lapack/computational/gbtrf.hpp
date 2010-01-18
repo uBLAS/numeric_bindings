@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -155,8 +155,8 @@ struct gbtrf_impl {
 //
 template< typename MatrixAB, typename VectorIPIV >
 inline std::ptrdiff_t gbtrf( MatrixAB& ab, VectorIPIV& ipiv ) {
-    return gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv );
+    return gbtrf_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv );
 }
 
 //
@@ -166,8 +166,8 @@ inline std::ptrdiff_t gbtrf( MatrixAB& ab, VectorIPIV& ipiv ) {
 //
 template< typename MatrixAB, typename VectorIPIV >
 inline std::ptrdiff_t gbtrf( const MatrixAB& ab, VectorIPIV& ipiv ) {
-    return gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv );
+    return gbtrf_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv );
 }
 
 //
@@ -177,8 +177,8 @@ inline std::ptrdiff_t gbtrf( const MatrixAB& ab, VectorIPIV& ipiv ) {
 //
 template< typename MatrixAB, typename VectorIPIV >
 inline std::ptrdiff_t gbtrf( MatrixAB& ab, const VectorIPIV& ipiv ) {
-    return gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv );
+    return gbtrf_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv );
 }
 
 //
@@ -188,8 +188,8 @@ inline std::ptrdiff_t gbtrf( MatrixAB& ab, const VectorIPIV& ipiv ) {
 //
 template< typename MatrixAB, typename VectorIPIV >
 inline std::ptrdiff_t gbtrf( const MatrixAB& ab, const VectorIPIV& ipiv ) {
-    return gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab,
-            ipiv );
+    return gbtrf_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( ab, ipiv );
 }
 
 } // namespace lapack

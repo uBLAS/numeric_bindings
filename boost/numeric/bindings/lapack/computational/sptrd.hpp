@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -94,16 +94,16 @@ struct sptrd_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAP >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
@@ -140,8 +140,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( MatrixAP& ap, VectorD& d, VectorE& e,
         VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -155,8 +155,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( const MatrixAP& ap, VectorD& d, VectorE& e,
         VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -170,8 +170,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( MatrixAP& ap, const VectorD& d, VectorE& e,
         VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -185,8 +185,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( const MatrixAP& ap, const VectorD& d,
         VectorE& e, VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -200,8 +200,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( MatrixAP& ap, VectorD& d, const VectorE& e,
         VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -215,8 +215,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( const MatrixAP& ap, VectorD& d,
         const VectorE& e, VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -230,8 +230,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( MatrixAP& ap, const VectorD& d,
         const VectorE& e, VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -245,8 +245,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( const MatrixAP& ap, const VectorD& d,
         const VectorE& e, VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -260,8 +260,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( MatrixAP& ap, VectorD& d, VectorE& e,
         const VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -275,8 +275,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( const MatrixAP& ap, VectorD& d, VectorE& e,
         const VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -290,8 +290,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( MatrixAP& ap, const VectorD& d, VectorE& e,
         const VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -305,8 +305,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( const MatrixAP& ap, const VectorD& d,
         VectorE& e, const VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -320,8 +320,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( MatrixAP& ap, VectorD& d, const VectorE& e,
         const VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -335,8 +335,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( const MatrixAP& ap, VectorD& d,
         const VectorE& e, const VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -350,8 +350,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( MatrixAP& ap, const VectorD& d,
         const VectorE& e, const VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 //
@@ -365,8 +365,8 @@ template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( const MatrixAP& ap, const VectorD& d,
         const VectorE& e, const VectorTAU& tau ) {
-    return sptrd_impl< typename value< MatrixAP >::type >::invoke( ap, d,
-            e, tau );
+    return sptrd_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, d, e, tau );
 }
 
 } // namespace lapack

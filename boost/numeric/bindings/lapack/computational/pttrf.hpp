@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -119,8 +119,8 @@ struct pttrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( VectorD& d, VectorE& e ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -179,7 +179,8 @@ struct pttrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t pttrf( VectorD& d, VectorE& e ) {
-    return pttrf_impl< typename value< VectorE >::type >::invoke( d, e );
+    return pttrf_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e );
 }
 
 //
@@ -189,7 +190,8 @@ inline std::ptrdiff_t pttrf( VectorD& d, VectorE& e ) {
 //
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t pttrf( const VectorD& d, VectorE& e ) {
-    return pttrf_impl< typename value< VectorE >::type >::invoke( d, e );
+    return pttrf_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e );
 }
 
 //
@@ -199,7 +201,8 @@ inline std::ptrdiff_t pttrf( const VectorD& d, VectorE& e ) {
 //
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t pttrf( VectorD& d, const VectorE& e ) {
-    return pttrf_impl< typename value< VectorE >::type >::invoke( d, e );
+    return pttrf_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e );
 }
 
 //
@@ -209,7 +212,8 @@ inline std::ptrdiff_t pttrf( VectorD& d, const VectorE& e ) {
 //
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t pttrf( const VectorD& d, const VectorE& e ) {
-    return pttrf_impl< typename value< VectorE >::type >::invoke( d, e );
+    return pttrf_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e );
 }
 
 } // namespace lapack

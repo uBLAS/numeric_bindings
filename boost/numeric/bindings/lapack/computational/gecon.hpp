@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -300,11 +300,12 @@ template< typename MatrixA, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gecon( const char norm, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type anorm, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcond, Workspace work ) {
-    return gecon_impl< typename value< MatrixA >::type >::invoke( norm,
-            a, anorm, rcond, work );
+        typename bindings::value_type< MatrixA >::type >::type& rcond,
+        Workspace work ) {
+    return gecon_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( norm, a, anorm, rcond, work );
 }
 
 //
@@ -315,11 +316,12 @@ template< typename MatrixA >
 inline typename boost::disable_if< detail::is_workspace< MatrixA >,
         std::ptrdiff_t >::type
 gecon( const char norm, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type anorm, typename remove_imaginary<
-        typename value< MatrixA >::type >::type& rcond ) {
-    return gecon_impl< typename value< MatrixA >::type >::invoke( norm,
-            a, anorm, rcond, optimal_workspace() );
+        typename bindings::value_type< MatrixA >::type >::type& rcond ) {
+    return gecon_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( norm, a, anorm, rcond,
+            optimal_workspace() );
 }
 
 } // namespace lapack

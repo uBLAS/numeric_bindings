@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -207,9 +207,10 @@ struct rot_impl {
     static return_type invoke( VectorX& x, VectorY& y, const real_type c,
             const real_type s ) {
         namespace bindings = ::boost::numeric::bindings;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                VectorX >::type >::type, typename remove_const<
-                typename value< VectorY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< VectorX >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorY >::type >::type >::value) );
         detail::rot( bindings::size(x), bindings::begin_value(x),
                 bindings::stride(x), bindings::begin_value(y),
                 bindings::stride(y), c, s );
@@ -230,12 +231,14 @@ struct rot_impl {
 // * VectorY&
 //
 template< typename VectorX, typename VectorY >
-inline typename rot_impl< typename value< VectorX >::type >::return_type
+inline typename rot_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
 rot( VectorX& x, VectorY& y, const typename remove_imaginary<
-        typename value< VectorX >::type >::type c,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorX >::type >::type c,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
+    rot_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( x, y, c, s );
 }
 
 //
@@ -244,12 +247,14 @@ rot( VectorX& x, VectorY& y, const typename remove_imaginary<
 // * VectorY&
 //
 template< typename VectorX, typename VectorY >
-inline typename rot_impl< typename value< VectorX >::type >::return_type
+inline typename rot_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
 rot( const VectorX& x, VectorY& y, const typename remove_imaginary<
-        typename value< VectorX >::type >::type c,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorX >::type >::type c,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
+    rot_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( x, y, c, s );
 }
 
 //
@@ -258,12 +263,14 @@ rot( const VectorX& x, VectorY& y, const typename remove_imaginary<
 // * const VectorY&
 //
 template< typename VectorX, typename VectorY >
-inline typename rot_impl< typename value< VectorX >::type >::return_type
+inline typename rot_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
 rot( VectorX& x, const VectorY& y, const typename remove_imaginary<
-        typename value< VectorX >::type >::type c,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorX >::type >::type c,
+        const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
+    rot_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( x, y, c, s );
 }
 
 //
@@ -272,12 +279,14 @@ rot( VectorX& x, const VectorY& y, const typename remove_imaginary<
 // * const VectorY&
 //
 template< typename VectorX, typename VectorY >
-inline typename rot_impl< typename value< VectorX >::type >::return_type
+inline typename rot_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
 rot( const VectorX& x, const VectorY& y,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type c, const typename remove_imaginary<
-        typename value< VectorX >::type >::type s ) {
-    rot_impl< typename value< VectorX >::type >::invoke( x, y, c, s );
+        typename bindings::value_type< VectorX >::type >::type s ) {
+    rot_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( x, y, c, s );
 }
 
 } // namespace blas

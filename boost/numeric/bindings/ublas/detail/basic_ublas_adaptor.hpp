@@ -11,7 +11,7 @@
 
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/end.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 
 namespace boost {

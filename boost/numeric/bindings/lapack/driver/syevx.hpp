@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -115,12 +115,12 @@ struct syevx_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixZ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
@@ -248,15 +248,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -272,16 +273,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -297,15 +298,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -321,16 +323,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -346,15 +348,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -370,16 +373,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -395,15 +398,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -419,16 +423,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -444,15 +448,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -468,16 +473,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -493,15 +498,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -517,16 +523,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -542,16 +548,17 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -567,16 +574,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -592,16 +599,17 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -617,16 +625,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -642,15 +650,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -666,16 +675,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -691,15 +700,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -715,16 +725,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -740,16 +750,17 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -765,16 +776,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -790,16 +801,17 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -815,16 +827,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -840,15 +852,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -864,16 +877,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -889,15 +902,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -913,16 +927,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -938,16 +952,17 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -963,16 +978,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 //
@@ -988,16 +1003,17 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, work );
 }
 
 //
@@ -1013,16 +1029,16 @@ template< typename MatrixA, typename VectorW, typename MatrixZ,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vu,
+        typename bindings::value_type< MatrixA >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    return syevx_impl< typename value< MatrixA >::type >::invoke( jobz,
-            range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
-            optimal_workspace() );
+    return syevx_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
+            m, w, z, ifail, optimal_workspace() );
 }
 
 } // namespace lapack

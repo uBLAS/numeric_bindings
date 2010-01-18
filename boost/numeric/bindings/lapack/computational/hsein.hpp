@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -154,24 +154,24 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorWR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorWI >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorIFAILL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorIFAILL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorIFAILR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSELECT >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWR >::value) );
@@ -285,20 +285,20 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorIFAILL >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorIFAILL >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorIFAILR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVL >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixH >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixH >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
@@ -427,9 +427,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -452,9 +452,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -477,9 +477,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -502,9 +502,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -527,9 +527,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -552,9 +552,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -577,9 +577,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -602,9 +602,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -627,9 +627,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -652,9 +652,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -677,9 +677,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -702,9 +702,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -727,9 +727,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -752,9 +752,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -777,9 +777,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -802,9 +802,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -827,9 +827,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -852,9 +852,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -877,9 +877,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -902,9 +902,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -927,9 +927,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -952,9 +952,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -977,9 +977,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1002,9 +1002,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1027,9 +1027,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1052,9 +1052,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1077,9 +1077,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1102,9 +1102,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1127,9 +1127,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1152,9 +1152,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1177,9 +1177,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1202,9 +1202,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1227,9 +1227,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1252,9 +1252,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1277,9 +1277,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1302,9 +1302,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1327,9 +1327,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1352,9 +1352,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1377,9 +1377,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1402,9 +1402,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1427,9 +1427,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1452,9 +1452,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1477,9 +1477,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1502,9 +1502,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1527,9 +1527,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1552,9 +1552,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1577,9 +1577,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1602,9 +1602,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1627,9 +1627,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1652,9 +1652,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1677,9 +1677,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1702,9 +1702,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1727,9 +1727,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1752,9 +1752,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1777,9 +1777,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1802,9 +1802,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1827,9 +1827,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1852,9 +1852,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1877,9 +1877,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1902,9 +1902,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1927,9 +1927,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -1952,9 +1952,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -1977,9 +1977,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2002,9 +2002,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2027,9 +2027,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2052,9 +2052,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2077,9 +2077,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2102,9 +2102,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2127,9 +2127,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2152,9 +2152,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2177,9 +2177,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2202,9 +2202,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2227,9 +2227,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2252,9 +2252,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2277,9 +2277,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2302,9 +2302,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2327,9 +2327,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2352,9 +2352,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2377,9 +2377,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2402,9 +2402,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2427,9 +2427,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2452,9 +2452,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2477,9 +2477,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2502,9 +2502,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2527,9 +2527,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2552,9 +2552,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2577,9 +2577,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2602,9 +2602,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2627,9 +2627,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2652,9 +2652,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2677,9 +2677,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2702,9 +2702,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2727,9 +2727,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2752,9 +2752,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2777,9 +2777,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2802,9 +2802,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2828,9 +2828,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2853,9 +2853,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2879,9 +2879,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2904,9 +2904,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2930,9 +2930,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -2955,9 +2955,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -2981,9 +2981,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3006,9 +3006,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3032,9 +3032,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3057,9 +3057,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3083,9 +3083,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3108,9 +3108,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3134,9 +3134,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3159,9 +3159,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3185,9 +3185,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3210,9 +3210,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3236,9 +3236,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3261,9 +3261,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3287,9 +3287,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3312,9 +3312,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3338,9 +3338,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3363,9 +3363,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3389,9 +3389,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3414,9 +3414,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3440,9 +3440,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3465,9 +3465,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3491,9 +3491,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3516,9 +3516,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3542,9 +3542,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3567,9 +3567,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3593,9 +3593,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3618,9 +3618,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
+            vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 //
 // Overloaded function for hsein. Its overload differs for
@@ -3641,8 +3641,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3663,9 +3664,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3687,8 +3688,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3709,9 +3711,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3733,8 +3735,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3755,9 +3758,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3779,8 +3782,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3801,9 +3805,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3825,8 +3829,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3847,9 +3852,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3871,8 +3876,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3893,9 +3899,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3917,8 +3923,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3939,9 +3946,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -3963,8 +3970,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -3985,9 +3993,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4009,8 +4017,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4032,9 +4041,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4056,8 +4065,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4079,9 +4089,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4103,8 +4113,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4126,9 +4137,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4150,8 +4161,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4173,9 +4185,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4197,8 +4209,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4220,9 +4233,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4244,8 +4257,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4267,9 +4281,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4291,8 +4305,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4314,9 +4329,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4338,8 +4353,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4361,9 +4377,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4385,8 +4401,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4408,9 +4425,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4432,8 +4449,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4455,9 +4473,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4479,8 +4497,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4502,9 +4521,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4526,8 +4545,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4549,9 +4569,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4573,8 +4593,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4596,9 +4617,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4620,8 +4641,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4643,9 +4665,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4667,8 +4689,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4690,9 +4713,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4714,8 +4737,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4737,9 +4761,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4761,8 +4785,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4784,9 +4809,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4808,8 +4833,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4831,9 +4857,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4855,8 +4881,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4878,9 +4905,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4902,8 +4929,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4925,9 +4953,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4949,8 +4977,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -4972,9 +5001,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -4996,8 +5025,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -5019,9 +5049,9 @@ hsein( const char side, const char eigsrc, const char initv,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -5043,8 +5073,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -5066,9 +5097,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 //
@@ -5090,8 +5121,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr, Workspace work ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, work );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, work );
 }
 
 //
@@ -5113,9 +5145,9 @@ hsein( const char side, const char eigsrc, const char initv,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
         const VectorIFAILR& ifailr ) {
-    return hsein_impl< typename value< MatrixH >::type >::invoke( side,
-            eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill, ifailr,
-            optimal_workspace() );
+    return hsein_impl< typename bindings::value_type<
+            MatrixH >::type >::invoke( side, eigsrc, initv, select, h, w, vl,
+            vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
 
 } // namespace lapack

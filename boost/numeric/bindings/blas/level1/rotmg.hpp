@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -159,17 +159,17 @@ struct rotmg_impl {
 // * VectorDPARAM&
 //
 template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
+inline typename rotmg_impl< typename bindings::value_type<
         VectorDPARAM >::type >::return_type
-rotmg( typename remove_imaginary< typename value<
+rotmg( typename remove_imaginary< typename bindings::value_type<
         VectorDPARAM >::type >::type& d1, typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorDPARAM >::type >::type& d2,
+        typename remove_imaginary< typename bindings::value_type<
         VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
+        typename bindings::value_type< VectorDPARAM >::type >::type y1,
         VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
+    rotmg_impl< typename bindings::value_type<
+            VectorDPARAM >::type >::invoke( d1, d2, x1, y1, dparam );
 }
 
 //
@@ -177,17 +177,17 @@ rotmg( typename remove_imaginary< typename value<
 // * const VectorDPARAM&
 //
 template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
+inline typename rotmg_impl< typename bindings::value_type<
         VectorDPARAM >::type >::return_type
-rotmg( typename remove_imaginary< typename value<
+rotmg( typename remove_imaginary< typename bindings::value_type<
         VectorDPARAM >::type >::type& d1, typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        typename remove_imaginary< typename value<
+        typename bindings::value_type< VectorDPARAM >::type >::type& d2,
+        typename remove_imaginary< typename bindings::value_type<
         VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
+        typename bindings::value_type< VectorDPARAM >::type >::type y1,
         const VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
+    rotmg_impl< typename bindings::value_type<
+            VectorDPARAM >::type >::invoke( d1, d2, x1, y1, dparam );
 }
 
 } // namespace blas

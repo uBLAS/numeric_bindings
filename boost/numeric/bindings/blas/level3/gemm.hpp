@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -280,12 +280,14 @@ struct gemm_impl {
         typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixB, order >::type transb;
         typedef typename result_of::trans_tag< MatrixA, order >::type transa;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixA >::type >::type, typename remove_const<
-                typename value< MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixA >::type >::type, typename remove_const<
-                typename value< MatrixC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -315,12 +317,14 @@ struct gemm_impl {
 // * MatrixC&
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline typename gemm_impl< typename value< MatrixA >::type >::return_type
-gemm( const typename value< MatrixA >::type alpha, const MatrixA& a,
-        const MatrixB& b, const typename value< MatrixA >::type beta,
+inline typename gemm_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
+gemm( const typename bindings::value_type< MatrixA >::type alpha,
+        const MatrixA& a, const MatrixB& b,
+        const typename bindings::value_type< MatrixA >::type beta,
         MatrixC& c ) {
-    gemm_impl< typename value< MatrixA >::type >::invoke( alpha, a, b,
-            beta, c );
+    gemm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( alpha, a, b, beta, c );
 }
 
 //
@@ -328,12 +332,14 @@ gemm( const typename value< MatrixA >::type alpha, const MatrixA& a,
 // * const MatrixC&
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline typename gemm_impl< typename value< MatrixA >::type >::return_type
-gemm( const typename value< MatrixA >::type alpha, const MatrixA& a,
-        const MatrixB& b, const typename value< MatrixA >::type beta,
+inline typename gemm_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
+gemm( const typename bindings::value_type< MatrixA >::type alpha,
+        const MatrixA& a, const MatrixB& b,
+        const typename bindings::value_type< MatrixA >::type beta,
         const MatrixC& c ) {
-    gemm_impl< typename value< MatrixA >::type >::invoke( alpha, a, b,
-            beta, c );
+    gemm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( alpha, a, b, beta, c );
 }
 
 } // namespace blas

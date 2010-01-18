@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -112,9 +112,10 @@ struct sdot_impl {
             const std::ptrdiff_t incx, const VectorSY& sy,
             const std::ptrdiff_t incy ) {
         namespace bindings = ::boost::numeric::bindings;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                VectorSX >::type >::type, typename remove_const<
-                typename value< VectorSY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< VectorSX >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorSY >::type >::type >::value) );
         return detail::sdot( n, bindings::begin_value(sx), incx,
                 bindings::begin_value(sy), incy );
     }
@@ -132,13 +133,13 @@ struct sdot_impl {
 // Overloaded function for sdot. Its overload differs for
 //
 template< typename VectorSX, typename VectorSY >
-inline typename sdot_impl< typename value<
+inline typename sdot_impl< typename bindings::value_type<
         VectorSX >::type >::return_type
 sdot( const std::ptrdiff_t n, const VectorSX& sx,
         const std::ptrdiff_t incx, const VectorSY& sy,
         const std::ptrdiff_t incy ) {
-    return sdot_impl< typename value< VectorSX >::type >::invoke( n, sx,
-            incx, sy, incy );
+    return sdot_impl< typename bindings::value_type<
+            VectorSX >::type >::invoke( n, sx, incx, sy, incy );
 }
 
 } // namespace blas

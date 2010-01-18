@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -168,12 +168,14 @@ struct symv_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixA >::type >::type, typename remove_const<
-                typename value< VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixA >::type >::type, typename remove_const<
-                typename value< VectorY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -197,13 +199,14 @@ struct symv_impl {
 // * VectorY&
 //
 template< typename MatrixA, typename VectorX, typename VectorY >
-inline typename symv_impl< typename value< MatrixA >::type >::return_type
-symv( const typename remove_imaginary< typename value<
+inline typename symv_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
+symv( const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type alpha, const MatrixA& a, const VectorX& x,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type beta, VectorY& y ) {
-    symv_impl< typename value< MatrixA >::type >::invoke( alpha, a, x,
-            beta, y );
+    symv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( alpha, a, x, beta, y );
 }
 
 //
@@ -211,13 +214,14 @@ symv( const typename remove_imaginary< typename value<
 // * const VectorY&
 //
 template< typename MatrixA, typename VectorX, typename VectorY >
-inline typename symv_impl< typename value< MatrixA >::type >::return_type
-symv( const typename remove_imaginary< typename value<
+inline typename symv_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
+symv( const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type alpha, const MatrixA& a, const VectorX& x,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type beta, const VectorY& y ) {
-    symv_impl< typename value< MatrixA >::type >::invoke( alpha, a, x,
-            beta, y );
+    symv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( alpha, a, x, beta, y );
 }
 
 } // namespace blas

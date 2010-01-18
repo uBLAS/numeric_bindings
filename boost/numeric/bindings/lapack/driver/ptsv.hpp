@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -123,12 +123,12 @@ struct ptsv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( VectorD& d, VectorE& e, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -167,8 +167,8 @@ struct ptsv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( VectorD& d, VectorE& e, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorE >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorE >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -206,8 +206,8 @@ struct ptsv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t ptsv( VectorD& d, VectorE& e, MatrixB& b ) {
-    return ptsv_impl< typename value< VectorE >::type >::invoke( d, e,
-            b );
+    return ptsv_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, b );
 }
 
 //
@@ -218,8 +218,8 @@ inline std::ptrdiff_t ptsv( VectorD& d, VectorE& e, MatrixB& b ) {
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t ptsv( const VectorD& d, VectorE& e, MatrixB& b ) {
-    return ptsv_impl< typename value< VectorE >::type >::invoke( d, e,
-            b );
+    return ptsv_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, b );
 }
 
 //
@@ -230,8 +230,8 @@ inline std::ptrdiff_t ptsv( const VectorD& d, VectorE& e, MatrixB& b ) {
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t ptsv( VectorD& d, const VectorE& e, MatrixB& b ) {
-    return ptsv_impl< typename value< VectorE >::type >::invoke( d, e,
-            b );
+    return ptsv_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, b );
 }
 
 //
@@ -243,8 +243,8 @@ inline std::ptrdiff_t ptsv( VectorD& d, const VectorE& e, MatrixB& b ) {
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t ptsv( const VectorD& d, const VectorE& e,
         MatrixB& b ) {
-    return ptsv_impl< typename value< VectorE >::type >::invoke( d, e,
-            b );
+    return ptsv_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, b );
 }
 
 //
@@ -255,8 +255,8 @@ inline std::ptrdiff_t ptsv( const VectorD& d, const VectorE& e,
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t ptsv( VectorD& d, VectorE& e, const MatrixB& b ) {
-    return ptsv_impl< typename value< VectorE >::type >::invoke( d, e,
-            b );
+    return ptsv_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, b );
 }
 
 //
@@ -268,8 +268,8 @@ inline std::ptrdiff_t ptsv( VectorD& d, VectorE& e, const MatrixB& b ) {
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t ptsv( const VectorD& d, VectorE& e,
         const MatrixB& b ) {
-    return ptsv_impl< typename value< VectorE >::type >::invoke( d, e,
-            b );
+    return ptsv_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, b );
 }
 
 //
@@ -281,8 +281,8 @@ inline std::ptrdiff_t ptsv( const VectorD& d, VectorE& e,
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t ptsv( VectorD& d, const VectorE& e,
         const MatrixB& b ) {
-    return ptsv_impl< typename value< VectorE >::type >::invoke( d, e,
-            b );
+    return ptsv_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, b );
 }
 
 //
@@ -294,8 +294,8 @@ inline std::ptrdiff_t ptsv( VectorD& d, const VectorE& e,
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t ptsv( const VectorD& d, const VectorE& e,
         const MatrixB& b ) {
-    return ptsv_impl< typename value< VectorE >::type >::invoke( d, e,
-            b );
+    return ptsv_impl< typename bindings::value_type<
+            VectorE >::type >::invoke( d, e, b );
 }
 
 } // namespace lapack

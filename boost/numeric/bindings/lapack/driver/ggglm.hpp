@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -142,20 +142,20 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorX& x, VectorY& y, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -261,20 +261,20 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorX& x, VectorY& y, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorD >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -384,8 +384,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, VectorY& y,
         Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -402,8 +402,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
 inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -421,8 +421,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, VectorY& y,
         Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -440,8 +440,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -459,8 +459,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x, VectorY& y,
         Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -478,8 +478,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -497,8 +497,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
         VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -516,8 +516,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -535,8 +535,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x, VectorY& y,
         Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -554,8 +554,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -573,8 +573,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
         VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -592,8 +592,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -611,8 +611,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
         VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -630,8 +630,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -649,8 +649,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
         VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -668,8 +668,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -687,8 +687,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x, VectorY& y,
         Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -706,8 +706,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -725,8 +725,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
         VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -744,8 +744,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -763,8 +763,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
         VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -782,8 +782,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -801,8 +801,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
         VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -820,8 +820,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -839,8 +839,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
         VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -858,8 +858,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -877,8 +877,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
         VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -896,8 +896,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -915,8 +915,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, const VectorX& x,
         VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -934,8 +934,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, const VectorX& x,
         VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -953,8 +953,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d,
         const VectorX& x, VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -972,8 +972,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d,
         const VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -991,8 +991,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, const VectorY& y,
         Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1010,8 +1010,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1029,8 +1029,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1048,8 +1048,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1067,8 +1067,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1086,8 +1086,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1105,8 +1105,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1124,8 +1124,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1143,8 +1143,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1162,8 +1162,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1181,8 +1181,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1200,8 +1200,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1219,8 +1219,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1238,8 +1238,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1257,8 +1257,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1276,8 +1276,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d, VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1295,8 +1295,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1314,8 +1314,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1333,8 +1333,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1352,8 +1352,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, VectorD& d, const VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1371,8 +1371,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1390,8 +1390,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1409,8 +1409,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1428,8 +1428,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, const VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1447,8 +1447,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1466,8 +1466,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1485,8 +1485,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1504,8 +1504,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, MatrixB& b, const VectorD& d, const VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1523,8 +1523,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, const VectorX& x,
         const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1542,8 +1542,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, const MatrixB& b, const VectorD& d, const VectorX& x,
         const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 //
@@ -1561,8 +1561,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d,
         const VectorX& x, const VectorY& y, Workspace work ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, work );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, work );
 }
 
 //
@@ -1580,8 +1580,8 @@ inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( const MatrixA& a, const MatrixB& b, const VectorD& d,
         const VectorX& x, const VectorY& y ) {
-    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
-            d, x, y, optimal_workspace() );
+    return ggglm_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }
 
 } // namespace lapack

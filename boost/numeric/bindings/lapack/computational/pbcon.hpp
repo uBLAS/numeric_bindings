@@ -26,7 +26,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -309,11 +309,12 @@ template< typename MatrixAB, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 pbcon( const char uplo, const MatrixAB& ab,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type anorm, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond, Workspace work ) {
-    return pbcon_impl< typename value< MatrixAB >::type >::invoke( uplo,
-            ab, anorm, rcond, work );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond,
+        Workspace work ) {
+    return pbcon_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( uplo, ab, anorm, rcond, work );
 }
 
 //
@@ -324,11 +325,12 @@ template< typename MatrixAB >
 inline typename boost::disable_if< detail::is_workspace< MatrixAB >,
         std::ptrdiff_t >::type
 pbcon( const char uplo, const MatrixAB& ab,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type anorm, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& rcond ) {
-    return pbcon_impl< typename value< MatrixAB >::type >::invoke( uplo,
-            ab, anorm, rcond, optimal_workspace() );
+        typename bindings::value_type< MatrixAB >::type >::type& rcond ) {
+    return pbcon_impl< typename bindings::value_type<
+            MatrixAB >::type >::invoke( uplo, ab, anorm, rcond,
+            optimal_workspace() );
 }
 
 } // namespace lapack

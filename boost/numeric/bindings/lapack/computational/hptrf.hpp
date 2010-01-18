@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -117,8 +117,8 @@ struct hptrf_impl {
 //
 template< typename MatrixAP, typename VectorIPIV >
 inline std::ptrdiff_t hptrf( MatrixAP& ap, VectorIPIV& ipiv ) {
-    return hptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
-            ipiv );
+    return hptrf_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, ipiv );
 }
 
 //
@@ -128,8 +128,8 @@ inline std::ptrdiff_t hptrf( MatrixAP& ap, VectorIPIV& ipiv ) {
 //
 template< typename MatrixAP, typename VectorIPIV >
 inline std::ptrdiff_t hptrf( const MatrixAP& ap, VectorIPIV& ipiv ) {
-    return hptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
-            ipiv );
+    return hptrf_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, ipiv );
 }
 
 //
@@ -139,8 +139,8 @@ inline std::ptrdiff_t hptrf( const MatrixAP& ap, VectorIPIV& ipiv ) {
 //
 template< typename MatrixAP, typename VectorIPIV >
 inline std::ptrdiff_t hptrf( MatrixAP& ap, const VectorIPIV& ipiv ) {
-    return hptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
-            ipiv );
+    return hptrf_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, ipiv );
 }
 
 //
@@ -150,8 +150,8 @@ inline std::ptrdiff_t hptrf( MatrixAP& ap, const VectorIPIV& ipiv ) {
 //
 template< typename MatrixAP, typename VectorIPIV >
 inline std::ptrdiff_t hptrf( const MatrixAP& ap, const VectorIPIV& ipiv ) {
-    return hptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
-            ipiv );
+    return hptrf_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, ipiv );
 }
 
 } // namespace lapack

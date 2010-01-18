@@ -24,7 +24,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -163,20 +163,20 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             TAU, WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixV >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -317,20 +317,20 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             RWORK, TAU, WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixV >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
@@ -483,64 +483,20 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * MatrixU&
 // * MatrixV&
@@ -551,65 +507,21 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * MatrixU&
 // * MatrixV&
 // * MatrixQ&
@@ -620,20 +532,21 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * MatrixU&
 // * MatrixV&
 // * MatrixQ&
@@ -644,20 +557,21 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const MatrixU&
+// * const MatrixB&
+// * MatrixU&
 // * MatrixV&
 // * MatrixQ&
 // * User-defined workspace
@@ -667,66 +581,22 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixU&
+// * MatrixA&
+// * const MatrixB&
+// * MatrixU&
 // * MatrixV&
 // * MatrixQ&
 // * Default workspace-type (optimal)
@@ -735,66 +605,22 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixU&
-// * MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+        fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * const MatrixU&
+// * MatrixU&
 // * MatrixV&
 // * MatrixQ&
 // * User-defined workspace
@@ -805,19 +631,69 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
+// * MatrixA&
+// * MatrixB&
 // * const MatrixU&
 // * MatrixV&
 // * MatrixQ&
@@ -827,14 +703,162 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -851,13 +875,15 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -874,12 +900,14 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -897,13 +925,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -921,12 +950,13 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -943,64 +973,20 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * const MatrixB&
 // * MatrixU&
 // * const MatrixV&
@@ -1011,161 +997,22 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixU&
-// * const MatrixV&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, const MatrixV& v,
-        MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * const MatrixU&
+// * MatrixU&
 // * const MatrixV&
 // * MatrixQ&
 // * User-defined workspace
@@ -1176,13 +1023,213 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, const MatrixV& v,
+        MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, const MatrixV& v,
+        MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, const MatrixV& v,
+        MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const MatrixU&
+// * const MatrixV&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -1200,13 +1247,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1223,64 +1271,20 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * MatrixB&
 // * MatrixU&
 // * MatrixV&
@@ -1291,65 +1295,21 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * MatrixU&
 // * MatrixV&
 // * const MatrixQ&
@@ -1360,20 +1320,21 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
 // * const MatrixA&
-// * const MatrixB&
+// * MatrixB&
 // * MatrixU&
 // * MatrixV&
 // * const MatrixQ&
@@ -1384,20 +1345,21 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
 // * MatrixA&
-// * MatrixB&
-// * const MatrixU&
+// * const MatrixB&
+// * MatrixU&
 // * MatrixV&
 // * const MatrixQ&
 // * User-defined workspace
@@ -1407,67 +1369,22 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
+        fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixU&
+// * MatrixA&
+// * const MatrixB&
+// * MatrixU&
 // * MatrixV&
 // * const MatrixQ&
 // * Default workspace-type (optimal)
@@ -1476,68 +1393,22 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
-        Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
-}
-
-//
-// Overloaded function for ggsvp. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixU&
-// * MatrixV&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixU,
-        typename MatrixV, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
-        fortran_int_t& l, const MatrixU& u, MatrixV& v,
-        const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+        fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
 // Overloaded function for ggsvp. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * const MatrixU&
+// * MatrixU&
 // * MatrixV&
 // * const MatrixQ&
 // * User-defined workspace
@@ -1548,13 +1419,213 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v,
+        const MatrixQ& q ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggsvp. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const MatrixU&
+// * MatrixV&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+ggsvp( const char jobu, const char jobv, const char jobq,
+        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
+        fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
+        Workspace work ) {
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -1572,13 +1643,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1595,13 +1667,15 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -1618,13 +1692,15 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1642,13 +1718,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -1666,13 +1743,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1689,13 +1767,15 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -1712,13 +1792,15 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1736,13 +1818,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -1760,13 +1843,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1783,13 +1867,15 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -1806,13 +1892,15 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1830,13 +1918,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -1854,13 +1943,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1877,13 +1967,15 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -1900,13 +1992,15 @@ template< typename MatrixA, typename MatrixB, typename MatrixU,
 inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq, MatrixA& a,
-        const MatrixB& b, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type tola, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
+        const MatrixB& b, const typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1924,13 +2018,14 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, work );
 }
 
 //
@@ -1948,13 +2043,14 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 ggsvp( const char jobu, const char jobv, const char jobq,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type tola,
-        const typename remove_imaginary< typename value<
+        typename bindings::value_type< MatrixA >::type >::type tola,
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
-            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
+    return ggsvp_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( jobu, jobv, jobq, a, b, tola, tolb, k,
+            l, u, v, q, optimal_workspace() );
 }
 
 } // namespace lapack

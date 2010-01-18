@@ -25,7 +25,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -272,8 +272,8 @@ template< typename MatrixAP, typename VectorIPIV, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sptri( MatrixAP& ap, const VectorIPIV& ipiv, Workspace work ) {
-    return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
-            ipiv, work );
+    return sptri_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, ipiv, work );
 }
 
 //
@@ -285,8 +285,8 @@ template< typename MatrixAP, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 sptri( MatrixAP& ap, const VectorIPIV& ipiv ) {
-    return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
-            ipiv, optimal_workspace() );
+    return sptri_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, ipiv, optimal_workspace() );
 }
 
 //
@@ -298,8 +298,8 @@ template< typename MatrixAP, typename VectorIPIV, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sptri( const MatrixAP& ap, const VectorIPIV& ipiv, Workspace work ) {
-    return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
-            ipiv, work );
+    return sptri_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, ipiv, work );
 }
 
 //
@@ -311,8 +311,8 @@ template< typename MatrixAP, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 sptri( const MatrixAP& ap, const VectorIPIV& ipiv ) {
-    return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
-            ipiv, optimal_workspace() );
+    return sptri_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( ap, ipiv, optimal_workspace() );
 }
 
 } // namespace lapack

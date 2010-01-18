@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -170,9 +170,10 @@ struct herk_impl {
         typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixC >::type uplo;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixA >::type >::type, typename remove_const<
-                typename value< MatrixC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -198,13 +199,14 @@ struct herk_impl {
 // * MatrixC&
 //
 template< typename MatrixA, typename MatrixC >
-inline typename herk_impl< typename value< MatrixA >::type >::return_type
-herk( const typename remove_imaginary< typename value<
+inline typename herk_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
+herk( const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type alpha, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type beta, MatrixC& c ) {
-    herk_impl< typename value< MatrixA >::type >::invoke( alpha, a,
-            beta, c );
+    herk_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( alpha, a, beta, c );
 }
 
 //
@@ -212,13 +214,14 @@ herk( const typename remove_imaginary< typename value<
 // * const MatrixC&
 //
 template< typename MatrixA, typename MatrixC >
-inline typename herk_impl< typename value< MatrixA >::type >::return_type
-herk( const typename remove_imaginary< typename value<
+inline typename herk_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
+herk( const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type alpha, const MatrixA& a,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type beta, const MatrixC& c ) {
-    herk_impl< typename value< MatrixA >::type >::invoke( alpha, a,
-            beta, c );
+    herk_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( alpha, a, beta, c );
 }
 
 } // namespace blas

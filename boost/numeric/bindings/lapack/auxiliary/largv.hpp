@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -126,12 +126,12 @@ struct largv_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorY& y, VectorC& c ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorX >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorX >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorX >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorX >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
@@ -167,8 +167,8 @@ struct largv_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorY& y, VectorC& c ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorX >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorX >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
@@ -203,8 +203,8 @@ struct largv_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
         VectorY& y, VectorC& c ) {
-    return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            y, c );
+    return largv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, y, c );
 }
 
 //
@@ -216,8 +216,8 @@ inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
         VectorY& y, VectorC& c ) {
-    return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            y, c );
+    return largv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, y, c );
 }
 
 //
@@ -229,8 +229,8 @@ inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
         const VectorY& y, VectorC& c ) {
-    return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            y, c );
+    return largv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, y, c );
 }
 
 //
@@ -242,8 +242,8 @@ inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
         const VectorY& y, VectorC& c ) {
-    return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            y, c );
+    return largv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, y, c );
 }
 
 //
@@ -255,8 +255,8 @@ inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
         VectorY& y, const VectorC& c ) {
-    return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            y, c );
+    return largv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, y, c );
 }
 
 //
@@ -268,8 +268,8 @@ inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
         VectorY& y, const VectorC& c ) {
-    return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            y, c );
+    return largv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, y, c );
 }
 
 //
@@ -281,8 +281,8 @@ inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
         const VectorY& y, const VectorC& c ) {
-    return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            y, c );
+    return largv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, y, c );
 }
 
 //
@@ -294,8 +294,8 @@ inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
         const VectorY& y, const VectorC& c ) {
-    return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            y, c );
+    return largv_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( n, x, y, c );
 }
 
 } // namespace lapack

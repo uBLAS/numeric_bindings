@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -263,9 +263,10 @@ struct syrk_impl {
         typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixC >::type uplo;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixA >::type >::type, typename remove_const<
-                typename value< MatrixC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -291,11 +292,13 @@ struct syrk_impl {
 // * MatrixC&
 //
 template< typename MatrixA, typename MatrixC >
-inline typename syrk_impl< typename value< MatrixA >::type >::return_type
-syrk( const typename value< MatrixA >::type alpha, const MatrixA& a,
-        const typename value< MatrixA >::type beta, MatrixC& c ) {
-    syrk_impl< typename value< MatrixA >::type >::invoke( alpha, a,
-            beta, c );
+inline typename syrk_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
+syrk( const typename bindings::value_type< MatrixA >::type alpha,
+        const MatrixA& a, const typename bindings::value_type<
+        MatrixA >::type beta, MatrixC& c ) {
+    syrk_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( alpha, a, beta, c );
 }
 
 //
@@ -303,11 +306,13 @@ syrk( const typename value< MatrixA >::type alpha, const MatrixA& a,
 // * const MatrixC&
 //
 template< typename MatrixA, typename MatrixC >
-inline typename syrk_impl< typename value< MatrixA >::type >::return_type
-syrk( const typename value< MatrixA >::type alpha, const MatrixA& a,
-        const typename value< MatrixA >::type beta, const MatrixC& c ) {
-    syrk_impl< typename value< MatrixA >::type >::invoke( alpha, a,
-            beta, c );
+inline typename syrk_impl< typename bindings::value_type<
+        MatrixA >::type >::return_type
+syrk( const typename bindings::value_type< MatrixA >::type alpha,
+        const MatrixA& a, const typename bindings::value_type<
+        MatrixA >::type beta, const MatrixC& c ) {
+    syrk_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( alpha, a, beta, c );
 }
 
 } // namespace blas

@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -108,16 +108,16 @@ struct stebz_impl {
             WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorW >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorIBLOCK >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorIBLOCK >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorISPLIT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIBLOCK >::value) );
@@ -225,17 +225,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
         VectorIBLOCK& iblock, VectorISPLIT& isplit, Workspace work ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, work );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, work );
 }
 
 //
@@ -250,17 +250,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::disable_if< detail::is_workspace< VectorISPLIT >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
         VectorIBLOCK& iblock, VectorISPLIT& isplit ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, optimal_workspace() );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, optimal_workspace() );
 }
 
 //
@@ -275,17 +275,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, const VectorW& w,
         VectorIBLOCK& iblock, VectorISPLIT& isplit, Workspace work ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, work );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, work );
 }
 
 //
@@ -300,17 +300,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::disable_if< detail::is_workspace< VectorISPLIT >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, const VectorW& w,
         VectorIBLOCK& iblock, VectorISPLIT& isplit ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, optimal_workspace() );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, optimal_workspace() );
 }
 
 //
@@ -325,17 +325,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
         const VectorIBLOCK& iblock, VectorISPLIT& isplit, Workspace work ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, work );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, work );
 }
 
 //
@@ -350,17 +350,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::disable_if< detail::is_workspace< VectorISPLIT >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
         const VectorIBLOCK& iblock, VectorISPLIT& isplit ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, optimal_workspace() );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, optimal_workspace() );
 }
 
 //
@@ -375,17 +375,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, const VectorW& w,
         const VectorIBLOCK& iblock, VectorISPLIT& isplit, Workspace work ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, work );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, work );
 }
 
 //
@@ -400,17 +400,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::disable_if< detail::is_workspace< VectorISPLIT >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, const VectorW& w,
         const VectorIBLOCK& iblock, VectorISPLIT& isplit ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, optimal_workspace() );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, optimal_workspace() );
 }
 
 //
@@ -425,17 +425,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
         VectorIBLOCK& iblock, const VectorISPLIT& isplit, Workspace work ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, work );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, work );
 }
 
 //
@@ -450,17 +450,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::disable_if< detail::is_workspace< VectorISPLIT >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
         VectorIBLOCK& iblock, const VectorISPLIT& isplit ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, optimal_workspace() );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, optimal_workspace() );
 }
 
 //
@@ -475,17 +475,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, const VectorW& w,
         VectorIBLOCK& iblock, const VectorISPLIT& isplit, Workspace work ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, work );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, work );
 }
 
 //
@@ -500,17 +500,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::disable_if< detail::is_workspace< VectorISPLIT >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, const VectorW& w,
         VectorIBLOCK& iblock, const VectorISPLIT& isplit ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, optimal_workspace() );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, optimal_workspace() );
 }
 
 //
@@ -525,18 +525,18 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         Workspace work ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, work );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, work );
 }
 
 //
@@ -551,17 +551,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::disable_if< detail::is_workspace< VectorISPLIT >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, optimal_workspace() );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, optimal_workspace() );
 }
 
 //
@@ -576,18 +576,18 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         Workspace work ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, work );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, work );
 }
 
 //
@@ -602,17 +602,17 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline typename boost::disable_if< detail::is_workspace< VectorISPLIT >,
         std::ptrdiff_t >::type
 stebz( const char range, const char order, const fortran_int_t n,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type vl, const typename remove_imaginary<
-        typename value< VectorD >::type >::type vu,
+        typename bindings::value_type< VectorD >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
+        const typename remove_imaginary< typename bindings::value_type<
         VectorD >::type >::type abstol, const VectorD& d, const VectorE& e,
         fortran_int_t& m, fortran_int_t& nsplit, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit ) {
-    return stebz_impl< typename value< VectorD >::type >::invoke( range,
-            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
-            isplit, optimal_workspace() );
+    return stebz_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, optimal_workspace() );
 }
 
 } // namespace lapack

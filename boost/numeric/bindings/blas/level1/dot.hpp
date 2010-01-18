@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -206,9 +206,10 @@ struct dot_impl {
     template< typename VectorX, typename VectorY >
     static return_type invoke( const VectorX& x, const VectorY& y ) {
         namespace bindings = ::boost::numeric::bindings;
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                VectorX >::type >::type, typename remove_const<
-                typename value< VectorY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const<
+                typename bindings::value_type< VectorX >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorY >::type >::type >::value) );
         return detail::dot( bindings::size(x),
                 bindings::begin_value(x), bindings::stride(x),
                 bindings::begin_value(y), bindings::stride(y) );
@@ -227,9 +228,11 @@ struct dot_impl {
 // Overloaded function for dot. Its overload differs for
 //
 template< typename VectorX, typename VectorY >
-inline typename dot_impl< typename value< VectorX >::type >::return_type
+inline typename dot_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
 dot( const VectorX& x, const VectorY& y ) {
-    return dot_impl< typename value< VectorX >::type >::invoke( x, y );
+    return dot_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( x, y );
 }
 
 } // namespace blas

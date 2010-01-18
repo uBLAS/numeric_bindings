@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -86,12 +86,12 @@ struct cgesv_impl {
             detail::workspace3< WORK, SWORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixA >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< MatrixA >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
@@ -215,8 +215,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 cgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         fortran_int_t& iter, Workspace work ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, work );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
 }
 
 //
@@ -232,8 +232,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 cgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         fortran_int_t& iter ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, optimal_workspace() );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
+            optimal_workspace() );
 }
 
 //
@@ -249,8 +250,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 cgesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         fortran_int_t& iter, Workspace work ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, work );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
 }
 
 //
@@ -266,8 +267,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 cgesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         fortran_int_t& iter ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, optimal_workspace() );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
+            optimal_workspace() );
 }
 
 //
@@ -283,8 +285,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 cgesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         fortran_int_t& iter, Workspace work ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, work );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
 }
 
 //
@@ -300,8 +302,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 cgesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         fortran_int_t& iter ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, optimal_workspace() );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
+            optimal_workspace() );
 }
 
 //
@@ -317,8 +320,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 cgesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, fortran_int_t& iter, Workspace work ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, work );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
 }
 
 //
@@ -334,8 +337,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 cgesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, fortran_int_t& iter ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, optimal_workspace() );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
+            optimal_workspace() );
 }
 
 //
@@ -351,8 +355,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 cgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         fortran_int_t& iter, Workspace work ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, work );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
 }
 
 //
@@ -368,8 +372,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 cgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         fortran_int_t& iter ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, optimal_workspace() );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
+            optimal_workspace() );
 }
 
 //
@@ -385,8 +390,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 cgesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, fortran_int_t& iter, Workspace work ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, work );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
 }
 
 //
@@ -402,8 +407,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 cgesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, fortran_int_t& iter ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, optimal_workspace() );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
+            optimal_workspace() );
 }
 
 //
@@ -419,8 +425,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 cgesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, fortran_int_t& iter, Workspace work ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, work );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
 }
 
 //
@@ -436,8 +442,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 cgesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, fortran_int_t& iter ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, optimal_workspace() );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
+            optimal_workspace() );
 }
 
 //
@@ -453,8 +460,8 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 cgesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, fortran_int_t& iter, Workspace work ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, work );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
 }
 
 //
@@ -470,8 +477,9 @@ inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 cgesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, fortran_int_t& iter ) {
-    return cgesv_impl< typename value< MatrixA >::type >::invoke( a,
-            ipiv, b, x, iter, optimal_workspace() );
+    return cgesv_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
+            optimal_workspace() );
 }
 
 } // namespace lapack

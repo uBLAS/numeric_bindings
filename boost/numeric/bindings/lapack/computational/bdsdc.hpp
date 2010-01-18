@@ -23,7 +23,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -102,20 +102,20 @@ struct bdsdc_impl {
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorE >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 MatrixVT >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorD >::type >::type,
-                typename remove_const< typename value<
+                typename bindings::value_type< VectorD >::type >::type,
+                typename remove_const< typename bindings::value_type<
                 VectorQ >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
@@ -231,8 +231,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -252,8 +253,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -274,8 +276,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -295,8 +298,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -317,8 +321,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -338,8 +343,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -360,8 +366,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -381,8 +388,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -403,8 +411,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -424,8 +433,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt, VectorQ& q,
         VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -446,8 +456,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -467,8 +478,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -489,8 +501,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -510,8 +523,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -532,8 +546,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -553,8 +568,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -575,8 +591,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt, VectorQ& q,
         VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -596,8 +613,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt, VectorQ& q,
         VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -618,8 +636,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -639,8 +658,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -661,8 +681,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -682,8 +703,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -704,8 +726,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -725,8 +748,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -747,8 +771,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -768,8 +793,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -790,8 +816,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -811,8 +838,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -833,8 +861,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -854,8 +883,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -876,8 +906,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u,
         const MatrixVT& vt, VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -897,8 +928,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u,
         const MatrixVT& vt, VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -919,8 +951,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, const VectorQ& q,
         VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -940,8 +973,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, const VectorQ& q,
         VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -962,8 +996,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -983,8 +1018,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1005,8 +1041,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1026,8 +1063,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1048,8 +1086,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1069,8 +1108,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1091,8 +1131,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1112,8 +1153,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1134,8 +1176,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1155,8 +1198,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1177,8 +1221,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1198,8 +1243,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1220,8 +1266,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1241,8 +1288,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1263,8 +1311,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1284,8 +1333,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1306,8 +1356,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1327,8 +1378,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1349,8 +1401,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1370,8 +1423,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1392,8 +1446,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1413,8 +1468,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1435,8 +1491,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1456,8 +1513,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1478,8 +1536,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1499,8 +1558,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1521,8 +1581,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1542,8 +1603,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1564,8 +1626,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u,
         const MatrixVT& vt, const VectorQ& q, VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1585,8 +1648,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u,
         const MatrixVT& vt, const VectorQ& q, VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1607,8 +1671,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1628,8 +1693,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1650,8 +1716,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1671,8 +1738,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1693,8 +1761,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1714,8 +1783,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1736,8 +1806,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1757,8 +1828,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1779,8 +1851,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1800,8 +1873,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1822,8 +1896,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1843,8 +1918,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1865,8 +1941,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1886,8 +1963,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1908,8 +1986,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1929,8 +2008,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1951,8 +2031,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -1972,8 +2053,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt, VectorQ& q,
         const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -1994,8 +2076,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2015,8 +2098,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2037,8 +2121,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2058,8 +2143,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2080,8 +2166,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2101,8 +2188,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2123,8 +2211,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2144,8 +2233,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2166,8 +2256,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2187,8 +2278,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2209,8 +2301,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2230,8 +2323,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
         VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2252,8 +2346,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u,
         const MatrixVT& vt, VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2273,8 +2368,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u,
         const MatrixVT& vt, VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2295,8 +2391,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, const VectorQ& q,
         const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2316,8 +2413,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, const VectorQ& q,
         const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2338,8 +2436,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2359,8 +2458,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2381,8 +2481,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2402,8 +2503,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2424,8 +2526,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2445,8 +2548,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2467,8 +2571,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2488,8 +2593,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2510,8 +2616,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2531,8 +2638,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2553,8 +2661,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2574,8 +2683,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2596,8 +2706,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2617,8 +2728,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u, MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2639,8 +2751,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2660,8 +2773,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2682,8 +2796,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2703,8 +2818,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2725,8 +2841,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2746,8 +2863,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2768,8 +2886,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2789,8 +2908,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2811,8 +2931,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2832,8 +2953,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2854,8 +2976,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2875,8 +2998,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2897,8 +3021,9 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq, Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2918,8 +3043,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixU& u, const MatrixVT& vt,
         const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 //
@@ -2941,8 +3067,9 @@ bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u,
         const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq,
         Workspace work ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, work );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            work );
 }
 
 //
@@ -2962,8 +3089,9 @@ inline typename boost::disable_if< detail::is_workspace< VectorIQ >,
 bdsdc( const char uplo, const char compq, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixU& u,
         const MatrixVT& vt, const VectorQ& q, const VectorIQ& iq ) {
-    return bdsdc_impl< typename value< VectorD >::type >::invoke( uplo,
-            compq, n, d, e, u, vt, q, iq, optimal_workspace() );
+    return bdsdc_impl< typename bindings::value_type<
+            VectorD >::type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            optimal_workspace() );
 }
 
 } // namespace lapack

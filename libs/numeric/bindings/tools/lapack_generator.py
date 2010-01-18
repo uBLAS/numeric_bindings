@@ -256,8 +256,8 @@ def write_functions( info_map, group, template_map, base_dir ):
           for arg_B in static_asserts[1:]:
             print "Adding static assert for argA", arg_A, " argb", arg_B
             assert_line = 'BOOST_STATIC_ASSERT( (boost::is_same< ' + \
-                'typename remove_const< typename bindings::value_type< ' + info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type, ' + \
-                'typename remove_const< typename bindings::value_type< ' + info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type' \
+                'typename remove_const< typename $NAMESPACEvalue_type< ' + info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type, ' + \
+                'typename remove_const< typename $NAMESPACEvalue_type< ' + info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type' \
                 ' >::value) );'
             level1_static_assert_list += [ assert_line ]
 

@@ -275,8 +275,8 @@ def write_functions( info_map, group, template_map, base_dir ):
             arg_right = info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ]
             if arg_left != None and arg_right != None:
                 assert_line = 'BOOST_STATIC_ASSERT( (is_same< ' + \
-                    'typename remove_const< typename bindings::value_type< ' + arg_left + ' >::type >::type, ' + \
-                    'typename remove_const< typename bindings::value_type< ' + arg_right + ' >::type >::type' \
+                    'typename remove_const< typename $NAMESPACEvalue_type< ' + arg_left + ' >::type >::type, ' + \
+                    'typename remove_const< typename $NAMESPACEvalue_type< ' + arg_right + ' >::type >::type' \
                     ' >::value) );'
                 if not has_comment:
                     #level1_static_assert_list += [ '// Here, we assert... ' ]

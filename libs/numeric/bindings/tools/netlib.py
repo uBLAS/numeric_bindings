@@ -145,17 +145,13 @@ def call_c_type( name, properties ):
   if properties[ 'type' ] == 'vector' or properties[ 'type' ] == 'matrix':
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
        properties[ 'value_type' ] == 'DOUBLE COMPLEX':
-      #result = 'detail::complex_ptr(' + name.lower() + ')'
-      #result = 'bindings::detail::void_ptr(' + name.lower() + ')'
       result = '' + name.lower() + ''
     else:
       result = name.lower()
   elif properties[ 'type' ] == 'scalar':
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
        properties[ 'value_type' ] == 'DOUBLE COMPLEX':
-      #result = 'detail::complex_ptr(&' + name.lower() + ')'
       result = '&' + name.lower() + ''
-      #result = 'bindings::detail::void_ptr(&' + name.lower() + ')'
     else:
       result = '&' + name.lower()
   
@@ -549,7 +545,7 @@ def opt_workspace_pre_type( name, properties, arg_map ):
       min_workspace_call = min_workspace_call_type( name, properties, arg_map )
       if min_workspace_call == None:
         min_workspace_call = '$CALL_MIN_SIZE'
-      result = 'bindings::detail::array< ' + workspace_type( name, properties ) + ' >' + \
+      result = '$NAMESPACEdetail::array< ' + workspace_type( name, properties ) + ' >' + \
                ' tmp_' + name.lower() + '( min_size_' + name.lower() + '( ' + min_workspace_call + ' ) );'
   return result
 
@@ -559,10 +555,10 @@ def opt_workspace_post_type( name, properties ):
   if 'workspace' in properties[ 'io' ]:
     if properties.has_key( 'workspace_query_by' ):
       if properties['value_type'] == 'INTEGER':
-        result = 'bindings::detail::array< ' + workspace_type( name, properties ) + ' >' + \
+        result = '$NAMESPACEdetail::array< ' + workspace_type( name, properties ) + ' >' + \
                ' tmp_' + name.lower() + '( opt_size_' + name.lower() + ' );'
       else:
-        result = 'bindings::detail::array< ' + workspace_type( name, properties ) + ' >' + \
+        result = '$NAMESPACEdetail::array< ' + workspace_type( name, properties ) + ' >' + \
                ' tmp_' + name.lower() + '( traits::detail::to_int( opt_size_' + name.lower() + ' ) );'
   return result
 

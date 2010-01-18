@@ -14,8 +14,8 @@ $PURPOSE
 
 The selection of the BLAS routine is done during compile-time, 
 and is determined by the type of values contained in type `$FIRST_TYPENAME`.
-The type of values is obtained through the `value` meta-function
- `typename value<$FIRST_TYPENAME>::type`.
+The type of values is obtained through the `value_type` meta-function
+ `typename value_type<$FIRST_TYPENAME>::type`.
 Table X below illustrates to which specific routine this dispatching will take place. 
 
 [table Dispatching of $groupname.

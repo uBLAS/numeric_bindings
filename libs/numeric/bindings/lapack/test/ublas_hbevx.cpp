@@ -34,11 +34,11 @@ struct apply_real {
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
   static inline std::ptrdiff_t hbevx(
         const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
-        const typename bindings::remove_imaginary< typename bindings::value<
+        const typename bindings::remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vl, const typename bindings::remove_imaginary<
-        typename bindings::value< MatrixAB >::type >::type vu,
+        typename bindings::value_type< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename bindings::remove_imaginary< typename bindings::value<
+        const typename bindings::remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return lapack::sbevx( jobz, range, ab, q, vl, vu,
@@ -51,11 +51,11 @@ struct apply_complex {
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
   static inline std::ptrdiff_t hbevx(
         const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
-        const typename bindings::remove_imaginary< typename bindings::value<
+        const typename bindings::remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type vl, const typename bindings::remove_imaginary<
-        typename bindings::value< MatrixAB >::type >::type vu,
+        typename bindings::value_type< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
-        const typename bindings::remove_imaginary< typename bindings::value<
+        const typename bindings::remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return lapack::hbevx( jobz, range, ab, q, vl, vu,

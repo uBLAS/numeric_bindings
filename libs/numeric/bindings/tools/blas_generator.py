@@ -56,7 +56,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       #'#include <boost/numeric/bindings/traits/type_traits.hpp>', 
       '#include <boost/numeric/bindings/remove_imaginary.hpp>', 
       '#include <boost/numeric/bindings/is_mutable.hpp>', 
-      '#include <boost/numeric/bindings/value.hpp>', 
+      '#include <boost/numeric/bindings/value_type.hpp>', 
       '#include <boost/numeric/bindings/stride.hpp>',
       '#include <boost/numeric/bindings/size.hpp>',
       '#include <boost/numeric/bindings/begin.hpp>',
@@ -275,8 +275,8 @@ def write_functions( info_map, group, template_map, base_dir ):
             arg_right = info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ]
             if arg_left != None and arg_right != None:
                 assert_line = 'BOOST_STATIC_ASSERT( (is_same< ' + \
-                    'typename remove_const< typename value< ' + arg_left + ' >::type >::type, ' + \
-                    'typename remove_const< typename value< ' + arg_right + ' >::type >::type' \
+                    'typename remove_const< typename bindings::value_type< ' + arg_left + ' >::type >::type, ' + \
+                    'typename remove_const< typename bindings::value_type< ' + arg_right + ' >::type >::type' \
                     ' >::value) );'
                 if not has_comment:
                     #level1_static_assert_list += [ '// Here, we assert... ' ]
@@ -381,7 +381,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level2_template = level2_template.replace( '    $STATIC_ASSERTS\n', '' )
 
       if first_typename == 'Value':
-          level2_template = level2_template.replace( 'typename value< Value >::type', 'Value' )
+          level2_template = level2_template.replace( 'typename bindings::value_type< Value >::type', 'Value' )
           level2_template = level2_template.replace( 'typename remove_imaginary< Value >::type', 'Value' )
 
       level1_map[ value_type ] = bindings.proper_indent( level1_template )

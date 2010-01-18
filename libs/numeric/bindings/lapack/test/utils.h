@@ -6,7 +6,7 @@
 #include <iostream>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 
 
 ///////////////////////////////
@@ -16,7 +16,7 @@
 template <typename V>
 struct vct_access_traits {
   typedef typename 
-  boost::numeric::bindings::value<V>::type val_t;
+  boost::numeric::bindings::value_type<V>::type val_t;
   typedef val_t& ref_t; 
   static ref_t elem (V& v, size_t i) { return v[i]; }
 };
@@ -24,7 +24,7 @@ struct vct_access_traits {
 template <typename V>
 struct vct_access_traits<V const> {
   typedef typename 
-  boost::numeric::bindings::value<V>::type val_t;
+  boost::numeric::bindings::value_type<V>::type val_t;
   typedef val_t ref_t; 
   static ref_t elem (V const& v, size_t i) { return v[i]; }
 };
@@ -112,7 +112,7 @@ struct matr_access_traits {
 template <typename M>
 struct matr_access_traits<M const> {
   typedef typename 
-  boost::numeric::bindings::value<M>::type val_t;
+  boost::numeric::bindings::value_type<M>::type val_t;
   typedef val_t ref_t; 
   static ref_t elem (M const& m, size_t i, size_t j) { return m (i, j); }
 };
@@ -188,7 +188,7 @@ void print_m_data (M const& m, char const* ch = 0) {
     std::cout << ch << " data:\n"; 
   using namespace boost::numeric::bindings;
   std::copy( begin_value( m ), end_value( m ), std::ostream_iterator
-        < typename value< const M >::type >( std::cout, " " ) );
+        < typename value_type< const M >::type >( std::cout, " " ) );
   std::cout << std::endl; 
 }
 

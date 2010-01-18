@@ -9,7 +9,7 @@
 #include "../../blas/test/random.hpp"
 
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
@@ -34,7 +34,7 @@ struct apply_real {
   static inline integer_t gees( const char jobvs, const char sort,
         logical_t* select, MatrixA& a, integer_t& sdim, VectorW& w,
         MatrixVS& vs, Workspace work ) {
-    typedef typename bindings::value< MatrixA >::type value_type;
+    typedef typename bindings::value_type< MatrixA >::type value_type;
     bindings::detail::array<value_type> wr(bindings::size(w));
     bindings::detail::array<value_type> wi(bindings::size(w));
     integer_t info = lapack::gees( jobvs, sort, select, a, sdim, wr, wi, vs, work );

@@ -340,10 +340,8 @@ def level1_static_assert( name, properties ):
   if 'workspace' not in properties[ 'io' ]:
     if properties[ 'type' ] == 'matrix' or properties[ 'type' ] == 'vector':
       result = level1_typename( name, properties ).replace( "typename ", "" )
-      #result = "typename value< " + level1_typename( name, properties ).replace( "typename ", "" ) + " >::type"
     elif properties[ 'type' ] == 'scalar':
       result = "TODO HOOK"
-      #result = "typename value< " + level1_type( name, properties ) + " >::type"
   return result
 
 

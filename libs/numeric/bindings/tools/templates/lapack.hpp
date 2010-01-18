@@ -216,7 +216,7 @@ $COMMENTS
 template< $TYPES, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >, $INTEGER_TYPE >::type
 $groupname( $LEVEL2, Workspace work ) {
-    return $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, work );
+    return $groupname_impl< typename bindings::value_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, work );
 }
 
 //
@@ -227,7 +227,7 @@ $COMMENTS
 template< $TYPES >
 inline typename boost::disable_if< detail::is_workspace< $LAST_TYPENAME >, $INTEGER_TYPE >::type
 $groupname( $LEVEL2 ) {
-    return $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
+    return $groupname_impl< typename bindings::value_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
 }
 $TEMPLATE[setup_min_workspace]
         bindings::detail::array< $WORKSPACE_TYPE > tmp_$NAME( min_size_$NAME( $CALL_MIN_SIZE ) );
@@ -270,6 +270,6 @@ $COMMENTS
 //
 template< $TYPES >
 inline $INTEGER_TYPE $groupname( $LEVEL2 ) {
-    return $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
+    return $groupname_impl< typename bindings::value_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
 }
 $TEMPLATE[end]

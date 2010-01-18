@@ -328,7 +328,7 @@ def generate_const_variants( prefix, argument_list, template_map ):
 # Generate the call to the value_tye meta-func
 #
 def value_type( arg ):
-    return 'typename value< ' + arg + ' >::type'
+    return 'typename bindings::value_type< ' + arg + ' >::type'
 
 #
 # Search replace stuff for handling exceptional cases through the

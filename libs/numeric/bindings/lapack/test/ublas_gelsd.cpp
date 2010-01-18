@@ -236,7 +236,7 @@ int main()
 template <typename StreamType, typename MatType, typename VecType>
 int test_square_gelsd(StreamType& oss)
 {
-	typedef typename bindings::value<MatType>::type val_t;
+	typedef typename bindings::value_type<MatType>::type val_t;
 	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
 	integer_t rank;
@@ -297,7 +297,7 @@ int test_square_gelsd(StreamType& oss)
 template <typename StreamType, typename MatType, typename VecType>
 int test_under_gelsd(StreamType& oss)
 {
-	typedef typename bindings::value<MatType>::type val_t;
+	typedef typename bindings::value_type<MatType>::type val_t;
 	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
 	integer_t rank;
@@ -358,7 +358,7 @@ int test_under_gelsd(StreamType& oss)
 template <typename StreamType, typename MatType, typename VecType>
 int test_over_gelsd(StreamType& oss)
 {
-	typedef typename bindings::value<MatType>::type val_t;
+	typedef typename bindings::value_type<MatType>::type val_t;
 	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
 	integer_t rank;
@@ -419,7 +419,7 @@ int test_over_gelsd(StreamType& oss)
 template <typename StreamType, typename MatType, typename VecType>
 int test_multiple_gelsd(StreamType& oss)
 {
-	typedef typename bindings::value<MatType>::type val_t;
+	typedef typename bindings::value_type<MatType>::type val_t;
 	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
 	integer_t rank;

@@ -142,7 +142,7 @@ struct pftrf_impl {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t pftrf( MatrixA& a ) {
-    return pftrf_impl< typename bindings::value_type<  MatrixA >::type >::invoke( a );
+    return pftrf_impl< typename bindings::value_type< MatrixA >::type >::invoke( a );
 }
 
 //
@@ -151,7 +151,7 @@ inline std::ptrdiff_t pftrf( MatrixA& a ) {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t pftrf( const MatrixA& a ) {
-    return pftrf_impl< typename bindings::value_type<  MatrixA >::type >::invoke( a );
+    return pftrf_impl< typename bindings::value_type< MatrixA >::type >::invoke( a );
 }
 
 } // namespace lapack

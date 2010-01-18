@@ -146,7 +146,7 @@ struct tftri_impl {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t tftri( const char uplo, MatrixA& a ) {
-    return tftri_impl< typename bindings::value_type<  MatrixA >::type >::invoke( uplo,
+    return tftri_impl< typename bindings::value_type< MatrixA >::type >::invoke( uplo,
             a );
 }
 
@@ -156,7 +156,7 @@ inline std::ptrdiff_t tftri( const char uplo, MatrixA& a ) {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t tftri( const char uplo, const MatrixA& a ) {
-    return tftri_impl< typename bindings::value_type<  MatrixA >::type >::invoke( uplo,
+    return tftri_impl< typename bindings::value_type< MatrixA >::type >::invoke( uplo,
             a );
 }
 

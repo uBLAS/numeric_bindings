@@ -62,4 +62,6 @@ $TEMPLATE[blas.value.IZAMAX]
 complex
 $TEMPLATE[blas.precision.IZAMAX]
 double
+$TEMPLATE[blas.group.DSDOT]
+PREC_DOT
 $TEMPLATE[end]

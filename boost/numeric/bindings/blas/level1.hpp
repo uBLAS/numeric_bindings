@@ -17,12 +17,12 @@
 #include <boost/numeric/bindings/blas/level1/dotu.hpp>
 #include <boost/numeric/bindings/blas/level1/iamax.hpp>
 #include <boost/numeric/bindings/blas/level1/nrm2.hpp>
+#include <boost/numeric/bindings/blas/level1/prec_dot.hpp>
 #include <boost/numeric/bindings/blas/level1/rotg.hpp>
 #include <boost/numeric/bindings/blas/level1/rot.hpp>
 #include <boost/numeric/bindings/blas/level1/rotmg.hpp>
 #include <boost/numeric/bindings/blas/level1/rotm.hpp>
 #include <boost/numeric/bindings/blas/level1/scal.hpp>
-#include <boost/numeric/bindings/blas/level1/sdot.hpp>
 #include <boost/numeric/bindings/blas/level1/set.hpp>
 #include <boost/numeric/bindings/blas/level1/swap.hpp>
 

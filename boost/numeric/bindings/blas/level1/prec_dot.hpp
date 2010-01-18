@@ -11,8 +11,8 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SDOT_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SDOT_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_PREC_DOT_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_PREC_DOT_HPP
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
@@ -60,9 +60,9 @@ namespace detail {
 // * CBLAS backend, and
 // * double value-type.
 //
-inline double sdot( const int n, const float* sx, const int incx,
-        const float* sy, const int incy ) {
-    return cblas_dsdot( n, sx, incx, sy, incy );
+inline double prec_dot( const int n, const float* x, const int incx,
+        const float* y, const int incy ) {
+    return cblas_dsdot( n, x, incx, y, incy );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
@@ -71,8 +71,8 @@ inline double sdot( const int n, const float* sx, const int incx,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline double sdot( const int n, const float* sx, const int incx,
-        const float* sy, const int incy ) {
+inline double prec_dot( const int n, const float* x, const int incx,
+        const float* y, const int incy ) {
     return // NOT FOUND();
 }
 
@@ -82,9 +82,9 @@ inline double sdot( const int n, const float* sx, const int incx,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline double sdot( const fortran_int_t n, const float* sx,
-        const fortran_int_t incx, const float* sy, const fortran_int_t incy ) {
-    return BLAS_DSDOT( &n, sx, &incx, sy, &incy );
+inline double prec_dot( const fortran_int_t n, const float* x,
+        const fortran_int_t incx, const float* y, const fortran_int_t incy ) {
+    return BLAS_DSDOT( &n, x, &incx, y, &incy );
 }
 
 #endif
@@ -93,53 +93,50 @@ inline double sdot( const fortran_int_t n, const float* sx,
 
 //
 // Value-type based template class. Use this class if you need a type
-// for dispatching to sdot.
+// for dispatching to prec_dot.
 //
 template< typename Value >
-struct sdot_impl {
+struct prec_dot_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef value_type return_type;
+    typedef double return_type;
 
     //
     // Static member function that
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorSX, typename VectorSY >
-    static return_type invoke( const std::ptrdiff_t n, const VectorSX& sx,
-            const std::ptrdiff_t incx, const VectorSY& sy,
-            const std::ptrdiff_t incy ) {
+    template< typename VectorX, typename VectorY >
+    static return_type invoke( const VectorX& x, const VectorY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorSX >::type >::type,
+                typename bindings::value_type< VectorX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorSY >::type >::type >::value) );
-        return detail::sdot( n, bindings::begin_value(sx), incx,
-                bindings::begin_value(sy), incy );
+                VectorY >::type >::type >::value) );
+        return detail::prec_dot( bindings::size(x),
+                bindings::begin_value(x), bindings::stride(x),
+                bindings::begin_value(y), bindings::stride(y) );
     }
 };
 
 //
 // Functions for direct use. These functions are overloaded for temporaries,
 // so that wrapped types can still be passed and used for write-access. Calls
-// to these functions are passed to the sdot_impl classes. In the 
+// to these functions are passed to the prec_dot_impl classes. In the 
 // documentation, the const-overloads are collapsed to avoid a large number of
 // prototypes which are very similar.
 //
 
 //
-// Overloaded function for sdot. Its overload differs for
+// Overloaded function for prec_dot. Its overload differs for
 //
-template< typename VectorSX, typename VectorSY >
-inline typename sdot_impl< typename bindings::value_type<
-        VectorSX >::type >::return_type
-sdot( const std::ptrdiff_t n, const VectorSX& sx,
-        const std::ptrdiff_t incx, const VectorSY& sy,
-        const std::ptrdiff_t incy ) {
-    return sdot_impl< typename bindings::value_type<
-            VectorSX >::type >::invoke( n, sx, incx, sy, incy );
+template< typename VectorX, typename VectorY >
+inline typename prec_dot_impl< typename bindings::value_type<
+        VectorX >::type >::return_type
+prec_dot( const VectorX& x, const VectorY& y ) {
+    return prec_dot_impl< typename bindings::value_type<
+            VectorX >::type >::invoke( x, y );
 }
 
 } // namespace blas

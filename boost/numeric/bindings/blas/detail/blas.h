@@ -89,6 +89,10 @@ float BLAS_SCNRM2( const fortran_int_t* n, const void* x,
 double BLAS_DZNRM2( const fortran_int_t* n, const void* x,
         const fortran_int_t* incx );
 
+// Value-type variants of prec_dot
+double BLAS_DSDOT( const fortran_int_t* n, const float* x,
+        const fortran_int_t* incx, const float* y, const fortran_int_t* incy );
+
 // Value-type variants of rot
 void BLAS_SROT( const fortran_int_t* n, float* x, const fortran_int_t* incx,
         float* y, const fortran_int_t* incy, const float* c, const float* s );
@@ -131,11 +135,6 @@ void BLAS_CSCAL( const fortran_int_t* n, const void* a, void* x,
         const fortran_int_t* incx );
 void BLAS_ZSCAL( const fortran_int_t* n, const void* a, void* x,
         const fortran_int_t* incx );
-
-// Value-type variants of sdot
-double BLAS_DSDOT( const fortran_int_t* n, const float* sx,
-        const fortran_int_t* incx, const float* sy,
-        const fortran_int_t* incy );
 
 // Value-type variants of swap
 void BLAS_SSWAP( const fortran_int_t* n, float* x, const fortran_int_t* incx,

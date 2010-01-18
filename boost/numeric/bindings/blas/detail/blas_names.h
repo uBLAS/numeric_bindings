@@ -60,6 +60,9 @@
 #define BLAS_SCNRM2 FORTRAN_ID( scnrm2 )
 #define BLAS_DZNRM2 FORTRAN_ID( dznrm2 )
 
+// Value-type variants of prec_dot
+#define BLAS_DSDOT FORTRAN_ID( dsdot )
+
 // Value-type variants of rot
 #define BLAS_SROT FORTRAN_ID( srot )
 #define BLAS_DROT FORTRAN_ID( drot )
@@ -87,9 +90,6 @@
 #define BLAS_ZDSCAL FORTRAN_ID( zdscal )
 #define BLAS_CSCAL FORTRAN_ID( cscal )
 #define BLAS_ZSCAL FORTRAN_ID( zscal )
-
-// Value-type variants of sdot
-#define BLAS_DSDOT FORTRAN_ID( dsdot )
 
 // Value-type variants of swap
 #define BLAS_SSWAP FORTRAN_ID( sswap )

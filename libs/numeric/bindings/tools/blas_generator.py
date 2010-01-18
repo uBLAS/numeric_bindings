@@ -381,7 +381,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level2_template = level2_template.replace( '    $STATIC_ASSERTS\n', '' )
 
       if first_typename == 'Value':
-          level2_template = level2_template.replace( 'typename bindings::value_type< Value >::type', 'Value' )
+          level2_template = level2_template.replace( 'typename $NAMESPACEvalue_type< Value >::type', 'Value' )
           level2_template = level2_template.replace( 'typename remove_imaginary< Value >::type', 'Value' )
 
       level1_map[ value_type ] = bindings.proper_indent( level1_template )

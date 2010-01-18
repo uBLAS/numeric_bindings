@@ -216,7 +216,7 @@ $COMMENTS
 template< $TYPES, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >, $INTEGER_TYPE >::type
 $groupname( $LEVEL2, Workspace work ) {
-    return $groupname_impl< typename bindings::value_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, work );
+    return $groupname_impl< typename $NAMESPACEvalue_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, work );
 }
 
 //
@@ -227,18 +227,18 @@ $COMMENTS
 template< $TYPES >
 inline typename boost::disable_if< detail::is_workspace< $LAST_TYPENAME >, $INTEGER_TYPE >::type
 $groupname( $LEVEL2 ) {
-    return $groupname_impl< typename bindings::value_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
+    return $groupname_impl< typename $NAMESPACEvalue_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
 }
 $TEMPLATE[setup_min_workspace]
-        bindings::detail::array< $WORKSPACE_TYPE > tmp_$NAME( min_size_$NAME( $CALL_MIN_SIZE ) );
+        $NAMESPACEdetail::array< $WORKSPACE_TYPE > tmp_$WORKSPACE_FUNC( min_size_$WORKSPACE_FUNC( $CALL_MIN_SIZE ) );
 $TEMPLATE[setup_opt_workspace]
-        bindings::detail::array< $WORKSPACE_TYPE > tmp_$NAME( $TMP_SIZE );
+        $NAMESPACEdetail::array< $WORKSPACE_TYPE > tmp_$WORKSPACE_FUNC( $TMP_SIZE );
 $TEMPLATE[min_size_func]
     //
     // Static member function that returns the minimum size of
-    // workspace-array $NAME.
+    // workspace-array $WORKSPACE_FUNC.
     //
-    static $INTEGER_TYPE min_size_$NAME( $ARGUMENTS ) {
+    static $INTEGER_TYPE min_size_$WORKSPACE_FUNC( $ARGUMENTS ) {
         $MIN_SIZE
     }
 
@@ -270,6 +270,6 @@ $COMMENTS
 //
 template< $TYPES >
 inline $INTEGER_TYPE $groupname( $LEVEL2 ) {
-    return $groupname_impl< typename bindings::value_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
+    return $groupname_impl< typename $NAMESPACEvalue_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
 }
 $TEMPLATE[end]

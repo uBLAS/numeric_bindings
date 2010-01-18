@@ -402,7 +402,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         for name in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ][ 'workspace' ]:
           # minimal case
           sub_min_template = template_map[ 'setup_min_workspace' ]
-          sub_min_template = sub_min_template.replace( '$NAME', name.lower() )
+          sub_min_template = sub_min_template.replace( '$WORKSPACE_FUNC', name.lower() )
           sub_min_template = sub_min_template.replace( '$WORKSPACE_TYPE', info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'workspace_type' ] )
           if info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace_call' ] != None:
             sub_min_template = sub_min_template.replace( "$CALL_MIN_SIZE", info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace_call' ] )
@@ -449,7 +449,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         min_size_funcs = ''
         for name in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ][ 'workspace' ]:
           sub_template = template_map[ 'min_size_func' ]
-          sub_template = sub_template.replace( "$NAME", name.lower() )
+          sub_template = sub_template.replace( "$WORKSPACE_FUNC", name.lower() )
 
           # first: user-defined stuff (overrules any auto-detected stuff)
 

@@ -142,8 +142,8 @@ $TEMPLATE[blas_level2]
 $COMMENTS
 //
 template< $TYPES >
-inline typename $groupname_impl< typename bindings::value_type< $FIRST_TYPENAME >::type >::return_type
+inline typename $groupname_impl< typename $NAMESPACEvalue_type< $FIRST_TYPENAME >::type >::return_type
 $groupname( $LEVEL2 ) {
-    $RETURN_STATEMENT$groupname_impl< typename bindings::value_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
+    $RETURN_STATEMENT$groupname_impl< typename $NAMESPACEvalue_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
 }
 $TEMPLATE[end]

@@ -138,9 +138,7 @@ struct rotm_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY, typename VectorPARAM >
-    static return_type invoke( const std::ptrdiff_t n, VectorX& x,
-            const std::ptrdiff_t incx, VectorY& y,
-            const std::ptrdiff_t incy, VectorPARAM& param ) {
+    static return_type invoke( VectorX& x, VectorY& y, VectorPARAM& param ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< VectorX >::type >::type,
@@ -153,8 +151,9 @@ struct rotm_impl {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorPARAM >::value) );
-        detail::rotm( n, bindings::begin_value(x), incx,
-                bindings::begin_value(y), incy, bindings::begin_value(param) );
+        detail::rotm( bindings::size(x), bindings::begin_value(x),
+                bindings::stride(x), bindings::begin_value(y),
+                bindings::stride(y), bindings::begin_value(param) );
     }
 };
 
@@ -175,11 +174,9 @@ struct rotm_impl {
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
         VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, VectorX& x,
-        const std::ptrdiff_t incx, VectorY& y,
-        const std::ptrdiff_t incy, VectorPARAM& param ) {
+rotm( VectorX& x, VectorY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, incx, y, incy, param );
+            VectorX >::type >::invoke( x, y, param );
 }
 
 //
@@ -191,11 +188,9 @@ rotm( const std::ptrdiff_t n, VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
         VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, const VectorX& x,
-        const std::ptrdiff_t incx, VectorY& y,
-        const std::ptrdiff_t incy, VectorPARAM& param ) {
+rotm( const VectorX& x, VectorY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, incx, y, incy, param );
+            VectorX >::type >::invoke( x, y, param );
 }
 
 //
@@ -207,11 +202,9 @@ rotm( const std::ptrdiff_t n, const VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
         VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, VectorX& x,
-        const std::ptrdiff_t incx, const VectorY& y,
-        const std::ptrdiff_t incy, VectorPARAM& param ) {
+rotm( VectorX& x, const VectorY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, incx, y, incy, param );
+            VectorX >::type >::invoke( x, y, param );
 }
 
 //
@@ -223,11 +216,9 @@ rotm( const std::ptrdiff_t n, VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
         VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, const VectorX& x,
-        const std::ptrdiff_t incx, const VectorY& y,
-        const std::ptrdiff_t incy, VectorPARAM& param ) {
+rotm( const VectorX& x, const VectorY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, incx, y, incy, param );
+            VectorX >::type >::invoke( x, y, param );
 }
 
 //
@@ -239,11 +230,9 @@ rotm( const std::ptrdiff_t n, const VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
         VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, VectorX& x,
-        const std::ptrdiff_t incx, VectorY& y,
-        const std::ptrdiff_t incy, const VectorPARAM& param ) {
+rotm( VectorX& x, VectorY& y, const VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, incx, y, incy, param );
+            VectorX >::type >::invoke( x, y, param );
 }
 
 //
@@ -255,11 +244,9 @@ rotm( const std::ptrdiff_t n, VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
         VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, const VectorX& x,
-        const std::ptrdiff_t incx, VectorY& y,
-        const std::ptrdiff_t incy, const VectorPARAM& param ) {
+rotm( const VectorX& x, VectorY& y, const VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, incx, y, incy, param );
+            VectorX >::type >::invoke( x, y, param );
 }
 
 //
@@ -271,11 +258,9 @@ rotm( const std::ptrdiff_t n, const VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
         VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, VectorX& x,
-        const std::ptrdiff_t incx, const VectorY& y,
-        const std::ptrdiff_t incy, const VectorPARAM& param ) {
+rotm( VectorX& x, const VectorY& y, const VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, incx, y, incy, param );
+            VectorX >::type >::invoke( x, y, param );
 }
 
 //
@@ -287,11 +272,9 @@ rotm( const std::ptrdiff_t n, VectorX& x,
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
         VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, const VectorX& x,
-        const std::ptrdiff_t incx, const VectorY& y,
-        const std::ptrdiff_t incy, const VectorPARAM& param ) {
+rotm( const VectorX& x, const VectorY& y, const VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, incx, y, incy, param );
+            VectorX >::type >::invoke( x, y, param );
 }
 
 } // namespace blas

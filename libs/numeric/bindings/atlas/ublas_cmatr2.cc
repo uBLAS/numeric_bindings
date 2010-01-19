@@ -100,7 +100,7 @@ int main() {
   std::cout << "m vx " << bindings::noop( vy ) << std::endl;
   cout << endl; 
 
-  blas::set ( 1+1i, vx );
+  blas::set ( cmplx_t (1, 1), vx );
   std::cout << "vx " << bindings::noop( vx ) << std::endl;
 
   // vy = m vx
@@ -111,7 +111,7 @@ int main() {
   cout << endl; 
 
   // vx = m^H vy
-  blas::set ( -1-1i, vy );
+  blas::set ( cmplx_t (-1,-1), vy );
   std::cout << "vy " << bindings::noop( vy ) << std::endl;
   blas::gemv ( 1.0, bindings::conj(m), vy, 0.0, vx);
   std::cout << "m^H vy " << bindings::noop( vx ) << std::endl;
@@ -126,10 +126,10 @@ int main() {
   ublas::matrix_column<m_t> myc0 (my, 0),
                             myc1 (my, 1); 
 
-  blas::set ( 1+0i, mxc0 );
-  blas::set ( 0+0i, mxc1 );
-  blas::set ( 0+0i, myc0 );
-  blas::set ( 0+0i, myc1 );
+  blas::set ( cmplx_t (1, 0), mxc0 );
+  blas::set ( cmplx_t (0, 0), mxc1 );
+  blas::set ( cmplx_t (0, 0), myc0 );
+  blas::set ( cmplx_t (0, 0), myc1 );
 
   print_m (mx, "mx");
   cout << endl; 

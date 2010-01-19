@@ -34,11 +34,11 @@ struct adaptor< std::valarray< T >, Id, Enable > {
     }
 
     static value_type* begin_value( Id& id ) {
-        return &id[0];
+        return &const_cast< std::valarray< T >& >( id )[0];
     }
 
     static value_type* end_value( Id& id ) {
-        return &id[0] + id.size();
+        return &const_cast< std::valarray< T >& >( id )[0] + id.size();
     }
 
 };

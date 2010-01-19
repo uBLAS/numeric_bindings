@@ -62,7 +62,7 @@ int main() {
   cout << endl; 
 
   // m += x y^T
-  blas::geru ( 1.0+0.0i, vx, vy, m); 
+  blas::geru (cmplx_t (1.0, 0.0), vx, vy, m); 
   print_m (m, "m += x y^T"); 
   cout << endl << endl; 
 

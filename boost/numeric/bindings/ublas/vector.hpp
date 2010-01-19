@@ -54,17 +54,21 @@ struct adaptor< ublas::c_vector< T, N >, Id, Enable > {
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::vector >,
-        mpl::pair< tag::size_type<1>, mpl::int_<N> >,
+        mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::data_structure, tag::linear_array >,
         mpl::pair< tag::stride_type<1>, tag::contiguous >
     > property_map;
+
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size();
+    }
 
     static value_type* begin_value( Id& id ) {
         return id.data();
     }
 
     static value_type* end_value( Id& id ) {
-        return id.data() + N;
+        return id.data() + id.size();
     }
 
 };

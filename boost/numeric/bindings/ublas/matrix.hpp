@@ -13,6 +13,7 @@
 #include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/detail/if_row_major.hpp>
+#include <boost/numeric/bindings/detail/offset.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
 #include <boost/numeric/bindings/ublas/storage.hpp>
 #include <boost/numeric/bindings/ublas/matrix_expression.hpp>
@@ -74,8 +75,8 @@ struct adaptor< ::boost::numeric::ublas::c_matrix< T, N, M >, Id, Enable > {
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::matrix >,
-        mpl::pair< tag::size_type<1>, mpl::int_<N> >,
-        mpl::pair< tag::size_type<2>, mpl::int_<M> >,
+        mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
+        mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
         mpl::pair< tag::matrix_type, tag::general >,
         mpl::pair< tag::data_structure, tag::linear_array >,
         mpl::pair< tag::data_order, tag::row_major >,
@@ -83,12 +84,20 @@ struct adaptor< ::boost::numeric::ublas::c_matrix< T, N, M >, Id, Enable > {
         mpl::pair< tag::stride_type<2>, tag::contiguous >
     > property_map;
 
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size1();
+    }
+
+    static std::ptrdiff_t size2( const Id& id ) {
+        return id.size2();
+    }
+
     static value_type* begin_value( Id& id ) {
         return id.data();
     }
 
     static value_type* end_value( Id& id ) {
-        return id.data() + N*M;
+        return id.data() + offset( id, id.size1(), id.size2() );
     }
 
 };

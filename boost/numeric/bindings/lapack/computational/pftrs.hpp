@@ -49,9 +49,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename TransR >
-inline std::ptrdiff_t pftrs( TransR, const char uplo, const fortran_int_t n,
-        const fortran_int_t nrhs, const float* a, float* b,
-        const fortran_int_t ldb ) {
+inline std::ptrdiff_t pftrs( const TransR transr, const char uplo,
+        const fortran_int_t n, const fortran_int_t nrhs, const float* a,
+        float* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_SPFTRS( &lapack_option< TransR >::value, &uplo, &n, &nrhs, a, b,
             &ldb, &info );
@@ -64,9 +64,9 @@ inline std::ptrdiff_t pftrs( TransR, const char uplo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename TransR >
-inline std::ptrdiff_t pftrs( TransR, const char uplo, const fortran_int_t n,
-        const fortran_int_t nrhs, const double* a, double* b,
-        const fortran_int_t ldb ) {
+inline std::ptrdiff_t pftrs( const TransR transr, const char uplo,
+        const fortran_int_t n, const fortran_int_t nrhs, const double* a,
+        double* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_DPFTRS( &lapack_option< TransR >::value, &uplo, &n, &nrhs, a, b,
             &ldb, &info );
@@ -79,9 +79,10 @@ inline std::ptrdiff_t pftrs( TransR, const char uplo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename TransR >
-inline std::ptrdiff_t pftrs( TransR, const char uplo, const fortran_int_t n,
-        const fortran_int_t nrhs, const std::complex<float>* a,
-        std::complex<float>* b, const fortran_int_t ldb ) {
+inline std::ptrdiff_t pftrs( const TransR transr, const char uplo,
+        const fortran_int_t n, const fortran_int_t nrhs,
+        const std::complex<float>* a, std::complex<float>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_CPFTRS( &lapack_option< TransR >::value, &uplo, &n, &nrhs, a, b,
             &ldb, &info );
@@ -94,9 +95,10 @@ inline std::ptrdiff_t pftrs( TransR, const char uplo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename TransR >
-inline std::ptrdiff_t pftrs( TransR, const char uplo, const fortran_int_t n,
-        const fortran_int_t nrhs, const std::complex<double>* a,
-        std::complex<double>* b, const fortran_int_t ldb ) {
+inline std::ptrdiff_t pftrs( const TransR transr, const char uplo,
+        const fortran_int_t n, const fortran_int_t nrhs,
+        const std::complex<double>* a, std::complex<double>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_ZPFTRS( &lapack_option< TransR >::value, &uplo, &n, &nrhs, a, b,
             &ldb, &info );

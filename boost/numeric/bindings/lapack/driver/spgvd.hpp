@@ -52,10 +52,11 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spgvd( const fortran_int_t itype, const char jobz, UpLo,
-        const fortran_int_t n, float* ap, float* bp, float* w, float* z,
-        const fortran_int_t ldz, float* work, const fortran_int_t lwork,
-        fortran_int_t* iwork, const fortran_int_t liwork ) {
+inline std::ptrdiff_t spgvd( const fortran_int_t itype, const char jobz,
+        const UpLo uplo, const fortran_int_t n, float* ap, float* bp,
+        float* w, float* z, const fortran_int_t ldz, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_SSPGVD( &itype, &jobz, &lapack_option< UpLo >::value, &n, ap, bp,
             w, z, &ldz, work, &lwork, iwork, &liwork, &info );
@@ -68,10 +69,11 @@ inline std::ptrdiff_t spgvd( const fortran_int_t itype, const char jobz, UpLo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spgvd( const fortran_int_t itype, const char jobz, UpLo,
-        const fortran_int_t n, double* ap, double* bp, double* w, double* z,
-        const fortran_int_t ldz, double* work, const fortran_int_t lwork,
-        fortran_int_t* iwork, const fortran_int_t liwork ) {
+inline std::ptrdiff_t spgvd( const fortran_int_t itype, const char jobz,
+        const UpLo uplo, const fortran_int_t n, double* ap, double* bp,
+        double* w, double* z, const fortran_int_t ldz, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DSPGVD( &itype, &jobz, &lapack_option< UpLo >::value, &n, ap, bp,
             w, z, &ldz, work, &lwork, iwork, &liwork, &info );

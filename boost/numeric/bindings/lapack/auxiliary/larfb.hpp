@@ -53,15 +53,17 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t larfb( const char side, Trans, const char direct,
-        const char storev, const fortran_int_t m, const fortran_int_t n,
-        const fortran_int_t k, const float* v, const fortran_int_t ldv,
-        const float* t, const fortran_int_t ldt, float* c,
-        const fortran_int_t ldc, float* work, const fortran_int_t ldwork ) {
+template< typename Side, typename Trans >
+inline std::ptrdiff_t larfb( const Side side, const Trans trans,
+        const char direct, const char storev, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k, const float* v,
+        const fortran_int_t ldv, const float* t, const fortran_int_t ldt,
+        float* c, const fortran_int_t ldc, float* work,
+        const fortran_int_t ldwork ) {
     fortran_int_t info(0);
-    LAPACK_SLARFB( &side, &lapack_option< Trans >::value, &direct, &storev,
-            &m, &n, &k, v, &ldv, t, &ldt, c, &ldc, work, &ldwork );
+    LAPACK_SLARFB( &lapack_option< Side >::value, &lapack_option<
+            Trans >::value, &direct, &storev, &m, &n, &k, v, &ldv, t, &ldt, c,
+            &ldc, work, &ldwork );
     return info;
 }
 
@@ -70,15 +72,17 @@ inline std::ptrdiff_t larfb( const char side, Trans, const char direct,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t larfb( const char side, Trans, const char direct,
-        const char storev, const fortran_int_t m, const fortran_int_t n,
-        const fortran_int_t k, const double* v, const fortran_int_t ldv,
-        const double* t, const fortran_int_t ldt, double* c,
-        const fortran_int_t ldc, double* work, const fortran_int_t ldwork ) {
+template< typename Side, typename Trans >
+inline std::ptrdiff_t larfb( const Side side, const Trans trans,
+        const char direct, const char storev, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k, const double* v,
+        const fortran_int_t ldv, const double* t, const fortran_int_t ldt,
+        double* c, const fortran_int_t ldc, double* work,
+        const fortran_int_t ldwork ) {
     fortran_int_t info(0);
-    LAPACK_DLARFB( &side, &lapack_option< Trans >::value, &direct, &storev,
-            &m, &n, &k, v, &ldv, t, &ldt, c, &ldc, work, &ldwork );
+    LAPACK_DLARFB( &lapack_option< Side >::value, &lapack_option<
+            Trans >::value, &direct, &storev, &m, &n, &k, v, &ldv, t, &ldt, c,
+            &ldc, work, &ldwork );
     return info;
 }
 
@@ -87,17 +91,18 @@ inline std::ptrdiff_t larfb( const char side, Trans, const char direct,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t larfb( const char side, Trans, const char direct,
-        const char storev, const fortran_int_t m, const fortran_int_t n,
-        const fortran_int_t k, const std::complex<float>* v,
-        const fortran_int_t ldv, const std::complex<float>* t,
-        const fortran_int_t ldt, std::complex<float>* c,
-        const fortran_int_t ldc, std::complex<float>* work,
-        const fortran_int_t ldwork ) {
+template< typename Side, typename Trans >
+inline std::ptrdiff_t larfb( const Side side, const Trans trans,
+        const char direct, const char storev, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k,
+        const std::complex<float>* v, const fortran_int_t ldv,
+        const std::complex<float>* t, const fortran_int_t ldt,
+        std::complex<float>* c, const fortran_int_t ldc,
+        std::complex<float>* work, const fortran_int_t ldwork ) {
     fortran_int_t info(0);
-    LAPACK_CLARFB( &side, &lapack_option< Trans >::value, &direct, &storev,
-            &m, &n, &k, v, &ldv, t, &ldt, c, &ldc, work, &ldwork );
+    LAPACK_CLARFB( &lapack_option< Side >::value, &lapack_option<
+            Trans >::value, &direct, &storev, &m, &n, &k, v, &ldv, t, &ldt, c,
+            &ldc, work, &ldwork );
     return info;
 }
 
@@ -106,17 +111,18 @@ inline std::ptrdiff_t larfb( const char side, Trans, const char direct,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t larfb( const char side, Trans, const char direct,
-        const char storev, const fortran_int_t m, const fortran_int_t n,
-        const fortran_int_t k, const std::complex<double>* v,
-        const fortran_int_t ldv, const std::complex<double>* t,
-        const fortran_int_t ldt, std::complex<double>* c,
-        const fortran_int_t ldc, std::complex<double>* work,
-        const fortran_int_t ldwork ) {
+template< typename Side, typename Trans >
+inline std::ptrdiff_t larfb( const Side side, const Trans trans,
+        const char direct, const char storev, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k,
+        const std::complex<double>* v, const fortran_int_t ldv,
+        const std::complex<double>* t, const fortran_int_t ldt,
+        std::complex<double>* c, const fortran_int_t ldc,
+        std::complex<double>* work, const fortran_int_t ldwork ) {
     fortran_int_t info(0);
-    LAPACK_ZLARFB( &side, &lapack_option< Trans >::value, &direct, &storev,
-            &m, &n, &k, v, &ldv, t, &ldt, c, &ldc, work, &ldwork );
+    LAPACK_ZLARFB( &lapack_option< Side >::value, &lapack_option<
+            Trans >::value, &direct, &storev, &m, &n, &k, v, &ldv, t, &ldt, c,
+            &ldc, work, &ldwork );
     return info;
 }
 
@@ -144,9 +150,9 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixV, typename MatrixT, typename MatrixC,
-            typename WORK >
-    static std::ptrdiff_t invoke( const char side, const char direct,
+    template< typename Side, typename MatrixV, typename MatrixT,
+            typename MatrixC, typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -171,7 +177,6 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::size_row(c)) );
         BOOST_ASSERT( bindings::stride_major(t) >= bindings::size_column(t) );
         BOOST_ASSERT( direct == 'F' || direct == 'B' );
-        BOOST_ASSERT( side == 'L' || side == 'R' );
         BOOST_ASSERT( storev == 'C' || storev == 'R' );
         return detail::larfb( side, trans(), direct, storev,
                 bindings::size_row(c), bindings::size_column(c),
@@ -189,8 +194,9 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename MatrixV, typename MatrixT, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const char direct,
+    template< typename Side, typename MatrixV, typename MatrixT,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -206,8 +212,9 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename MatrixV, typename MatrixT, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const char direct,
+    template< typename Side, typename MatrixV, typename MatrixT,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -218,8 +225,9 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 
@@ -238,9 +246,9 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixV, typename MatrixT, typename MatrixC,
-            typename WORK >
-    static std::ptrdiff_t invoke( const char side, const char direct,
+    template< typename Side, typename MatrixV, typename MatrixT,
+            typename MatrixC, typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -265,7 +273,6 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::size_row(c)) );
         BOOST_ASSERT( bindings::stride_major(t) >= bindings::size_column(t) );
         BOOST_ASSERT( direct == 'F' || direct == 'B' );
-        BOOST_ASSERT( side == 'L' || side == 'R' );
         BOOST_ASSERT( storev == 'C' || storev == 'R' );
         return detail::larfb( side, trans(), direct, storev,
                 bindings::size_row(c), bindings::size_column(c),
@@ -283,8 +290,9 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename MatrixV, typename MatrixT, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const char direct,
+    template< typename Side, typename MatrixV, typename MatrixT,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -300,8 +308,9 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename MatrixV, typename MatrixT, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const char direct,
+    template< typename Side, typename MatrixV, typename MatrixT,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -312,8 +321,9 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 
@@ -332,11 +342,11 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * MatrixC&
 // * User-defined workspace
 //
-template< typename MatrixV, typename MatrixT, typename MatrixC,
+template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-larfb( const char side, const char direct, const char storev,
+larfb( const Side side, const char direct, const char storev,
         const MatrixV& v, const MatrixT& t, MatrixC& c, Workspace work ) {
     return larfb_impl< typename bindings::value_type<
             MatrixV >::type >::invoke( side, direct, storev, v, t, c, work );
@@ -347,10 +357,10 @@ larfb( const char side, const char direct, const char storev,
 // * MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixV, typename MatrixT, typename MatrixC >
+template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-larfb( const char side, const char direct, const char storev,
+larfb( const Side side, const char direct, const char storev,
         const MatrixV& v, const MatrixT& t, MatrixC& c ) {
     return larfb_impl< typename bindings::value_type<
             MatrixV >::type >::invoke( side, direct, storev, v, t, c,
@@ -362,11 +372,11 @@ larfb( const char side, const char direct, const char storev,
 // * const MatrixC&
 // * User-defined workspace
 //
-template< typename MatrixV, typename MatrixT, typename MatrixC,
+template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-larfb( const char side, const char direct, const char storev,
+larfb( const Side side, const char direct, const char storev,
         const MatrixV& v, const MatrixT& t, const MatrixC& c,
         Workspace work ) {
     return larfb_impl< typename bindings::value_type<
@@ -378,10 +388,10 @@ larfb( const char side, const char direct, const char storev,
 // * const MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixV, typename MatrixT, typename MatrixC >
+template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-larfb( const char side, const char direct, const char storev,
+larfb( const Side side, const char direct, const char storev,
         const MatrixV& v, const MatrixT& t, const MatrixC& c ) {
     return larfb_impl< typename bindings::value_type<
             MatrixV >::type >::invoke( side, direct, storev, v, t, c,

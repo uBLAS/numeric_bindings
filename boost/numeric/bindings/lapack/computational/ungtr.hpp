@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -52,7 +53,7 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ungtr( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t ungtr( const UpLo uplo, const fortran_int_t n,
         std::complex<float>* a, const fortran_int_t lda,
         const std::complex<float>* tau, std::complex<float>* work,
         const fortran_int_t lwork ) {
@@ -68,7 +69,7 @@ inline std::ptrdiff_t ungtr( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ungtr( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t ungtr( const UpLo uplo, const fortran_int_t n,
         std::complex<double>* a, const fortran_int_t lda,
         const std::complex<double>* tau, std::complex<double>* work,
         const fortran_int_t lwork ) {
@@ -161,12 +162,11 @@ struct ungtr_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const std::ptrdiff_t side,
+    template< typename Side >
+    static std::ptrdiff_t min_size_work( const Side side,
             const std::ptrdiff_t m, const std::ptrdiff_t n ) {
-        if ( side == 'L' )
-            return std::max< std::ptrdiff_t >( 1, n );
-        else
-            return std::max< std::ptrdiff_t >( 1, m );
+        return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
+                n, m ) );
     }
 };
 

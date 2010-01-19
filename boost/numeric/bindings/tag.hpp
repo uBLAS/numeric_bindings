@@ -100,6 +100,7 @@ ADD_TAG( unit )
 ADD_TAG( non_unit )
 ADD_TAG( left )
 ADD_TAG( right )
+ADD_TAG( both )
 
 namespace tag {
 

@@ -170,6 +170,7 @@ struct cgesv_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
         return n*nrhs;
     }

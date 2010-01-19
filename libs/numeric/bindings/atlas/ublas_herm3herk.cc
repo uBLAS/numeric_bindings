@@ -4,13 +4,16 @@
 
 #include <stddef.h>
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas3.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
+#include <boost/numeric/bindings/blas/level3.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
+#include <boost/numeric/bindings/upper.hpp>
+#include <boost/numeric/bindings/lower.hpp>
+#include <boost/numeric/bindings/conj.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
-namespace traits = boost::numeric::bindings::traits;
+namespace blas = boost::numeric::bindings::blas;
+namespace bindings = boost::numeric::bindings;
 
 using std::cout;
 using std::cin;
@@ -67,10 +70,10 @@ int main() {
   urha_t urha (rmu); 
   lrha_t lrha (rml); 
 
-  atlas::herk (CblasNoTrans, ac, ucha); 
-  atlas::herk (CblasNoTrans, 1.0, ac, 0.0, lcha); 
-  atlas::herk (CblasNoTrans, 1.0, ar, 0.0, urha); 
-  atlas::herk (CblasNoTrans, ar, lrha); 
+  blas::herk (1.0, ac, 0.0, ucha); 
+  blas::herk (1.0, ac, 0.0, lcha); 
+  blas::herk (1.0, ar, 0.0, urha); 
+  blas::herk (1.0, ar, 0.0, lrha); 
 
   print_m (ucha, "ucha");
   cout << endl; 
@@ -95,10 +98,10 @@ int main() {
   init_m (rmu, const_val<cmplx_t> (cmplx_t (0, 0)));
   init_m (rml, const_val<cmplx_t> (cmplx_t (0, 0)));
 
-  atlas::herk (CblasUpper, CblasConjTrans, 1.0, act, 0.0, cmu); 
-  atlas::herk (CblasLower, CblasConjTrans, 1.0, act, 0.0, cml); 
-  atlas::herk (CblasUpper, CblasConjTrans, 1.0, art, 0.0, rmu); 
-  atlas::herk (CblasLower, CblasConjTrans, 1.0, art, 0.0, rml); 
+  blas::herk ( 1.0, bindings::conj(act), 0.0, bindings::upper(cmu)); 
+  blas::herk ( 1.0, bindings::conj(act), 0.0, bindings::lower(cml)); 
+  blas::herk ( 1.0, bindings::conj(art), 0.0, bindings::upper(rmu)); 
+  blas::herk ( 1.0, bindings::conj(art), 0.0, bindings::lower(rml)); 
 
   print_m (cmu, "cmu");
   cout << endl; 

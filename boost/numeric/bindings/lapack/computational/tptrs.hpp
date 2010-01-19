@@ -51,9 +51,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo, typename Trans, typename Diag >
-inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
-        const fortran_int_t nrhs, const float* ap, float* b,
-        const fortran_int_t ldb ) {
+inline std::ptrdiff_t tptrs( const UpLo uplo, const Trans trans,
+        const Diag diag, const fortran_int_t n, const fortran_int_t nrhs,
+        const float* ap, float* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_STPTRS( &lapack_option< UpLo >::value, &lapack_option<
             Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
@@ -67,9 +67,9 @@ inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo, typename Trans, typename Diag >
-inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
-        const fortran_int_t nrhs, const double* ap, double* b,
-        const fortran_int_t ldb ) {
+inline std::ptrdiff_t tptrs( const UpLo uplo, const Trans trans,
+        const Diag diag, const fortran_int_t n, const fortran_int_t nrhs,
+        const double* ap, double* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_DTPTRS( &lapack_option< UpLo >::value, &lapack_option<
             Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
@@ -83,9 +83,10 @@ inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo, typename Trans, typename Diag >
-inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
-        const fortran_int_t nrhs, const std::complex<float>* ap,
-        std::complex<float>* b, const fortran_int_t ldb ) {
+inline std::ptrdiff_t tptrs( const UpLo uplo, const Trans trans,
+        const Diag diag, const fortran_int_t n, const fortran_int_t nrhs,
+        const std::complex<float>* ap, std::complex<float>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_CTPTRS( &lapack_option< UpLo >::value, &lapack_option<
             Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
@@ -99,9 +100,10 @@ inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo, typename Trans, typename Diag >
-inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
-        const fortran_int_t nrhs, const std::complex<double>* ap,
-        std::complex<double>* b, const fortran_int_t ldb ) {
+inline std::ptrdiff_t tptrs( const UpLo uplo, const Trans trans,
+        const Diag diag, const fortran_int_t n, const fortran_int_t nrhs,
+        const std::complex<double>* ap, std::complex<double>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_ZTPTRS( &lapack_option< UpLo >::value, &lapack_option<
             Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,

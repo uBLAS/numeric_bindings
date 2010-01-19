@@ -51,8 +51,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
-        const float* ap, float* work ) {
+inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
+        const fortran_int_t n, const float* ap, float* work ) {
     fortran_int_t info(0);
     LAPACK_SLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
     return info;
@@ -64,8 +64,8 @@ inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
-        const double* ap, double* work ) {
+inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
+        const fortran_int_t n, const double* ap, double* work ) {
     fortran_int_t info(0);
     LAPACK_DLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
     return info;
@@ -77,8 +77,8 @@ inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
-        const std::complex<float>* ap, float* work ) {
+inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
+        const fortran_int_t n, const std::complex<float>* ap, float* work ) {
     fortran_int_t info(0);
     LAPACK_CLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
     return info;
@@ -90,8 +90,8 @@ inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
-        const std::complex<double>* ap, double* work ) {
+inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
+        const fortran_int_t n, const std::complex<double>* ap, double* work ) {
     fortran_int_t info(0);
     LAPACK_ZLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
     return info;
@@ -164,8 +164,9 @@ struct lansp_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 

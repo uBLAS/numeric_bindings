@@ -7,13 +7,16 @@
 
 #include <stddef.h>
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/blas.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/upper.hpp>
+#include <boost/numeric/bindings/lower.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
-namespace traits = boost::numeric::bindings::traits;
+namespace blas = boost::numeric::bindings::blas;
+namespace bindings = boost::numeric::bindings;
+namespace tag = boost::numeric::bindings::tag;
 
 using std::cout;
 using std::cin;
@@ -76,19 +79,19 @@ int main() {
   print_m (rbl, "b == rb");
   cout << endl; 
 
-  atlas::symm (CblasLeft, CblasUpper, 1., uc, cbl, 0., ccl); 
+  blas::symm (tag::left(),  1., bindings::upper(uc), cbl, 0., ccl); 
   print_m (ccl, "c = a b");
   cout << endl; 
 
-  atlas::symm (CblasLeft, CblasLower, 1., lc, cbl, 0., ccl);  
+  blas::symm (tag::left(),  1., bindings::lower(lc), cbl, 0., ccl);  
   print_m (ccl, "c = a b");
   cout << endl; 
 
-  atlas::symm (CblasLeft, CblasUpper, 1., ur, rbl, 0., rcl); 
+  blas::symm (tag::left(),  1., bindings::upper(ur), rbl, 0., rcl); 
   print_m (rcl, "c = a b");
   cout << endl; 
 
-  atlas::symm (CblasLeft, CblasLower, 1., lr, rbl, 0., rcl); 
+  blas::symm (tag::left(),  1., bindings::lower(lr), rbl, 0., rcl); 
   print_m (rcl, "c = a b");
   cout << endl; 
   
@@ -105,19 +108,19 @@ int main() {
   print_m (rbr, "b == rb");
   cout << endl; 
 
-  atlas::symm (CblasRight, CblasUpper, 1., uc, cbr, 0., ccr); 
+  blas::symm (tag::right(),  1., bindings::upper(uc), cbr, 0., ccr); 
   print_m (ccr, "c = b a");
   cout << endl; 
 
-  atlas::symm (CblasRight, CblasLower, 1., lc, cbr, 0., ccr);  
+  blas::symm (tag::right(),  1., bindings::lower(lc), cbr, 0., ccr);  
   print_m (ccr, "c = b a");
   cout << endl; 
 
-  atlas::symm (CblasRight, CblasUpper, 1., ur, rbr, 0., rcr); 
+  blas::symm (tag::right(),  1., bindings::upper(ur), rbr, 0., rcr); 
   print_m (rcr, "c = b a");
   cout << endl; 
 
-  atlas::symm (CblasRight, CblasLower, 1., lr, rbr, 0., rcr); 
+  blas::symm (tag::right(),  1., bindings::lower(lr), rbr, 0., rcr); 
   print_m (rcr, "c = b a");
   cout << endl; 
 

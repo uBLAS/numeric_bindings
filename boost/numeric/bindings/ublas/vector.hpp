@@ -47,6 +47,28 @@ struct adaptor< ublas::vector< T, Alloc >, Id, Enable > {
 
 };
 
+template< typename T, std::size_t N, typename Id, typename Enable >
+struct adaptor< ublas::c_vector< T, N >, Id, Enable > {
+
+    typedef typename copy_const< Id, T >::type value_type;
+    typedef mpl::map<
+        mpl::pair< tag::value_type, value_type >,
+        mpl::pair< tag::entity, tag::vector >,
+        mpl::pair< tag::size_type<1>, mpl::int_<N> >,
+        mpl::pair< tag::data_structure, tag::linear_array >,
+        mpl::pair< tag::stride_type<1>, tag::contiguous >
+    > property_map;
+
+    static value_type* begin_value( Id& id ) {
+        return id.data();
+    }
+
+    static value_type* end_value( Id& id ) {
+        return id.data() + N;
+    }
+
+};
+
 } // namespace detail
 } // namespace bindings
 } // namespace numeric

@@ -5,13 +5,16 @@
 #include <stddef.h>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas3.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
+#include <boost/numeric/bindings/blas/level3.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
+#include <boost/numeric/bindings/conj.hpp>
+#include <boost/numeric/bindings/upper.hpp>
+#include <boost/numeric/bindings/lower.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
-namespace traits = boost::numeric::bindings::traits;
+namespace blas = boost::numeric::bindings::blas;
+namespace bindings = boost::numeric::bindings;
 
 using std::cout;
 using std::cin;
@@ -69,10 +72,10 @@ int main() {
   curha_t curha (crmu); 
   clrha_t clrha (crml); 
 
-  atlas::her2k (CblasNoTrans, cac, cbc, cucha); 
-  atlas::her2k (CblasNoTrans, cmplx_t(1,0), cac, cbc, 0., clcha); 
-  atlas::her2k (CblasNoTrans, cmplx_t(1,0), car, cbr, 0., curha); 
-  atlas::her2k (CblasNoTrans, car, cbr, clrha); 
+  blas::her2k (1.0, cac, cbc, 0.0, cucha); 
+  blas::her2k (cmplx_t(1,0), cac, cbc, 0., clcha); 
+  blas::her2k (cmplx_t(1,0), car, cbr, 0., curha); 
+  blas::her2k (1.0, car, cbr, 0.0, clrha); 
 
   print_m (cucha, "cucha");
   cout << endl; 
@@ -104,10 +107,10 @@ int main() {
   init_m (crmu, const_val<cmplx_t> (cmplx_t (0, 0)));
   init_m (crml, const_val<cmplx_t> (cmplx_t (0, 0)));
 
-  atlas::her2k (CblasUpper, CblasConjTrans, 1.0, cact, cbct, 0.0, ccmu); 
-  atlas::her2k (CblasLower, CblasConjTrans, 1.0, cact, cbct, 0.0, ccml); 
-  atlas::her2k (CblasUpper, CblasConjTrans, 1.0, cart, cbrt, 0.0, crmu); 
-  atlas::her2k (CblasLower, CblasConjTrans, 1.0, cart, cbrt, 0.0, crml); 
+  blas::her2k (1.0, bindings::conj(cact), cbct, 0.0, bindings::upper(ccmu)); 
+  blas::her2k (1.0, bindings::conj(cact), cbct, 0.0, bindings::lower(ccml)); 
+  blas::her2k (1.0, bindings::conj(cart), cbrt, 0.0, bindings::upper(crmu)); 
+  blas::her2k (1.0, bindings::conj(cart), cbrt, 0.0, bindings::lower(crml)); 
 
   print_m (ccmu, "ccmu");
   cout << endl; 

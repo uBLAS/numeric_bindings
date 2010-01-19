@@ -64,9 +64,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void herk( Order, UpLo, Trans, const int n, const int k,
-        const float alpha, const std::complex<float>* a, const int lda,
-        const float beta, std::complex<float>* c, const int ldc ) {
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const float alpha,
+        const std::complex<float>* a, const int lda, const float beta,
+        std::complex<float>* c, const int ldc ) {
     cblas_cherk( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, n, k, alpha, a, lda, beta, c, ldc );
 }
@@ -77,9 +78,10 @@ inline void herk( Order, UpLo, Trans, const int n, const int k,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void herk( Order, UpLo, Trans, const int n, const int k,
-        const double alpha, const std::complex<double>* a, const int lda,
-        const double beta, std::complex<double>* c, const int ldc ) {
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const double alpha,
+        const std::complex<double>* a, const int lda, const double beta,
+        std::complex<double>* c, const int ldc ) {
     cblas_zherk( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, n, k, alpha, a, lda, beta, c, ldc );
 }
@@ -91,9 +93,10 @@ inline void herk( Order, UpLo, Trans, const int n, const int k,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void herk( Order, UpLo, Trans, const int n, const int k,
-        const float alpha, const std::complex<float>* a, const int lda,
-        const float beta, std::complex<float>* c, const int ldc ) {
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const float alpha,
+        const std::complex<float>* a, const int lda, const float beta,
+        std::complex<float>* c, const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasCherk( blas_option< UpLo >::value, blas_option< Trans >::value, n,
             k, alpha, a, lda, beta, c, ldc );
@@ -105,9 +108,10 @@ inline void herk( Order, UpLo, Trans, const int n, const int k,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void herk( Order, UpLo, Trans, const int n, const int k,
-        const double alpha, const std::complex<double>* a, const int lda,
-        const double beta, std::complex<double>* c, const int ldc ) {
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const double alpha,
+        const std::complex<double>* a, const int lda, const double beta,
+        std::complex<double>* c, const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -119,8 +123,8 @@ inline void herk( Order, UpLo, Trans, const int n, const int k,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void herk( Order, UpLo, Trans, const fortran_int_t n,
-        const fortran_int_t k, const float alpha,
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const fortran_int_t n, const fortran_int_t k, const float alpha,
         const std::complex<float>* a, const fortran_int_t lda,
         const float beta, std::complex<float>* c, const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -134,8 +138,8 @@ inline void herk( Order, UpLo, Trans, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void herk( Order, UpLo, Trans, const fortran_int_t n,
-        const fortran_int_t k, const double alpha,
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const fortran_int_t n, const fortran_int_t k, const double alpha,
         const std::complex<double>* a, const fortran_int_t lda,
         const double beta, std::complex<double>* c, const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );

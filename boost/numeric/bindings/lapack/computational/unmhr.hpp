@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -51,16 +52,17 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t unmhr( const char side, Trans, const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t ilo,
+template< typename Side, typename Trans >
+inline std::ptrdiff_t unmhr( const Side side, const Trans trans,
+        const fortran_int_t m, const fortran_int_t n, const fortran_int_t ilo,
         const fortran_int_t ihi, const std::complex<float>* a,
         const fortran_int_t lda, const std::complex<float>* tau,
         std::complex<float>* c, const fortran_int_t ldc,
         std::complex<float>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
-    LAPACK_CUNMHR( &side, &lapack_option< Trans >::value, &m, &n, &ilo, &ihi,
-            a, &lda, tau, c, &ldc, work, &lwork, &info );
+    LAPACK_CUNMHR( &lapack_option< Side >::value, &lapack_option<
+            Trans >::value, &m, &n, &ilo, &ihi, a, &lda, tau, c, &ldc, work,
+            &lwork, &info );
     return info;
 }
 
@@ -69,16 +71,17 @@ inline std::ptrdiff_t unmhr( const char side, Trans, const fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t unmhr( const char side, Trans, const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t ilo,
+template< typename Side, typename Trans >
+inline std::ptrdiff_t unmhr( const Side side, const Trans trans,
+        const fortran_int_t m, const fortran_int_t n, const fortran_int_t ilo,
         const fortran_int_t ihi, const std::complex<double>* a,
         const fortran_int_t lda, const std::complex<double>* tau,
         std::complex<double>* c, const fortran_int_t ldc,
         std::complex<double>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
-    LAPACK_ZUNMHR( &side, &lapack_option< Trans >::value, &m, &n, &ilo, &ihi,
-            a, &lda, tau, c, &ldc, work, &lwork, &info );
+    LAPACK_ZUNMHR( &lapack_option< Side >::value, &lapack_option<
+            Trans >::value, &m, &n, &ilo, &ihi, a, &lda, tau, c, &ldc, work,
+            &lwork, &info );
     return info;
 }
 
@@ -100,9 +103,9 @@ struct unmhr_impl {
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixA, typename VectorTAU, typename MatrixC,
-            typename WORK >
-    static std::ptrdiff_t invoke( const char side, const fortran_int_t ilo,
+    template< typename Side, typename MatrixA, typename VectorTAU,
+            typename MatrixC, typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const fortran_int_t ilo,
             const fortran_int_t ihi, const MatrixA& a,
             const VectorTAU& tau, MatrixC& c, detail::workspace1<
             WORK > work ) {
@@ -128,7 +131,6 @@ struct unmhr_impl {
         BOOST_ASSERT( bindings::size_row(c) >= 0 );
         BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_row(c)) );
-        BOOST_ASSERT( side == 'L' || side == 'R' );
         return detail::unmhr( side, trans(), bindings::size_row(c),
                 bindings::size_column(c), ilo, ihi, bindings::begin_value(a),
                 bindings::stride_major(a), bindings::begin_value(tau),
@@ -144,8 +146,9 @@ struct unmhr_impl {
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const fortran_int_t ilo,
+    template< typename Side, typename MatrixA, typename VectorTAU,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const fortran_int_t ilo,
             const fortran_int_t ihi, const MatrixA& a,
             const VectorTAU& tau, MatrixC& c, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -162,8 +165,9 @@ struct unmhr_impl {
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const fortran_int_t ilo,
+    template< typename Side, typename MatrixA, typename VectorTAU,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const fortran_int_t ilo,
             const fortran_int_t ihi, const MatrixA& a,
             const VectorTAU& tau, MatrixC& c, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -183,12 +187,11 @@ struct unmhr_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const char side,
+    template< typename Side >
+    static std::ptrdiff_t min_size_work( const Side side,
             const std::ptrdiff_t m, const std::ptrdiff_t n ) {
-        if ( side == 'L' )
-            return std::max< std::ptrdiff_t >( 1, n );
-        else
-            return std::max< std::ptrdiff_t >( 1, m );
+        return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
+                n, m ) );
     }
 };
 
@@ -207,11 +210,11 @@ struct unmhr_impl {
 // * MatrixC&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC,
-        typename Workspace >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-unmhr( const char side, const fortran_int_t ilo,
+unmhr( const Side side, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c, Workspace work ) {
     return unmhr_impl< typename bindings::value_type<
@@ -223,10 +226,11 @@ unmhr( const char side, const fortran_int_t ilo,
 // * MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-unmhr( const char side, const fortran_int_t ilo,
+unmhr( const Side side, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c ) {
     return unmhr_impl< typename bindings::value_type<
@@ -239,11 +243,11 @@ unmhr( const char side, const fortran_int_t ilo,
 // * const MatrixC&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC,
-        typename Workspace >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-unmhr( const char side, const fortran_int_t ilo,
+unmhr( const Side side, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
         const MatrixC& c, Workspace work ) {
     return unmhr_impl< typename bindings::value_type<
@@ -255,10 +259,11 @@ unmhr( const char side, const fortran_int_t ilo,
 // * const MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-unmhr( const char side, const fortran_int_t ilo,
+unmhr( const Side side, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
         const MatrixC& c ) {
     return unmhr_impl< typename bindings::value_type<

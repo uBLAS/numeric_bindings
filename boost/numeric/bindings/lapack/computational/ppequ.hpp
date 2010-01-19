@@ -52,8 +52,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n, const float* ap,
-        float* s, float& scond, float& amax ) {
+inline std::ptrdiff_t ppequ( const UpLo uplo, const fortran_int_t n,
+        const float* ap, float* s, float& scond, float& amax ) {
     fortran_int_t info(0);
     LAPACK_SPPEQU( &lapack_option< UpLo >::value, &n, ap, s, &scond, &amax,
             &info );
@@ -66,8 +66,8 @@ inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n, const float* ap,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n, const double* ap,
-        double* s, double& scond, double& amax ) {
+inline std::ptrdiff_t ppequ( const UpLo uplo, const fortran_int_t n,
+        const double* ap, double* s, double& scond, double& amax ) {
     fortran_int_t info(0);
     LAPACK_DPPEQU( &lapack_option< UpLo >::value, &n, ap, s, &scond, &amax,
             &info );
@@ -80,7 +80,7 @@ inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n, const double* ap,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t ppequ( const UpLo uplo, const fortran_int_t n,
         const std::complex<float>* ap, float* s, float& scond, float& amax ) {
     fortran_int_t info(0);
     LAPACK_CPPEQU( &lapack_option< UpLo >::value, &n, ap, s, &scond, &amax,
@@ -94,7 +94,7 @@ inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t ppequ( const UpLo uplo, const fortran_int_t n,
         const std::complex<double>* ap, double* s, double& scond,
         double& amax ) {
     fortran_int_t info(0);

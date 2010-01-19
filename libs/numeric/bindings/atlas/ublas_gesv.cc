@@ -8,15 +8,16 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas.hpp>
-#include <boost/numeric/bindings/atlas/clapack.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/std_vector.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/blas.hpp>
+#include <boost/numeric/bindings/lapack/driver/gesv.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
+namespace lapack = boost::numeric::bindings::lapack;
 
 using std::size_t; 
 using std::cout;
@@ -62,15 +63,15 @@ int main() {
   m_t aa (a);  // copy of a, because a is `lost' after gesv()
 
   ublas::matrix_column<m_t> xc0 (x, 0), xc1 (x, 1); 
-  atlas::set (1., xc0);  // x[.,0] = 1
-  atlas::set (2., xc1);  // x[.,1] = 2
+  blas::set (1., xc0);  // x[.,0] = 1
+  blas::set (2., xc1);  // x[.,1] = 2
 #ifndef F_ROW_MAJOR
-  atlas::gemm (a, x, b);  // b = a x, so we know the result ;o) 
+  blas::gemm ( 1.0, a, x, 0.0, b);  // b = a x, so we know the result ;o) 
 #else
   // see leading comments for `gesv()' in clapack.hpp
   ublas::matrix_row<m_t> br0 (b, 0), br1 (b, 1); 
-  atlas::gemv (a, xc0, br0);  // b[0,.] = a x[.,0]
-  atlas::gemv (a, xc1, br1);  // b[1,.] = a x[.,1]  =>  b^T = a x
+  blas::gemv (a, xc0, br0);  // b[0,.] = a x[.,0]
+  blas::gemv (a, xc1, br1);  // b[1,.] = a x[.,1]  =>  b^T = a x
 #endif 
 
   print_m (a, "A"); 
@@ -78,15 +79,15 @@ int main() {
   print_m (b, "B"); 
   cout << endl; 
 
-  atlas::gesv (a, ipiv, b);   // solving the system, b contains x 
+  lapack::gesv (a, ipiv, b);   // solving the system, b contains x 
   print_m (b, "X"); 
   cout << endl; 
 
 #ifndef F_ROW_MAJOR
-  atlas::gemm (aa, b, x);     // check the solution 
+  blas::gemm ( 1.0, aa, b, 0.0, x);     // check the solution 
 #else
-  atlas::gemv (aa, br0, xc0);
-  atlas::gemv (aa, br1, xc1);
+  blas::gemv (aa, br0, xc0);
+  blas::gemv (aa, br1, xc1);
 #endif 
   print_m (x, "B = A X"); 
   cout << endl; 
@@ -117,21 +118,22 @@ int main() {
   cm_t caa (ca); 
   
   ublas::matrix_column<cm_t> cx0 (cx, 0);
-  atlas::set (cmpx (1, -1), cx0);
+  blas::set (cmpx (1, -1), cx0);
 #ifndef F_ROW_MAJOR
   ublas::matrix_column<cm_t> cb0 (cb, 0); 
 #else
   ublas::matrix_row<cm_t> cb0 (cb, 0); 
 #endif
-  atlas::gemv (ca, cx0, cb0); 
+  blas::gemv ( 1.0, ca, cx0, 0.0, cb0); 
   print_m (cb, "CB"); 
   cout << endl; 
   
-  int ierr = atlas::gesv (ca, cb); // with `internal' pivot vector
+  std::vector< int > pivot( bindings::size1(ca) );
+  int ierr = lapack::gesv (ca, pivot, cb); // with `internal' pivot vector
   if (ierr == 0) {
     print_m (cb, "CX");
     cout << endl; 
-    atlas::gemv (caa, cb0, cx0);
+    blas::gemv (1.0, caa, cb0, 0.0, cx0);
     print_m (cx, "CB");
   }
   else

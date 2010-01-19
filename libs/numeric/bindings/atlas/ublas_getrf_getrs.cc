@@ -7,15 +7,17 @@
 
 #include <cstddef>
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas.hpp>
-#include <boost/numeric/bindings/atlas/clapack.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/bindings/traits/std_vector.hpp>
+#include <boost/numeric/bindings/blas.hpp>
+#include <boost/numeric/bindings/lapack/computational/getrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/getrs.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
+namespace lapack = boost::numeric::bindings::lapack;
 
 using std::size_t; 
 using std::cout;
@@ -54,15 +56,15 @@ int main() {
   swap (ar1, ar3);   // swap rows to force pivoting 
 
   ublas::matrix_column<m_t> xc0 (x, 0), xc1 (x, 1); 
-  atlas::set (1., xc0);  // x[.,0] = 1
-  atlas::set (2., xc1);  // x[.,1] = 2
+  blas::set (1., xc0);  // x[.,0] = 1
+  blas::set (2., xc1);  // x[.,1] = 2
 #ifndef F_ROW_MAJOR
-  atlas::gemm (a, x, b);  // b = a x, so we know the result ;o) 
+  blas::gemm ( 1.0, a, x, 0.0, b);  // b = a x, so we know the result ;o) 
 #else
   // see leading comments for `gesv()' in clapack.hpp
   ublas::matrix_row<m_t> br0 (b, 0), br1 (b, 1); 
-  atlas::gemv (a, xc0, br0);  // b[0,.] = a x[.,0]
-  atlas::gemv (a, xc1, br1);  // b[1,.] = a x[.,1]  =>  b^T = a x
+  blas::gemv (a, xc0, br0);  // b[0,.] = a x[.,0]
+  blas::gemv (a, xc1, br1);  // b[1,.] = a x[.,1]  =>  b^T = a x
 #endif 
 
   print_m (a, "A"); 
@@ -72,8 +74,8 @@ int main() {
 
   std::vector<int> ipiv (n);  // pivot vector
 
-  atlas::getrf (a, ipiv);      // factor a
-  atlas::getrs (a, ipiv, b);   // solve from factorization 
+  lapack::getrf (a, ipiv);      // factor a
+  lapack::getrs (a, ipiv, b);   // solve from factorization 
   print_m (b, "X"); 
   cout << endl; 
 

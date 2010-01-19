@@ -158,8 +158,9 @@ struct unghr_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 

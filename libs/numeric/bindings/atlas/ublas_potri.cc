@@ -11,15 +11,18 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas3.hpp>
-#include <boost/numeric/bindings/atlas/clapack.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
+#include <boost/numeric/bindings/blas/level3.hpp>
+#include <boost/numeric/bindings/lapack/computational/potri.hpp>
+#include <boost/numeric/bindings/lapack/computational/potrf.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
+namespace bindings = boost::numeric::bindings;
+namespace lapack = boost::numeric::bindings::lapack;
 
 using std::size_t; 
 using std::cout;
@@ -79,22 +82,22 @@ int main() {
                  // .. sa is `lost' after potrf(); 
                  // .. only one parameter of symm() is symmetric matrix
 
-  int ierr = atlas::potrf (sa); 
+  int ierr = lapack::potrf (sa); 
   if (!ierr) {
-    atlas::potri (sa); 
+    lapack::potri (sa); 
     // ri should be (almost) identity matrix: 
     m_t ri (n, n); 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-    atlas::symm (a2, sa, ri); 
+    blas::symm ( bindings::tag::right(), 1.0, sa, a2, 0.0, ri); 
 #else
-    atlas::symm (CblasRight, 1.0, sa, a2, 0.0, ri); 
+    blas::symm (bindings::tag::right(), 1.0, sa, a2, 0.0, ri); 
 #endif 
     print_m (ri, "I = A * A^(-1)"); 
     cout << endl; 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-    atlas::symm (sa, a2, ri); 
+    blas::symm ( bindings::tag::left(), 1.0, sa, a2, 0.0, ri); 
 #else
-    atlas::symm (CblasLeft, 1.0, sa, a2, 0.0, ri); 
+    blas::symm (CblasLeft, 1.0, sa, a2, 0.0, ri); 
 #endif 
     print_m (ri, "I = A^(-1) * A"); 
     cout << endl; 
@@ -128,14 +131,14 @@ int main() {
 
   cm_t ca2 (ha);  // full hermitian 
   
-  ierr = atlas::cholesky_factor (ha);   // potrf()
+  ierr = lapack::potri (ha);   // potrf()
   if (ierr == 0) {
-    atlas::cholesky_invert (ha);        // potri()
+    lapack::potri (ha);        // potri()
     cm_t ic (3, 3); 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-    atlas::hemm (ca2, ha, ic); 
+    blas::hemm ( bindings::tag::right(), 1.0, ha, ca2, 0.0, ic); 
 #else
-    atlas::hemm (CblasRight, 1.0, ha, ca2, 0.0, ic); 
+    blas::hemm (CblasRight, 1.0, ha, ca2, 0.0, ic); 
 #endif 
     print_m (ic, "I = A * A^(-1)"); 
     cout << endl; 
@@ -168,21 +171,21 @@ int main() {
 
   ca2 = ha; 
   
-  ierr = atlas::potrf (ha); 
+  ierr = lapack::potrf (ha); 
   if (ierr == 0) {
-    atlas::potri (ha); 
+    lapack::potri (ha); 
     cm_t ic (3, 3); 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-    atlas::hemm (ca2, ha, ic); 
+    blas::hemm ( bindings::tag::right(), 1.0, ha, ca2, 0.0, ic); 
 #else
-    atlas::hemm (CblasRight, 1.0, ha, ca2, 0.0, ic); 
+    blas::hemm (CblasRight, 1.0, ha, ca2, 0.0, ic); 
 #endif 
     print_m (ic, "I = A * A^(-1)"); 
     cout << endl; 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-    atlas::hemm (ha, ca2, ic); 
+    blas::hemm ( bindings::tag::left(), 1.0, ha, ca2, 0.0, ic); 
 #else
-    atlas::hemm (CblasLeft, 1.0, ha, ca2, 0.0, ic); 
+    blas::hemm (CblasLeft, 1.0, ha, ca2, 0.0, ic); 
 #endif 
     print_m (ic, "I = A^(-1) * A"); 
     cout << endl; 

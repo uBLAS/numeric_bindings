@@ -54,7 +54,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n, float* a,
+inline std::ptrdiff_t sytri( const UpLo uplo, const fortran_int_t n, float* a,
         const fortran_int_t lda, const fortran_int_t* ipiv, float* work ) {
     fortran_int_t info(0);
     LAPACK_SSYTRI( &lapack_option< UpLo >::value, &n, a, &lda, ipiv, work,
@@ -68,7 +68,7 @@ inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n, float* a,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n, double* a,
+inline std::ptrdiff_t sytri( const UpLo uplo, const fortran_int_t n, double* a,
         const fortran_int_t lda, const fortran_int_t* ipiv, double* work ) {
     fortran_int_t info(0);
     LAPACK_DSYTRI( &lapack_option< UpLo >::value, &n, a, &lda, ipiv, work,
@@ -82,7 +82,7 @@ inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n, double* a,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t sytri( const UpLo uplo, const fortran_int_t n,
         std::complex<float>* a, const fortran_int_t lda,
         const fortran_int_t* ipiv, std::complex<float>* work ) {
     fortran_int_t info(0);
@@ -97,7 +97,7 @@ inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t sytri( const UpLo uplo, const fortran_int_t n,
         std::complex<double>* a, const fortran_int_t lda,
         const fortran_int_t* ipiv, std::complex<double>* work ) {
     fortran_int_t info(0);

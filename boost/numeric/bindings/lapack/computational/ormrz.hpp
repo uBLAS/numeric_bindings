@@ -51,14 +51,16 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t ormrz( const char side, Trans, const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k, const fortran_int_t l,
-        const float* a, const fortran_int_t lda, const float* tau, float* c,
-        const fortran_int_t ldc, float* work, const fortran_int_t lwork ) {
+template< typename Side, typename Trans >
+inline std::ptrdiff_t ormrz( const Side side, const Trans trans,
+        const fortran_int_t m, const fortran_int_t n, const fortran_int_t k,
+        const fortran_int_t l, const float* a, const fortran_int_t lda,
+        const float* tau, float* c, const fortran_int_t ldc, float* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
-    LAPACK_SORMRZ( &side, &lapack_option< Trans >::value, &m, &n, &k, &l, a,
-            &lda, tau, c, &ldc, work, &lwork, &info );
+    LAPACK_SORMRZ( &lapack_option< Side >::value, &lapack_option<
+            Trans >::value, &m, &n, &k, &l, a, &lda, tau, c, &ldc, work,
+            &lwork, &info );
     return info;
 }
 
@@ -67,15 +69,16 @@ inline std::ptrdiff_t ormrz( const char side, Trans, const fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t ormrz( const char side, Trans, const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k, const fortran_int_t l,
-        const double* a, const fortran_int_t lda, const double* tau,
-        double* c, const fortran_int_t ldc, double* work,
+template< typename Side, typename Trans >
+inline std::ptrdiff_t ormrz( const Side side, const Trans trans,
+        const fortran_int_t m, const fortran_int_t n, const fortran_int_t k,
+        const fortran_int_t l, const double* a, const fortran_int_t lda,
+        const double* tau, double* c, const fortran_int_t ldc, double* work,
         const fortran_int_t lwork ) {
     fortran_int_t info(0);
-    LAPACK_DORMRZ( &side, &lapack_option< Trans >::value, &m, &n, &k, &l, a,
-            &lda, tau, c, &ldc, work, &lwork, &info );
+    LAPACK_DORMRZ( &lapack_option< Side >::value, &lapack_option<
+            Trans >::value, &m, &n, &k, &l, a, &lda, tau, c, &ldc, work,
+            &lwork, &info );
     return info;
 }
 
@@ -97,9 +100,9 @@ struct ormrz_impl {
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixA, typename VectorTAU, typename MatrixC,
-            typename WORK >
-    static std::ptrdiff_t invoke( const char side, const fortran_int_t k,
+    template< typename Side, typename MatrixA, typename VectorTAU,
+            typename MatrixC, typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const fortran_int_t k,
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -126,7 +129,6 @@ struct ormrz_impl {
                 k) );
         BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_row(c)) );
-        BOOST_ASSERT( side == 'L' || side == 'R' );
         return detail::ormrz( side, trans(), bindings::size_row(c),
                 bindings::size_column(c), k, bindings::size_column_op(a,
                 trans()), bindings::begin_value(a), bindings::stride_major(a),
@@ -143,8 +145,9 @@ struct ormrz_impl {
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const fortran_int_t k,
+    template< typename Side, typename MatrixA, typename VectorTAU,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const fortran_int_t k,
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -161,8 +164,9 @@ struct ormrz_impl {
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const fortran_int_t k,
+    template< typename Side, typename MatrixA, typename VectorTAU,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const fortran_int_t k,
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -182,8 +186,9 @@ struct ormrz_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 
@@ -202,11 +207,11 @@ struct ormrz_impl {
 // * MatrixC&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC,
-        typename Workspace >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ormrz( const char side, const fortran_int_t k, const MatrixA& a,
+ormrz( const Side side, const fortran_int_t k, const MatrixA& a,
         const VectorTAU& tau, MatrixC& c, Workspace work ) {
     return ormrz_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, k, a, tau, c, work );
@@ -217,10 +222,11 @@ ormrz( const char side, const fortran_int_t k, const MatrixA& a,
 // * MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-ormrz( const char side, const fortran_int_t k, const MatrixA& a,
+ormrz( const Side side, const fortran_int_t k, const MatrixA& a,
         const VectorTAU& tau, MatrixC& c ) {
     return ormrz_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, k, a, tau, c,
@@ -232,11 +238,11 @@ ormrz( const char side, const fortran_int_t k, const MatrixA& a,
 // * const MatrixC&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC,
-        typename Workspace >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ormrz( const char side, const fortran_int_t k, const MatrixA& a,
+ormrz( const Side side, const fortran_int_t k, const MatrixA& a,
         const VectorTAU& tau, const MatrixC& c, Workspace work ) {
     return ormrz_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, k, a, tau, c, work );
@@ -247,10 +253,11 @@ ormrz( const char side, const fortran_int_t k, const MatrixA& a,
 // * const MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-ormrz( const char side, const fortran_int_t k, const MatrixA& a,
+ormrz( const Side side, const fortran_int_t k, const MatrixA& a,
         const VectorTAU& tau, const MatrixC& c ) {
     return ormrz_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, k, a, tau, c,

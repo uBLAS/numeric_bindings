@@ -54,9 +54,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spcon( UpLo, const fortran_int_t n, const float* ap,
-        const fortran_int_t* ipiv, const float anorm, float& rcond,
-        float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t spcon( const UpLo uplo, const fortran_int_t n,
+        const float* ap, const fortran_int_t* ipiv, const float anorm,
+        float& rcond, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SSPCON( &lapack_option< UpLo >::value, &n, ap, ipiv, &anorm,
             &rcond, work, iwork, &info );
@@ -69,9 +69,9 @@ inline std::ptrdiff_t spcon( UpLo, const fortran_int_t n, const float* ap,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spcon( UpLo, const fortran_int_t n, const double* ap,
-        const fortran_int_t* ipiv, const double anorm, double& rcond,
-        double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t spcon( const UpLo uplo, const fortran_int_t n,
+        const double* ap, const fortran_int_t* ipiv, const double anorm,
+        double& rcond, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DSPCON( &lapack_option< UpLo >::value, &n, ap, ipiv, &anorm,
             &rcond, work, iwork, &info );
@@ -84,7 +84,7 @@ inline std::ptrdiff_t spcon( UpLo, const fortran_int_t n, const double* ap,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spcon( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t spcon( const UpLo uplo, const fortran_int_t n,
         const std::complex<float>* ap, const fortran_int_t* ipiv,
         const float anorm, float& rcond, std::complex<float>* work ) {
     fortran_int_t info(0);
@@ -99,7 +99,7 @@ inline std::ptrdiff_t spcon( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spcon( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t spcon( const UpLo uplo, const fortran_int_t n,
         const std::complex<double>* ap, const fortran_int_t* ipiv,
         const double anorm, double& rcond, std::complex<double>* work ) {
     fortran_int_t info(0);

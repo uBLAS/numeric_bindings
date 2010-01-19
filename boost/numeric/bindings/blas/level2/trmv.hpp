@@ -65,8 +65,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const int n, const float* a,
-        const int lda, float* x, const int incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const int n, const float* a, const int lda, float* x,
+        const int incx ) {
     cblas_strmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
             lda, x, incx );
@@ -78,8 +79,9 @@ inline void trmv( Order, UpLo, Trans, Diag, const int n, const float* a,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const int n, const double* a,
-        const int lda, double* x, const int incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const int n, const double* a, const int lda,
+        double* x, const int incx ) {
     cblas_dtrmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
             lda, x, incx );
@@ -91,9 +93,9 @@ inline void trmv( Order, UpLo, Trans, Diag, const int n, const double* a,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const int n,
-        const std::complex<float>* a, const int lda, std::complex<float>* x,
-        const int incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const int n, const std::complex<float>* a,
+        const int lda, std::complex<float>* x, const int incx ) {
     cblas_ctrmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
             lda, x, incx );
@@ -105,9 +107,9 @@ inline void trmv( Order, UpLo, Trans, Diag, const int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const int n,
-        const std::complex<double>* a, const int lda, std::complex<double>* x,
-        const int incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const int n, const std::complex<double>* a,
+        const int lda, std::complex<double>* x, const int incx ) {
     cblas_ztrmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
             lda, x, incx );
@@ -120,8 +122,9 @@ inline void trmv( Order, UpLo, Trans, Diag, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const int n, const float* a,
-        const int lda, float* x, const int incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const int n, const float* a, const int lda, float* x,
+        const int incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasStrmv( blas_option< UpLo >::value, blas_option< Trans >::value,
             blas_option< Diag >::value, n, a, lda, x, incx );
@@ -133,8 +136,9 @@ inline void trmv( Order, UpLo, Trans, Diag, const int n, const float* a,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const int n, const double* a,
-        const int lda, double* x, const int incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const int n, const double* a, const int lda,
+        double* x, const int incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -145,9 +149,9 @@ inline void trmv( Order, UpLo, Trans, Diag, const int n, const double* a,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const int n,
-        const std::complex<float>* a, const int lda, std::complex<float>* x,
-        const int incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const int n, const std::complex<float>* a,
+        const int lda, std::complex<float>* x, const int incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -158,9 +162,9 @@ inline void trmv( Order, UpLo, Trans, Diag, const int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const int n,
-        const std::complex<double>* a, const int lda, std::complex<double>* x,
-        const int incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const int n, const std::complex<double>* a,
+        const int lda, std::complex<double>* x, const int incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -172,9 +176,9 @@ inline void trmv( Order, UpLo, Trans, Diag, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const fortran_int_t n,
-        const float* a, const fortran_int_t lda, float* x,
-        const fortran_int_t incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const fortran_int_t n, const float* a,
+        const fortran_int_t lda, float* x, const fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_STRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );
@@ -186,9 +190,9 @@ inline void trmv( Order, UpLo, Trans, Diag, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const fortran_int_t n,
-        const double* a, const fortran_int_t lda, double* x,
-        const fortran_int_t incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const fortran_int_t n, const double* a,
+        const fortran_int_t lda, double* x, const fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DTRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );
@@ -200,9 +204,10 @@ inline void trmv( Order, UpLo, Trans, Diag, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const fortran_int_t n,
-        const std::complex<float>* a, const fortran_int_t lda,
-        std::complex<float>* x, const fortran_int_t incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const fortran_int_t n, const std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* x,
+        const fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CTRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );
@@ -214,9 +219,10 @@ inline void trmv( Order, UpLo, Trans, Diag, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trmv( Order, UpLo, Trans, Diag, const fortran_int_t n,
-        const std::complex<double>* a, const fortran_int_t lda,
-        std::complex<double>* x, const fortran_int_t incx ) {
+inline void trmv( const Order order, const UpLo uplo, const Trans trans,
+        const Diag diag, const fortran_int_t n, const std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* x,
+        const fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZTRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );

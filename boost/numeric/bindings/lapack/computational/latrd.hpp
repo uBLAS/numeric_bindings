@@ -52,7 +52,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t latrd( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t latrd( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t nb, float* a, const fortran_int_t lda, float* e,
         float* tau, float* w, const fortran_int_t ldw ) {
     fortran_int_t info(0);
@@ -67,7 +67,7 @@ inline std::ptrdiff_t latrd( UpLo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t latrd( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t latrd( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t nb, double* a, const fortran_int_t lda, double* e,
         double* tau, double* w, const fortran_int_t ldw ) {
     fortran_int_t info(0);
@@ -82,7 +82,7 @@ inline std::ptrdiff_t latrd( UpLo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t latrd( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t latrd( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t nb, std::complex<float>* a,
         const fortran_int_t lda, float* e, std::complex<float>* tau,
         std::complex<float>* w, const fortran_int_t ldw ) {
@@ -98,7 +98,7 @@ inline std::ptrdiff_t latrd( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t latrd( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t latrd( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t nb, std::complex<double>* a,
         const fortran_int_t lda, double* e, std::complex<double>* tau,
         std::complex<double>* w, const fortran_int_t ldw ) {

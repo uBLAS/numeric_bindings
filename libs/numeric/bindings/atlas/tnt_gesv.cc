@@ -7,7 +7,7 @@
 
 #include <cstddef>
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas.hpp>
+#include <boost/numeric/bindings/blas.hpp>
 #include <boost/numeric/bindings/atlas/clapack.hpp>
 #include <boost/numeric/bindings/traits/tnt.hpp>
 #ifndef F_FORTRAN 
@@ -16,7 +16,7 @@
 #  include <tnt/tnt_fortran_array2d_utils.h>
 #endif 
 
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
 
 using std::size_t; 
 using std::cout;
@@ -56,7 +56,7 @@ int main() {
   cout << "A: " << a << endl; 
   cout << "B: " << b << endl; 
 
-  atlas::lu_solve (a, b);  
+  blas::lu_solve (a, b);  
   cout << "X: " << b << endl; 
 
   cout << endl; 

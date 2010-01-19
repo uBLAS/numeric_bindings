@@ -54,7 +54,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
+inline std::ptrdiff_t gtrfs( const Trans trans, const fortran_int_t n,
         const fortran_int_t nrhs, const float* dl, const float* d,
         const float* du, const float* dlf, const float* df, const float* duf,
         const float* du2, const fortran_int_t* ipiv, const float* b,
@@ -73,7 +73,7 @@ inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
+inline std::ptrdiff_t gtrfs( const Trans trans, const fortran_int_t n,
         const fortran_int_t nrhs, const double* dl, const double* d,
         const double* du, const double* dlf, const double* df,
         const double* duf, const double* du2, const fortran_int_t* ipiv,
@@ -93,7 +93,7 @@ inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
+inline std::ptrdiff_t gtrfs( const Trans trans, const fortran_int_t n,
         const fortran_int_t nrhs, const std::complex<float>* dl,
         const std::complex<float>* d, const std::complex<float>* du,
         const std::complex<float>* dlf, const std::complex<float>* df,
@@ -115,7 +115,7 @@ inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
+inline std::ptrdiff_t gtrfs( const Trans trans, const fortran_int_t n,
         const fortran_int_t nrhs, const std::complex<double>* dl,
         const std::complex<double>* d, const std::complex<double>* du,
         const std::complex<double>* dlf, const std::complex<double>* df,

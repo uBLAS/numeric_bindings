@@ -7,17 +7,18 @@
 //#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas3.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/blas/level3.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/trans.hpp>
 #ifdef F_USE_STD_VECTOR
 #include <vector>
-#include <boost/numeric/bindings/traits/std_vector.hpp> 
+#include <boost/numeric/bindings/std/vector.hpp> 
 #endif 
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
 
 using std::cout;
 using std::endl; 
@@ -45,10 +46,10 @@ int main() {
   m_t c (4, 6);
 
   // c = a b
-  atlas::gemm (a, b, c); 
+  blas::gemm ( 1.0, a, b, 0.0, c); 
   print_m (c, "c = a b"); 
   cout << endl; 
-  atlas::gemm (CblasNoTrans, CblasNoTrans, 1.0, a, b, 0.0, c); 
+  blas::gemm ( 1.0, a, b, 0.0, c); 
   print_m (c, "c = a b"); 
   cout << endl; 
 
@@ -56,24 +57,24 @@ int main() {
   print_m (c, "c"); 
   cout << endl; 
   // c = 2 a b + 0.5 c
-  atlas::gemm (2.0, a, b, 0.05, c);
+  blas::gemm (2.0, a, b, 0.05, c);
   print_m (c, "c = 2 a b + 0.05 c"); 
   cout << endl; 
 
   m_t d (6, 4);
 
   // d = b^T a^T
-  atlas::gemm (CblasTrans, CblasTrans, 1.0, b, a, 0.0, d);
+  blas::gemm ( 1.0, bindings::trans(b), bindings::trans(a), 0.0, d);
   print_m (d, "d = b^T a^T"); 
   cout << endl; 
 
   // c = a^T b 
-  atlas::gemm (CblasTrans, CblasNoTrans, 1.0, a, b, 0.0, c); 
+  blas::gemm (1.0, bindings::trans(a), b, 0.0, c); 
   print_m (c, "c = a^T b"); 
   cout << endl; 
 
   // d = b^T a
-  atlas::gemm (CblasTrans, CblasNoTrans, 1.0, b, a, 0.0, d);
+  blas::gemm ( 1.0, bindings::trans(b), a, 0.0, d);
   print_m (d, "d = b^T a"); 
   cout << endl; 
 
@@ -82,22 +83,22 @@ int main() {
   ublas::matrix_range<m_t> dr (d, ublas::range (1, 5), ublas::range (0, 4)); 
 
   // d[1..5][0..4] = a b[0..4][0..4]  
-  atlas::gemm (a, br, dr); 
+  blas::gemm ( 1.0, a, br, 0.0, dr); 
   print_m (d, "d[1..5][0..4] = a b[0..4][0..4]"); 
   cout << endl; 
   
   // d[1..5][0..4] = b[0..4][0..4] a
-  atlas::gemm (br, a, dr); 
+  blas::gemm ( 1.0, br, a, 0.0, dr); 
   print_m (d, "d[1..5][0..4] = b[0..4][0..4] a"); 
   cout << endl; 
   
   // d[1..5][0..4] = b[0..4][0..4] a^T
-  atlas::gemm (CblasNoTrans, CblasTrans, 1.0, br, a, 0.0, dr);
+  blas::gemm ( 1.0, br, bindings::trans(a), 0.0, dr);
   print_m (d, "d[1..5][0..4] = b[0..4][0..4] a^T"); 
   cout << endl; 
 
   // d[1..5][0..4] = a b[0..4][0..4]^T
-  atlas::gemm (CblasNoTrans, CblasTrans, 1.0, a, br, 0.0, dr);
+  blas::gemm ( 1.0, a, bindings::trans(br), 0.0, dr);
   print_m (d, "d[1..5][0..4] = a b[0..4][0..4]^T"); 
   cout << endl; 
 

@@ -51,8 +51,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansy( const char norm, UpLo, const fortran_int_t n,
-        const float* a, const fortran_int_t lda, float* work ) {
+inline std::ptrdiff_t lansy( const char norm, const UpLo uplo,
+        const fortran_int_t n, const float* a, const fortran_int_t lda,
+        float* work ) {
     fortran_int_t info(0);
     LAPACK_SLANSY( &norm, &lapack_option< UpLo >::value, &n, a, &lda, work );
     return info;
@@ -64,8 +65,9 @@ inline std::ptrdiff_t lansy( const char norm, UpLo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansy( const char norm, UpLo, const fortran_int_t n,
-        const double* a, const fortran_int_t lda, double* work ) {
+inline std::ptrdiff_t lansy( const char norm, const UpLo uplo,
+        const fortran_int_t n, const double* a, const fortran_int_t lda,
+        double* work ) {
     fortran_int_t info(0);
     LAPACK_DLANSY( &norm, &lapack_option< UpLo >::value, &n, a, &lda, work );
     return info;
@@ -77,8 +79,9 @@ inline std::ptrdiff_t lansy( const char norm, UpLo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansy( const char norm, UpLo, const fortran_int_t n,
-        const std::complex<float>* a, const fortran_int_t lda, float* work ) {
+inline std::ptrdiff_t lansy( const char norm, const UpLo uplo,
+        const fortran_int_t n, const std::complex<float>* a,
+        const fortran_int_t lda, float* work ) {
     fortran_int_t info(0);
     LAPACK_CLANSY( &norm, &lapack_option< UpLo >::value, &n, a, &lda, work );
     return info;
@@ -90,9 +93,9 @@ inline std::ptrdiff_t lansy( const char norm, UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansy( const char norm, UpLo, const fortran_int_t n,
-        const std::complex<double>* a, const fortran_int_t lda,
-        double* work ) {
+inline std::ptrdiff_t lansy( const char norm, const UpLo uplo,
+        const fortran_int_t n, const std::complex<double>* a,
+        const fortran_int_t lda, double* work ) {
     fortran_int_t info(0);
     LAPACK_ZLANSY( &norm, &lapack_option< UpLo >::value, &n, a, &lda, work );
     return info;
@@ -169,8 +172,9 @@ struct lansy_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 

@@ -8,14 +8,14 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas3.hpp>
+#include <boost/numeric/bindings/blas/level3.hpp>
 #include <boost/numeric/bindings/atlas/clapack.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
 
 using std::size_t; 
 using std::cout;
@@ -50,12 +50,12 @@ int main() {
   m_t aa (a);  // copy of a, for later use
 
   std::vector<int> ipiv (n);   // pivot vector 
-  atlas::lu_factor (a, ipiv);  // alias for getrf()
-  atlas::lu_invert (a, ipiv);  // alias for getri() 
+  blas::lu_factor (a, ipiv);  // alias for getrf()
+  blas::lu_invert (a, ipiv);  // alias for getri() 
 
   m_t i1 (n, n), i2 (n, n);  
-  atlas::gemm (a, aa, i1);   // i1 should be (almost) identity matrix
-  atlas::gemm (aa, a, i2);   // i2 should be (almost) identity matrix
+  blas::gemm (a, aa, i1);   // i1 should be (almost) identity matrix
+  blas::gemm (aa, a, i2);   // i2 should be (almost) identity matrix
 
   print_m (i1, "I = A^(-1) * A");  
   cout << endl; 
@@ -85,14 +85,14 @@ int main() {
   
   std::vector<int> ipiv2 (3); 
   
-  int ierr = atlas::getrf (ca, ipiv2);
+  int ierr = lapack::getrf (ca, ipiv2);
   if (ierr == 0) {
-    atlas::getri (ca, ipiv2); 
+    blas::getri (ca, ipiv2); 
     cm_t ii (3, 3); 
-    atlas::gemm (ca, caa, ii);
+    blas::gemm (ca, caa, ii);
     print_m (ii, "I = CA^(-1) * CA"); 
     cout << endl; 
-    atlas::gemm (caa, ca, ii);
+    blas::gemm (caa, ca, ii);
     print_m (ii, "I = CA * CA^(-1)"); 
     cout << endl; 
   }

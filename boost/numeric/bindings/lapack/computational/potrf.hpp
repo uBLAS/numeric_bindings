@@ -58,7 +58,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t potrf( Order, UpLo, const int n, float* a,
+inline std::ptrdiff_t potrf( Order, const UpLo uplo, const int n, float* a,
         const int lda ) {
     return clapack_spotrf( clapack_option< Order >::value, clapack_option<
             UpLo >::value, n, a, lda );
@@ -70,7 +70,7 @@ inline std::ptrdiff_t potrf( Order, UpLo, const int n, float* a,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t potrf( Order, UpLo, const int n, double* a,
+inline std::ptrdiff_t potrf( Order, const UpLo uplo, const int n, double* a,
         const int lda ) {
     return clapack_dpotrf( clapack_option< Order >::value, clapack_option<
             UpLo >::value, n, a, lda );
@@ -82,8 +82,8 @@ inline std::ptrdiff_t potrf( Order, UpLo, const int n, double* a,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t potrf( Order, UpLo, const int n, std::complex<float>* a,
-        const int lda ) {
+inline std::ptrdiff_t potrf( Order, const UpLo uplo, const int n,
+        std::complex<float>* a, const int lda ) {
     return clapack_cpotrf( clapack_option< Order >::value, clapack_option<
             UpLo >::value, n, a, lda );
 }
@@ -94,8 +94,8 @@ inline std::ptrdiff_t potrf( Order, UpLo, const int n, std::complex<float>* a,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t potrf( Order, UpLo, const int n, std::complex<double>* a,
-        const int lda ) {
+inline std::ptrdiff_t potrf( Order, const UpLo uplo, const int n,
+        std::complex<double>* a, const int lda ) {
     return clapack_zpotrf( clapack_option< Order >::value, clapack_option<
             UpLo >::value, n, a, lda );
 }
@@ -107,8 +107,8 @@ inline std::ptrdiff_t potrf( Order, UpLo, const int n, std::complex<double>* a,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t potrf( Order, UpLo, const fortran_int_t n, float* a,
-        const fortran_int_t lda ) {
+inline std::ptrdiff_t potrf( Order, const UpLo uplo, const fortran_int_t n,
+        float* a, const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_SPOTRF( &lapack_option< UpLo >::value, &n, a, &lda, &info );
@@ -121,8 +121,8 @@ inline std::ptrdiff_t potrf( Order, UpLo, const fortran_int_t n, float* a,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t potrf( Order, UpLo, const fortran_int_t n, double* a,
-        const fortran_int_t lda ) {
+inline std::ptrdiff_t potrf( Order, const UpLo uplo, const fortran_int_t n,
+        double* a, const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_DPOTRF( &lapack_option< UpLo >::value, &n, a, &lda, &info );
@@ -135,7 +135,7 @@ inline std::ptrdiff_t potrf( Order, UpLo, const fortran_int_t n, double* a,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t potrf( Order, UpLo, const fortran_int_t n,
+inline std::ptrdiff_t potrf( Order, const UpLo uplo, const fortran_int_t n,
         std::complex<float>* a, const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
@@ -149,7 +149,7 @@ inline std::ptrdiff_t potrf( Order, UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t potrf( Order, UpLo, const fortran_int_t n,
+inline std::ptrdiff_t potrf( Order, const UpLo uplo, const fortran_int_t n,
         std::complex<double>* a, const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);

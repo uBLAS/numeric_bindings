@@ -53,7 +53,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t lantb( const char norm, const char uplo, Diag,
+inline std::ptrdiff_t lantb( const char norm, const char uplo, const Diag diag,
         const fortran_int_t n, const fortran_int_t k, const float* ab,
         const fortran_int_t ldab, float* work ) {
     fortran_int_t info(0);
@@ -68,7 +68,7 @@ inline std::ptrdiff_t lantb( const char norm, const char uplo, Diag,
 // * double value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t lantb( const char norm, const char uplo, Diag,
+inline std::ptrdiff_t lantb( const char norm, const char uplo, const Diag diag,
         const fortran_int_t n, const fortran_int_t k, const double* ab,
         const fortran_int_t ldab, double* work ) {
     fortran_int_t info(0);
@@ -83,7 +83,7 @@ inline std::ptrdiff_t lantb( const char norm, const char uplo, Diag,
 // * complex<float> value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t lantb( const char norm, const char uplo, Diag,
+inline std::ptrdiff_t lantb( const char norm, const char uplo, const Diag diag,
         const fortran_int_t n, const fortran_int_t k,
         const std::complex<float>* ab, const fortran_int_t ldab,
         float* work ) {
@@ -99,7 +99,7 @@ inline std::ptrdiff_t lantb( const char norm, const char uplo, Diag,
 // * complex<double> value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t lantb( const char norm, const char uplo, Diag,
+inline std::ptrdiff_t lantb( const char norm, const char uplo, const Diag diag,
         const fortran_int_t n, const fortran_int_t k,
         const std::complex<double>* ab, const fortran_int_t ldab,
         double* work ) {
@@ -183,8 +183,9 @@ struct lantb_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 

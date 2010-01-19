@@ -14,7 +14,8 @@
 #include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
 #include <boost/numeric/bindings/ublas/detail/basic_ublas_adaptor.hpp>
-#include <boost/numeric/bindings/ublas/matrix_expression.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/triangular.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/numeric/ublas/symmetric.hpp>
 

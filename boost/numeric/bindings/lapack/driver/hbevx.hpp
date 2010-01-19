@@ -52,8 +52,8 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbevx( const char jobz, const char range, UpLo,
-        const fortran_int_t n, const fortran_int_t kd,
+inline std::ptrdiff_t hbevx( const char jobz, const char range,
+        const UpLo uplo, const fortran_int_t n, const fortran_int_t kd,
         std::complex<float>* ab, const fortran_int_t ldab,
         std::complex<float>* q, const fortran_int_t ldq, const float vl,
         const float vu, const fortran_int_t il, const fortran_int_t iu,
@@ -74,8 +74,8 @@ inline std::ptrdiff_t hbevx( const char jobz, const char range, UpLo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbevx( const char jobz, const char range, UpLo,
-        const fortran_int_t n, const fortran_int_t kd,
+inline std::ptrdiff_t hbevx( const char jobz, const char range,
+        const UpLo uplo, const fortran_int_t n, const fortran_int_t kd,
         std::complex<double>* ab, const fortran_int_t ldab,
         std::complex<double>* q, const fortran_int_t ldq, const double vl,
         const double vu, const fortran_int_t il, const fortran_int_t iu,

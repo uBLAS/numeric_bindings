@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -51,14 +52,15 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t ormqr( const char side, Trans, const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k, const float* a,
-        const fortran_int_t lda, const float* tau, float* c,
+template< typename Side, typename Trans >
+inline std::ptrdiff_t ormqr( const Side side, const Trans trans,
+        const fortran_int_t m, const fortran_int_t n, const fortran_int_t k,
+        const float* a, const fortran_int_t lda, const float* tau, float* c,
         const fortran_int_t ldc, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
-    LAPACK_SORMQR( &side, &lapack_option< Trans >::value, &m, &n, &k, a, &lda,
-            tau, c, &ldc, work, &lwork, &info );
+    LAPACK_SORMQR( &lapack_option< Side >::value, &lapack_option<
+            Trans >::value, &m, &n, &k, a, &lda, tau, c, &ldc, work, &lwork,
+            &info );
     return info;
 }
 
@@ -67,14 +69,16 @@ inline std::ptrdiff_t ormqr( const char side, Trans, const fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t ormqr( const char side, Trans, const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k, const double* a,
-        const fortran_int_t lda, const double* tau, double* c,
-        const fortran_int_t ldc, double* work, const fortran_int_t lwork ) {
+template< typename Side, typename Trans >
+inline std::ptrdiff_t ormqr( const Side side, const Trans trans,
+        const fortran_int_t m, const fortran_int_t n, const fortran_int_t k,
+        const double* a, const fortran_int_t lda, const double* tau,
+        double* c, const fortran_int_t ldc, double* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
-    LAPACK_DORMQR( &side, &lapack_option< Trans >::value, &m, &n, &k, a, &lda,
-            tau, c, &ldc, work, &lwork, &info );
+    LAPACK_DORMQR( &lapack_option< Side >::value, &lapack_option<
+            Trans >::value, &m, &n, &k, a, &lda, tau, c, &ldc, work, &lwork,
+            &info );
     return info;
 }
 
@@ -96,9 +100,9 @@ struct ormqr_impl {
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixA, typename VectorTAU, typename MatrixC,
-            typename WORK >
-    static std::ptrdiff_t invoke( const char side, const MatrixA& a,
+    template< typename Side, typename MatrixA, typename VectorTAU,
+            typename MatrixC, typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
             const VectorTAU& tau, MatrixC& c, detail::workspace1<
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -124,7 +128,6 @@ struct ormqr_impl {
         BOOST_ASSERT( bindings::size_row(c) >= 0 );
         BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_row(c)) );
-        BOOST_ASSERT( side == 'L' || side == 'R' );
         return detail::ormqr( side, trans(), bindings::size_row(c),
                 bindings::size_column(c), bindings::size(tau),
                 bindings::begin_value(a), bindings::stride_major(a),
@@ -141,8 +144,9 @@ struct ormqr_impl {
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const MatrixA& a,
+    template< typename Side, typename MatrixA, typename VectorTAU,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
             const VectorTAU& tau, MatrixC& c, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -158,8 +162,9 @@ struct ormqr_impl {
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const MatrixA& a,
+    template< typename Side, typename MatrixA, typename VectorTAU,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
             const VectorTAU& tau, MatrixC& c, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -178,12 +183,11 @@ struct ormqr_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const char side,
+    template< typename Side >
+    static std::ptrdiff_t min_size_work( const Side side,
             const std::ptrdiff_t m, const std::ptrdiff_t n ) {
-        if ( side == 'L' )
-            return std::max< std::ptrdiff_t >( 1, n );
-        else
-            return std::max< std::ptrdiff_t >( 1, m );
+        return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
+                n, m ) );
     }
 };
 
@@ -202,11 +206,11 @@ struct ormqr_impl {
 // * MatrixC&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC,
-        typename Workspace >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ormqr( const char side, const MatrixA& a, const VectorTAU& tau,
+ormqr( const Side side, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c, Workspace work ) {
     return ormqr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, a, tau, c, work );
@@ -217,10 +221,11 @@ ormqr( const char side, const MatrixA& a, const VectorTAU& tau,
 // * MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-ormqr( const char side, const MatrixA& a, const VectorTAU& tau,
+ormqr( const Side side, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c ) {
     return ormqr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
@@ -231,11 +236,11 @@ ormqr( const char side, const MatrixA& a, const VectorTAU& tau,
 // * const MatrixC&
 // * User-defined workspace
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC,
-        typename Workspace >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ormqr( const char side, const MatrixA& a, const VectorTAU& tau,
+ormqr( const Side side, const MatrixA& a, const VectorTAU& tau,
         const MatrixC& c, Workspace work ) {
     return ormqr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, a, tau, c, work );
@@ -246,10 +251,11 @@ ormqr( const char side, const MatrixA& a, const VectorTAU& tau,
 // * const MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename MatrixA, typename VectorTAU, typename MatrixC >
+template< typename Side, typename MatrixA, typename VectorTAU,
+        typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-ormqr( const char side, const MatrixA& a, const VectorTAU& tau,
+ormqr( const Side side, const MatrixA& a, const VectorTAU& tau,
         const MatrixC& c ) {
     return ormqr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );

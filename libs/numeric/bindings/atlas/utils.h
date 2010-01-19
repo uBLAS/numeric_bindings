@@ -4,10 +4,11 @@
 
 #include <stddef.h>
 #include <iostream>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/at.hpp>
 
 namespace bindings = ::boost::numeric::bindings;
 
@@ -19,7 +20,7 @@ namespace bindings = ::boost::numeric::bindings;
 template <typename V>
 struct vct_access_traits {
   typedef typename 
-  bindings::value<V>::type val_t;
+  bindings::value_type<V>::type val_t;
   typedef val_t& ref_t; 
   static ref_t elem (V& v, size_t i) { return v[i]; }
 };
@@ -27,7 +28,7 @@ struct vct_access_traits {
 template <typename V>
 struct vct_access_traits<V const> {
   typedef typename 
-  bindings::value<V>::type val_t;
+  bindings::value_type<V>::type val_t;
   typedef val_t ref_t; 
   static ref_t elem (V const& v, size_t i) { return v[i]; }
 };
@@ -120,27 +121,26 @@ void print_v (V const& v, char const* ch = 0) {
 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
 // element access: 
-template <typename M>
+/*template <typename M>
 struct matr_access_traits {
-  typedef typename bindings::value<M>::type& ref_t;
-  //bindings::value<M>::type val_t;
+  typedef typename bindings::value_type<M>::type& ref_t;
+  //bindings::value_type<M>::type val_t;
   //typedef val_t& ref_t; 
   static ref_t elem (M& m, size_t i, size_t j) { return m (i, j); }
 };
 
 template <typename M>
 struct matr_access_traits<M const> {
-  typedef typename 
-  bindings::value<M>::type val_t;
-  typedef val_t ref_t; 
+  typedef typename bindings::value_type<M const>::type& ref_t;
+  //typedef val_t ref_t; 
   static ref_t elem (M const& m, size_t i, size_t j) { return m (i, j); }
 };
 
 template <typename M>
 inline
-typename matr_access_traits<M>::ref_t elem_m (M& m, size_t i, size_t j) {
+typename matr_access_traits<M>::ref_t bindings::at(M& m, size_t i, size_t j) {
   return matr_access_traits<M>::elem (m, i, j); 
-}
+}*/
 #endif 
 
 // initialization: 
@@ -164,7 +164,7 @@ void init_m (M& m, F f = F()) {
   for (std::size_t i = 0; i < sz1; ++i) 
     for (std::size_t j = 0; j < sz2; ++j) {
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-      elem_m (m, i, j) = f (i, j); 
+      bindings::at( m, i, j ) = f (i, j); 
 #else
       m(i,j) = f (i, j); 
 #endif
@@ -176,26 +176,26 @@ void init_symm (M& m, char uplo = 'f') {
   size_t n = bindings::size1 (m);
   for (size_t i = 0; i < n; ++i) {
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-    elem_m (m, i, i) = n;
+    bindings::at (m, i, i) = n;
 #else
     m(i,i) = n;
 #endif
     for (size_t j = i + 1; j < n; ++j) {
       if (uplo == 'u' || uplo == 'U') {
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-        elem_m (m, i, j) = n - (j - i);
+        bindings::at(m, i, j) = n - (j - i);
 #else
         m(i,j) = n - (j - i);
 #endif
       } else if (uplo == 'l' || uplo == 'L') {
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-        elem_m (m, j, i) = n - (j - i);
+        bindings::at(m, j, i) = n - (j - i);
 #else
         m(j,i) = n - (j - i);
 #endif 
       } else {
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-        elem_m (m, i, j) = elem_m (m, j, i) = n - (j - i);
+        bindings::at(m, i, j) = bindings::at(m, j, i) = n - (j - i);
 #else
         m(i,j) = m(j,i) = n - (j - i);
 #endif
@@ -215,7 +215,7 @@ void print_m (M const& m, char const* ch = 0) {
     for (std::size_t j = 0 ; j < sz2 ; ++j) {
         std::cout << i << "  " << j << " " << std::endl;
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-      std::cout << elem_m (m, i, j) << " ";
+      std::cout << bindings::at(m, i, j) << " ";
 #else
       std::cout << m(i,j) << " ";
 #endif
@@ -231,7 +231,7 @@ void print_m_data (M const& m, char const* ch = 0) {
     std::cout << ch << " data:\n"; 
   using namespace boost::numeric::bindings;
   std::copy( begin_value( m ), end_value( m ), std::ostream_iterator
-        < typename value< const M >::type >( std::cout, " " ) );
+        < typename value_type< const M >::type >( std::cout, " " ) );
   std::cout << std::endl; 
 
 }

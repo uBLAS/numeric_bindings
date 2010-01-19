@@ -64,9 +64,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const int n, const int k,
-        const float alpha, const float* a, const int lda, const float* b,
-        const int ldb, const float beta, float* c, const int ldc ) {
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const float alpha, const float* a,
+        const int lda, const float* b, const int ldb, const float beta,
+        float* c, const int ldc ) {
     cblas_ssyr2k( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, n, k, alpha, a, lda, b, ldb, beta,
             c, ldc );
@@ -78,9 +79,10 @@ inline void syr2k( Order, UpLo, Trans, const int n, const int k,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const int n, const int k,
-        const double alpha, const double* a, const int lda, const double* b,
-        const int ldb, const double beta, double* c, const int ldc ) {
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const double alpha, const double* a,
+        const int lda, const double* b, const int ldb, const double beta,
+        double* c, const int ldc ) {
     cblas_dsyr2k( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, n, k, alpha, a, lda, b, ldb, beta,
             c, ldc );
@@ -92,9 +94,10 @@ inline void syr2k( Order, UpLo, Trans, const int n, const int k,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const int n, const int k,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const int lda, const std::complex<float>* b, const int ldb,
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* b, const int ldb,
         const std::complex<float> beta, std::complex<float>* c,
         const int ldc ) {
     cblas_csyr2k( cblas_option< Order >::value, cblas_option< UpLo >::value,
@@ -108,9 +111,10 @@ inline void syr2k( Order, UpLo, Trans, const int n, const int k,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const int n, const int k,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const int lda, const std::complex<double>* b, const int ldb,
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* b, const int ldb,
         const std::complex<double> beta, std::complex<double>* c,
         const int ldc ) {
     cblas_zsyr2k( cblas_option< Order >::value, cblas_option< UpLo >::value,
@@ -125,9 +129,10 @@ inline void syr2k( Order, UpLo, Trans, const int n, const int k,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const int n, const int k,
-        const float alpha, const float* a, const int lda, const float* b,
-        const int ldb, const float beta, float* c, const int ldc ) {
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const float alpha, const float* a,
+        const int lda, const float* b, const int ldb, const float beta,
+        float* c, const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSsyr2k( blas_option< UpLo >::value, blas_option< Trans >::value, n,
             k, alpha, a, lda, b, ldb, beta, c, ldc );
@@ -139,9 +144,10 @@ inline void syr2k( Order, UpLo, Trans, const int n, const int k,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const int n, const int k,
-        const double alpha, const double* a, const int lda, const double* b,
-        const int ldb, const double beta, double* c, const int ldc ) {
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const double alpha, const double* a,
+        const int lda, const double* b, const int ldb, const double beta,
+        double* c, const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasDsyr2k( blas_option< UpLo >::value, blas_option< Trans >::value, n,
             k, alpha, a, lda, b, ldb, beta, c, ldc );
@@ -153,9 +159,10 @@ inline void syr2k( Order, UpLo, Trans, const int n, const int k,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const int n, const int k,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const int lda, const std::complex<float>* b, const int ldb,
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* b, const int ldb,
         const std::complex<float> beta, std::complex<float>* c,
         const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -169,9 +176,10 @@ inline void syr2k( Order, UpLo, Trans, const int n, const int k,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const int n, const int k,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const int lda, const std::complex<double>* b, const int ldb,
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* b, const int ldb,
         const std::complex<double> beta, std::complex<double>* c,
         const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -185,10 +193,11 @@ inline void syr2k( Order, UpLo, Trans, const int n, const int k,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const fortran_int_t n,
-        const fortran_int_t k, const float alpha, const float* a,
-        const fortran_int_t lda, const float* b, const fortran_int_t ldb,
-        const float beta, float* c, const fortran_int_t ldc ) {
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const fortran_int_t n, const fortran_int_t k, const float alpha,
+        const float* a, const fortran_int_t lda, const float* b,
+        const fortran_int_t ldb, const float beta, float* c,
+        const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SSYR2K( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -200,10 +209,11 @@ inline void syr2k( Order, UpLo, Trans, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const fortran_int_t n,
-        const fortran_int_t k, const double alpha, const double* a,
-        const fortran_int_t lda, const double* b, const fortran_int_t ldb,
-        const double beta, double* c, const fortran_int_t ldc ) {
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const fortran_int_t n, const fortran_int_t k, const double alpha,
+        const double* a, const fortran_int_t lda, const double* b,
+        const fortran_int_t ldb, const double beta, double* c,
+        const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DSYR2K( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -215,12 +225,12 @@ inline void syr2k( Order, UpLo, Trans, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const fortran_int_t n,
-        const fortran_int_t k, const std::complex<float> alpha,
-        const std::complex<float>* a, const fortran_int_t lda,
-        const std::complex<float>* b, const fortran_int_t ldb,
-        const std::complex<float> beta, std::complex<float>* c,
-        const fortran_int_t ldc ) {
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const fortran_int_t n, const fortran_int_t k,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* b,
+        const fortran_int_t ldb, const std::complex<float> beta,
+        std::complex<float>* c, const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CSYR2K( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -232,12 +242,12 @@ inline void syr2k( Order, UpLo, Trans, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void syr2k( Order, UpLo, Trans, const fortran_int_t n,
-        const fortran_int_t k, const std::complex<double> alpha,
-        const std::complex<double>* a, const fortran_int_t lda,
-        const std::complex<double>* b, const fortran_int_t ldb,
-        const std::complex<double> beta, std::complex<double>* c,
-        const fortran_int_t ldc ) {
+inline void syr2k( const Order order, const UpLo uplo, const Trans trans,
+        const fortran_int_t n, const fortran_int_t k,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* b,
+        const fortran_int_t ldb, const std::complex<double> beta,
+        std::complex<double>* c, const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZSYR2K( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );

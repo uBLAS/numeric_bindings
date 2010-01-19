@@ -52,7 +52,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t orgtr( UpLo, const fortran_int_t n, float* a,
+inline std::ptrdiff_t orgtr( const UpLo uplo, const fortran_int_t n, float* a,
         const fortran_int_t lda, const float* tau, float* work,
         const fortran_int_t lwork ) {
     fortran_int_t info(0);
@@ -67,7 +67,7 @@ inline std::ptrdiff_t orgtr( UpLo, const fortran_int_t n, float* a,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t orgtr( UpLo, const fortran_int_t n, double* a,
+inline std::ptrdiff_t orgtr( const UpLo uplo, const fortran_int_t n, double* a,
         const fortran_int_t lda, const double* tau, double* work,
         const fortran_int_t lwork ) {
     fortran_int_t info(0);

@@ -7,13 +7,14 @@
 
 #include <cstddef>
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas.hpp>
-#include <boost/numeric/bindings/atlas/clapack.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/lapack/driver/gesv.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
 #include <boost/numeric/ublas/io.hpp> 
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace lapack = boost::numeric::bindings::lapack;
+namespace bindings = boost::numeric::bindings;
 
 using std::size_t; 
 using std::cout;
@@ -47,7 +48,8 @@ int main() {
   cout << "A: " << a << endl; 
   cout << "B: " << b << endl; 
 
-  atlas::lu_solve (a, b);  
+  std::vector< int > pivot( bindings::size1( a ) );
+  lapack::gesv (a, pivot, b);  
   cout << "X: " << b << endl; 
 
   cout << endl; 

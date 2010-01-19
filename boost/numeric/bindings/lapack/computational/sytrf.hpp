@@ -55,7 +55,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sytrf( UpLo, const fortran_int_t n, float* a,
+inline std::ptrdiff_t sytrf( const UpLo uplo, const fortran_int_t n, float* a,
         const fortran_int_t lda, fortran_int_t* ipiv, float* work,
         const fortran_int_t lwork ) {
     fortran_int_t info(0);
@@ -70,7 +70,7 @@ inline std::ptrdiff_t sytrf( UpLo, const fortran_int_t n, float* a,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sytrf( UpLo, const fortran_int_t n, double* a,
+inline std::ptrdiff_t sytrf( const UpLo uplo, const fortran_int_t n, double* a,
         const fortran_int_t lda, fortran_int_t* ipiv, double* work,
         const fortran_int_t lwork ) {
     fortran_int_t info(0);
@@ -85,7 +85,7 @@ inline std::ptrdiff_t sytrf( UpLo, const fortran_int_t n, double* a,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sytrf( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t sytrf( const UpLo uplo, const fortran_int_t n,
         std::complex<float>* a, const fortran_int_t lda, fortran_int_t* ipiv,
         std::complex<float>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
@@ -100,7 +100,7 @@ inline std::ptrdiff_t sytrf( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sytrf( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t sytrf( const UpLo uplo, const fortran_int_t n,
         std::complex<double>* a, const fortran_int_t lda, fortran_int_t* ipiv,
         std::complex<double>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);

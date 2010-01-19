@@ -54,8 +54,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ppcon( UpLo, const fortran_int_t n, const float* ap,
-        const float anorm, float& rcond, float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t ppcon( const UpLo uplo, const fortran_int_t n,
+        const float* ap, const float anorm, float& rcond, float* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SPPCON( &lapack_option< UpLo >::value, &n, ap, &anorm, &rcond,
             work, iwork, &info );
@@ -68,8 +69,8 @@ inline std::ptrdiff_t ppcon( UpLo, const fortran_int_t n, const float* ap,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ppcon( UpLo, const fortran_int_t n, const double* ap,
-        const double anorm, double& rcond, double* work,
+inline std::ptrdiff_t ppcon( const UpLo uplo, const fortran_int_t n,
+        const double* ap, const double anorm, double& rcond, double* work,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DPPCON( &lapack_option< UpLo >::value, &n, ap, &anorm, &rcond,
@@ -83,7 +84,7 @@ inline std::ptrdiff_t ppcon( UpLo, const fortran_int_t n, const double* ap,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ppcon( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t ppcon( const UpLo uplo, const fortran_int_t n,
         const std::complex<float>* ap, const float anorm, float& rcond,
         std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
@@ -98,7 +99,7 @@ inline std::ptrdiff_t ppcon( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ppcon( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t ppcon( const UpLo uplo, const fortran_int_t n,
         const std::complex<double>* ap, const double anorm, double& rcond,
         std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);

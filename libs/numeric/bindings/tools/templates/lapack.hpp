@@ -238,8 +238,9 @@ $TEMPLATE[min_size_func]
     // Static member function that returns the minimum size of
     // workspace-array $WORKSPACE_FUNC.
     //
+    template< $TYPES >
     static $INTEGER_TYPE min_size_$WORKSPACE_FUNC( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 
 $TEMPLATE[level1_noworkspace]

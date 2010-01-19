@@ -64,10 +64,11 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const int n, const int k,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const int lda, const std::complex<float>* b, const int ldb,
-        const float beta, std::complex<float>* c, const int ldc ) {
+inline void her2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* b, const int ldb, const float beta,
+        std::complex<float>* c, const int ldc ) {
     cblas_cher2k( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, n, k, &alpha, a, lda, b, ldb, beta,
             c, ldc );
@@ -79,10 +80,11 @@ inline void her2k( Order, UpLo, Trans, const int n, const int k,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const int n, const int k,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const int lda, const std::complex<double>* b, const int ldb,
-        const double beta, std::complex<double>* c, const int ldc ) {
+inline void her2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* b, const int ldb, const double beta,
+        std::complex<double>* c, const int ldc ) {
     cblas_zher2k( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, n, k, &alpha, a, lda, b, ldb, beta,
             c, ldc );
@@ -95,10 +97,11 @@ inline void her2k( Order, UpLo, Trans, const int n, const int k,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const int n, const int k,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const int lda, const std::complex<float>* b, const int ldb,
-        const float beta, std::complex<float>* c, const int ldc ) {
+inline void her2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* b, const int ldb, const float beta,
+        std::complex<float>* c, const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasCher2k( blas_option< UpLo >::value, blas_option< Trans >::value, n,
             k, alpha, a, lda, b, ldb, beta, c, ldc );
@@ -110,10 +113,11 @@ inline void her2k( Order, UpLo, Trans, const int n, const int k,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const int n, const int k,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const int lda, const std::complex<double>* b, const int ldb,
-        const double beta, std::complex<double>* c, const int ldc ) {
+inline void her2k( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* b, const int ldb, const double beta,
+        std::complex<double>* c, const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -125,11 +129,12 @@ inline void her2k( Order, UpLo, Trans, const int n, const int k,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const fortran_int_t n,
-        const fortran_int_t k, const std::complex<float> alpha,
-        const std::complex<float>* a, const fortran_int_t lda,
-        const std::complex<float>* b, const fortran_int_t ldb,
-        const float beta, std::complex<float>* c, const fortran_int_t ldc ) {
+inline void her2k( const Order order, const UpLo uplo, const Trans trans,
+        const fortran_int_t n, const fortran_int_t k,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* b,
+        const fortran_int_t ldb, const float beta, std::complex<float>* c,
+        const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHER2K( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -141,11 +146,12 @@ inline void her2k( Order, UpLo, Trans, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const fortran_int_t n,
-        const fortran_int_t k, const std::complex<double> alpha,
-        const std::complex<double>* a, const fortran_int_t lda,
-        const std::complex<double>* b, const fortran_int_t ldb,
-        const double beta, std::complex<double>* c, const fortran_int_t ldc ) {
+inline void her2k( const Order order, const UpLo uplo, const Trans trans,
+        const fortran_int_t n, const fortran_int_t k,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* b,
+        const fortran_int_t ldb, const double beta, std::complex<double>* c,
+        const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHER2K( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );

@@ -49,7 +49,7 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hegst( const fortran_int_t itype, UpLo,
+inline std::ptrdiff_t hegst( const fortran_int_t itype, const UpLo uplo,
         const fortran_int_t n, std::complex<float>* a,
         const fortran_int_t lda, const std::complex<float>* b,
         const fortran_int_t ldb ) {
@@ -65,7 +65,7 @@ inline std::ptrdiff_t hegst( const fortran_int_t itype, UpLo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hegst( const fortran_int_t itype, UpLo,
+inline std::ptrdiff_t hegst( const fortran_int_t itype, const UpLo uplo,
         const fortran_int_t n, std::complex<double>* a,
         const fortran_int_t lda, const std::complex<double>* b,
         const fortran_int_t ldb ) {

@@ -4,13 +4,16 @@
 
 #include <stddef.h>
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas3.hpp>
-#include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
+#include <boost/numeric/bindings/blas/level3.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
+#include <boost/numeric/bindings/upper.hpp>
+#include <boost/numeric/bindings/lower.hpp>
+#include <boost/numeric/bindings/trans.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
-namespace traits = boost::numeric::bindings::traits;
+namespace blas = boost::numeric::bindings::blas;
+namespace bindings = boost::numeric::bindings;
 
 using std::cout;
 using std::cin;
@@ -51,10 +54,10 @@ int main() {
   ursa_t ursa (rmu); 
   lrsa_t lrsa (rml); 
 
-  atlas::syrk (CblasNoTrans, ac, ucsa); 
-  atlas::syrk (CblasNoTrans, 1.0, ac, 0.0, lcsa); 
-  atlas::syrk (CblasNoTrans, 1.0, ar, 0.0, ursa); 
-  atlas::syrk (CblasNoTrans, ar, lrsa); 
+  blas::syrk (1.0, ac, 0.0, ucsa); 
+  blas::syrk (1.0, ac, 0.0, lcsa); 
+  blas::syrk (1.0, ar, 0.0, ursa); 
+  blas::syrk (1.0, ar, 0.0, lrsa); 
 
   print_m (ucsa, "ucsa");
   cout << endl; 
@@ -81,10 +84,10 @@ int main() {
   init_m (rmu, const_val<real_t> (0));
   init_m (rml, const_val<real_t> (0));
 
-  atlas::syrk (CblasUpper, CblasTrans, 1.0, act, 0.0, cmu); 
-  atlas::syrk (CblasLower, CblasTrans, 1.0, act, 0.0, cml); 
-  atlas::syrk (CblasUpper, CblasTrans, 1.0, art, 0.0, rmu); 
-  atlas::syrk (CblasLower, CblasTrans, 1.0, art, 0.0, rml); 
+  blas::syrk ( 1.0, bindings::trans(act), 0.0, bindings::upper(cmu)); 
+  blas::syrk ( 1.0, bindings::trans(act), 0.0, bindings::lower(cml)); 
+  blas::syrk ( 1.0, bindings::trans(art), 0.0, bindings::upper(rmu)); 
+  blas::syrk ( 1.0, bindings::trans(art), 0.0, bindings::lower(rml)); 
 
   print_m (cmu, "cmu");
   cout << endl; 

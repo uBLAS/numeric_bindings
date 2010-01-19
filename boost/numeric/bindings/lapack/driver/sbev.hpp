@@ -52,9 +52,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sbev( const char jobz, UpLo, const fortran_int_t n,
-        const fortran_int_t kd, float* ab, const fortran_int_t ldab, float* w,
-        float* z, const fortran_int_t ldz, float* work ) {
+inline std::ptrdiff_t sbev( const char jobz, const UpLo uplo,
+        const fortran_int_t n, const fortran_int_t kd, float* ab,
+        const fortran_int_t ldab, float* w, float* z, const fortran_int_t ldz,
+        float* work ) {
     fortran_int_t info(0);
     LAPACK_SSBEV( &jobz, &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, w,
             z, &ldz, work, &info );
@@ -67,9 +68,10 @@ inline std::ptrdiff_t sbev( const char jobz, UpLo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sbev( const char jobz, UpLo, const fortran_int_t n,
-        const fortran_int_t kd, double* ab, const fortran_int_t ldab,
-        double* w, double* z, const fortran_int_t ldz, double* work ) {
+inline std::ptrdiff_t sbev( const char jobz, const UpLo uplo,
+        const fortran_int_t n, const fortran_int_t kd, double* ab,
+        const fortran_int_t ldab, double* w, double* z,
+        const fortran_int_t ldz, double* work ) {
     fortran_int_t info(0);
     LAPACK_DSBEV( &jobz, &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, w,
             z, &ldz, work, &info );

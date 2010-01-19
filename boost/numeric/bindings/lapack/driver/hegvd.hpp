@@ -52,8 +52,8 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz, UpLo,
-        const fortran_int_t n, std::complex<float>* a,
+inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz,
+        const UpLo uplo, const fortran_int_t n, std::complex<float>* a,
         const fortran_int_t lda, std::complex<float>* b,
         const fortran_int_t ldb, float* w, std::complex<float>* work,
         const fortran_int_t lwork, float* rwork, const fortran_int_t lrwork,
@@ -70,8 +70,8 @@ inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz, UpLo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz, UpLo,
-        const fortran_int_t n, std::complex<double>* a,
+inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz,
+        const UpLo uplo, const fortran_int_t n, std::complex<double>* a,
         const fortran_int_t lda, std::complex<double>* b,
         const fortran_int_t ldb, double* w, std::complex<double>* work,
         const fortran_int_t lwork, double* rwork, const fortran_int_t lrwork,

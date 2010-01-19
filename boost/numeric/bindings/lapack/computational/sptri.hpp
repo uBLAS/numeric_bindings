@@ -54,7 +54,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n, float* ap,
+inline std::ptrdiff_t sptri( const UpLo uplo, const fortran_int_t n, float* ap,
         const fortran_int_t* ipiv, float* work ) {
     fortran_int_t info(0);
     LAPACK_SSPTRI( &lapack_option< UpLo >::value, &n, ap, ipiv, work, &info );
@@ -67,8 +67,8 @@ inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n, float* ap,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n, double* ap,
-        const fortran_int_t* ipiv, double* work ) {
+inline std::ptrdiff_t sptri( const UpLo uplo, const fortran_int_t n,
+        double* ap, const fortran_int_t* ipiv, double* work ) {
     fortran_int_t info(0);
     LAPACK_DSPTRI( &lapack_option< UpLo >::value, &n, ap, ipiv, work, &info );
     return info;
@@ -80,7 +80,7 @@ inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n, double* ap,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t sptri( const UpLo uplo, const fortran_int_t n,
         std::complex<float>* ap, const fortran_int_t* ipiv,
         std::complex<float>* work ) {
     fortran_int_t info(0);
@@ -94,7 +94,7 @@ inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t sptri( const UpLo uplo, const fortran_int_t n,
         std::complex<double>* ap, const fortran_int_t* ipiv,
         std::complex<double>* work ) {
     fortran_int_t info(0);

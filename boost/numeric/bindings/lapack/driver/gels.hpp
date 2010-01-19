@@ -55,7 +55,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
+inline std::ptrdiff_t gels( const Trans trans, const fortran_int_t m,
         const fortran_int_t n, const fortran_int_t nrhs, float* a,
         const fortran_int_t lda, float* b, const fortran_int_t ldb,
         float* work, const fortran_int_t lwork ) {
@@ -71,7 +71,7 @@ inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
+inline std::ptrdiff_t gels( const Trans trans, const fortran_int_t m,
         const fortran_int_t n, const fortran_int_t nrhs, double* a,
         const fortran_int_t lda, double* b, const fortran_int_t ldb,
         double* work, const fortran_int_t lwork ) {
@@ -87,7 +87,7 @@ inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
+inline std::ptrdiff_t gels( const Trans trans, const fortran_int_t m,
         const fortran_int_t n, const fortran_int_t nrhs,
         std::complex<float>* a, const fortran_int_t lda,
         std::complex<float>* b, const fortran_int_t ldb,
@@ -104,7 +104,7 @@ inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
+inline std::ptrdiff_t gels( const Trans trans, const fortran_int_t m,
         const fortran_int_t n, const fortran_int_t nrhs,
         std::complex<double>* a, const fortran_int_t lda,
         std::complex<double>* b, const fortran_int_t ldb,

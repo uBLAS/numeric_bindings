@@ -51,15 +51,15 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t upmtr( const char side, const char uplo, Trans,
-        const fortran_int_t m, const fortran_int_t n,
+template< typename Side, typename Trans >
+inline std::ptrdiff_t upmtr( const Side side, const char uplo,
+        const Trans trans, const fortran_int_t m, const fortran_int_t n,
         const std::complex<float>* ap, const std::complex<float>* tau,
         std::complex<float>* c, const fortran_int_t ldc,
         std::complex<float>* work ) {
     fortran_int_t info(0);
-    LAPACK_CUPMTR( &side, &uplo, &lapack_option< Trans >::value, &m, &n, ap,
-            tau, c, &ldc, work, &info );
+    LAPACK_CUPMTR( &lapack_option< Side >::value, &uplo, &lapack_option<
+            Trans >::value, &m, &n, ap, tau, c, &ldc, work, &info );
     return info;
 }
 
@@ -68,15 +68,15 @@ inline std::ptrdiff_t upmtr( const char side, const char uplo, Trans,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-template< typename Trans >
-inline std::ptrdiff_t upmtr( const char side, const char uplo, Trans,
-        const fortran_int_t m, const fortran_int_t n,
+template< typename Side, typename Trans >
+inline std::ptrdiff_t upmtr( const Side side, const char uplo,
+        const Trans trans, const fortran_int_t m, const fortran_int_t n,
         const std::complex<double>* ap, const std::complex<double>* tau,
         std::complex<double>* c, const fortran_int_t ldc,
         std::complex<double>* work ) {
     fortran_int_t info(0);
-    LAPACK_ZUPMTR( &side, &uplo, &lapack_option< Trans >::value, &m, &n, ap,
-            tau, c, &ldc, work, &info );
+    LAPACK_ZUPMTR( &lapack_option< Side >::value, &uplo, &lapack_option<
+            Trans >::value, &m, &n, ap, tau, c, &ldc, work, &info );
     return info;
 }
 
@@ -98,9 +98,9 @@ struct upmtr_impl {
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorAP, typename VectorTAU, typename MatrixC,
-            typename WORK >
-    static std::ptrdiff_t invoke( const char side, const char uplo,
+    template< typename Side, typename VectorAP, typename VectorTAU,
+            typename MatrixC, typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const char uplo,
             const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -121,7 +121,6 @@ struct upmtr_impl {
         BOOST_ASSERT( bindings::size_row(c) >= 0 );
         BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_row(c)) );
-        BOOST_ASSERT( side == 'L' || side == 'R' );
         return detail::upmtr( side, uplo, trans(), bindings::size_row(c),
                 bindings::size_column(c), bindings::begin_value(ap),
                 bindings::begin_value(tau), bindings::begin_value(c),
@@ -136,8 +135,9 @@ struct upmtr_impl {
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const char uplo,
+    template< typename Side, typename VectorAP, typename VectorTAU,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const char uplo,
             const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -153,8 +153,9 @@ struct upmtr_impl {
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const char uplo,
+    template< typename Side, typename VectorAP, typename VectorTAU,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const char uplo,
             const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -165,8 +166,9 @@ struct upmtr_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 
@@ -185,11 +187,11 @@ struct upmtr_impl {
 // * MatrixC&
 // * User-defined workspace
 //
-template< typename VectorAP, typename VectorTAU, typename MatrixC,
-        typename Workspace >
+template< typename Side, typename VectorAP, typename VectorTAU,
+        typename MatrixC, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-upmtr( const char side, const char uplo, const VectorAP& ap,
+upmtr( const Side side, const char uplo, const VectorAP& ap,
         const VectorTAU& tau, MatrixC& c, Workspace work ) {
     return upmtr_impl< typename bindings::value_type<
             VectorAP >::type >::invoke( side, uplo, ap, tau, c, work );
@@ -200,10 +202,11 @@ upmtr( const char side, const char uplo, const VectorAP& ap,
 // * MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename VectorAP, typename VectorTAU, typename MatrixC >
+template< typename Side, typename VectorAP, typename VectorTAU,
+        typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-upmtr( const char side, const char uplo, const VectorAP& ap,
+upmtr( const Side side, const char uplo, const VectorAP& ap,
         const VectorTAU& tau, MatrixC& c ) {
     return upmtr_impl< typename bindings::value_type<
             VectorAP >::type >::invoke( side, uplo, ap, tau, c,
@@ -215,11 +218,11 @@ upmtr( const char side, const char uplo, const VectorAP& ap,
 // * const MatrixC&
 // * User-defined workspace
 //
-template< typename VectorAP, typename VectorTAU, typename MatrixC,
-        typename Workspace >
+template< typename Side, typename VectorAP, typename VectorTAU,
+        typename MatrixC, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-upmtr( const char side, const char uplo, const VectorAP& ap,
+upmtr( const Side side, const char uplo, const VectorAP& ap,
         const VectorTAU& tau, const MatrixC& c, Workspace work ) {
     return upmtr_impl< typename bindings::value_type<
             VectorAP >::type >::invoke( side, uplo, ap, tau, c, work );
@@ -230,10 +233,11 @@ upmtr( const char side, const char uplo, const VectorAP& ap,
 // * const MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename VectorAP, typename VectorTAU, typename MatrixC >
+template< typename Side, typename VectorAP, typename VectorTAU,
+        typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-upmtr( const char side, const char uplo, const VectorAP& ap,
+upmtr( const Side side, const char uplo, const VectorAP& ap,
         const VectorTAU& tau, const MatrixC& c ) {
     return upmtr_impl< typename bindings::value_type<
             VectorAP >::type >::invoke( side, uplo, ap, tau, c,

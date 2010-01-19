@@ -3,25 +3,18 @@
 // using driver function gesv()
 // with c_vector<> & c_matrix<> 
 
-//#define BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-//#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
-
-//#define BOOST_NUMERIC_BINDINGS_NO_SANITY_CHECK
-//#define BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK
-
 #include <cstddef>
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas.hpp>
-#include <boost/numeric/bindings/atlas/clapack.hpp>
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-#  include <boost/numeric/bindings/traits/ublas_vector2.hpp>
-#endif 
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/lapack/driver/gesv.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
 #include <boost/numeric/ublas/io.hpp> 
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace bindings = boost::numeric::bindings;
+namespace lapack = boost::numeric::bindings::lapack;
 
 using std::size_t; 
 using std::cout;
@@ -43,7 +36,9 @@ int main() {
   a(2,0) = 1.; a(2,1) = -1.; a(2,2) = -1.;
 
   mrhs_t b (1, n);  // right-hand side vector
-  b(0,0) = 4.; b(0,1) = 9.; b(0,2) = -2.; 
+  b(0,0) = 4.; 
+  b(0,1) = 9.;
+  b(0,2) = -2.; 
 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
   m3x3_t a2; // for part 2
@@ -56,7 +51,8 @@ int main() {
   cout << "A: " << a << endl; 
   cout << "B: " << b << endl; 
 
-  atlas::lu_solve (a, b);  
+  std::vector< int > pivota( bindings::size1( a ) );
+  lapack::gesv (a, pivota, b);  
   cout << "X: " << b << endl; 
 
   cout << endl; 
@@ -66,7 +62,8 @@ int main() {
   cout << "A: " << a2 << endl; 
   cout << "B: " << b2 << endl; 
 
-  atlas::lu_solve (a2, b2);  
+  std::vector< int > pivota2( bindings::size1( a2 ) );
+  lapack::gesv (a2, pivota2, b2);  
   cout << "X: " << b2 << endl; 
 
   cout << endl; 

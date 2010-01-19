@@ -51,8 +51,8 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lanhp( const char norm, UpLo, const fortran_int_t n,
-        const std::complex<float>* ap, float* work ) {
+inline std::ptrdiff_t lanhp( const char norm, const UpLo uplo,
+        const fortran_int_t n, const std::complex<float>* ap, float* work ) {
     fortran_int_t info(0);
     LAPACK_CLANHP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
     return info;
@@ -64,8 +64,8 @@ inline std::ptrdiff_t lanhp( const char norm, UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lanhp( const char norm, UpLo, const fortran_int_t n,
-        const std::complex<double>* ap, double* work ) {
+inline std::ptrdiff_t lanhp( const char norm, const UpLo uplo,
+        const fortran_int_t n, const std::complex<double>* ap, double* work ) {
     fortran_int_t info(0);
     LAPACK_ZLANHP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
     return info;
@@ -138,8 +138,9 @@ struct lanhp_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 

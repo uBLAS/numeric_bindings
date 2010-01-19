@@ -52,15 +52,17 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
+template< typename Side >
+inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
         const char initv, logical_t* select, const fortran_int_t n,
         const float* h, const fortran_int_t ldh, float* wr, const float* wi,
         float* vl, const fortran_int_t ldvl, float* vr,
         const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
         float* work, fortran_int_t* ifaill, fortran_int_t* ifailr ) {
     fortran_int_t info(0);
-    LAPACK_SHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, wr, wi, vl,
-            &ldvl, vr, &ldvr, &mm, &m, work, ifaill, ifailr, &info );
+    LAPACK_SHSEIN( &lapack_option< Side >::value, &eigsrc, &initv, select, &n,
+            h, &ldh, wr, wi, vl, &ldvl, vr, &ldvr, &mm, &m, work, ifaill,
+            ifailr, &info );
     return info;
 }
 
@@ -69,15 +71,17 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
+template< typename Side >
+inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
         const char initv, logical_t* select, const fortran_int_t n,
         const double* h, const fortran_int_t ldh, double* wr,
         const double* wi, double* vl, const fortran_int_t ldvl, double* vr,
         const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
         double* work, fortran_int_t* ifaill, fortran_int_t* ifailr ) {
     fortran_int_t info(0);
-    LAPACK_DHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, wr, wi, vl,
-            &ldvl, vr, &ldvr, &mm, &m, work, ifaill, ifailr, &info );
+    LAPACK_DHSEIN( &lapack_option< Side >::value, &eigsrc, &initv, select, &n,
+            h, &ldh, wr, wi, vl, &ldvl, vr, &ldvr, &mm, &m, work, ifaill,
+            ifailr, &info );
     return info;
 }
 
@@ -86,7 +90,8 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
+template< typename Side >
+inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
         const char initv, const logical_t* select, const fortran_int_t n,
         const std::complex<float>* h, const fortran_int_t ldh,
         std::complex<float>* w, std::complex<float>* vl,
@@ -95,8 +100,9 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
         std::complex<float>* work, float* rwork, fortran_int_t* ifaill,
         fortran_int_t* ifailr ) {
     fortran_int_t info(0);
-    LAPACK_CHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, w, vl, &ldvl,
-            vr, &ldvr, &mm, &m, work, rwork, ifaill, ifailr, &info );
+    LAPACK_CHSEIN( &lapack_option< Side >::value, &eigsrc, &initv, select, &n,
+            h, &ldh, w, vl, &ldvl, vr, &ldvr, &mm, &m, work, rwork, ifaill,
+            ifailr, &info );
     return info;
 }
 
@@ -105,7 +111,8 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
+template< typename Side >
+inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
         const char initv, const logical_t* select, const fortran_int_t n,
         const std::complex<double>* h, const fortran_int_t ldh,
         std::complex<double>* w, std::complex<double>* vl,
@@ -114,8 +121,9 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
         std::complex<double>* work, double* rwork, fortran_int_t* ifaill,
         fortran_int_t* ifailr ) {
     fortran_int_t info(0);
-    LAPACK_ZHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, w, vl, &ldvl,
-            vr, &ldvr, &mm, &m, work, rwork, ifaill, ifailr, &info );
+    LAPACK_ZHSEIN( &lapack_option< Side >::value, &eigsrc, &initv, select, &n,
+            h, &ldh, w, vl, &ldvl, vr, &ldvr, &mm, &m, work, rwork, ifaill,
+            ifailr, &info );
     return info;
 }
 
@@ -143,10 +151,11 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-            typename VectorWI, typename MatrixVL, typename MatrixVR,
-            typename VectorIFAILL, typename VectorIFAILR, typename WORK >
-    static std::ptrdiff_t invoke( const char side, const char eigsrc,
+    template< typename Side, typename VectorSELECT, typename MatrixH,
+            typename VectorWR, typename VectorWI, typename MatrixVL,
+            typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+            typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const char eigsrc,
             const char initv, VectorSELECT& select, const MatrixH& h,
             VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
@@ -195,7 +204,6 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::size_column(h)) );
         BOOST_ASSERT( eigsrc == 'Q' || eigsrc == 'N' );
         BOOST_ASSERT( initv == 'N' || initv == 'U' );
-        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         return detail::hsein( side, eigsrc, initv,
                 bindings::begin_value(select), bindings::size_column(h),
                 bindings::begin_value(h), bindings::stride_major(h),
@@ -213,10 +221,10 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-            typename VectorWI, typename MatrixVL, typename MatrixVR,
-            typename VectorIFAILL, typename VectorIFAILR >
-    static std::ptrdiff_t invoke( const char side, const char eigsrc,
+    template< typename Side, typename VectorSELECT, typename MatrixH,
+            typename VectorWR, typename VectorWI, typename MatrixVL,
+            typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
+    static std::ptrdiff_t invoke( const Side side, const char eigsrc,
             const char initv, VectorSELECT& select, const MatrixH& h,
             VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
@@ -236,10 +244,10 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-            typename VectorWI, typename MatrixVL, typename MatrixVR,
-            typename VectorIFAILL, typename VectorIFAILR >
-    static std::ptrdiff_t invoke( const char side, const char eigsrc,
+    template< typename Side, typename VectorSELECT, typename MatrixH,
+            typename VectorWR, typename VectorWI, typename MatrixVL,
+            typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
+    static std::ptrdiff_t invoke( const Side side, const char eigsrc,
             const char initv, VectorSELECT& select, const MatrixH& h,
             VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
@@ -274,10 +282,11 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorSELECT, typename MatrixH, typename VectorW,
-            typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-            typename VectorIFAILR, typename WORK, typename RWORK >
-    static std::ptrdiff_t invoke( const char side, const char eigsrc,
+    template< typename Side, typename VectorSELECT, typename MatrixH,
+            typename VectorW, typename MatrixVL, typename MatrixVR,
+            typename VectorIFAILL, typename VectorIFAILR, typename WORK,
+            typename RWORK >
+    static std::ptrdiff_t invoke( const Side side, const char eigsrc,
             const char initv, const VectorSELECT& select, const MatrixH& h,
             VectorW& w, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
@@ -322,7 +331,6 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::size_column(h)) );
         BOOST_ASSERT( eigsrc == 'Q' || eigsrc == 'N' );
         BOOST_ASSERT( initv == 'N' || initv == 'U' );
-        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         return detail::hsein( side, eigsrc, initv,
                 bindings::begin_value(select), bindings::size_column(h),
                 bindings::begin_value(h), bindings::stride_major(h),
@@ -341,10 +349,10 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename VectorSELECT, typename MatrixH, typename VectorW,
-            typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-            typename VectorIFAILR >
-    static std::ptrdiff_t invoke( const char side, const char eigsrc,
+    template< typename Side, typename VectorSELECT, typename MatrixH,
+            typename VectorW, typename MatrixVL, typename MatrixVR,
+            typename VectorIFAILL, typename VectorIFAILR >
+    static std::ptrdiff_t invoke( const Side side, const char eigsrc,
             const char initv, const VectorSELECT& select, const MatrixH& h,
             VectorW& w, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
@@ -366,10 +374,10 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename VectorSELECT, typename MatrixH, typename VectorW,
-            typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-            typename VectorIFAILR >
-    static std::ptrdiff_t invoke( const char side, const char eigsrc,
+    template< typename Side, typename VectorSELECT, typename MatrixH,
+            typename VectorW, typename MatrixVL, typename MatrixVR,
+            typename VectorIFAILL, typename VectorIFAILR >
+    static std::ptrdiff_t invoke( const Side side, const char eigsrc,
             const char initv, const VectorSELECT& select, const MatrixH& h,
             VectorW& w, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
@@ -417,12 +425,13 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -442,12 +451,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -467,12 +476,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -492,12 +502,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -517,12 +527,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -542,12 +553,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -567,12 +578,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -592,12 +604,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -617,12 +629,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -642,12 +655,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -667,12 +680,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -692,12 +706,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -717,12 +731,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -742,12 +757,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -767,12 +782,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -792,12 +808,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -817,12 +833,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -842,12 +859,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -867,12 +884,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -892,12 +910,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -917,12 +935,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -942,12 +961,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -967,12 +986,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -992,12 +1012,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1017,12 +1037,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1042,12 +1063,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1067,12 +1088,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1092,12 +1114,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1117,12 +1139,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1142,12 +1165,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1167,12 +1190,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1192,12 +1216,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1217,12 +1241,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1242,12 +1267,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1267,12 +1292,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1292,12 +1318,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1317,12 +1343,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1342,12 +1369,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1367,12 +1394,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1392,12 +1420,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1417,12 +1445,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1442,12 +1471,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1467,12 +1496,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1492,12 +1522,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1517,12 +1547,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1542,12 +1573,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1567,12 +1598,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1592,12 +1624,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1617,12 +1649,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1642,12 +1675,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1667,12 +1700,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1692,12 +1726,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1717,12 +1751,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1742,12 +1777,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1767,12 +1802,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1792,12 +1828,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1817,12 +1853,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1842,12 +1879,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1867,12 +1904,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1892,12 +1930,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1917,12 +1955,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1942,12 +1981,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1967,12 +2006,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -1992,12 +2032,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2017,12 +2057,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2042,12 +2083,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2067,12 +2108,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2092,12 +2134,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2117,12 +2159,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2142,12 +2185,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2167,12 +2210,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2192,12 +2236,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2217,12 +2261,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2242,12 +2287,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2267,12 +2312,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2292,12 +2338,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2317,12 +2363,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2342,12 +2389,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2367,12 +2414,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2392,12 +2440,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2417,12 +2465,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2442,12 +2491,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2467,12 +2516,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2492,12 +2542,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2517,12 +2567,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2542,12 +2593,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2567,12 +2618,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2592,12 +2644,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2617,12 +2669,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2642,12 +2695,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2667,12 +2720,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2692,12 +2746,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2717,12 +2771,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2742,12 +2797,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2767,12 +2822,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2792,12 +2848,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2817,12 +2873,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2843,12 +2900,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2868,12 +2925,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2894,12 +2952,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2919,12 +2977,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2945,12 +3004,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2970,12 +3029,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -2996,12 +3056,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3021,12 +3081,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3047,12 +3108,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3072,12 +3133,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3098,12 +3160,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3123,12 +3185,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3149,12 +3212,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3174,12 +3237,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3200,12 +3264,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3225,12 +3289,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3251,12 +3316,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3276,12 +3341,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3302,12 +3368,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3327,12 +3393,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3353,12 +3420,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3378,12 +3445,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3404,12 +3472,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3429,12 +3497,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3455,12 +3524,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3480,12 +3549,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3506,12 +3576,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3531,12 +3601,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3557,12 +3628,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3582,12 +3653,13 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3608,12 +3680,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorWR, typename VectorWI, typename MatrixVL,
+        typename MatrixVR, typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorWR& wr,
         const VectorWI& wi, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
@@ -3631,12 +3703,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
@@ -3655,12 +3727,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
@@ -3678,12 +3750,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
@@ -3702,12 +3774,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
@@ -3725,12 +3797,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
@@ -3749,12 +3821,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
@@ -3772,12 +3844,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
@@ -3796,12 +3868,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
@@ -3819,12 +3891,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
@@ -3843,12 +3915,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
@@ -3866,12 +3938,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
@@ -3890,12 +3962,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
@@ -3913,12 +3985,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
@@ -3937,12 +4009,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
@@ -3960,12 +4032,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
@@ -3984,12 +4056,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
@@ -4007,12 +4079,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4031,12 +4103,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4055,12 +4127,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4079,12 +4151,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4103,12 +4175,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4127,12 +4199,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4151,12 +4223,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4175,12 +4247,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4199,12 +4271,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4223,12 +4295,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4247,12 +4319,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4271,12 +4343,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4295,12 +4367,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4319,12 +4391,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4343,12 +4415,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4367,12 +4439,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4391,12 +4463,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4415,12 +4487,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4439,12 +4511,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4463,12 +4535,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4487,12 +4559,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4511,12 +4583,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4535,12 +4607,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4559,12 +4631,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4583,12 +4655,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4607,12 +4679,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4631,12 +4703,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4655,12 +4727,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4679,12 +4751,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4703,12 +4775,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4727,12 +4799,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4751,12 +4823,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, VectorIFAILL& ifaill,
@@ -4775,12 +4847,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4799,12 +4871,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4823,12 +4895,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4847,12 +4919,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4871,12 +4943,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4895,12 +4967,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4919,12 +4991,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4943,12 +5015,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4967,12 +5039,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -4991,12 +5063,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -5015,12 +5087,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -5039,12 +5111,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -5063,12 +5135,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -5087,12 +5159,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -5111,12 +5183,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,
@@ -5135,12 +5207,12 @@ hsein( const char side, const char eigsrc, const char initv,
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
+template< typename Side, typename VectorSELECT, typename MatrixH,
+        typename VectorW, typename MatrixVL, typename MatrixVR,
+        typename VectorIFAILL, typename VectorIFAILR >
 inline typename boost::disable_if< detail::is_workspace< VectorIFAILR >,
         std::ptrdiff_t >::type
-hsein( const char side, const char eigsrc, const char initv,
+hsein( const Side side, const char eigsrc, const char initv,
         const VectorSELECT& select, const MatrixH& h, const VectorW& w,
         const MatrixVL& vl, const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m, const VectorIFAILL& ifaill,

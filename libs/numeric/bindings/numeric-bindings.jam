@@ -38,7 +38,7 @@ ATLAS_INCLUDE ?= $(NUMERIC_INCLUDE)/ATLAS/include ;
 ATLAS_PATH ?= $(NUMERIC_LIB_PATH) ;
 ATLAS_LIB ?= atlas ;
 CBLAS_LIB ?= cblas ;
-LAPACK_ATLAS_LIB ?= lapack ;
+LAPACK_ATLAS_LIB ?= lapack_atlas ;
 
 BLAS_PATH ?= $(NUMERIC_LIB_PATH) ;
 BLAS_LIB  ?= blas ;

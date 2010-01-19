@@ -52,11 +52,13 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t larf( const char side, const fortran_int_t m,
+template< typename Side >
+inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
         const fortran_int_t n, const float* v, const fortran_int_t incv,
         const float tau, float* c, const fortran_int_t ldc, float* work ) {
     fortran_int_t info(0);
-    LAPACK_SLARF( &side, &m, &n, v, &incv, &tau, c, &ldc, work );
+    LAPACK_SLARF( &lapack_option< Side >::value, &m, &n, v, &incv, &tau, c,
+            &ldc, work );
     return info;
 }
 
@@ -65,11 +67,13 @@ inline std::ptrdiff_t larf( const char side, const fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t larf( const char side, const fortran_int_t m,
+template< typename Side >
+inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
         const fortran_int_t n, const double* v, const fortran_int_t incv,
         const double tau, double* c, const fortran_int_t ldc, double* work ) {
     fortran_int_t info(0);
-    LAPACK_DLARF( &side, &m, &n, v, &incv, &tau, c, &ldc, work );
+    LAPACK_DLARF( &lapack_option< Side >::value, &m, &n, v, &incv, &tau, c,
+            &ldc, work );
     return info;
 }
 
@@ -78,13 +82,15 @@ inline std::ptrdiff_t larf( const char side, const fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t larf( const char side, const fortran_int_t m,
+template< typename Side >
+inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
         const fortran_int_t n, const std::complex<float>* v,
         const fortran_int_t incv, const std::complex<float> tau,
         std::complex<float>* c, const fortran_int_t ldc,
         std::complex<float>* work ) {
     fortran_int_t info(0);
-    LAPACK_CLARF( &side, &m, &n, v, &incv, &tau, c, &ldc, work );
+    LAPACK_CLARF( &lapack_option< Side >::value, &m, &n, v, &incv, &tau, c,
+            &ldc, work );
     return info;
 }
 
@@ -93,13 +99,15 @@ inline std::ptrdiff_t larf( const char side, const fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t larf( const char side, const fortran_int_t m,
+template< typename Side >
+inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
         const fortran_int_t n, const std::complex<double>* v,
         const fortran_int_t incv, const std::complex<double> tau,
         std::complex<double>* c, const fortran_int_t ldc,
         std::complex<double>* work ) {
     fortran_int_t info(0);
-    LAPACK_ZLARF( &side, &m, &n, v, &incv, &tau, c, &ldc, work );
+    LAPACK_ZLARF( &lapack_option< Side >::value, &m, &n, v, &incv, &tau, c,
+            &ldc, work );
     return info;
 }
 
@@ -127,8 +135,9 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorV, typename MatrixC, typename WORK >
-    static std::ptrdiff_t invoke( const char side, const VectorV& v,
+    template< typename Side, typename VectorV, typename MatrixC,
+            typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const VectorV& v,
             const real_type tau, MatrixC& c, detail::workspace1<
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -144,7 +153,6 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
                 bindings::stride_minor(c) == 1 );
         BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_row(c)) );
-        BOOST_ASSERT( side == 'L' || side == 'R' );
         return detail::larf( side, bindings::size_row(c),
                 bindings::size_column(c), bindings::begin_value(v),
                 bindings::stride(v), tau, bindings::begin_value(c),
@@ -159,8 +167,8 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename VectorV, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const VectorV& v,
+    template< typename Side, typename VectorV, typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const VectorV& v,
             const real_type tau, MatrixC& c, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( side,
@@ -175,8 +183,8 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename VectorV, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const VectorV& v,
+    template< typename Side, typename VectorV, typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const VectorV& v,
             const real_type tau, MatrixC& c, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, v, tau, c, minimal_workspace() );
@@ -186,7 +194,8 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const char side,
+    template< typename Side >
+    static std::ptrdiff_t min_size_work( const Side side,
             const std::ptrdiff_t n, const std::ptrdiff_t m ) {
         return ( side == 'L' ? n : m );
     }
@@ -207,8 +216,9 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorV, typename MatrixC, typename WORK >
-    static std::ptrdiff_t invoke( const char side, const VectorV& v,
+    template< typename Side, typename VectorV, typename MatrixC,
+            typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const VectorV& v,
             const value_type tau, MatrixC& c, detail::workspace1<
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -224,7 +234,6 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 bindings::stride_minor(c) == 1 );
         BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_row(c)) );
-        BOOST_ASSERT( side == 'L' || side == 'R' );
         return detail::larf( side, bindings::size_row(c),
                 bindings::size_column(c), bindings::begin_value(v),
                 bindings::stride(v), tau, bindings::begin_value(c),
@@ -239,8 +248,8 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename VectorV, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const VectorV& v,
+    template< typename Side, typename VectorV, typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const VectorV& v,
             const value_type tau, MatrixC& c, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( side,
@@ -255,8 +264,8 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename VectorV, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const VectorV& v,
+    template< typename Side, typename VectorV, typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const VectorV& v,
             const value_type tau, MatrixC& c, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, v, tau, c, minimal_workspace() );
@@ -266,7 +275,8 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const char side,
+    template< typename Side >
+    static std::ptrdiff_t min_size_work( const Side side,
             const std::ptrdiff_t n, const std::ptrdiff_t m ) {
         return ( side == 'L' ? n : m );
     }
@@ -287,10 +297,11 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 // * MatrixC&
 // * User-defined workspace
 //
-template< typename VectorV, typename MatrixC, typename Workspace >
+template< typename Side, typename VectorV, typename MatrixC,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-larf( const char side, const VectorV& v,
+larf( const Side side, const VectorV& v,
         const typename remove_imaginary< typename bindings::value_type<
         VectorV >::type >::type tau, MatrixC& c, Workspace work ) {
     return larf_impl< typename bindings::value_type<
@@ -302,10 +313,10 @@ larf( const char side, const VectorV& v,
 // * MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename VectorV, typename MatrixC >
+template< typename Side, typename VectorV, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-larf( const char side, const VectorV& v,
+larf( const Side side, const VectorV& v,
         const typename remove_imaginary< typename bindings::value_type<
         VectorV >::type >::type tau, MatrixC& c ) {
     return larf_impl< typename bindings::value_type<
@@ -317,10 +328,11 @@ larf( const char side, const VectorV& v,
 // * const MatrixC&
 // * User-defined workspace
 //
-template< typename VectorV, typename MatrixC, typename Workspace >
+template< typename Side, typename VectorV, typename MatrixC,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-larf( const char side, const VectorV& v,
+larf( const Side side, const VectorV& v,
         const typename remove_imaginary< typename bindings::value_type<
         VectorV >::type >::type tau, const MatrixC& c, Workspace work ) {
     return larf_impl< typename bindings::value_type<
@@ -332,10 +344,10 @@ larf( const char side, const VectorV& v,
 // * const MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename VectorV, typename MatrixC >
+template< typename Side, typename VectorV, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-larf( const char side, const VectorV& v,
+larf( const Side side, const VectorV& v,
         const typename remove_imaginary< typename bindings::value_type<
         VectorV >::type >::type tau, const MatrixC& c ) {
     return larf_impl< typename bindings::value_type<
@@ -346,10 +358,11 @@ larf( const char side, const VectorV& v,
 // * MatrixC&
 // * User-defined workspace
 //
-template< typename VectorV, typename MatrixC, typename Workspace >
+template< typename Side, typename VectorV, typename MatrixC,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-larf( const char side, const VectorV& v,
+larf( const Side side, const VectorV& v,
         const typename bindings::value_type< VectorV >::type tau, MatrixC& c,
         Workspace work ) {
     return larf_impl< typename bindings::value_type<
@@ -361,10 +374,10 @@ larf( const char side, const VectorV& v,
 // * MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename VectorV, typename MatrixC >
+template< typename Side, typename VectorV, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-larf( const char side, const VectorV& v,
+larf( const Side side, const VectorV& v,
         const typename bindings::value_type< VectorV >::type tau,
         MatrixC& c ) {
     return larf_impl< typename bindings::value_type<
@@ -376,10 +389,11 @@ larf( const char side, const VectorV& v,
 // * const MatrixC&
 // * User-defined workspace
 //
-template< typename VectorV, typename MatrixC, typename Workspace >
+template< typename Side, typename VectorV, typename MatrixC,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-larf( const char side, const VectorV& v,
+larf( const Side side, const VectorV& v,
         const typename bindings::value_type< VectorV >::type tau,
         const MatrixC& c, Workspace work ) {
     return larf_impl< typename bindings::value_type<
@@ -391,10 +405,10 @@ larf( const char side, const VectorV& v,
 // * const MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename VectorV, typename MatrixC >
+template< typename Side, typename VectorV, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-larf( const char side, const VectorV& v,
+larf( const Side side, const VectorV& v,
         const typename bindings::value_type< VectorV >::type tau,
         const MatrixC& c ) {
     return larf_impl< typename bindings::value_type<

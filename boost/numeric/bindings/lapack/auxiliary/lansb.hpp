@@ -52,9 +52,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansb( const char norm, UpLo, const fortran_int_t n,
-        const fortran_int_t k, const float* ab, const fortran_int_t ldab,
-        float* work ) {
+inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
+        const fortran_int_t n, const fortran_int_t k, const float* ab,
+        const fortran_int_t ldab, float* work ) {
     fortran_int_t info(0);
     LAPACK_SLANSB( &norm, &lapack_option< UpLo >::value, &n, &k, ab, &ldab,
             work );
@@ -67,9 +67,9 @@ inline std::ptrdiff_t lansb( const char norm, UpLo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansb( const char norm, UpLo, const fortran_int_t n,
-        const fortran_int_t k, const double* ab, const fortran_int_t ldab,
-        double* work ) {
+inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
+        const fortran_int_t n, const fortran_int_t k, const double* ab,
+        const fortran_int_t ldab, double* work ) {
     fortran_int_t info(0);
     LAPACK_DLANSB( &norm, &lapack_option< UpLo >::value, &n, &k, ab, &ldab,
             work );
@@ -82,9 +82,10 @@ inline std::ptrdiff_t lansb( const char norm, UpLo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansb( const char norm, UpLo, const fortran_int_t n,
-        const fortran_int_t k, const std::complex<float>* ab,
-        const fortran_int_t ldab, float* work ) {
+inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
+        const fortran_int_t n, const fortran_int_t k,
+        const std::complex<float>* ab, const fortran_int_t ldab,
+        float* work ) {
     fortran_int_t info(0);
     LAPACK_CLANSB( &norm, &lapack_option< UpLo >::value, &n, &k, ab, &ldab,
             work );
@@ -97,9 +98,10 @@ inline std::ptrdiff_t lansb( const char norm, UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansb( const char norm, UpLo, const fortran_int_t n,
-        const fortran_int_t k, const std::complex<double>* ab,
-        const fortran_int_t ldab, double* work ) {
+inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
+        const fortran_int_t n, const fortran_int_t k,
+        const std::complex<double>* ab, const fortran_int_t ldab,
+        double* work ) {
     fortran_int_t info(0);
     LAPACK_ZLANSB( &norm, &lapack_option< UpLo >::value, &n, &k, ab, &ldab,
             work );
@@ -179,8 +181,9 @@ struct lansb_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 

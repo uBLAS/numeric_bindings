@@ -52,9 +52,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sbtrd( const char vect, UpLo, const fortran_int_t n,
-        const fortran_int_t kd, float* ab, const fortran_int_t ldab, float* d,
-        float* e, float* q, const fortran_int_t ldq, float* work ) {
+inline std::ptrdiff_t sbtrd( const char vect, const UpLo uplo,
+        const fortran_int_t n, const fortran_int_t kd, float* ab,
+        const fortran_int_t ldab, float* d, float* e, float* q,
+        const fortran_int_t ldq, float* work ) {
     fortran_int_t info(0);
     LAPACK_SSBTRD( &vect, &lapack_option< UpLo >::value, &n, &kd, ab, &ldab,
             d, e, q, &ldq, work, &info );
@@ -67,10 +68,10 @@ inline std::ptrdiff_t sbtrd( const char vect, UpLo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sbtrd( const char vect, UpLo, const fortran_int_t n,
-        const fortran_int_t kd, double* ab, const fortran_int_t ldab,
-        double* d, double* e, double* q, const fortran_int_t ldq,
-        double* work ) {
+inline std::ptrdiff_t sbtrd( const char vect, const UpLo uplo,
+        const fortran_int_t n, const fortran_int_t kd, double* ab,
+        const fortran_int_t ldab, double* d, double* e, double* q,
+        const fortran_int_t ldq, double* work ) {
     fortran_int_t info(0);
     LAPACK_DSBTRD( &vect, &lapack_option< UpLo >::value, &n, &kd, ab, &ldab,
             d, e, q, &ldq, work, &info );

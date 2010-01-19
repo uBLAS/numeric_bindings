@@ -53,14 +53,14 @@ namespace detail {
 //
 template< typename UpLo >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype, const char jobz,
-        const char range, UpLo, const fortran_int_t n, std::complex<float>* a,
-        const fortran_int_t lda, std::complex<float>* b,
-        const fortran_int_t ldb, const float vl, const float vu,
-        const fortran_int_t il, const fortran_int_t iu, const float abstol,
-        fortran_int_t& m, float* w, std::complex<float>* z,
-        const fortran_int_t ldz, std::complex<float>* work,
-        const fortran_int_t lwork, float* rwork, fortran_int_t* iwork,
-        fortran_int_t* ifail ) {
+        const char range, const UpLo uplo, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda,
+        std::complex<float>* b, const fortran_int_t ldb, const float vl,
+        const float vu, const fortran_int_t il, const fortran_int_t iu,
+        const float abstol, fortran_int_t& m, float* w,
+        std::complex<float>* z, const fortran_int_t ldz,
+        std::complex<float>* work, const fortran_int_t lwork, float* rwork,
+        fortran_int_t* iwork, fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_CHEGVX( &itype, &jobz, &range, &lapack_option< UpLo >::value, &n,
             a, &lda, b, &ldb, &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz,
@@ -75,7 +75,7 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype, const char jobz,
 //
 template< typename UpLo >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype, const char jobz,
-        const char range, UpLo, const fortran_int_t n,
+        const char range, const UpLo uplo, const fortran_int_t n,
         std::complex<double>* a, const fortran_int_t lda,
         std::complex<double>* b, const fortran_int_t ldb, const double vl,
         const double vu, const fortran_int_t il, const fortran_int_t iu,

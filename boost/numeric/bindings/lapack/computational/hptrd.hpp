@@ -49,7 +49,7 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hptrd( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t hptrd( const UpLo uplo, const fortran_int_t n,
         std::complex<float>* ap, float* d, float* e,
         std::complex<float>* tau ) {
     fortran_int_t info(0);
@@ -63,7 +63,7 @@ inline std::ptrdiff_t hptrd( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hptrd( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t hptrd( const UpLo uplo, const fortran_int_t n,
         std::complex<double>* ap, double* d, double* e,
         std::complex<double>* tau ) {
     fortran_int_t info(0);

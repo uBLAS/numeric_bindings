@@ -5,13 +5,16 @@
 #include <stddef.h>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas3.hpp>
-#include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
+#include <boost/numeric/bindings/blas/level3.hpp>
+#include <boost/numeric/bindings/trans.hpp>
+#include <boost/numeric/bindings/upper.hpp>
+#include <boost/numeric/bindings/lower.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
-namespace traits = boost::numeric::bindings::traits;
+namespace blas = boost::numeric::bindings::blas;
+namespace bindings = boost::numeric::bindings;
 
 using std::cout;
 using std::cin;
@@ -69,10 +72,10 @@ int main() {
   ursa_t ursa (rmu); 
   lrsa_t lrsa (rml); 
 
-  atlas::syr2k (CblasNoTrans, ac, bc, ucsa); 
-  atlas::syr2k (CblasNoTrans, 1.0, ac, bc, 0.0, lcsa); 
-  atlas::syr2k (CblasNoTrans, 1.0, ar, br, 0.0, ursa); 
-  atlas::syr2k (CblasNoTrans, ar, br, lrsa); 
+  blas::syr2k (1.0, ac, bc, 0.0, ucsa); 
+  blas::syr2k (1.0, ac, bc, 0.0, lcsa); 
+  blas::syr2k (1.0, ar, br, 0.0, ursa); 
+  blas::syr2k (1.0, ar, br, 0.0, lrsa); 
 
   print_m (ucsa, "ucsa");
   cout << endl; 
@@ -108,10 +111,10 @@ int main() {
   init_m (rmu, const_val<real_t> (0));
   init_m (rml, const_val<real_t> (0));
 
-  atlas::syr2k (CblasUpper, CblasTrans, 1.0, act, bct, 0.0, cmu); 
-  atlas::syr2k (CblasLower, CblasTrans, 1.0, act, bct, 0.0, cml); 
-  atlas::syr2k (CblasUpper, CblasTrans, 1.0, art, brt, 0.0, rmu); 
-  atlas::syr2k (CblasLower, CblasTrans, 1.0, art, brt, 0.0, rml); 
+  blas::syr2k (1.0, bindings::trans(act), bct, 0.0, bindings::upper(cmu)); 
+  blas::syr2k (1.0, bindings::trans(act), bct, 0.0, bindings::lower(cml)); 
+  blas::syr2k (1.0, bindings::trans(art), brt, 0.0, bindings::upper(rmu)); 
+  blas::syr2k (1.0, bindings::trans(art), brt, 0.0, bindings::lower(rml)); 
 
   print_m (cmu, "cmu");
   cout << endl; 
@@ -162,10 +165,10 @@ int main() {
   cursa_t cursa (crmu); 
   clrsa_t clrsa (crml); 
 
-  atlas::syr2k (CblasNoTrans, cac, cbc, cucsa); 
-  atlas::syr2k (CblasNoTrans, cmplx_t(1,0), cac, cbc, cmplx_t(0,0), clcsa); 
-  atlas::syr2k (CblasNoTrans, cmplx_t(1,0), car, cbr, cmplx_t(0,0), cursa); 
-  atlas::syr2k (CblasNoTrans, car, cbr, clrsa); 
+  blas::syr2k ( 1.0, cac, cbc, 0.0, cucsa); 
+  blas::syr2k (cmplx_t(1,0), cac, cbc, cmplx_t(0,0), clcsa); 
+  blas::syr2k (cmplx_t(1,0), car, cbr, cmplx_t(0,0), cursa); 
+  blas::syr2k (1.0, car, cbr, 0.0, clrsa); 
 
   print_m (cucsa, "cucsa");
   cout << endl; 

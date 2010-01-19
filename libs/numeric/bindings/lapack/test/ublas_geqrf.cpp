@@ -30,15 +30,16 @@
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
 namespace bindings = boost::numeric::bindings;
+namespace tag = boost::numeric::bindings::tag;
 
 struct apply_real {
   template< typename MatrixA, typename VectorTAU, typename Workspace >
   static inline integer_t orgqr(  MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return lapack::orgqr( a, tau, work );
   }
-  template< typename MatrixA, typename VectorTAU, typename MatrixC,
+  template< typename Side, typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-  static inline integer_t ormqr( const char side, 
+  static inline integer_t ormqr( const Side side, 
         const MatrixA& a, const VectorTAU& tau, MatrixC& c,
         Workspace work ) {
     return lapack::ormqr( side, a, tau, c, work );
@@ -50,9 +51,9 @@ struct apply_complex {
   static inline integer_t orgqr( MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return lapack::ungqr( a, tau, work );
   }
-  template< typename MatrixA, typename VectorTAU, typename MatrixC,
+  template< typename Side, typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-  static inline integer_t ormqr( const char side, 
+  static inline integer_t ormqr( const Side side, 
         const MatrixA& a, const VectorTAU& tau, MatrixC& c,
         Workspace work ) {
     return lapack::unmqr( side, a, tau, c, work );
@@ -103,9 +104,9 @@ int do_memory_type(int n, W workspace) {
 
    // Apply the orthogonal transformations to a2
    if( boost::is_complex<T>::value ) {
-        apply_t::ormqr( 'L', bindings::conj( a ), tau, a2, workspace );
+        apply_t::ormqr( tag::left(), bindings::conj( a ), tau, a2, workspace );
    } else {
-        apply_t::ormqr( 'L', bindings::trans( a ), tau, a2, workspace );
+        apply_t::ormqr( tag::left(), bindings::trans( a ), tau, a2, workspace );
    }
 
    // The upper triangular parts of a and a2 must be equal.

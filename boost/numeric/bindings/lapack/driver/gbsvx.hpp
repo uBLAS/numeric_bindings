@@ -55,8 +55,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbsvx( const char fact, Trans, const fortran_int_t n,
-        const fortran_int_t kl, const fortran_int_t ku,
+inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
+        const fortran_int_t n, const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, float* ab, const fortran_int_t ldab,
         float* afb, const fortran_int_t ldafb, fortran_int_t* ipiv,
         char& equed, float* r, float* c, float* b, const fortran_int_t ldb,
@@ -75,8 +75,8 @@ inline std::ptrdiff_t gbsvx( const char fact, Trans, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbsvx( const char fact, Trans, const fortran_int_t n,
-        const fortran_int_t kl, const fortran_int_t ku,
+inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
+        const fortran_int_t n, const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, double* ab, const fortran_int_t ldab,
         double* afb, const fortran_int_t ldafb, fortran_int_t* ipiv,
         char& equed, double* r, double* c, double* b, const fortran_int_t ldb,
@@ -95,8 +95,8 @@ inline std::ptrdiff_t gbsvx( const char fact, Trans, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbsvx( const char fact, Trans, const fortran_int_t n,
-        const fortran_int_t kl, const fortran_int_t ku,
+inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
+        const fortran_int_t n, const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, std::complex<float>* ab,
         const fortran_int_t ldab, std::complex<float>* afb,
         const fortran_int_t ldafb, fortran_int_t* ipiv, char& equed, float* r,
@@ -116,8 +116,8 @@ inline std::ptrdiff_t gbsvx( const char fact, Trans, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbsvx( const char fact, Trans, const fortran_int_t n,
-        const fortran_int_t kl, const fortran_int_t ku,
+inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
+        const fortran_int_t n, const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, std::complex<double>* ab,
         const fortran_int_t ldab, std::complex<double>* afb,
         const fortran_int_t ldafb, fortran_int_t* ipiv, char& equed,

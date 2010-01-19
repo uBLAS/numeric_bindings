@@ -51,7 +51,7 @@ namespace detail {
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t cposv( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t cposv( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t nrhs, std::complex<double>* a,
         const fortran_int_t lda, const std::complex<double>* b,
         const fortran_int_t ldb, std::complex<double>* x,
@@ -168,8 +168,9 @@ struct cposv_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 
     //

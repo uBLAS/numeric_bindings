@@ -6,16 +6,18 @@
 
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas3.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/blas/level3.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/conj.hpp>
 #ifdef F_USE_STD_VECTOR
 #include <vector>
-#include <boost/numeric/bindings/traits/std_vector.hpp> 
+#include <boost/numeric/bindings/std/vector.hpp> 
 #endif 
 #include "utils.h" 
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
+namespace bindings = boost::numeric::bindings;
 
 using std::cout;
 using std::endl; 
@@ -54,7 +56,7 @@ int main() {
   m_t c (2, 3);
 
   // c = a b
-  atlas::gemm (a, b, c); 
+  blas::gemm ( 1.0, a, b, 0.0, c); 
   print_m (c, "A B"); 
   cout << endl; 
 
@@ -66,17 +68,17 @@ int main() {
   cout << endl; 
   
   // c = a b
-  atlas::gemm (CblasNoTrans, CblasNoTrans, 1.0, a, b, 0.0, c); 
+  blas::gemm (1.0, a, b, 0.0, c); 
   print_m (c, "A B"); 
   cout << endl; 
 
   // c = a^T b
-  atlas::gemm (CblasTrans, CblasNoTrans, 1.0, a, b, 0.0, c); 
+  blas::gemm ( 1.0, bindings::trans(a), b, 0.0, c); 
   print_m (c, "A^T B"); 
   cout << endl; 
 
   // c = a^H b
-  atlas::gemm (CblasConjTrans, CblasNoTrans, 1.0, a, b, 0.0, c); 
+  blas::gemm (1.0, bindings::conj(a), b, 0.0, c); 
   print_m (c, "A^H B"); 
 
   cout << endl; 

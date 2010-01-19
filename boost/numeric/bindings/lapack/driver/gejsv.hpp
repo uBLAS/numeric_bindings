@@ -177,40 +177,45 @@ struct gejsv_impl {
     // Static member function that returns the minimum size of
     // workspace-array sva.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_sva( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array u.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_u( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array v.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_v( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array iwork.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_iwork( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 };
 

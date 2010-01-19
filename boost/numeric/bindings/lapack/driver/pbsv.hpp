@@ -50,7 +50,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbsv( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t pbsv( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t kd, const fortran_int_t nrhs, float* ab,
         const fortran_int_t ldab, float* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
@@ -65,7 +65,7 @@ inline std::ptrdiff_t pbsv( UpLo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbsv( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t pbsv( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t kd, const fortran_int_t nrhs, double* ab,
         const fortran_int_t ldab, double* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
@@ -80,7 +80,7 @@ inline std::ptrdiff_t pbsv( UpLo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbsv( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t pbsv( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t kd, const fortran_int_t nrhs,
         std::complex<float>* ab, const fortran_int_t ldab,
         std::complex<float>* b, const fortran_int_t ldb ) {
@@ -96,7 +96,7 @@ inline std::ptrdiff_t pbsv( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbsv( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t pbsv( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t kd, const fortran_int_t nrhs,
         std::complex<double>* ab, const fortran_int_t ldab,
         std::complex<double>* b, const fortran_int_t ldb ) {

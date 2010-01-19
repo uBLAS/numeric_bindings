@@ -52,15 +52,16 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t tgevc( const char side, const char howmny,
+template< typename Side >
+inline std::ptrdiff_t tgevc( const Side side, const char howmny,
         const logical_t* select, const fortran_int_t n, const float* s,
         const fortran_int_t lds, const float* p, const fortran_int_t ldp,
         float* vl, const fortran_int_t ldvl, float* vr,
         const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
         float* work ) {
     fortran_int_t info(0);
-    LAPACK_STGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
-            vr, &ldvr, &mm, &m, work, &info );
+    LAPACK_STGEVC( &lapack_option< Side >::value, &howmny, select, &n, s,
+            &lds, p, &ldp, vl, &ldvl, vr, &ldvr, &mm, &m, work, &info );
     return info;
 }
 
@@ -69,15 +70,16 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t tgevc( const char side, const char howmny,
+template< typename Side >
+inline std::ptrdiff_t tgevc( const Side side, const char howmny,
         const logical_t* select, const fortran_int_t n, const double* s,
         const fortran_int_t lds, const double* p, const fortran_int_t ldp,
         double* vl, const fortran_int_t ldvl, double* vr,
         const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
         double* work ) {
     fortran_int_t info(0);
-    LAPACK_DTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
-            vr, &ldvr, &mm, &m, work, &info );
+    LAPACK_DTGEVC( &lapack_option< Side >::value, &howmny, select, &n, s,
+            &lds, p, &ldp, vl, &ldvl, vr, &ldvr, &mm, &m, work, &info );
     return info;
 }
 
@@ -86,7 +88,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t tgevc( const char side, const char howmny,
+template< typename Side >
+inline std::ptrdiff_t tgevc( const Side side, const char howmny,
         const logical_t* select, const fortran_int_t n,
         const std::complex<float>* s, const fortran_int_t lds,
         const std::complex<float>* p, const fortran_int_t ldp,
@@ -95,8 +98,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
         const fortran_int_t mm, fortran_int_t& m, std::complex<float>* work,
         float* rwork ) {
     fortran_int_t info(0);
-    LAPACK_CTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
-            vr, &ldvr, &mm, &m, work, rwork, &info );
+    LAPACK_CTGEVC( &lapack_option< Side >::value, &howmny, select, &n, s,
+            &lds, p, &ldp, vl, &ldvl, vr, &ldvr, &mm, &m, work, rwork, &info );
     return info;
 }
 
@@ -105,7 +108,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t tgevc( const char side, const char howmny,
+template< typename Side >
+inline std::ptrdiff_t tgevc( const Side side, const char howmny,
         const logical_t* select, const fortran_int_t n,
         const std::complex<double>* s, const fortran_int_t lds,
         const std::complex<double>* p, const fortran_int_t ldp,
@@ -114,8 +118,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
         const fortran_int_t mm, fortran_int_t& m, std::complex<double>* work,
         double* rwork ) {
     fortran_int_t info(0);
-    LAPACK_ZTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
-            vr, &ldvr, &mm, &m, work, rwork, &info );
+    LAPACK_ZTGEVC( &lapack_option< Side >::value, &howmny, select, &n, s,
+            &lds, p, &ldp, vl, &ldvl, vr, &ldvr, &mm, &m, work, rwork, &info );
     return info;
 }
 
@@ -143,9 +147,10 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-            typename MatrixVL, typename MatrixVR, typename WORK >
-    static std::ptrdiff_t invoke( const char side, const char howmny,
+    template< typename Side, typename VectorSELECT, typename MatrixS,
+            typename MatrixP, typename MatrixVL, typename MatrixVR,
+            typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const char howmny,
             const VectorSELECT& select, const MatrixS& s, const MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
             fortran_int_t& m, detail::workspace1< WORK > work ) {
@@ -180,7 +185,6 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::stride_major(s) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(s)) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
-        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         return detail::tgevc( side, howmny, bindings::begin_value(select),
                 bindings::size_column(s), bindings::begin_value(s),
                 bindings::stride_major(s), bindings::begin_value(p),
@@ -197,9 +201,9 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-            typename MatrixVL, typename MatrixVR >
-    static std::ptrdiff_t invoke( const char side, const char howmny,
+    template< typename Side, typename VectorSELECT, typename MatrixS,
+            typename MatrixP, typename MatrixVL, typename MatrixVR >
+    static std::ptrdiff_t invoke( const Side side, const char howmny,
             const VectorSELECT& select, const MatrixS& s, const MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
             fortran_int_t& m, minimal_workspace work ) {
@@ -217,9 +221,9 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-            typename MatrixVL, typename MatrixVR >
-    static std::ptrdiff_t invoke( const char side, const char howmny,
+    template< typename Side, typename VectorSELECT, typename MatrixS,
+            typename MatrixP, typename MatrixVL, typename MatrixVR >
+    static std::ptrdiff_t invoke( const Side side, const char howmny,
             const VectorSELECT& select, const MatrixS& s, const MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
             fortran_int_t& m, optimal_workspace work ) {
@@ -252,10 +256,10 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-            typename MatrixVL, typename MatrixVR, typename WORK,
-            typename RWORK >
-    static std::ptrdiff_t invoke( const char side, const char howmny,
+    template< typename Side, typename VectorSELECT, typename MatrixS,
+            typename MatrixP, typename MatrixVL, typename MatrixVR,
+            typename WORK, typename RWORK >
+    static std::ptrdiff_t invoke( const Side side, const char howmny,
             const VectorSELECT& select, const MatrixS& s, const MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
             fortran_int_t& m, detail::workspace2< WORK, RWORK > work ) {
@@ -292,7 +296,6 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::stride_major(s) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(s)) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
-        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         return detail::tgevc( side, howmny, bindings::begin_value(select),
                 bindings::size_column(s), bindings::begin_value(s),
                 bindings::stride_major(s), bindings::begin_value(p),
@@ -310,9 +313,9 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-            typename MatrixVL, typename MatrixVR >
-    static std::ptrdiff_t invoke( const char side, const char howmny,
+    template< typename Side, typename VectorSELECT, typename MatrixS,
+            typename MatrixP, typename MatrixVL, typename MatrixVR >
+    static std::ptrdiff_t invoke( const Side side, const char howmny,
             const VectorSELECT& select, const MatrixS& s, const MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
             fortran_int_t& m, minimal_workspace work ) {
@@ -332,9 +335,9 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-            typename MatrixVL, typename MatrixVR >
-    static std::ptrdiff_t invoke( const char side, const char howmny,
+    template< typename Side, typename VectorSELECT, typename MatrixS,
+            typename MatrixP, typename MatrixVL, typename MatrixVR >
+    static std::ptrdiff_t invoke( const Side side, const char howmny,
             const VectorSELECT& select, const MatrixS& s, const MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
             fortran_int_t& m, optimal_workspace work ) {
@@ -376,11 +379,12 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * MatrixVR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixS,
+        typename MatrixP, typename MatrixVL, typename MatrixVR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgevc( const char side, const char howmny, const VectorSELECT& select,
+tgevc( const Side side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
     return tgevc_impl< typename bindings::value_type<
@@ -394,11 +398,11 @@ tgevc( const char side, const char howmny, const VectorSELECT& select,
 // * MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-        typename MatrixVL, typename MatrixVR >
+template< typename Side, typename VectorSELECT, typename MatrixS,
+        typename MatrixP, typename MatrixVL, typename MatrixVR >
 inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
         std::ptrdiff_t >::type
-tgevc( const char side, const char howmny, const VectorSELECT& select,
+tgevc( const Side side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
     return tgevc_impl< typename bindings::value_type<
@@ -412,11 +416,12 @@ tgevc( const char side, const char howmny, const VectorSELECT& select,
 // * MatrixVR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixS,
+        typename MatrixP, typename MatrixVL, typename MatrixVR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgevc( const char side, const char howmny, const VectorSELECT& select,
+tgevc( const Side side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
     return tgevc_impl< typename bindings::value_type<
@@ -430,11 +435,11 @@ tgevc( const char side, const char howmny, const VectorSELECT& select,
 // * MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-        typename MatrixVL, typename MatrixVR >
+template< typename Side, typename VectorSELECT, typename MatrixS,
+        typename MatrixP, typename MatrixVL, typename MatrixVR >
 inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
         std::ptrdiff_t >::type
-tgevc( const char side, const char howmny, const VectorSELECT& select,
+tgevc( const Side side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
     return tgevc_impl< typename bindings::value_type<
@@ -448,11 +453,12 @@ tgevc( const char side, const char howmny, const VectorSELECT& select,
 // * const MatrixVR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixS,
+        typename MatrixP, typename MatrixVL, typename MatrixVR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgevc( const char side, const char howmny, const VectorSELECT& select,
+tgevc( const Side side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
     return tgevc_impl< typename bindings::value_type<
@@ -466,11 +472,11 @@ tgevc( const char side, const char howmny, const VectorSELECT& select,
 // * const MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-        typename MatrixVL, typename MatrixVR >
+template< typename Side, typename VectorSELECT, typename MatrixS,
+        typename MatrixP, typename MatrixVL, typename MatrixVR >
 inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
         std::ptrdiff_t >::type
-tgevc( const char side, const char howmny, const VectorSELECT& select,
+tgevc( const Side side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
     return tgevc_impl< typename bindings::value_type<
@@ -484,11 +490,12 @@ tgevc( const char side, const char howmny, const VectorSELECT& select,
 // * const MatrixVR&
 // * User-defined workspace
 //
-template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-        typename MatrixVL, typename MatrixVR, typename Workspace >
+template< typename Side, typename VectorSELECT, typename MatrixS,
+        typename MatrixP, typename MatrixVL, typename MatrixVR,
+        typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgevc( const char side, const char howmny, const VectorSELECT& select,
+tgevc( const Side side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl,
         const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
         Workspace work ) {
@@ -503,11 +510,11 @@ tgevc( const char side, const char howmny, const VectorSELECT& select,
 // * const MatrixVR&
 // * Default workspace-type (optimal)
 //
-template< typename VectorSELECT, typename MatrixS, typename MatrixP,
-        typename MatrixVL, typename MatrixVR >
+template< typename Side, typename VectorSELECT, typename MatrixS,
+        typename MatrixP, typename MatrixVL, typename MatrixVR >
 inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
         std::ptrdiff_t >::type
-tgevc( const char side, const char howmny, const VectorSELECT& select,
+tgevc( const Side side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl,
         const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m ) {

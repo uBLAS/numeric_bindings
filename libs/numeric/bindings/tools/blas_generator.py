@@ -107,7 +107,7 @@ def write_functions( info_map, group, template_map, base_dir ):
 
         if "has_cblas_order_arg" in info_map[ subroutine ]:
             if info_map[ subroutine ][ "has_cblas_order_arg" ] == True:
-                arg_list.insert( 0, "Order" )
+                arg_list.insert( 0, "const Order order" )
                 cblas_arg_list.insert( 0, "cblas_option< Order >::value" )
                 typename_list.insert( 0, "typename Order" )
                 level0_static_asserts.append( "BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );" )
@@ -365,8 +365,12 @@ def write_functions( info_map, group, template_map, base_dir ):
             first_typename = template_map[ netlib.my_has_key( \
                 my_key, template_map ) ].strip()
         else:
-            first_typename = level1_type_arg_list[0].split(" ")[-1]
-        first_typename_datatype = first_typename[0:6].lower() # 'matrix' or 'vector' or 'scalar'
+            first_typename = ''
+            for tn in level1_type_arg_list:
+                bare_type = tn.split(" ")[-1]
+                if first_typename == '' and bare_type[:6].lower() in [ 'matrix', 'vector' ]:
+                    first_typename = bare_type
+        first_typename_datatype = first_typename[:6].lower() # 'matrix' or 'vector' or 'scalar'
       else:
         level1_type_arg_list.insert( 0, 'typename Value' )
         first_typename = 'Value'

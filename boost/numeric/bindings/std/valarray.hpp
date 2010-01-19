@@ -29,12 +29,16 @@ struct adaptor< std::valarray< T >, Id, Enable > {
         mpl::pair< tag::stride_type<1>, tag::contiguous >
     > property_map;
 
-    static std::ptrdiff_t size1( const Id& t ) {
-        return t.size();
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size();
     }
 
-    static value_type* begin_value( Id& t ) {
-        return &t.front();
+    static value_type* begin_value( Id& id ) {
+        return &id[0];
+    }
+
+    static value_type* end_value( Id& id ) {
+        return &id[0] + id.size();
     }
 
 };

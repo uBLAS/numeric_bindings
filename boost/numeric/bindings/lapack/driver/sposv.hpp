@@ -51,7 +51,7 @@ namespace detail {
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sposv( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t sposv( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t nrhs, double* a, const fortran_int_t lda,
         const double* b, const fortran_int_t ldb, double* x,
         const fortran_int_t ldx, double* work, float* swork,
@@ -160,8 +160,9 @@ struct sposv_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
+    template< $TYPES >
     static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+        $MIN_SIZE_IMPLEMENTATION
     }
 
     //

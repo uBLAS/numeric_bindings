@@ -62,10 +62,11 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const int m, const int n,
-        const float alpha, const float* a, const int lda, const float* b,
-        const int ldb, const float beta, float* c, const int ldc ) {
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const float alpha, const float* a,
+        const int lda, const float* b, const int ldb, const float beta,
+        float* c, const int ldc ) {
     cblas_ssymm( cblas_option< Order >::value, cblas_option< Side >::value,
             cblas_option< UpLo >::value, m, n, alpha, a, lda, b, ldb, beta, c,
             ldc );
@@ -76,10 +77,11 @@ inline void symm( Order, const char side, UpLo, const int m, const int n,
 // * CBLAS backend, and
 // * double value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const int m, const int n,
-        const double alpha, const double* a, const int lda, const double* b,
-        const int ldb, const double beta, double* c, const int ldc ) {
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const double alpha, const double* a,
+        const int lda, const double* b, const int ldb, const double beta,
+        double* c, const int ldc ) {
     cblas_dsymm( cblas_option< Order >::value, cblas_option< Side >::value,
             cblas_option< UpLo >::value, m, n, alpha, a, lda, b, ldb, beta, c,
             ldc );
@@ -90,10 +92,11 @@ inline void symm( Order, const char side, UpLo, const int m, const int n,
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const int m, const int n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const int lda, const std::complex<float>* b, const int ldb,
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* b, const int ldb,
         const std::complex<float> beta, std::complex<float>* c,
         const int ldc ) {
     cblas_csymm( cblas_option< Order >::value, cblas_option< Side >::value,
@@ -106,10 +109,11 @@ inline void symm( Order, const char side, UpLo, const int m, const int n,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const int m, const int n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const int lda, const std::complex<double>* b, const int ldb,
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* b, const int ldb,
         const std::complex<double> beta, std::complex<double>* c,
         const int ldc ) {
     cblas_zsymm( cblas_option< Order >::value, cblas_option< Side >::value,
@@ -123,13 +127,14 @@ inline void symm( Order, const char side, UpLo, const int m, const int n,
 // * CUBLAS backend, and
 // * float value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const int m, const int n,
-        const float alpha, const float* a, const int lda, const float* b,
-        const int ldb, const float beta, float* c, const int ldc ) {
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const float alpha, const float* a,
+        const int lda, const float* b, const int ldb, const float beta,
+        float* c, const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    cublasSsymm( side, blas_option< UpLo >::value, m, n, alpha, a, lda, b,
-            ldb, beta, c, ldc );
+    cublasSsymm( blas_option< Side >::value, blas_option< UpLo >::value, m, n,
+            alpha, a, lda, b, ldb, beta, c, ldc );
 }
 
 //
@@ -137,13 +142,14 @@ inline void symm( Order, const char side, UpLo, const int m, const int n,
 // * CUBLAS backend, and
 // * double value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const int m, const int n,
-        const double alpha, const double* a, const int lda, const double* b,
-        const int ldb, const double beta, double* c, const int ldc ) {
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const double alpha, const double* a,
+        const int lda, const double* b, const int ldb, const double beta,
+        double* c, const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    cublasDsymm( side, blas_option< UpLo >::value, m, n, alpha, a, lda, b,
-            ldb, beta, c, ldc );
+    cublasDsymm( blas_option< Side >::value, blas_option< UpLo >::value, m, n,
+            alpha, a, lda, b, ldb, beta, c, ldc );
 }
 
 //
@@ -151,15 +157,16 @@ inline void symm( Order, const char side, UpLo, const int m, const int n,
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const int m, const int n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const int lda, const std::complex<float>* b, const int ldb,
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* b, const int ldb,
         const std::complex<float> beta, std::complex<float>* c,
         const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    cublasCsymm( side, blas_option< UpLo >::value, m, n, alpha, a, lda, b,
-            ldb, beta, c, ldc );
+    cublasCsymm( blas_option< Side >::value, blas_option< UpLo >::value, m, n,
+            alpha, a, lda, b, ldb, beta, c, ldc );
 }
 
 //
@@ -167,10 +174,11 @@ inline void symm( Order, const char side, UpLo, const int m, const int n,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const int m, const int n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const int lda, const std::complex<double>* b, const int ldb,
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* b, const int ldb,
         const std::complex<double> beta, std::complex<double>* c,
         const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -183,14 +191,15 @@ inline void symm( Order, const char side, UpLo, const int m, const int n,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const fortran_int_t m,
-        const fortran_int_t n, const float alpha, const float* a,
-        const fortran_int_t lda, const float* b, const fortran_int_t ldb,
-        const float beta, float* c, const fortran_int_t ldc ) {
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const fortran_int_t m, const fortran_int_t n, const float alpha,
+        const float* a, const fortran_int_t lda, const float* b,
+        const fortran_int_t ldb, const float beta, float* c,
+        const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    BLAS_SSYMM( &side, &blas_option< UpLo >::value, &m, &n, &alpha, a, &lda,
-            b, &ldb, &beta, c, &ldc );
+    BLAS_SSYMM( &blas_option< Side >::value, &blas_option< UpLo >::value, &m,
+            &n, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
 }
 
 //
@@ -198,14 +207,15 @@ inline void symm( Order, const char side, UpLo, const fortran_int_t m,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const fortran_int_t m,
-        const fortran_int_t n, const double alpha, const double* a,
-        const fortran_int_t lda, const double* b, const fortran_int_t ldb,
-        const double beta, double* c, const fortran_int_t ldc ) {
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const fortran_int_t m, const fortran_int_t n, const double alpha,
+        const double* a, const fortran_int_t lda, const double* b,
+        const fortran_int_t ldb, const double beta, double* c,
+        const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    BLAS_DSYMM( &side, &blas_option< UpLo >::value, &m, &n, &alpha, a, &lda,
-            b, &ldb, &beta, c, &ldc );
+    BLAS_DSYMM( &blas_option< Side >::value, &blas_option< UpLo >::value, &m,
+            &n, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
 }
 
 //
@@ -213,16 +223,16 @@ inline void symm( Order, const char side, UpLo, const fortran_int_t m,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const fortran_int_t m,
-        const fortran_int_t n, const std::complex<float> alpha,
-        const std::complex<float>* a, const fortran_int_t lda,
-        const std::complex<float>* b, const fortran_int_t ldb,
-        const std::complex<float> beta, std::complex<float>* c,
-        const fortran_int_t ldc ) {
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* b,
+        const fortran_int_t ldb, const std::complex<float> beta,
+        std::complex<float>* c, const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    BLAS_CSYMM( &side, &blas_option< UpLo >::value, &m, &n, &alpha, a, &lda,
-            b, &ldb, &beta, c, &ldc );
+    BLAS_CSYMM( &blas_option< Side >::value, &blas_option< UpLo >::value, &m,
+            &n, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
 }
 
 //
@@ -230,16 +240,16 @@ inline void symm( Order, const char side, UpLo, const fortran_int_t m,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-template< typename Order, typename UpLo >
-inline void symm( Order, const char side, UpLo, const fortran_int_t m,
-        const fortran_int_t n, const std::complex<double> alpha,
-        const std::complex<double>* a, const fortran_int_t lda,
-        const std::complex<double>* b, const fortran_int_t ldb,
-        const std::complex<double> beta, std::complex<double>* c,
-        const fortran_int_t ldc ) {
+template< typename Order, typename Side, typename UpLo >
+inline void symm( const Order order, const Side side, const UpLo uplo,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* b,
+        const fortran_int_t ldb, const std::complex<double> beta,
+        std::complex<double>* c, const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    BLAS_ZSYMM( &side, &blas_option< UpLo >::value, &m, &n, &alpha, a, &lda,
-            b, &ldb, &beta, c, &ldc );
+    BLAS_ZSYMM( &blas_option< Side >::value, &blas_option< UpLo >::value, &m,
+            &n, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
 }
 
 #endif
@@ -262,8 +272,9 @@ struct symm_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static return_type invoke( const char side, const value_type alpha,
+    template< typename Side, typename MatrixA, typename MatrixB,
+            typename MatrixC >
+    static return_type invoke( const Side side, const value_type alpha,
             const MatrixA& a, const MatrixB& b, const value_type beta,
             MatrixC& c ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -284,7 +295,6 @@ struct symm_impl {
                 bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( bindings::size_minor(c) == 1 ||
                 bindings::stride_minor(c) == 1 );
-        BOOST_ASSERT( side == 'L' || side == 'R' );
         detail::symm( order(), side, uplo(), bindings::size_row(c),
                 bindings::size_column(c), alpha, bindings::begin_value(a),
                 bindings::stride_major(a), bindings::begin_value(b),
@@ -305,10 +315,10 @@ struct symm_impl {
 // Overloaded function for symm. Its overload differs for
 // * MatrixC&
 //
-template< typename MatrixA, typename MatrixB, typename MatrixC >
+template< typename Side, typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename symm_impl< typename bindings::value_type<
         MatrixA >::type >::return_type
-symm( const char side, const typename bindings::value_type<
+symm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, const MatrixB& b,
         const typename bindings::value_type< MatrixA >::type beta,
         MatrixC& c ) {
@@ -320,10 +330,10 @@ symm( const char side, const typename bindings::value_type<
 // Overloaded function for symm. Its overload differs for
 // * const MatrixC&
 //
-template< typename MatrixA, typename MatrixB, typename MatrixC >
+template< typename Side, typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename symm_impl< typename bindings::value_type<
         MatrixA >::type >::return_type
-symm( const char side, const typename bindings::value_type<
+symm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, const MatrixB& b,
         const typename bindings::value_type< MatrixA >::type beta,
         const MatrixC& c ) {

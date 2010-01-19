@@ -63,9 +63,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const int m, const int n, const float alpha,
-        const float* a, const int lda, const float* x, const int incx,
-        const float beta, float* y, const int incy ) {
+inline void gemv( const Order order, const Trans trans, const int m,
+        const int n, const float alpha, const float* a, const int lda,
+        const float* x, const int incx, const float beta, float* y,
+        const int incy ) {
     cblas_sgemv( cblas_option< Order >::value, cblas_option< Trans >::value,
             m, n, alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -76,9 +77,10 @@ inline void gemv( Order, Trans, const int m, const int n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const int m, const int n, const double alpha,
-        const double* a, const int lda, const double* x, const int incx,
-        const double beta, double* y, const int incy ) {
+inline void gemv( const Order order, const Trans trans, const int m,
+        const int n, const double alpha, const double* a, const int lda,
+        const double* x, const int incx, const double beta, double* y,
+        const int incy ) {
     cblas_dgemv( cblas_option< Order >::value, cblas_option< Trans >::value,
             m, n, alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -89,9 +91,10 @@ inline void gemv( Order, Trans, const int m, const int n, const double alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const int m, const int n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const int lda, const std::complex<float>* x, const int incx,
+inline void gemv( const Order order, const Trans trans, const int m,
+        const int n, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* x, const int incx,
         const std::complex<float> beta, std::complex<float>* y,
         const int incy ) {
     cblas_cgemv( cblas_option< Order >::value, cblas_option< Trans >::value,
@@ -104,9 +107,10 @@ inline void gemv( Order, Trans, const int m, const int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const int m, const int n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const int lda, const std::complex<double>* x, const int incx,
+inline void gemv( const Order order, const Trans trans, const int m,
+        const int n, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* x, const int incx,
         const std::complex<double> beta, std::complex<double>* y,
         const int incy ) {
     cblas_zgemv( cblas_option< Order >::value, cblas_option< Trans >::value,
@@ -120,9 +124,10 @@ inline void gemv( Order, Trans, const int m, const int n,
 // * float value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const int m, const int n, const float alpha,
-        const float* a, const int lda, const float* x, const int incx,
-        const float beta, float* y, const int incy ) {
+inline void gemv( const Order order, const Trans trans, const int m,
+        const int n, const float alpha, const float* a, const int lda,
+        const float* x, const int incx, const float beta, float* y,
+        const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSgemv( blas_option< Trans >::value, m, n, alpha, a, lda, x, incx,
             beta, y, incy );
@@ -134,9 +139,10 @@ inline void gemv( Order, Trans, const int m, const int n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const int m, const int n, const double alpha,
-        const double* a, const int lda, const double* x, const int incx,
-        const double beta, double* y, const int incy ) {
+inline void gemv( const Order order, const Trans trans, const int m,
+        const int n, const double alpha, const double* a, const int lda,
+        const double* x, const int incx, const double beta, double* y,
+        const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasDgemv( blas_option< Trans >::value, m, n, alpha, a, lda, x, incx,
             beta, y, incy );
@@ -148,9 +154,10 @@ inline void gemv( Order, Trans, const int m, const int n, const double alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const int m, const int n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const int lda, const std::complex<float>* x, const int incx,
+inline void gemv( const Order order, const Trans trans, const int m,
+        const int n, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* x, const int incx,
         const std::complex<float> beta, std::complex<float>* y,
         const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -164,9 +171,10 @@ inline void gemv( Order, Trans, const int m, const int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const int m, const int n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const int lda, const std::complex<double>* x, const int incx,
+inline void gemv( const Order order, const Trans trans, const int m,
+        const int n, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* x, const int incx,
         const std::complex<double> beta, std::complex<double>* y,
         const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -181,10 +189,10 @@ inline void gemv( Order, Trans, const int m, const int n,
 // * float value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
-        const float alpha, const float* a, const fortran_int_t lda,
-        const float* x, const fortran_int_t incx, const float beta, float* y,
-        const fortran_int_t incy ) {
+inline void gemv( const Order order, const Trans trans, const fortran_int_t m,
+        const fortran_int_t n, const float alpha, const float* a,
+        const fortran_int_t lda, const float* x, const fortran_int_t incx,
+        const float beta, float* y, const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SGEMV( &blas_option< Trans >::value, &m, &n, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
@@ -196,10 +204,10 @@ inline void gemv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
-        const double alpha, const double* a, const fortran_int_t lda,
-        const double* x, const fortran_int_t incx, const double beta,
-        double* y, const fortran_int_t incy ) {
+inline void gemv( const Order order, const Trans trans, const fortran_int_t m,
+        const fortran_int_t n, const double alpha, const double* a,
+        const fortran_int_t lda, const double* x, const fortran_int_t incx,
+        const double beta, double* y, const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DGEMV( &blas_option< Trans >::value, &m, &n, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
@@ -211,11 +219,12 @@ inline void gemv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const fortran_int_t lda, const std::complex<float>* x,
-        const fortran_int_t incx, const std::complex<float> beta,
-        std::complex<float>* y, const fortran_int_t incy ) {
+inline void gemv( const Order order, const Trans trans, const fortran_int_t m,
+        const fortran_int_t n, const std::complex<float> alpha,
+        const std::complex<float>* a, const fortran_int_t lda,
+        const std::complex<float>* x, const fortran_int_t incx,
+        const std::complex<float> beta, std::complex<float>* y,
+        const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CGEMV( &blas_option< Trans >::value, &m, &n, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
@@ -227,11 +236,12 @@ inline void gemv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename Trans >
-inline void gemv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const fortran_int_t lda, const std::complex<double>* x,
-        const fortran_int_t incx, const std::complex<double> beta,
-        std::complex<double>* y, const fortran_int_t incy ) {
+inline void gemv( const Order order, const Trans trans, const fortran_int_t m,
+        const fortran_int_t n, const std::complex<double> alpha,
+        const std::complex<double>* a, const fortran_int_t lda,
+        const std::complex<double>* x, const fortran_int_t incx,
+        const std::complex<double> beta, std::complex<double>* y,
+        const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZGEMV( &blas_option< Trans >::value, &m, &n, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );

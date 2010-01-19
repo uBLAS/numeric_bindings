@@ -9,8 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_OPTION_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_OPTION_HPP
 
-#include <boost/mpl/char.hpp>
-#include <boost/numeric/bindings/tag.hpp>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -19,34 +18,10 @@ namespace lapack {
 namespace detail {
 
 template< typename Tag >
-struct lapack_option {};
+struct lapack_option: bindings::blas::detail::blas_option< Tag > {};
 
 template<>
-struct lapack_option< tag::transpose >: mpl::char_< 'T' > {};
-
-template<>
-struct lapack_option< tag::no_transpose >: mpl::char_< 'N' > {};
-
-template<>
-struct lapack_option< tag::conjugate >: mpl::char_< 'C' > {};
-
-template<>
-struct lapack_option< tag::upper >: mpl::char_< 'U' > {};
-
-template<>
-struct lapack_option< tag::lower >: mpl::char_< 'L' > {};
-
-template<>
-struct lapack_option< tag::unit >: mpl::char_< 'U' > {};
-
-template<>
-struct lapack_option< tag::non_unit >: mpl::char_< 'N' > {};
-
-template<>
-struct lapack_option< tag::left >: mpl::char_< 'L' > {};
-
-template<>
-struct lapack_option< tag::right >: mpl::char_< 'R' > {};
+struct lapack_option< tag::both >: mpl::char_< 'B' > {};
 
 } // namespace detail
 } // namespace lapack

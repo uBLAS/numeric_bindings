@@ -14,15 +14,14 @@ typedef double real_t;
 #include <algorithm>
 #include <complex>
 
-#include <boost/numeric/bindings/traits/std_vector.hpp>
-#include <boost/numeric/bindings/traits/std_valarray.hpp>
-#include <boost/numeric/bindings/traits/boost_array.hpp>
-#include <boost/numeric/bindings/traits/c_array.hpp>
-#include <boost/numeric/bindings/atlas/cblas1.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
+#include <boost/numeric/bindings/std/valarray.hpp>
+#include <boost/numeric/bindings/boost/array.hpp>
+#include <boost/numeric/bindings/blas/level1.hpp>
 
 #include "utils.h"
 
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
 
 using std::cout;
 using std::endl;
@@ -39,7 +38,7 @@ int main() {
   print_v (sv, "sv"); 
   cout << "std::valarray" << endl; 
   std::valarray<real_t> va (n); 
-  atlas::set (0.1, va); 
+  blas::set (0.1, va); 
   print_v (va, "va"); 
   cout << endl; 
 
@@ -48,15 +47,15 @@ int main() {
   for (int i = 0; i < n; ++i)
     d += sv[i] * va[i]; 
 
-  cout << "is " << d << " == " << atlas::dot (sv, va) << " ?" << endl; 
+  cout << "is " << d << " == " << blas::dot (sv, va) << " ?" << endl; 
   cout << endl; 
 
 #ifdef F_FLOAT
-  cout << "sdsdot(): 10 + sv^T va = " << atlas::sdsdot (10, sv, va) << endl; 
+  cout << "sdsdot(): 10 + sv^T va = " << blas::sdsdot (10, sv, va) << endl; 
   cout << endl;
 #endif  
 
-  atlas::scal (real_t(2), sv);
+  blas::scal (real_t(2), sv);
   print_v (sv, "scal(): 2 sv"); 
 
   cout << endl; 
@@ -65,33 +64,33 @@ int main() {
   cout << "shuffled sv: "; 
   std::copy (sv.begin(), sv.end(), std::ostream_iterator<real_t> (cout, " ")); 
   cout << endl; 
-  int i = atlas::iamax (sv); 
+  int i = blas::iamax (sv); 
   cout << "iamax():\n  index of max el = " << i 
        << "; max el = " << sv[i] << endl; 
   cout << endl; 
 
-  cout << "asum():\n  ||sv||_1 =  " << atlas::asum (sv) 
-       << "; ||va||_1 = " << atlas::asum (va) << endl; 
-  cout << "nrm2():\n  ||sv||_2 = " << atlas::nrm2 (sv) 
-       << "; ||va||_2 = " << atlas::nrm2 (va) << endl; 
+  cout << "asum():\n  ||sv||_1 =  " << blas::asum (sv) 
+       << "; ||va||_1 = " << blas::asum (va) << endl; 
+  cout << "nrm2():\n  ||sv||_2 = " << blas::nrm2 (sv) 
+       << "; ||va||_2 = " << blas::nrm2 (va) << endl; 
   cout << endl; 
 
   cout << "boost::array" << endl;
   boost::array<double, 10> ba;
-  atlas::set (0.1, ba);
+  blas::set (0.1, ba);
   print_v (ba, "ba");
   cout << "C array" << endl; 
   typedef double double_array[10]; 
   double_array ca; 
-  atlas::set (1., ca); 
+  blas::set (1., ca); 
   print_v (ca, "ca");
   cout << endl; 
   
-  atlas::axpy (0.1, ba, ca); 
+  blas::axpy (0.1, ba, ca); 
   print_v (ca, "axpy(): 0.1 ba + ca"); 
 
-  atlas::axpby (0.1, ba, 2., ca); 
-  print_v (ca, "axpby(): 0.1 ba + 2.0 ca"); 
+//  blas::axpby (0.1, ba, 2., ca); 
+//  print_v (ca, "axpby(): 0.1 ba + 2.0 ca"); 
 
   cout << endl;
 }

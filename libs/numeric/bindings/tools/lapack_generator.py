@@ -363,7 +363,10 @@ def write_functions( info_map, group, template_map, base_dir ):
         first_typename_code = info_map[ subroutine ][ 'argument_map' ][ first_typename_arg ][ 'code' ][ 'level_1_type' ]
         first_typename = first_typename_code.split(" ")[-1]
       else:
-        first_typename = level1_type_arg_list[0].split(" ")[-1]
+        for tn in level1_type_arg_list:
+            bare_type = tn.split(" ")[-1]
+            if first_typename == '' and bare_type[:6].lower() in [ 'matrix', 'vector' ]:
+                first_typename = bare_type
 
       # generate the word "matrix" or "vector", to select the right traits
       first_typename_datatype = first_typename[0:6].lower()
@@ -455,15 +458,16 @@ def write_functions( info_map, group, template_map, base_dir ):
 
           my_key = group_name.lower() + '.' + value_type + '.min_size_' + name.lower()
           if netlib.my_has_key( my_key, template_map ):
-            sub_template = sub_template.replace( "$MIN_SIZE", indent_lines( template_map[ netlib.my_has_key( my_key, template_map ) ].rstrip(), 8 ) )
+            sub_template = sub_template.replace( "$MIN_SIZE_IMPLEMENTATION", indent_lines( template_map[ netlib.my_has_key( my_key, template_map ) ].rstrip(), 8 ) )
 
           elif info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace' ] != None:
             resulting_code = 'return ' + info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace' ] + ';'
-            sub_template = sub_template.replace( "$MIN_SIZE", resulting_code.rstrip() )
+            sub_template = sub_template.replace( "$MIN_SIZE_IMPLEMENTATION", resulting_code.rstrip() )
             
           # Do about the same for the argument stuff.  
           if info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace_args' ] != None:
-            sub_template = sub_template.replace( "$ARGUMENTS", info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace_args' ] )
+            sub_template = sub_template.replace( "$TYPES", info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace_args' ][ 'types' ] )
+            sub_template = sub_template.replace( "$ARGUMENTS", info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace_args' ][ 'code' ] )
 
             #sub_template += 'FOUND'
           min_size_funcs += sub_template
@@ -530,6 +534,7 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$INTEGER_TYPE', netlib.generic_integer_type )
     result = result.replace( '$LIBRARY_INT_TYPE', "fortran_int_t" )
     result = result.replace( '$NAMESPACE', "bindings::" )
+    result = result.replace( '    template<  >\n', '' )
     result = result.replace( '\n\n\n', '\n\n' )
     result = result.replace( "\n    \n", "\n" )
     result = result.replace( "\n        \n", "\n" )

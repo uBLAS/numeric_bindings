@@ -51,9 +51,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hpev( const char jobz, UpLo, const fortran_int_t n,
-        std::complex<float>* ap, float* w, std::complex<float>* z,
-        const fortran_int_t ldz, std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t hpev( const char jobz, const UpLo uplo,
+        const fortran_int_t n, std::complex<float>* ap, float* w,
+        std::complex<float>* z, const fortran_int_t ldz,
+        std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CHPEV( &jobz, &lapack_option< UpLo >::value, &n, ap, w, z, &ldz,
             work, rwork, &info );
@@ -66,9 +67,10 @@ inline std::ptrdiff_t hpev( const char jobz, UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hpev( const char jobz, UpLo, const fortran_int_t n,
-        std::complex<double>* ap, double* w, std::complex<double>* z,
-        const fortran_int_t ldz, std::complex<double>* work, double* rwork ) {
+inline std::ptrdiff_t hpev( const char jobz, const UpLo uplo,
+        const fortran_int_t n, std::complex<double>* ap, double* w,
+        std::complex<double>* z, const fortran_int_t ldz,
+        std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZHPEV( &jobz, &lapack_option< UpLo >::value, &n, ap, w, z, &ldz,
             work, rwork, &info );

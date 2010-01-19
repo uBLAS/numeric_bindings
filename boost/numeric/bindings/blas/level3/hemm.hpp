@@ -62,10 +62,11 @@ namespace detail {
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-template< typename Order, typename UpLo >
-inline void hemm( Order, const char side, UpLo, const int m, const int n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const int lda, const std::complex<float>* b, const int ldb,
+template< typename Order, typename Side, typename UpLo >
+inline void hemm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* b, const int ldb,
         const std::complex<float> beta, std::complex<float>* c,
         const int ldc ) {
     cblas_chemm( cblas_option< Order >::value, cblas_option< Side >::value,
@@ -78,10 +79,11 @@ inline void hemm( Order, const char side, UpLo, const int m, const int n,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-template< typename Order, typename UpLo >
-inline void hemm( Order, const char side, UpLo, const int m, const int n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const int lda, const std::complex<double>* b, const int ldb,
+template< typename Order, typename Side, typename UpLo >
+inline void hemm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* b, const int ldb,
         const std::complex<double> beta, std::complex<double>* c,
         const int ldc ) {
     cblas_zhemm( cblas_option< Order >::value, cblas_option< Side >::value,
@@ -95,15 +97,16 @@ inline void hemm( Order, const char side, UpLo, const int m, const int n,
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-template< typename Order, typename UpLo >
-inline void hemm( Order, const char side, UpLo, const int m, const int n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const int lda, const std::complex<float>* b, const int ldb,
+template< typename Order, typename Side, typename UpLo >
+inline void hemm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* b, const int ldb,
         const std::complex<float> beta, std::complex<float>* c,
         const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    cublasChemm( side, blas_option< UpLo >::value, m, n, alpha, a, lda, b,
-            ldb, beta, c, ldc );
+    cublasChemm( blas_option< Side >::value, blas_option< UpLo >::value, m, n,
+            alpha, a, lda, b, ldb, beta, c, ldc );
 }
 
 //
@@ -111,10 +114,11 @@ inline void hemm( Order, const char side, UpLo, const int m, const int n,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-template< typename Order, typename UpLo >
-inline void hemm( Order, const char side, UpLo, const int m, const int n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const int lda, const std::complex<double>* b, const int ldb,
+template< typename Order, typename Side, typename UpLo >
+inline void hemm( const Order order, const Side side, const UpLo uplo,
+        const int m, const int n, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* b, const int ldb,
         const std::complex<double> beta, std::complex<double>* c,
         const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -127,16 +131,16 @@ inline void hemm( Order, const char side, UpLo, const int m, const int n,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-template< typename Order, typename UpLo >
-inline void hemm( Order, const char side, UpLo, const fortran_int_t m,
-        const fortran_int_t n, const std::complex<float> alpha,
-        const std::complex<float>* a, const fortran_int_t lda,
-        const std::complex<float>* b, const fortran_int_t ldb,
-        const std::complex<float> beta, std::complex<float>* c,
-        const fortran_int_t ldc ) {
+template< typename Order, typename Side, typename UpLo >
+inline void hemm( const Order order, const Side side, const UpLo uplo,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* b,
+        const fortran_int_t ldb, const std::complex<float> beta,
+        std::complex<float>* c, const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    BLAS_CHEMM( &side, &blas_option< UpLo >::value, &m, &n, &alpha, a, &lda,
-            b, &ldb, &beta, c, &ldc );
+    BLAS_CHEMM( &blas_option< Side >::value, &blas_option< UpLo >::value, &m,
+            &n, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
 }
 
 //
@@ -144,16 +148,16 @@ inline void hemm( Order, const char side, UpLo, const fortran_int_t m,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-template< typename Order, typename UpLo >
-inline void hemm( Order, const char side, UpLo, const fortran_int_t m,
-        const fortran_int_t n, const std::complex<double> alpha,
-        const std::complex<double>* a, const fortran_int_t lda,
-        const std::complex<double>* b, const fortran_int_t ldb,
-        const std::complex<double> beta, std::complex<double>* c,
-        const fortran_int_t ldc ) {
+template< typename Order, typename Side, typename UpLo >
+inline void hemm( const Order order, const Side side, const UpLo uplo,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* b,
+        const fortran_int_t ldb, const std::complex<double> beta,
+        std::complex<double>* c, const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    BLAS_ZHEMM( &side, &blas_option< UpLo >::value, &m, &n, &alpha, a, &lda,
-            b, &ldb, &beta, c, &ldc );
+    BLAS_ZHEMM( &blas_option< Side >::value, &blas_option< UpLo >::value, &m,
+            &n, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
 }
 
 #endif
@@ -176,8 +180,9 @@ struct hemm_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static return_type invoke( const char side, const value_type alpha,
+    template< typename Side, typename MatrixA, typename MatrixB,
+            typename MatrixC >
+    static return_type invoke( const Side side, const value_type alpha,
             const MatrixA& a, const MatrixB& b, const value_type beta,
             MatrixC& c ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -198,7 +203,6 @@ struct hemm_impl {
                 bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( bindings::size_minor(c) == 1 ||
                 bindings::stride_minor(c) == 1 );
-        BOOST_ASSERT( side == 'L' || side == 'R' );
         detail::hemm( order(), side, uplo(), bindings::size_row(c),
                 bindings::size_column(c), alpha, bindings::begin_value(a),
                 bindings::stride_major(a), bindings::begin_value(b),
@@ -219,10 +223,10 @@ struct hemm_impl {
 // Overloaded function for hemm. Its overload differs for
 // * MatrixC&
 //
-template< typename MatrixA, typename MatrixB, typename MatrixC >
+template< typename Side, typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename hemm_impl< typename bindings::value_type<
         MatrixA >::type >::return_type
-hemm( const char side, const typename bindings::value_type<
+hemm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, const MatrixB& b,
         const typename bindings::value_type< MatrixA >::type beta,
         MatrixC& c ) {
@@ -234,10 +238,10 @@ hemm( const char side, const typename bindings::value_type<
 // Overloaded function for hemm. Its overload differs for
 // * const MatrixC&
 //
-template< typename MatrixA, typename MatrixB, typename MatrixC >
+template< typename Side, typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename hemm_impl< typename bindings::value_type<
         MatrixA >::type >::return_type
-hemm( const char side, const typename bindings::value_type<
+hemm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, const MatrixB& b,
         const typename bindings::value_type< MatrixA >::type beta,
         const MatrixC& c ) {

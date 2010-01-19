@@ -7,15 +7,16 @@
 
 #include <stddef.h>
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas1.hpp>
-#include <boost/numeric/bindings/atlas/cblas2.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
+#include <boost/numeric/bindings/blas/level1.hpp>
+#include <boost/numeric/bindings/blas/level2.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
-namespace traits = boost::numeric::bindings::traits;
+namespace blas = boost::numeric::bindings::blas;
+namespace bindings = boost::numeric::bindings;
+namespace tag = boost::numeric::bindings::tag;
 
 using std::cout;
 using std::cin;
@@ -53,7 +54,7 @@ int main() {
   cout << endl; 
 
   vct_t vx (n), vy (n); 
-  atlas::set (1., vx); 
+  blas::set (1., vx); 
   print_v (vx, "vx"); 
   vy (1) = 1.; 
   print_v (vy, "vy"); 
@@ -80,30 +81,30 @@ int main() {
   cout << endl; 
 
   // m += x x^T 
-  atlas::spr (vx, ucs); 
+  blas::spr (1.0, vx, ucs); 
   print_m (ucs, "ucs += x x^T"); 
   cout << endl; 
-  atlas::spr (1, vx, lcs); 
+  blas::spr (1.0, vx, lcs); 
   print_m (lcs, "lcs += x x^T"); 
   cout << endl; 
-  atlas::spr (1.0f, vx, urs); 
+  blas::spr (1.0, vx, urs); 
   print_m (urs, "urs += x x^T"); 
   cout << endl; 
-  atlas::spr (vx, lrs); 
+  blas::spr (1.0, vx, lrs); 
   print_m (lrs, "lrs += x x^T"); 
   cout << endl; 
 
   // m += x y^T + y x^T
-  atlas::spr2 (1, vx, vy, ucs); 
+  blas::spr2 (1.0, vx, vy, ucs); 
   print_m (ucs, "ucs += x y^T + y x^T"); 
   cout << endl; 
-  atlas::spr2 (vx, vy, lcs); 
+  blas::spr2 (1.0, vx, vy, lcs); 
   print_m (lcs, "lcs += x y^T + y x^T"); 
   cout << endl; 
-  atlas::spr2 (vx, vy, urs); 
+  blas::spr2 (1.0, vx, vy, urs); 
   print_m (urs, "urs += x y^T + y x^T"); 
   cout << endl; 
-  atlas::spr2 (1., vx, vy, lrs); 
+  blas::spr2 (1.0, vx, vy, lrs); 
   print_m (lrs, "lrs += x y^T + y x^T"); 
   cout << endl; 
 
@@ -135,30 +136,30 @@ int main() {
   cout << endl; 
 
   // m += x x^T 
-  atlas::syr (vx, ucsa); 
+  blas::syr (1.0, vx, ucsa); 
   print_m (ucsa, "ucsa += x x^T"); 
   cout << endl; 
-  atlas::syr (1, vx, lcsa); 
+  blas::syr (1.0, vx, lcsa); 
   print_m (lcsa, "lcsa += x x^T"); 
   cout << endl; 
-  atlas::syr (1.0f, vx, ursa); 
+  blas::syr (1.0, vx, ursa); 
   print_m (ursa, "ursa += x x^T"); 
   cout << endl; 
-  atlas::syr (vx, lrsa); 
+  blas::syr (1.0, vx, lrsa); 
   print_m (lrsa, "lrsa += x x^T"); 
   cout << endl; 
 
   // m += x y^T + y x^T
-  atlas::syr2 (1, vx, vy, ucsa); 
+  blas::syr2 (1.0, vx, vy, ucsa); 
   print_m (ucsa, "ucsa += x y^T + y x^T"); 
   cout << endl; 
-  atlas::syr2 (vx, vy, lcsa); 
+  blas::syr2 (1.0, vx, vy, lcsa); 
   print_m (lcsa, "lcsa += x y^T + y x^T"); 
   cout << endl; 
-  atlas::syr2 (vx, vy, ursa); 
+  blas::syr2 (1.0, vx, vy, ursa); 
   print_m (ursa, "ursa += x y^T + y x^T"); 
   cout << endl; 
-  atlas::syr2 (1., vx, vy, lrsa); 
+  blas::syr2 (1.0, vx, vy, lrsa); 
   print_m (lrsa, "lrsa += x y^T + y x^T"); 
   cout << endl; 
 

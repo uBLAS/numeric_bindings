@@ -52,9 +52,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t syevd( const char jobz, UpLo, const fortran_int_t n,
-        float* a, const fortran_int_t lda, float* w, float* work,
-        const fortran_int_t lwork, fortran_int_t* iwork,
+inline std::ptrdiff_t syevd( const char jobz, const UpLo uplo,
+        const fortran_int_t n, float* a, const fortran_int_t lda, float* w,
+        float* work, const fortran_int_t lwork, fortran_int_t* iwork,
         const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_SSYEVD( &jobz, &lapack_option< UpLo >::value, &n, a, &lda, w, work,
@@ -68,9 +68,9 @@ inline std::ptrdiff_t syevd( const char jobz, UpLo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t syevd( const char jobz, UpLo, const fortran_int_t n,
-        double* a, const fortran_int_t lda, double* w, double* work,
-        const fortran_int_t lwork, fortran_int_t* iwork,
+inline std::ptrdiff_t syevd( const char jobz, const UpLo uplo,
+        const fortran_int_t n, double* a, const fortran_int_t lda, double* w,
+        double* work, const fortran_int_t lwork, fortran_int_t* iwork,
         const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DSYEVD( &jobz, &lapack_option< UpLo >::value, &n, a, &lda, w, work,

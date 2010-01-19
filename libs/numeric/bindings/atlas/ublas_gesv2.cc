@@ -7,14 +7,17 @@
 
 #include <cstddef>
 #include <iostream>
-#include <boost/numeric/bindings/atlas/cblas.hpp>
-#include <boost/numeric/bindings/atlas/clapack.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/blas/level1/set.hpp>
+#include <boost/numeric/bindings/blas/level3/gemm.hpp>
+#include <boost/numeric/bindings/lapack/driver/gesv.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
+namespace lapack = boost::numeric::bindings::lapack;
 
 using std::size_t; 
 using std::cout;
@@ -47,9 +50,9 @@ int main() {
   m_t const aa (a); // copy of a, because a is `lost' after gesv()
 
   ublas::matrix_column<m_t> xc0 (x, 0), xc1 (x, 1); 
-  atlas::set (1., xc0);
-  atlas::set (2., xc1);
-  atlas::gemm (a, x, bb);  // bb = a x, so we know the result ;o) 
+  blas::set( 1., xc0 );
+  blas::set (2., xc1);
+  blas::gemm ( 1., a, x, 0.0, bb);  // bb = a x, so we know the result ;o) 
 
   print_m (a, "A"); 
   cout << endl; 
@@ -65,16 +68,17 @@ int main() {
   print_m (b, "B for gesv()"); 
   cout << endl; 
 
-  atlas::gesv (a, b);  // solving the system, b contains x 
+  std::vector< int > pivot( bindings::size1( a ) );
+  lapack::gesv (a, pivot,  b);  // solving the system, b contains x 
 
 #ifndef F_ROW_MAJOR
   print_m (b, "X");
   cout << endl; 
-  atlas::gemm (aa, b, x); 
+  blas::gemm (1.0, aa, b, 0.0, x); 
 #else
   print_m (b, "X^T"); 
   cout << endl; 
-  atlas::gemm (CblasNoTrans, CblasTrans, 1.0, aa, b, 0.0, x); 
+  blas::gemm ( 1.0, aa, bindings::trans(b), 0.0, x); 
 #endif 
   print_m (x, "B = A X"); 
 

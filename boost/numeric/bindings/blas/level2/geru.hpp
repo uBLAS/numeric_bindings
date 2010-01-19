@@ -62,7 +62,7 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order >
-inline void geru( Order, const int m, const int n,
+inline void geru( const Order order, const int m, const int n,
         const std::complex<float> alpha, const std::complex<float>* x,
         const int incx, const std::complex<float>* y, const int incy,
         std::complex<float>* a, const int lda ) {
@@ -76,7 +76,7 @@ inline void geru( Order, const int m, const int n,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline void geru( Order, const int m, const int n,
+inline void geru( const Order order, const int m, const int n,
         const std::complex<double> alpha, const std::complex<double>* x,
         const int incx, const std::complex<double>* y, const int incy,
         std::complex<double>* a, const int lda ) {
@@ -91,7 +91,7 @@ inline void geru( Order, const int m, const int n,
 // * complex<float> value-type.
 //
 template< typename Order >
-inline void geru( Order, const int m, const int n,
+inline void geru( const Order order, const int m, const int n,
         const std::complex<float> alpha, const std::complex<float>* x,
         const int incx, const std::complex<float>* y, const int incy,
         std::complex<float>* a, const int lda ) {
@@ -105,7 +105,7 @@ inline void geru( Order, const int m, const int n,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline void geru( Order, const int m, const int n,
+inline void geru( const Order order, const int m, const int n,
         const std::complex<double> alpha, const std::complex<double>* x,
         const int incx, const std::complex<double>* y, const int incy,
         std::complex<double>* a, const int lda ) {
@@ -120,11 +120,11 @@ inline void geru( Order, const int m, const int n,
 // * complex<float> value-type.
 //
 template< typename Order >
-inline void geru( Order, const fortran_int_t m, const fortran_int_t n,
-        const std::complex<float> alpha, const std::complex<float>* x,
-        const fortran_int_t incx, const std::complex<float>* y,
-        const fortran_int_t incy, std::complex<float>* a,
-        const fortran_int_t lda ) {
+inline void geru( const Order order, const fortran_int_t m,
+        const fortran_int_t n, const std::complex<float> alpha,
+        const std::complex<float>* x, const fortran_int_t incx,
+        const std::complex<float>* y, const fortran_int_t incy,
+        std::complex<float>* a, const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CGERU( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
 }
@@ -135,11 +135,11 @@ inline void geru( Order, const fortran_int_t m, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline void geru( Order, const fortran_int_t m, const fortran_int_t n,
-        const std::complex<double> alpha, const std::complex<double>* x,
-        const fortran_int_t incx, const std::complex<double>* y,
-        const fortran_int_t incy, std::complex<double>* a,
-        const fortran_int_t lda ) {
+inline void geru( const Order order, const fortran_int_t m,
+        const fortran_int_t n, const std::complex<double> alpha,
+        const std::complex<double>* x, const fortran_int_t incx,
+        const std::complex<double>* y, const fortran_int_t incy,
+        std::complex<double>* a, const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZGERU( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
 }

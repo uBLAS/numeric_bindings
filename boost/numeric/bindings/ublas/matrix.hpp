@@ -67,6 +67,33 @@ struct adaptor< boost::numeric::ublas::matrix< T, F, A >, Id, Enable > {
 
 };
 
+template< typename T, std::size_t N, std::size_t M, typename Id, typename Enable >
+struct adaptor< ::boost::numeric::ublas::c_matrix< T, N, M >, Id, Enable > {
+
+    typedef typename copy_const< Id, T >::type value_type;
+    typedef mpl::map<
+        mpl::pair< tag::value_type, value_type >,
+        mpl::pair< tag::entity, tag::matrix >,
+        mpl::pair< tag::size_type<1>, mpl::int_<N> >,
+        mpl::pair< tag::size_type<2>, mpl::int_<M> >,
+        mpl::pair< tag::matrix_type, tag::general >,
+        mpl::pair< tag::data_structure, tag::linear_array >,
+        mpl::pair< tag::data_order, tag::row_major >,
+        mpl::pair< tag::stride_type<1>, mpl::int_<M> >,
+        mpl::pair< tag::stride_type<2>, tag::contiguous >
+    > property_map;
+
+    static value_type* begin_value( Id& id ) {
+        return id.data();
+    }
+
+    static value_type* end_value( Id& id ) {
+        return id.data() + N*M;
+    }
+
+};
+
+
 } // namespace detail
 } // namespace bindings
 } // namespace numeric

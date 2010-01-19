@@ -90,10 +90,10 @@ def parse_file( filename, info_map, template_map ):
                             prefix + "option< Diag >::value"
                     elif arg == 'SIDE':
                         info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = \
-                            prefix + "option< Side >::value"
+                            prefix + "option< " + netlib.template_parameter[ arg ] + " >::value"
                     elif  arg == 'TRANS' or arg == 'TRANSA' or arg == 'TRANSB':
                         info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = \
-                          prefix + "option< " + netlib.level0_types[ arg ] + " >::value"
+                          prefix + "option< " + netlib.template_parameter[ arg ] + " >::value"
                     else:
                         info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = call_cblas_header
                 else:

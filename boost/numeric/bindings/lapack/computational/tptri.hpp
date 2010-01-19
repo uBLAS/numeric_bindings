@@ -50,7 +50,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t tptri( UpLo, Diag, const fortran_int_t n, float* ap ) {
+inline std::ptrdiff_t tptri( const UpLo uplo, const Diag diag,
+        const fortran_int_t n, float* ap ) {
     fortran_int_t info(0);
     LAPACK_STPTRI( &lapack_option< UpLo >::value, &lapack_option<
             Diag >::value, &n, ap, &info );
@@ -63,7 +64,8 @@ inline std::ptrdiff_t tptri( UpLo, Diag, const fortran_int_t n, float* ap ) {
 // * double value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t tptri( UpLo, Diag, const fortran_int_t n, double* ap ) {
+inline std::ptrdiff_t tptri( const UpLo uplo, const Diag diag,
+        const fortran_int_t n, double* ap ) {
     fortran_int_t info(0);
     LAPACK_DTPTRI( &lapack_option< UpLo >::value, &lapack_option<
             Diag >::value, &n, ap, &info );
@@ -76,8 +78,8 @@ inline std::ptrdiff_t tptri( UpLo, Diag, const fortran_int_t n, double* ap ) {
 // * complex<float> value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t tptri( UpLo, Diag, const fortran_int_t n,
-        std::complex<float>* ap ) {
+inline std::ptrdiff_t tptri( const UpLo uplo, const Diag diag,
+        const fortran_int_t n, std::complex<float>* ap ) {
     fortran_int_t info(0);
     LAPACK_CTPTRI( &lapack_option< UpLo >::value, &lapack_option<
             Diag >::value, &n, ap, &info );
@@ -90,8 +92,8 @@ inline std::ptrdiff_t tptri( UpLo, Diag, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t tptri( UpLo, Diag, const fortran_int_t n,
-        std::complex<double>* ap ) {
+inline std::ptrdiff_t tptri( const UpLo uplo, const Diag diag,
+        const fortran_int_t n, std::complex<double>* ap ) {
     fortran_int_t info(0);
     LAPACK_ZTPTRI( &lapack_option< UpLo >::value, &lapack_option<
             Diag >::value, &n, ap, &info );

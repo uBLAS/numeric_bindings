@@ -100,7 +100,7 @@ def cpp_type( name, properties ):
   return result
 
 
-level0_types = {
+template_parameter = {
     'TRANS': 'Trans',
     'TRANSA': 'TransA',
     'TRANSB': 'TransB',
@@ -110,34 +110,38 @@ level0_types = {
     'SIDE'  : 'Side'
 }
 
+def template_tag_type( name, properties ):
+    if 'trait_type' in properties:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
+            return 'typedef'
+    if 'SIDE' in name:
+        return 'passthrough'
+    return None
+
 def level0_type( name, properties ):
     result = cpp_type( name, properties )
-    if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag', 'side' ]:
-            result = level0_types[ name ]
+    if template_tag_type( name, properties ) != None:
+        result = 'const ' + template_parameter[ name ] + ' ' + name.lower()
     if name == 'INFO':
         result = None
     return result
 
 def level0_typename( name, properties ):
     result = None
-    if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag', 'side' ]:
-            result = 'typename ' + level0_types[ name ]
+    if template_tag_type( name, properties ) != None:
+        result = 'typename ' + template_parameter[ name ]
     return result
 
 def call_blas_header( name, properties ):
     result = call_c_type( name, properties )
-    if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag', 'side' ]:
-            result = '&blas_option< ' + level0_types[ name ] + ' >::value'
+    if template_tag_type( name, properties ) != None:
+        result = '&blas_option< ' + template_parameter[ name ] + ' >::value'
     return result
 
 def call_lapack_header( name, properties ):
     result = call_c_type( name, properties )
-    if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag', 'side' ]:
-            result = '&lapack_option< ' + level0_types[ name ] + ' >::value'
+    if template_tag_type( name, properties ) != None:
+        result = '&lapack_option< ' + template_parameter[ name ] + ' >::value'
     return result
 
 def call_c_type( name, properties ):
@@ -273,6 +277,9 @@ def level1_type( name, properties ):
          result = result.replace( complex_float_type, "value_type" )
          result = result.replace( complex_double_type, "value_type" )
 
+  if template_tag_type( name, properties ) == 'passthrough':
+    result = 'const ' + template_parameter[ name ] + ' ' + name.lower()
+
   if name == 'INFO':
     result = None
 
@@ -301,6 +308,8 @@ def level1_typename( name, properties ):
       result = "typename Matrix" + name
     if properties[ 'type' ] == 'vector':
       result = "typename Vector" + name
+  if template_tag_type( name, properties ) == 'passthrough':
+    result = "typename " + template_parameter[ name ]
   return result
 
 def keyword_typename( name, properties ):
@@ -437,7 +446,7 @@ def level1_assert( name, properties, arg_map ):
   result = []
   
   if properties.has_key( 'assert_char' ) and \
-        name not in [ 'TRANS', 'TRANSA', 'TRANSB', 'TRANSR', 'UPLO', 'DIAG' ]:
+        name not in [ 'TRANS', 'TRANSA', 'TRANSB', 'TRANSR', 'UPLO', 'DIAG', 'SIDE' ]:
     assert_line = "BOOST_ASSERT( "
     result_array = []
     for char in properties[ 'assert_char' ]:
@@ -509,8 +518,9 @@ def typedef_type( name, properties, arg_map ):
                 result = 'typedef typename result_of::uplo_tag< ' + \
                     matrix_type + ' >::type ' + name.lower() + ';'
             else:
+                trans_type = arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ]
                 result = 'typedef typename result_of::uplo_tag< ' + \
-                    matrix_type + ', trans >::type ' + name.lower() + ';'
+                    matrix_type + ', ' + trans_type.lower() + ' >::type ' + name.lower() + ';'
         if properties[ 'trait_type' ] == 'diag':
             matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
                 arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
@@ -588,18 +598,26 @@ def min_workspace_size_type( name, properties, arg_map ):
 def min_workspace_arg_type( name, properties, arg_map ):
   result = None
   if 'workspace' in properties[ 'io' ] and properties.has_key( 'assert_size_args' ):
+    result = {}
     code_result = []
+    type_result = []
     for arg in properties[ 'assert_size_args' ]:
       if arg_map.has_key( arg ):
-        cpp_type_code = cpp_type( arg, arg_map[ arg ] ).replace( library_integer_type,
+        cpp_type_code = level0_type( arg, arg_map[ arg ] ).replace( library_integer_type,
             "$INTEGER_TYPE" )
+        #cpp_type_code = cpp_type( arg, arg_map[ arg ] ).replace( library_integer_type,
+            #"$INTEGER_TYPE" )
         code_result += [ cpp_type_code ]
+        type_code = level0_typename( arg, arg_map[ arg ] )
+        if  type_code != None:
+            type_result += [ type_code ]
       else:
         if type( properties[ 'assert_size' ] ) == StringType:
           code_result += [ '?' + properties[ 'assert_size' ] ]
         else:
           code_result += [ '??' ]
-    result = ", ".join( code_result )
+    result[ 'code' ] = ", ".join( code_result )
+    result[ 'types' ] = ", ".join( type_result )
   return result
 
 
@@ -1577,6 +1595,12 @@ def parse_file( filename, template_map ):
     argument_properties[ 'code' ][ 'level_0' ] = level0_type( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'level_0_typename' ] = level0_typename( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'call_level_0' ] = call_level0_type( argument_name, argument_properties, argument_map )
+    argument_properties[ 'code' ][ 'typedef' ] = typedef_type( argument_name, argument_properties, argument_map )
+
+  # Pass 2
+  # here, the level1 types may depend on whether there has been a typedef for them 
+  # in pass 1
+  for argument_name, argument_properties in argument_map.iteritems():
     argument_properties[ 'code' ][ 'level_1' ] = level1_type( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'level_1_type' ] = level1_typename( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'call_level_1' ] = call_level1_type( argument_name, argument_properties )
@@ -1584,8 +1608,8 @@ def parse_file( filename, template_map ):
     argument_properties[ 'code' ][ 'workspace_type' ] = workspace_type( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'keyword_type' ] = keyword_typename( argument_name, argument_properties )
 
-  # Pass 2
-  # A second pass is needed, because the asserts may cross-reference other 
+  # Pass 3
+  # A third pass is needed, because the asserts may cross-reference other 
   # variables which have been assigned their code in pass 1.
   for argument_name, argument_properties in argument_map.iteritems():
     argument_properties[ 'code' ][ 'level_1_assert' ] = level1_assert( argument_name, argument_properties, argument_map )
@@ -1597,7 +1621,6 @@ def parse_file( filename, template_map ):
     argument_properties[ 'code' ][ 'min_workspace_args' ] = min_workspace_arg_type( argument_name, argument_properties, argument_map )
     argument_properties[ 'code' ][ 'min_workspace_call' ] = min_workspace_call_type( argument_name, argument_properties, argument_map )
     argument_properties[ 'code' ][ 'user_defined_init' ] = user_defined_type( argument_name, argument_properties, argument_map )
-    argument_properties[ 'code' ][ 'typedef' ] = typedef_type( argument_name, argument_properties, argument_map )
 
   # Pass 3
   # Try to see if a template overrides the code

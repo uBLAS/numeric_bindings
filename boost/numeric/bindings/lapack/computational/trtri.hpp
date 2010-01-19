@@ -59,8 +59,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Diag >
-inline std::ptrdiff_t trtri( Order, UpLo, Diag, const int n, float* a,
-        const int lda ) {
+inline std::ptrdiff_t trtri( Order, const UpLo uplo, const Diag diag,
+        const int n, float* a, const int lda ) {
     return clapack_strtri( clapack_option< Order >::value, clapack_option<
             UpLo >::value, clapack_option< Diag >::value, n, a, lda );
 }
@@ -71,8 +71,8 @@ inline std::ptrdiff_t trtri( Order, UpLo, Diag, const int n, float* a,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Diag >
-inline std::ptrdiff_t trtri( Order, UpLo, Diag, const int n, double* a,
-        const int lda ) {
+inline std::ptrdiff_t trtri( Order, const UpLo uplo, const Diag diag,
+        const int n, double* a, const int lda ) {
     return clapack_dtrtri( clapack_option< Order >::value, clapack_option<
             UpLo >::value, clapack_option< Diag >::value, n, a, lda );
 }
@@ -83,8 +83,8 @@ inline std::ptrdiff_t trtri( Order, UpLo, Diag, const int n, double* a,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Diag >
-inline std::ptrdiff_t trtri( Order, UpLo, Diag, const int n,
-        std::complex<float>* a, const int lda ) {
+inline std::ptrdiff_t trtri( Order, const UpLo uplo, const Diag diag,
+        const int n, std::complex<float>* a, const int lda ) {
     return clapack_ctrtri( clapack_option< Order >::value, clapack_option<
             UpLo >::value, clapack_option< Diag >::value, n, a, lda );
 }
@@ -95,8 +95,8 @@ inline std::ptrdiff_t trtri( Order, UpLo, Diag, const int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Diag >
-inline std::ptrdiff_t trtri( Order, UpLo, Diag, const int n,
-        std::complex<double>* a, const int lda ) {
+inline std::ptrdiff_t trtri( Order, const UpLo uplo, const Diag diag,
+        const int n, std::complex<double>* a, const int lda ) {
     return clapack_ztrtri( clapack_option< Order >::value, clapack_option<
             UpLo >::value, clapack_option< Diag >::value, n, a, lda );
 }
@@ -108,8 +108,8 @@ inline std::ptrdiff_t trtri( Order, UpLo, Diag, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Diag >
-inline std::ptrdiff_t trtri( Order, UpLo, Diag, const fortran_int_t n,
-        float* a, const fortran_int_t lda ) {
+inline std::ptrdiff_t trtri( Order, const UpLo uplo, const Diag diag,
+        const fortran_int_t n, float* a, const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_STRTRI( &lapack_option< UpLo >::value, &lapack_option<
@@ -123,8 +123,8 @@ inline std::ptrdiff_t trtri( Order, UpLo, Diag, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Diag >
-inline std::ptrdiff_t trtri( Order, UpLo, Diag, const fortran_int_t n,
-        double* a, const fortran_int_t lda ) {
+inline std::ptrdiff_t trtri( Order, const UpLo uplo, const Diag diag,
+        const fortran_int_t n, double* a, const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_DTRTRI( &lapack_option< UpLo >::value, &lapack_option<
@@ -138,8 +138,9 @@ inline std::ptrdiff_t trtri( Order, UpLo, Diag, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Diag >
-inline std::ptrdiff_t trtri( Order, UpLo, Diag, const fortran_int_t n,
-        std::complex<float>* a, const fortran_int_t lda ) {
+inline std::ptrdiff_t trtri( Order, const UpLo uplo, const Diag diag,
+        const fortran_int_t n, std::complex<float>* a,
+        const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_CTRTRI( &lapack_option< UpLo >::value, &lapack_option<
@@ -153,8 +154,9 @@ inline std::ptrdiff_t trtri( Order, UpLo, Diag, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Diag >
-inline std::ptrdiff_t trtri( Order, UpLo, Diag, const fortran_int_t n,
-        std::complex<double>* a, const fortran_int_t lda ) {
+inline std::ptrdiff_t trtri( Order, const UpLo uplo, const Diag diag,
+        const fortran_int_t n, std::complex<double>* a,
+        const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_ZTRTRI( &lapack_option< UpLo >::value, &lapack_option<

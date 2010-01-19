@@ -49,7 +49,7 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hpsv( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t hpsv( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t nrhs, std::complex<float>* ap,
         fortran_int_t* ipiv, std::complex<float>* b,
         const fortran_int_t ldb ) {
@@ -65,7 +65,7 @@ inline std::ptrdiff_t hpsv( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hpsv( UpLo, const fortran_int_t n,
+inline std::ptrdiff_t hpsv( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t nrhs, std::complex<double>* ap,
         fortran_int_t* ipiv, std::complex<double>* b,
         const fortran_int_t ldb ) {

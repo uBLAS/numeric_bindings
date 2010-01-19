@@ -5,14 +5,15 @@
 #include <stddef.h>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
+#include <boost/numeric/bindings/blas.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
-namespace traits = boost::numeric::bindings::traits;
+namespace blas = boost::numeric::bindings::blas;
+namespace bindings = boost::numeric::bindings;
+namespace tag = boost::numeric::bindings::tag;
 
 using std::cout;
 using std::cin;
@@ -87,19 +88,19 @@ int main() {
   print_m (rbl, "b == rb");
   cout << endl; 
 
-  atlas::symm (ucs, cbl, ccl); 
+  blas::symm ( tag::left(), 1.0, ucs, cbl, 0.0, ccl); 
   print_m (ccl, "c = a b");
   cout << endl; 
 
-  atlas::symm (lcs, cbl, ccl);  
+  blas::symm ( tag::left(), 1.0, lcs, cbl, 0.0, ccl);  
   print_m (ccl, "c = a b");
   cout << endl; 
 
-  atlas::symm (urs, rbl, rcl); 
+  blas::symm ( tag::left(), 1.0, urs, rbl, 0.0, rcl); 
   print_m (rcl, "c = a b");
   cout << endl; 
 
-  atlas::symm (lrs, rbl, rcl); 
+  blas::symm ( tag::left(), 1.0, lrs, rbl, 0.0, rcl); 
   print_m (rcl, "c = a b");
   cout << endl; 
   
@@ -116,19 +117,19 @@ int main() {
   print_m (rbr, "b == rb");
   cout << endl; 
 
-  atlas::symm (cbr, ucs, ccr); 
+  blas::symm (tag::right(), 1.0, ucs, cbr, 0.0, ccr); 
   print_m (ccr, "c = b a");
   cout << endl; 
 
-  atlas::symm (cbr, lcs, ccr);  
+  blas::symm (tag::right(), 1.0, lcs, cbr, 0.0, ccr);  
   print_m (ccr, "c = b a");
   cout << endl; 
 
-  atlas::symm (rbr, urs, rcr); 
+  blas::symm (tag::right(), 1.0, urs, rbr, 0.0, rcr); 
   print_m (rcr, "c = b a");
   cout << endl; 
 
-  atlas::symm (rbr, lrs, rcr); 
+  blas::symm (tag::right(), 1.0, lrs, rbr, 0.0, rcr); 
   print_m (rcr, "c = b a");
   cout << endl; 
 

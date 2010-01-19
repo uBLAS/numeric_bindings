@@ -12,18 +12,18 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/atlas/cblas1.hpp>
-#include <boost/numeric/bindings/atlas/cblas2.hpp>
-#include <boost/numeric/bindings/atlas/cblas3.hpp>
-#include <boost/numeric/bindings/atlas/clapack.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/blas.hpp>
+#include <boost/numeric/bindings/lapack/driver/posv.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace atlas = boost::numeric::bindings::atlas;
+namespace blas = boost::numeric::bindings::blas;
+namespace lapack = boost::numeric::bindings::lapack;
+namespace bindings = boost::numeric::bindings;
+namespace tag = boost::numeric::bindings::tag;
 
 using std::size_t; 
 using std::cout;
@@ -91,24 +91,24 @@ int main() {
   m_t b (nrhs, n);
 #endif
   ublas::matrix_column<m_t> xc0 (x, 0), xc1 (x, 1); 
-  atlas::set (1., xc0);  // x[.,0] = 1
-  atlas::set (2., xc1);  // x[.,1] = 2
+  blas::set (1., xc0);  // x[.,0] = 1
+  blas::set (2., xc1);  // x[.,1] = 2
 #ifndef F_ROW_MAJOR
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-  atlas::symm (sa, x, b);  // b = a x, so we know the result ;o)
+  blas::symm ( tag::left(), 1.0, sa, x, 0.0, b);  // b = a x, so we know the result ;o)
 #else
-  atlas::symm (CblasLeft, 1.0, sa, x, 0.0, b); 
+  blas::symm (CblasLeft, 1.0, sa, x, 0.0, b); 
 #endif 
 #else
   // see leading comments for `gesv()' in clapack.hpp
   ublas::matrix_row<m_t> br0 (b, 0), br1 (b, 1); 
-  atlas::symv (sa, xc0, br0);  // b[0,.] = a x[.,0]
-  atlas::symv (sa, xc1, br1);  // b[1,.] = a x[.,1]  =>  b^T = a x
+  blas::symv (sa, xc0, br0);  // b[0,.] = a x[.,0]
+  blas::symv (sa, xc1, br1);  // b[1,.] = a x[.,1]  =>  b^T = a x
 #endif 
   print_m (b, "b"); 
   cout << endl; 
 
-  atlas::cholesky_solve (sa, b);  // same as posv() 
+  lapack::posv (sa, b);  // same as posv() 
   print_m (b, "x"); 
   cout << endl; 
 
@@ -139,7 +139,7 @@ int main() {
   cout << endl; 
 
   ublas::matrix_column<cm_t> cx0 (cx, 0);
-  atlas::set (cmplx_t (1, -1), cx0);
+  blas::set (cmplx_t (1, -1), cx0);
   print_m (cx, "cx"); 
   cout << endl; 
 #ifndef F_ROW_MAJOR
@@ -147,11 +147,11 @@ int main() {
 #else
   ublas::matrix_row<cm_t> cb0 (cb, 0); 
 #endif
-  atlas::hemv (ha, cx0, cb0); 
+  blas::hemv ( 1.0, ha, cx0, 0.0, cb0); 
   print_m (cb, "cb"); 
   cout << endl; 
   
-  int ierr = atlas::posv (ha, cb); 
+  int ierr = lapack::posv (ha, cb); 
   if (ierr == 0)
     print_m (cb, "cx"); 
   else 
@@ -185,14 +185,14 @@ int main() {
   print_m_data (ha, "ha"); 
   cout << endl; 
 
-  atlas::set (cmplx_t (1, 1), cx0);
+  blas::set (cmplx_t (1, 1), cx0);
   print_m (cx, "cx"); 
   cout << endl; 
-  atlas::hemv (ha, cx0, cb0); 
+  blas::hemv (1.0, ha, cx0, 0.0, cb0); 
   print_m (cb, "cb"); 
   cout << endl; 
   
-  ierr = atlas::cholesky_solve (ha, cb); 
+  ierr = lapack::posv( ha, cb); 
   if (ierr == 0)
     print_m (cb, "cx"); 
   else 
@@ -242,7 +242,7 @@ int main() {
   print_m (cb32, "cb"); 
   cout << endl; 
   
-  ierr = atlas::posv (ha, cb32); 
+  ierr = lapack::posv (ha, cb32); 
 
   if (ierr == 0)
     print_m (cb32, "cx"); 

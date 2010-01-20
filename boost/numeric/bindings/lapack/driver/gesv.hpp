@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -177,7 +178,6 @@ struct gesv_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function, that
@@ -187,6 +187,7 @@ struct gesv_impl {
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixA >::type order;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<

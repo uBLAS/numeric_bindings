@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -132,7 +133,6 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -143,6 +143,7 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, detail::workspace1<
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
@@ -186,6 +187,7 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_row_op(a, trans()), bindings::size_column_op(a,
@@ -204,6 +206,7 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         real_type opt_size_work;
         detail::gels( trans(), bindings::size_row_op(a, trans()),
@@ -236,7 +239,6 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -247,6 +249,7 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, detail::workspace1<
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
@@ -290,6 +293,7 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_row_op(a, trans()), bindings::size_column_op(a,
@@ -308,6 +312,7 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         value_type opt_size_work;
         detail::gels( trans(), bindings::size_row_op(a, trans()),

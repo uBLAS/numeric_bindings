@@ -26,7 +26,6 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
@@ -146,7 +145,6 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -276,7 +274,6 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that

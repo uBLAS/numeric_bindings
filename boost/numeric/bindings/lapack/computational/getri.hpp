@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -184,7 +185,6 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -195,6 +195,7 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixA >::type order;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
@@ -222,6 +223,7 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixA >::type order;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
         return invoke( a, ipiv, workspace( tmp_work ) );
@@ -238,6 +240,7 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixA >::type order;
         real_type opt_size_work;
         detail::getri( order(), bindings::size_column(a),
                 bindings::begin_value(a), bindings::stride_major(a),
@@ -264,7 +267,6 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -275,6 +277,7 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixA >::type order;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
@@ -302,6 +305,7 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixA >::type order;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
         return invoke( a, ipiv, workspace( tmp_work ) );
@@ -318,6 +322,7 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixA >::type order;
         value_type opt_size_work;
         detail::getri( order(), bindings::size_column(a),
                 bindings::begin_value(a), bindings::stride_major(a),

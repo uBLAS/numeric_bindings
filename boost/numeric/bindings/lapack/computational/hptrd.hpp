@@ -82,7 +82,6 @@ struct hptrd_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function, that

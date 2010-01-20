@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -139,7 +140,6 @@ struct gerfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -154,6 +154,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixAF >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
@@ -228,6 +229,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixAF >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column_op(a, trans()) ) );
@@ -251,6 +253,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixAF >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         return invoke( a, af, ipiv, b, x, ferr, berr, minimal_workspace() );
     }
@@ -280,7 +283,6 @@ struct gerfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -295,6 +297,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
             RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixAF >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorFERR >::type >::type,
@@ -365,6 +368,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixAF >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column_op(a, trans()) ) );
@@ -388,6 +392,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixAF >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         return invoke( a, af, ipiv, b, x, ferr, berr, minimal_workspace() );
     }

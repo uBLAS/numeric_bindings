@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -96,7 +97,6 @@ struct unmlq_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -109,6 +109,7 @@ struct unmlq_impl {
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
@@ -154,6 +155,7 @@ struct unmlq_impl {
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work( side,
                 bindings::size_row(c), bindings::size_column(c) ) );
@@ -173,6 +175,7 @@ struct unmlq_impl {
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         value_type opt_size_work;
         detail::unmlq( side, trans(), bindings::size_row(c),

@@ -22,7 +22,6 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
@@ -91,7 +90,6 @@ struct upmtr_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that

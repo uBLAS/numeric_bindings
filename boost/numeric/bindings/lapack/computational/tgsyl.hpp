@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -152,7 +153,6 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -167,6 +167,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
@@ -234,6 +235,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -258,6 +260,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -305,7 +308,6 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -320,6 +322,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
@@ -387,6 +390,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -411,6 +415,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         value_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(

@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -169,7 +170,6 @@ struct potri_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function, that
@@ -179,6 +179,7 @@ struct potri_impl {
     template< typename MatrixA >
     static std::ptrdiff_t invoke( MatrixA& a ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_ASSERT( bindings::size_column(a) >= 0 );

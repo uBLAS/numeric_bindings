@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -176,7 +177,6 @@ struct trtri_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function, that
@@ -186,6 +186,7 @@ struct trtri_impl {
     template< typename MatrixA >
     static std::ptrdiff_t invoke( MatrixA& a ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );

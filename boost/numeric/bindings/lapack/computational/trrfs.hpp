@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
@@ -141,7 +142,6 @@ struct trrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -155,6 +155,7 @@ struct trrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixA, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
@@ -219,6 +220,7 @@ struct trrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixA, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
@@ -242,6 +244,7 @@ struct trrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixA, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
@@ -273,7 +276,6 @@ struct trrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -287,6 +289,7 @@ struct trrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixA, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
@@ -347,6 +350,7 @@ struct trrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixA, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
@@ -370,6 +374,7 @@ struct trrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::uplo_tag< MatrixA, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;

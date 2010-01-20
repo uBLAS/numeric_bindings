@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
@@ -95,7 +96,6 @@ struct unmrz_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -108,6 +108,7 @@ struct unmrz_impl {
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
@@ -153,6 +154,7 @@ struct unmrz_impl {
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -172,6 +174,7 @@ struct unmrz_impl {
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         value_type opt_size_work;
         detail::unmrz( side, trans(), bindings::size_row(c),

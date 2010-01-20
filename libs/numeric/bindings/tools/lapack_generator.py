@@ -233,14 +233,51 @@ def write_functions( info_map, group, template_map, base_dir ):
       typedef_list = []
 
       #
+      # Are we dealing with a transpose option here?
+      # Because CLAPACK allows to pass the order of the matrices, here we
+      # inject code that determines the default data order.
+      #
+      if 'matrix' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ]:
+        has_trans = False
+        matrix_wo_trans = []
+        matrix_with_trans = []
+        for matrix_arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ][ 'matrix' ]:
+            if 'ref_trans' in info_map[ subroutine ][ 'argument_map' ][ matrix_arg ]:
+                has_trans = True
+                matrix_type = info_map[ subroutine ][ 'argument_map' ][ matrix_arg ][ 'code' ][ 'level_1_static_assert' ]
+                matrix_with_trans += [ matrix_type ]
+            else:
+                matrix_wo_trans.append( info_map[ subroutine ][ 'argument_map' ][ matrix_arg ][ 'code' ][ 'level_1_static_assert' ] )
+
+        #
+        # Matrices have trans options in this case. If there is one without,
+        # that one will determine the order of the call
+        #
+        if has_trans:
+          includes += [ '#include <boost/numeric/bindings/trans_tag.hpp>' ]
+          if len( matrix_wo_trans )>0:
+            typedef_list.insert( 0, 'typedef typename result_of::data_order< ' + matrix_wo_trans[0] + \
+                ' >::type order;' )
+            includes += [ '#include <boost/numeric/bindings/data_order.hpp>' ]
+          else:
+            typedef_list.insert( 0, 'typedef typename detail::default_order< ' + matrix_with_trans[0] + \
+                ' >::type order;' )
+            includes += [ '#include <boost/numeric/bindings/blas/detail/default_order.hpp>' ]
+        else:
+            # so, there's no trans option
+            # but, what if there's an order? (e.g., syr) -- then use `
+            if "has_clapack_order_arg" in info_map[ subroutine ]:
+              typedef_list.insert( 0, 'typedef typename result_of::data_order< ' + matrix_wo_trans[0] + \
+                ' >::type order;' )
+              includes += [ '#include <boost/numeric/bindings/data_order.hpp>' ]
+
+      #
       # Add an include in case of the uplo or diag options
       #
       if 'UPLO' in info_map[ subroutine ][ 'arguments' ]:
         includes += [ '#include <boost/numeric/bindings/uplo_tag.hpp>' ]
       if 'DIAG' in info_map[ subroutine ][ 'arguments' ]:
         includes += [ '#include <boost/numeric/bindings/diag_tag.hpp>' ]
-      if 'TRANS' in info_map[ subroutine ][ 'arguments' ]:
-        includes += [ '#include <boost/numeric/bindings/trans_tag.hpp>' ]
 
       #
       # Create static assertions, first by value type

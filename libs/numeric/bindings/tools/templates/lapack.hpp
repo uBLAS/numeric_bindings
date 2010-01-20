@@ -149,7 +149,6 @@ struct $groupname_impl< Value, typename boost::enable_if< is_$SPECIALIZATION< Va
 $TEMPLATE[level1_workspace]
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function for user-defined workspaces, that
@@ -246,7 +245,6 @@ $TEMPLATE[min_size_func]
 $TEMPLATE[level1_noworkspace]
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function, that

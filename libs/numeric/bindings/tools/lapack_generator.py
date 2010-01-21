@@ -240,6 +240,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       if 'matrix' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ]:
         has_trans = False
         matrix_wo_trans = []
+        matrix_wo_trans_arg = []
         matrix_with_trans = []
         for matrix_arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ][ 'matrix' ]:
             if 'ref_trans' in info_map[ subroutine ][ 'argument_map' ][ matrix_arg ]:
@@ -248,6 +249,7 @@ def write_functions( info_map, group, template_map, base_dir ):
                 matrix_with_trans += [ matrix_type ]
             else:
                 matrix_wo_trans.append( info_map[ subroutine ][ 'argument_map' ][ matrix_arg ][ 'code' ][ 'level_1_static_assert' ] )
+                matrix_wo_trans_arg.append( matrix_arg )
 
         #
         # Matrices have trans options in this case. If there is one without,
@@ -256,9 +258,14 @@ def write_functions( info_map, group, template_map, base_dir ):
         if has_trans:
           includes += [ '#include <boost/numeric/bindings/trans_tag.hpp>' ]
           if len( matrix_wo_trans )>0:
+            # Take the first from the matrix_wo_trans list for the order argument
+            # remove this item from that list, so we have a correct list for static asserting
+            # on column major data order later on
             typedef_list.insert( 0, 'typedef typename result_of::data_order< ' + matrix_wo_trans[0] + \
                 ' >::type order;' )
             includes += [ '#include <boost/numeric/bindings/data_order.hpp>' ]
+            del matrix_wo_trans[0]
+            del matrix_wo_trans_arg[0]
           else:
             typedef_list.insert( 0, 'typedef typename detail::default_order< ' + matrix_with_trans[0] + \
                 ' >::type order;' )
@@ -270,6 +277,32 @@ def write_functions( info_map, group, template_map, base_dir ):
               typedef_list.insert( 0, 'typedef typename result_of::data_order< ' + matrix_wo_trans[0] + \
                 ' >::type order;' )
               includes += [ '#include <boost/numeric/bindings/data_order.hpp>' ]
+              del matrix_wo_trans[0]
+              del matrix_wo_trans_arg[0]
+
+        # in LAPACK, every matrix that is not
+        # * transposeable
+        # * used for order determination (CLAPACK). In this case, the wrong order will
+        #   be caught in the detail/overload function (static assert on column_major order)
+        # and a matrix that has
+        # * a leading dimension trait
+        # should be column major, even in case of a row_major order used by CLAPACK
+        # See http://math-atlas.sourceforge.net/faq.html#RowSolve
+        # This effectively says every RHS matrix should be column major
+        if len( matrix_wo_trans_arg ) > 0:
+            for matrix_arg in matrix_wo_trans_arg:
+                # In some cases, level1 assert stuff isn't set due to a workspace array
+                # being passed as a matrix. Test for None in this case. Make sure the matrix has
+                # a leading dimension trait. 
+                # TODO reconsider if the leading dimension trait is needed
+                if 'ref_lda' in info_map[ subroutine ][ 'argument_map' ][ matrix_arg ] and \
+                        info_map[ subroutine ][ 'argument_map' ][ matrix_arg ][ 'code' ][ 'level_1_static_assert' ] != None:
+                    assert_line = 'BOOST_STATIC_ASSERT( (bindings::is_column_major< ' + \
+                        info_map[ subroutine ][ 'argument_map' ][ matrix_arg ][ 'code' ][ 'level_1_static_assert' ] + ' >::value) );'
+                    level1_static_assert_list += [ assert_line ]
+                    # this looks like we're adding lots of includes, but it will be cleaned up later,
+                    # and this makes sure we're only adding an include if the function is really used.
+                    includes += [ '#include <boost/numeric/bindings/is_column_major.hpp>' ]
 
       #
       # Add an include in case of the uplo or diag options

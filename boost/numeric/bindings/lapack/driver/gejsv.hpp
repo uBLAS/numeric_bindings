@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -102,6 +103,7 @@ struct gejsv_impl {
             const char jobp, MatrixA& a, const fortran_int_t lwork,
             detail::workspace5< SVA, U, V, WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( $CALL_MIN_SIZE ));

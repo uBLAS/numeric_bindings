@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -133,6 +134,7 @@ struct gbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const MatrixAB& ab, VectorR& r, VectorC& c,
             real_type& rowcnd, real_type& colcnd, real_type& amax ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixAB >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -179,6 +181,7 @@ struct gbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const MatrixAB& ab, VectorR& r, VectorC& c,
             real_type& rowcnd, real_type& colcnd, real_type& amax ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorR >::type >::type,
                 typename remove_const< typename bindings::value_type<

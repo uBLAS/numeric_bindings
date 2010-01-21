@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -161,6 +162,11 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixU& u, MatrixV& v, MatrixQ& q, detail::workspace3< IWORK,
             TAU, WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixQ >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -314,6 +320,11 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixU& u, MatrixV& v, MatrixQ& q, detail::workspace4< IWORK,
             RWORK, TAU, WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixQ >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<

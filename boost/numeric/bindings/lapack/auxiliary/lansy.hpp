@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -123,6 +124,7 @@ struct lansy_impl {
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );

@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -127,6 +128,7 @@ struct pftrs_impl {
             const VectorA& a, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< VectorA, order >::type transr;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorA >::type >::type,
                 typename remove_const< typename bindings::value_type<

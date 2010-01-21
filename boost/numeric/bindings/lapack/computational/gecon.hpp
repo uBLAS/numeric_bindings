@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -129,6 +130,7 @@ struct gecon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const real_type anorm, real_type& rcond, detail::workspace2< WORK,
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
@@ -214,6 +216,7 @@ struct gecon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const real_type anorm, real_type& rcond, detail::workspace2< WORK,
             RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_rwork( bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=

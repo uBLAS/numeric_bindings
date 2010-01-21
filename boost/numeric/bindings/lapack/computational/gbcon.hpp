@@ -18,6 +18,7 @@
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -140,6 +141,7 @@ struct gbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
             detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ab) );
@@ -232,6 +234,7 @@ struct gbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ab) );

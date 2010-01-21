@@ -18,6 +18,7 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -140,6 +141,7 @@ struct trcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
@@ -229,6 +231,7 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_rwork( bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=

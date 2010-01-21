@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -84,6 +85,9 @@ struct cgesv_impl {
             const MatrixB& b, MatrixX& x, fortran_int_t& iter,
             detail::workspace3< WORK, SWORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<

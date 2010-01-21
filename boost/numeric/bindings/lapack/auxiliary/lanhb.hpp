@@ -18,6 +18,7 @@
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -100,6 +101,7 @@ struct lanhb_impl {
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));

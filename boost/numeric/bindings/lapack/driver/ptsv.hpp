@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -121,6 +122,7 @@ struct ptsv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     template< typename VectorD, typename VectorE, typename MatrixB >
     static std::ptrdiff_t invoke( VectorD& d, VectorE& e, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorD >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -164,6 +166,7 @@ struct ptsv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename VectorD, typename VectorE, typename MatrixB >
     static std::ptrdiff_t invoke( VectorD& d, VectorE& e, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorE >::type >::type,
                 typename remove_const< typename bindings::value_type<

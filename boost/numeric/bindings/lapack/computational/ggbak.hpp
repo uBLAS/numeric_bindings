@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -141,6 +142,7 @@ struct ggbak_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorLSCALE& lscale, const VectorRSCALE& rscale,
             MatrixV& v ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorLSCALE >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -188,6 +190,7 @@ struct ggbak_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorLSCALE& lscale, const VectorRSCALE& rscale,
             MatrixV& v ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorLSCALE >::type >::type,
                 typename remove_const< typename bindings::value_type<

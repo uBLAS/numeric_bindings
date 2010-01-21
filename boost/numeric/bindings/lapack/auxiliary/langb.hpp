@@ -18,6 +18,7 @@
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -120,6 +121,7 @@ struct langb_impl {
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=

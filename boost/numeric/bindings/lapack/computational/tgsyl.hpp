@@ -18,6 +18,7 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -169,6 +170,10 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixF >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -324,6 +329,10 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixF >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<

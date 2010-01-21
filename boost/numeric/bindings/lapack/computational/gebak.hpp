@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -137,6 +138,7 @@ struct gebak_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t ilo, const fortran_int_t ihi,
             const VectorSCALE& scale, MatrixV& v ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorSCALE >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -176,6 +178,7 @@ struct gebak_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t ilo, const fortran_int_t ihi,
             const VectorSCALE& scale, MatrixV& v ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
         BOOST_ASSERT( bindings::size(scale) >= bindings::size_row(v) );
         BOOST_ASSERT( bindings::size_column(v) >= 0 );

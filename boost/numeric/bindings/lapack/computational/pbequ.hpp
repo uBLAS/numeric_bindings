@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -135,6 +136,7 @@ struct pbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             real_type& scond, real_type& amax ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixAB >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -173,6 +175,7 @@ struct pbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             real_type& scond, real_type& amax ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_ASSERT( bindings::bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( bindings::size_column(ab) >= 0 );

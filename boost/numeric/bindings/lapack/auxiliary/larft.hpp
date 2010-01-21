@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -120,6 +121,8 @@ struct larft_impl {
             const fortran_int_t n, const fortran_int_t k, MatrixV& v,
             const VectorTAU& tau, MatrixT& t ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixV >::type >::type,
                 typename remove_const< typename bindings::value_type<

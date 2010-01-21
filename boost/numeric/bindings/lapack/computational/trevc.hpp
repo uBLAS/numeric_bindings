@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -149,6 +150,9 @@ struct trevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixVR >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixT >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -249,6 +253,9 @@ struct trevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixVR >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixT >::type >::type,
                 typename remove_const< typename bindings::value_type<

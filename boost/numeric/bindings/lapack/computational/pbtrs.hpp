@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -119,6 +120,8 @@ struct pbtrs_impl {
     static std::ptrdiff_t invoke( const char uplo, const MatrixAB& ab,
             MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixAB >::type >::type,
                 typename remove_const< typename bindings::value_type<

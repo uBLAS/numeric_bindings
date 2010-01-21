@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -143,6 +144,9 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixA& a, VectorS& s, MatrixU& u, MatrixVT& vt,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixVT >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -264,6 +268,9 @@ struct gesvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixA& a, VectorS& s, MatrixU& u, MatrixVT& vt,
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixVT >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<

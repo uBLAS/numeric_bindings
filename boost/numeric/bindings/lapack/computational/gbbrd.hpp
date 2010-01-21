@@ -18,6 +18,7 @@
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -150,6 +151,10 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixPT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixC >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixAB >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -279,6 +284,10 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
             detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixPT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixC >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorD >::type >::type,
                 typename remove_const< typename bindings::value_type<

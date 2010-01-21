@@ -18,6 +18,7 @@
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -105,6 +106,8 @@ struct sbevd_impl {
             WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixAB >::type >::type,
                 typename remove_const< typename bindings::value_type<

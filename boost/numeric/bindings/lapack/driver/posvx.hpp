@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
@@ -159,6 +160,10 @@ struct posvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAF >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
@@ -309,6 +314,10 @@ struct posvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAF >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorS >::type >::type,
                 typename remove_const< typename bindings::value_type<

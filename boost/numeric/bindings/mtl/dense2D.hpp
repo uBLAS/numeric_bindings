@@ -26,12 +26,12 @@ struct mtl_matrix_size_type {
 
 template< std::size_t Rows, std::size_t Cols >
 struct mtl_matrix_size_type< mtl::fixed::dimensions< Rows, Cols >, 1 > {
-    typedef mpl::int_< Cols > type;
+    typedef mpl::int_< Rows > type;
 };
 
 template< std::size_t Rows, std::size_t Cols >
 struct mtl_matrix_size_type< mtl::fixed::dimensions< Rows, Cols >, 2 > {
-    typedef mpl::int_< Rows > type;
+    typedef mpl::int_< Cols > type;
 };
 
 template< typename T, typename Parameters, typename Id, typename Enable >

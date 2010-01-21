@@ -10,6 +10,7 @@
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/std/vector.hpp>
+#include <boost/numeric/bindings/trans.hpp>
 #include <boost/numeric/ublas/io.hpp> 
 
 namespace ublas = boost::numeric::ublas;
@@ -22,7 +23,7 @@ using std::endl;
 
 typedef ublas::c_matrix<double, 4, 4> m4x4_t;
 typedef ublas::c_matrix<double, 3, 3> m3x3_t;
-typedef ublas::c_matrix<double, 3, 2> mrhs_t;
+typedef ublas::c_matrix<double, 2, 3> mrhs_t;
 typedef ublas::c_vector<double, 5> v5_t; 
 
 int main() {
@@ -31,6 +32,7 @@ int main() {
   size_t n = 3;
 
   m4x4_t a (n, n);   // system matrix 
+  m4x4_t a_copy (n, n);   // system matrix 
 
 //       [,1] [,2] [,3]
 //  [1,]    1    1    1
@@ -40,39 +42,38 @@ int main() {
   a(0,0) = 1.; a(0,1) = 1.; a(0,2) = 1.;
   a(1,0) = 2.; a(1,1) = 3.; a(1,2) = 1.;
   a(2,0) = 1.; a(2,1) = -1.; a(2,2) = -1.;
+  a_copy = a;
 
-  mrhs_t b (n, 2);  // right-hand side matrix
+  mrhs_t b (2, n);  // right-hand side matrix
 
 //          [,1] [,2]
 //     [1,]    4   10
 //     [2,]    9   11
 //     [3,]    2   12
 
-  b(0,0) =  4.;  b(0,1) = 10.;
-  b(1,0) =  9.;  b(1,1) = 11.;
-  b(2,0) = -2.;  b(2,1) = 12.;
+  b(0,0) =  4.;  b(1,0) = 10.;
+  b(0,1) =  9.;  b(1,1) = 11.;
+  b(0,2) = -2.;  b(1,2) = 12.;
 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
   m3x3_t a2; // for part 2
   a2 = project (a, ublas::range (0,3), ublas::range (0,3)); 
   v5_t b2 (n); 
-  b2 = column (b, 0);
+  b2 = row (b, 0);
 #endif 
 
   // part 1:
   cout << "A: " << a << endl; 
-  cout << "B: " << b << endl; 
+  cout << "B: " << ublas::trans(b) << endl; 
 
   std::vector< int > pivota( 100 );
-  lapack::gesv (a, pivota, b);  
+  lapack::gesv (a, pivota, bindings::trans(b));  
 
-//        X should be
-//          [,1] [,2]
-//     [1,]    3   11
-//     [2,]    1   -5
-//     [3,]    0    4
+  cout << "X: " << ublas::trans(b) << endl;
+  std::cout << "---" << std::endl;
+  cout << "A: " << a << endl; 
 
-  cout << "X: " << b << endl; 
+  cout << "AX/B: " << ublas::prod( a_copy, ublas::trans(b) ) << std::endl;
 
   cout << endl; 
 

@@ -242,6 +242,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         matrix_wo_trans = []
         matrix_wo_trans_arg = []
         matrix_with_trans = []
+        matrix_wo_trans_arg_removed = []
         for matrix_arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ][ 'matrix' ]:
             if 'ref_trans' in info_map[ subroutine ][ 'argument_map' ][ matrix_arg ]:
                 has_trans = True
@@ -265,6 +266,7 @@ def write_functions( info_map, group, template_map, base_dir ):
                 ' >::type order;' )
             includes += [ '#include <boost/numeric/bindings/data_order.hpp>' ]
             del matrix_wo_trans[0]
+            matrix_wo_trans_arg_removed = [ matrix_wo_trans_arg[0] ]
             del matrix_wo_trans_arg[0]
           else:
             typedef_list.insert( 0, 'typedef typename detail::default_order< ' + matrix_with_trans[0] + \
@@ -303,6 +305,19 @@ def write_functions( info_map, group, template_map, base_dir ):
                     # this looks like we're adding lots of includes, but it will be cleaned up later,
                     # and this makes sure we're only adding an include if the function is really used.
                     includes += [ '#include <boost/numeric/bindings/is_column_major.hpp>' ]
+
+        # In case of, e.g., getrs, MatrixB should be column major for CLAPACK, too.
+        # This is not detected because MatrixA may be row major and transposed to column_major ordering.
+        # So, MatrixB should be column_major although it is determining the order. 
+        # I.e., the order should be column_major. Look in the template system for these overrides.
+        for matrix_arg in matrix_wo_trans_arg_removed:
+            my_key = group_name.lower() + '.' + value_type + '.' + matrix_arg + '.is_column_major'
+            print "Looking for column_major override ", my_key
+            if netlib.my_has_key( my_key, template_map ):
+                assert_line = 'BOOST_STATIC_ASSERT( (bindings::is_column_major< ' + \
+                    info_map[ subroutine ][ 'argument_map' ][ matrix_arg ][ 'code' ][ 'level_1_static_assert' ] + ' >::value) );'
+                level1_static_assert_list += [ assert_line ]
+                includes += [ '#include <boost/numeric/bindings/is_column_major.hpp>' ]
 
       #
       # Add an include in case of the uplo or diag options

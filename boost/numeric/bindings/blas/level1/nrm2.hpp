@@ -186,7 +186,7 @@ struct nrm2_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef value_type return_type;
+    typedef real_type return_type;
 
     //
     // Static member function that

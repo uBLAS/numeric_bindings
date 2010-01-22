@@ -8,12 +8,12 @@
 
 #include "random.hpp"
 
-#include <boost/numeric/ublas/vector_proxy.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/ublas/vector_proxy.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/blas.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/std_vector.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
 #include <boost/numeric/bindings/blas/level1/axpy.hpp>
 #include <boost/numeric/bindings/blas/level1/asum.hpp>
 #include <boost/numeric/bindings/blas/level1/copy.hpp>
@@ -31,43 +31,7 @@
 #include <limits>
 #include <cmath>
 
-namespace traits = boost::numeric::bindings::traits;
-
-struct apply_real {
-  template< typename VectorX >
-  static inline typename traits::type_traits< typename traits::vector_traits< VectorX >::value_type >::real_type
-  asum( const VectorX& x ) {
-    return boost::numeric::bindings::blas::asum( x );
-  }
-  template< typename VectorX >
-  static inline typename traits::type_traits< typename traits::vector_traits< VectorX >::value_type >::real_type
-  nrm2( const VectorX& x ) {
-    return boost::numeric::bindings::blas::nrm2( x );
-  }
-};
-
-struct apply_complex {
-  template< typename VectorX >
-  static inline typename traits::type_traits< typename traits::vector_traits< VectorX >::value_type >::real_type
-  asum( const VectorX& x ) {
-    return abs_sum( x );
-  }
-  template< typename VectorX >
-  static inline typename traits::type_traits< typename traits::vector_traits< VectorX >::value_type >::real_type
-  nrm2( const VectorX& x ) {
-    using namespace std;
-    typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    typedef typename traits::type_traits< value_type >::real_type real_type;
-    real_type t = real_type();
-    for (size_t i = 0, s = x.size(); i < s; ++ i) {
-      real_type u = norm(x[i]);
-      t += u;
-    }
-    return sqrt (t);
-  }
-};
-
-
+namespace bindings = boost::numeric::bindings;
 
 // Randomize a vector (using functions from random.hpp)
 template <typename V>
@@ -98,8 +62,8 @@ double abs_sum_value( std::complex< double > const& f ) {
 }
 
 template <typename V>
-typename boost::numeric::bindings::traits::type_traits<typename V::value_type>::real_type abs_sum( V const& v) {
-  typedef typename boost::numeric::bindings::traits::type_traits<typename V::value_type>::real_type real_type ;
+typename bindings::remove_imaginary<typename V::value_type>::type abs_sum( V const& v) {
+  typedef typename bindings::remove_imaginary<typename V::value_type>::type real_type ;
 
   real_type sum( 0.0 ) ;
   for ( typename V::size_type i=0; i<v.size(); ++i ) {
@@ -123,24 +87,23 @@ struct OneVector {
 
   template <typename V>
   int operator()(V& v) const {
-     typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
      using namespace boost::numeric::bindings::blas ;
 
      typedef typename V::value_type                                                        value_type ;
-     typedef typename boost::numeric::bindings::traits::type_traits<value_type>::real_type real_type ;
+     typedef typename bindings::remove_imaginary<value_type>::type real_type ;
 
      // Copy vector from reference
      for (typename V::size_type i=0; i<v_ref_.size(); ++i)
         v[i] = v_ref_(i);
 
      // Test blas routines and compare with reference
-     real_type nrm = apply_t::nrm2( v );
+     real_type nrm = nrm2( v );
      if ( std::abs(nrm - norm_2(v_ref_)) > std::numeric_limits< real_type >::epsilon() * norm_2(v_ref_)) {
        std::cout << "nrm2 : " << std::abs(nrm - norm_2(v_ref_)) << " > " << std::numeric_limits< real_type >::epsilon() * norm_2(v_ref_) << std::endl ;
        return 255 ;
      }
 
-     nrm = apply_t::asum( v );
+     nrm = asum( v );
      if ( std::abs(nrm - abs_sum(v_ref_)) > std::numeric_limits< real_type >::epsilon() * abs_sum(v_ref_)) {
        std::cout << "asum : " << std::abs(nrm - abs_sum(v_ref_)) << " > " << std::numeric_limits< real_type >::epsilon() * abs_sum(v_ref_) << std::endl ;
        return 255 ;
@@ -162,7 +125,7 @@ struct OneVector {
 template <typename T, typename V>
 struct BaseTwoVectorOperations {
   typedef T                                                                             value_type ;
-  typedef typename boost::numeric::bindings::traits::type_traits<value_type>::real_type real_type ;
+  typedef typename bindings::remove_imaginary<value_type>::type real_type ;
   typedef boost::numeric::ublas::vector<T>                                              ref_vector_type ;
 
   // Initialize: select the first vector and set the reference vectors (ublas)
@@ -197,7 +160,7 @@ template <typename V>
 struct TwoVectorOperations< float, V>
 : BaseTwoVectorOperations<float,V> {
   typedef typename V::value_type                                                        value_type ;
-  typedef typename boost::numeric::bindings::traits::type_traits<value_type>::real_type real_type ;
+  typedef typename bindings::remove_imaginary<value_type>::type real_type ;
   typedef typename BaseTwoVectorOperations<float,V>::ref_vector_type                    ref_vector_type ;
 
   TwoVectorOperations(V& v, const ref_vector_type& v1_ref, const ref_vector_type& v2_ref)
@@ -237,7 +200,7 @@ template <typename V>
 struct TwoVectorOperations< double, V>
 : BaseTwoVectorOperations<double,V> {
   typedef typename V::value_type                                                        value_type ;
-  typedef typename boost::numeric::bindings::traits::type_traits<value_type>::real_type real_type ;
+  typedef typename bindings::remove_imaginary<value_type>::type real_type ;
   typedef typename BaseTwoVectorOperations<double,V>::ref_vector_type                   ref_vector_type ;
 
   TwoVectorOperations(V& v, const ref_vector_type& v1_ref, const ref_vector_type& v2_ref)
@@ -278,7 +241,7 @@ struct TwoVectorOperations< std::complex<float>, V>
 : BaseTwoVectorOperations< std::complex<float>, V>
 {
   typedef typename V::value_type                                                        value_type ;
-  typedef typename boost::numeric::bindings::traits::type_traits<value_type>::real_type real_type ;
+  typedef typename bindings::remove_imaginary<value_type>::type real_type ;
   typedef typename BaseTwoVectorOperations<std::complex<float>,V>::ref_vector_type      ref_vector_type ;
 
   TwoVectorOperations(V& v, const ref_vector_type& v1_ref, const ref_vector_type& v2_ref)
@@ -323,7 +286,7 @@ struct TwoVectorOperations< std::complex<double>, V>
 : BaseTwoVectorOperations< std::complex<double>, V>
 {
   typedef typename V::value_type                                                        value_type ;
-  typedef typename boost::numeric::bindings::traits::type_traits<value_type>::real_type real_type ;
+  typedef typename bindings::remove_imaginary<value_type>::type real_type ;
   typedef typename BaseTwoVectorOperations<std::complex<double>,V>::ref_vector_type     ref_vector_type ;
 
   TwoVectorOperations(V& v, const ref_vector_type& v1_ref, const ref_vector_type& v2_ref)

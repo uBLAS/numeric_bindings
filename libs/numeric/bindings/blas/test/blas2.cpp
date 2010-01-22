@@ -14,25 +14,30 @@
 
 #include "blas.hpp"
 #include <boost/numeric/bindings/blas/level2/gemv.hpp>
-#include <boost/numeric/bindings/traits/transpose.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/trans.hpp>
+#include <boost/numeric/bindings/conj.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 
 template < typename ValueType, typename MatrixType, typename VectorType >
 void test_gemv(std::ostream& os, int runs, int runs_i, int size, int size_i, char c, ValueType alpha, ValueType beta, MatrixType &a, VectorType& x, VectorType &y_native, VectorType &y_toblas)
 {
+  namespace bindings = boost::numeric::bindings;
   typedef typename VectorType::value_type value_type ;
 
   boost::timer t ;
-  if ( c == boost::numeric::bindings::traits::NO_TRANSPOSE )    for(int i = 0 ; i < runs_i ; ++i ) y_native += alpha * numerics::prod( a, x) ;
-  else if ( c == boost::numeric::bindings::traits::TRANSPOSE )  for(int i = 0 ; i < runs_i ; ++i ) y_native += alpha * numerics::prod( trans(a), x) ;
-  else if ( c == boost::numeric::bindings::traits::CONJUGATE )  for(int i = 0 ; i < runs_i ; ++i ) y_native += alpha * numerics::prod( herm(a), x) ;
+  if ( c == 'N' )    for(int i = 0 ; i < runs_i ; ++i ) y_native += alpha * numerics::prod( a, x) ;
+  else if ( c == 'T' )  for(int i = 0 ; i < runs_i ; ++i ) y_native += alpha * numerics::prod( trans(a), x) ;
+  else if ( c == 'C' )  for(int i = 0 ; i < runs_i ; ++i ) y_native += alpha * numerics::prod( herm(a), x) ;
   else assert( 0 ) ;
   
   report< value_type >( os, runs, runs_i, size_i, t.elapsed() );
   
   t.restart() ;
-  for(int i = 0 ; i < runs_i ; ++i ) boost::numeric::bindings::blas::gemv( c, alpha, a, x, beta, y_toblas ) ;
+  if ( c == 'N' )  for(int i = 0 ; i < runs_i ; ++i ) boost::numeric::bindings::blas::gemv( alpha, a, x, beta, y_toblas ) ;
+  else if ( c == 'T' )  for(int i = 0 ; i < runs_i ; ++i ) boost::numeric::bindings::blas::gemv( alpha, bindings::trans(a), x, beta, y_toblas ) ;
+  else if ( c == 'C' )  for(int i = 0 ; i < runs_i ; ++i ) boost::numeric::bindings::blas::gemv( alpha, bindings::conj(a), x, beta, y_toblas ) ;
   
   report< value_type >( os, runs, runs_i, size_i, t.elapsed() );
   
@@ -55,7 +60,7 @@ struct gemv_matrix_vector_vector
     numerics::vector< T > y_native( x ) ;
     numerics::vector< T > y_toblas( x ) ;
       
-    test_gemv( os, runs, runs_i, size, size_i, boost::numeric::bindings::traits::NO_TRANSPOSE, alpha, beta, a, x, y_native, y_toblas );
+    test_gemv( os, runs, runs_i, size, size_i, 'N', alpha, beta, a, x, y_native, y_toblas );
   }
 };
 
@@ -75,7 +80,7 @@ struct gemv_trans_matrix_vector_vector
     numerics::vector< T > y_native( x ) ;
     numerics::vector< T > y_toblas( x ) ;
       
-    test_gemv( os, runs, runs_i, size, size_i, boost::numeric::bindings::traits::TRANSPOSE, alpha, beta, a, x, y_native, y_toblas );
+    test_gemv( os, runs, runs_i, size, size_i, 'T', alpha, beta, a, x, y_native, y_toblas );
   }
 };
 
@@ -95,7 +100,7 @@ struct gemv_conj_matrix_vector_vector
     numerics::vector< T > y_native( x ) ;
     numerics::vector< T > y_toblas( x ) ;
       
-    test_gemv( os, runs, runs_i, size, size_i, boost::numeric::bindings::traits::CONJUGATE, alpha, beta, a, x, y_native, y_toblas );
+    test_gemv( os, runs, runs_i, size, size_i, 'C', alpha, beta, a, x, y_native, y_toblas );
   }
 };
 
@@ -118,7 +123,7 @@ struct gemv_matrix_range_vector_vector
     numerics::vector< T > y_native( x ) ;
     numerics::vector< T > y_toblas( x ) ;
       
-    test_gemv( os, runs, runs_i, size, size_i, boost::numeric::bindings::traits::NO_TRANSPOSE, alpha, beta, mr, x, y_native, y_toblas );
+    test_gemv( os, runs, runs_i, size, size_i, 'N', alpha, beta, mr, x, y_native, y_toblas );
   }
 };
 

@@ -72,9 +72,6 @@ main(int argc, char** argv)
 	
 	// A * B = C
 	{
-
-        std::cout << "here..." << std::endl;
-
 		boost::numeric::ublas::bounded_matrix<double, 4, 3, boost::numeric::ublas::column_major> a;
 		for (std::size_t i = 0; i < a.size1(); ++i) for (std::size_t j = 0; j < a.size2(); ++j) a(i, j) = i * a.size2() + j;
 		std::cout << "A=" << a << std::endl;

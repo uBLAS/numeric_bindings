@@ -177,7 +177,64 @@ struct adaptor< ublas::matrix_row< T >, Id, Enable > {
 
 };
 
+template< typename T, typename Id, typename Enable >
+struct adaptor< ublas::matrix_vector_range< T >, Id, Enable > {
 
+    typedef typename copy_const< Id, T >::type adapted_type;
+    typedef typename property_insert< adapted_type,
+        mpl::pair< tag::entity, tag::vector >,
+        mpl::pair< tag::stride_type<1>, std::ptrdiff_t >
+    >::type property_map;
+
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size();
+    }
+
+    static typename result_of::begin_value< adapted_type >::type begin_value( Id& id ) {
+        return bindings::begin_value( id.data() ) + 
+               offset( id.data(), id.start1(), id.start2() );
+    }
+
+    static typename result_of::end_value< adapted_type >::type end_value( Id& id ) {
+        return bindings::begin_value( id.data() ) + 
+               offset( id.data(), id.start1() + id.size1(), id.start2() + id.size2() );
+    }
+
+    static std::ptrdiff_t stride1( const Id& id ) {
+        return bindings::stride1( id.data() ) + bindings::stride2( id.data() );
+    }
+
+};
+
+template< typename T, typename Id, typename Enable >
+struct adaptor< ublas::matrix_vector_slice< T >, Id, Enable > {
+
+    typedef typename copy_const< Id, T >::type adapted_type;
+    typedef typename property_insert< adapted_type,
+        mpl::pair< tag::entity, tag::vector >,
+        mpl::pair< tag::stride_type<1>, std::ptrdiff_t >
+    >::type property_map;
+
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size();
+    }
+
+    static typename result_of::begin_value< adapted_type >::type begin_value( Id& id ) {
+        return bindings::begin_value( id.data() ) + 
+               offset( id.data(), id.start1(), id.start2() );
+    }
+
+    static typename result_of::end_value< adapted_type >::type end_value( Id& id ) {
+        return bindings::begin_value( id.data() ) + 
+               offset( id.data(), id.start1() + id.size1(), id.start2() + id.size2() );
+    }
+
+    static std::ptrdiff_t stride1( const Id& id ) {
+        return id.stride1() * bindings::stride1( id.data() ) + 
+               id.stride2() * bindings::stride2( id.data() );
+    }
+
+};
 
 } // namespace detail
 } // namespace bindings

@@ -16,8 +16,11 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 
+template< typename T, typename Enable = void >
+struct is_mutable: mpl::false_ {};
+
 template< typename T >
-struct is_mutable:
+struct is_mutable< T, typename boost::enable_if< detail::is_adaptable<T> >::type >:
         is_same<
             typename bindings::value_type< T>::type, 
             typename remove_const< typename bindings::value_type< T>::type >::type 

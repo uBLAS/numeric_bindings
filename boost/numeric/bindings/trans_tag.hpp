@@ -9,6 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_TRANS_TAG_HPP
 #define BOOST_NUMERIC_BINDINGS_TRANS_TAG_HPP
 
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/tag.hpp>
 #include <boost/numeric/bindings/detail/property_map.hpp>
 
@@ -63,7 +64,7 @@ namespace result_of {
 template< typename T, typename Order >
 struct trans_tag {
     typedef typename detail::trans_tag_impl< Order,
-        typename detail::property_at< T, tag::data_order >::type,
+        typename result_of::data_order<T>::type,
         typename detail::property_at< T, tag::value_transform >::type >::type type;
 };
 

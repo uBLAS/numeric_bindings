@@ -64,11 +64,11 @@ struct adaptor< ublas::bounded_vector< T, N >, Id, Enable > {
     }
 
     static value_type* begin_value( Id& id ) {
-        return id.begin();
+        return bindings::begin_value( id.data() );
     }
 
     static value_type* end_value( Id& id ) {
-        return id.end();
+        return bindings::end_value( id.data() );
     }
 
 };

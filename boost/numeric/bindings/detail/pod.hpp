@@ -56,19 +56,19 @@ struct adaptor< T[N], Id, typename boost::enable_if< is_numeric<T> >::type > {
 
 };
 
-template< typename T, std::size_t N, std::size_t M, typename Id >
-struct adaptor< T[N][M], Id, typename boost::enable_if< is_numeric<T> >::type > {
+template< typename T, std::size_t M, std::size_t N, typename Id >
+struct adaptor< T[M][N], Id, typename boost::enable_if< is_numeric<T> >::type > {
 
     typedef typename copy_const< Id, T >::type value_type;
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::matrix >,
-        mpl::pair< tag::size_type<1>, mpl::int_<N> >,
-        mpl::pair< tag::size_type<2>, mpl::int_<M> >,
+        mpl::pair< tag::size_type<1>, mpl::int_<M> >,
+        mpl::pair< tag::size_type<2>, mpl::int_<N> >,
         mpl::pair< tag::matrix_type, tag::general >,
         mpl::pair< tag::data_structure, tag::linear_array >,
         mpl::pair< tag::data_order, tag::row_major >,
-        mpl::pair< tag::stride_type<1>, mpl::int_<M> >,
+        mpl::pair< tag::stride_type<1>, mpl::int_<N> >,
         mpl::pair< tag::stride_type<2>, tag::contiguous >
     > property_map;
 
@@ -77,7 +77,7 @@ struct adaptor< T[N][M], Id, typename boost::enable_if< is_numeric<T> >::type > 
     }
 
     static value_type* end_value( Id& t ) {
-        return &t[N][M];
+        return &t[M][N];
     }
 
 };

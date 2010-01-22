@@ -25,7 +25,7 @@ namespace bindings {
 namespace detail {
 
 template< typename T, typename F, typename A, typename Id, typename Enable >
-struct adaptor< boost::numeric::ublas::matrix< T, F, A >, Id, Enable > {
+struct adaptor< ::boost::numeric::ublas::matrix< T, F, A >, Id, Enable > {
 
     typedef typename copy_const< Id, T >::type value_type;
     typedef typename convert_to< tag::data_order, F >::type data_order;
@@ -68,8 +68,44 @@ struct adaptor< boost::numeric::ublas::matrix< T, F, A >, Id, Enable > {
 
 };
 
-template< typename T, std::size_t N, std::size_t M, typename Id, typename Enable >
-struct adaptor< ::boost::numeric::ublas::c_matrix< T, N, M >, Id, Enable > {
+template< typename T, std::size_t M, std::size_t N, typename F, typename Id, typename Enable >
+struct adaptor< ::boost::numeric::ublas::bounded_matrix< T, M, N, F >, Id, Enable > {
+
+    typedef typename copy_const< Id, T >::type value_type;
+    typedef typename convert_to< tag::data_order, F >::type data_order;
+    typedef mpl::map<
+        mpl::pair< tag::value_type, value_type >,
+        mpl::pair< tag::entity, tag::matrix >,
+        mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
+        mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
+        mpl::pair< tag::data_structure, tag::linear_array >,
+        mpl::pair< tag::data_order, data_order >,
+        mpl::pair< tag::stride_type<1>,
+            typename if_row_major< data_order, mpl::int_<N>, tag::contiguous >::type >,
+        mpl::pair< tag::stride_type<2>,
+            typename if_row_major< data_order, tag::contiguous, mpl::int_<M> >::type >
+    > property_map;
+
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size1();
+    }
+
+    static std::ptrdiff_t size2( const Id& id ) {
+        return id.size2();
+    }
+
+    static value_type* begin_value( Id& id ) {
+        return bindings::begin_value( id.data() );
+    }
+
+    static value_type* end_value( Id& id ) {
+        return bindings::end_value( id.data() );
+    }
+
+};
+
+template< typename T, std::size_t M, std::size_t N, typename Id, typename Enable >
+struct adaptor< ::boost::numeric::ublas::c_matrix< T, M, N >, Id, Enable > {
 
     typedef typename copy_const< Id, T >::type value_type;
     typedef mpl::map<
@@ -80,7 +116,7 @@ struct adaptor< ::boost::numeric::ublas::c_matrix< T, N, M >, Id, Enable > {
         mpl::pair< tag::matrix_type, tag::general >,
         mpl::pair< tag::data_structure, tag::linear_array >,
         mpl::pair< tag::data_order, tag::row_major >,
-        mpl::pair< tag::stride_type<1>, mpl::int_<M> >,
+        mpl::pair< tag::stride_type<1>, mpl::int_<N> >,
         mpl::pair< tag::stride_type<2>, tag::contiguous >
     > property_map;
 

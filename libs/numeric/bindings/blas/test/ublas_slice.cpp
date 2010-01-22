@@ -8,15 +8,14 @@
 
 #include <algorithm>
 #include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/trans.hpp>
 #include <boost/numeric/bindings/blas/level3/gemm.hpp>
 #include <boost/numeric/bindings/blas/level1/axpy.hpp>
-#include <boost/numeric/bindings/traits/transpose.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector2.hpp>
+
+namespace bindings = boost::numeric::bindings;
 
 int
 main(int argc, char** argv)
@@ -33,17 +32,13 @@ main(int argc, char** argv)
 		
 		boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> c(3, 3);
 		boost::numeric::bindings::blas::gemm(
-			boost::numeric::bindings::traits::NO_TRANSPOSE,
-			boost::numeric::bindings::traits::TRANSPOSE,
-			1.0, a, b, 0.0, c
+			1.0, a, bindings::trans(b), 0.0, c
 		);
 		std::cout << "C=" << c << std::endl;
 		
 		boost::numeric::ublas::vector<double> d(1);
 		boost::numeric::bindings::blas::gemm(
-			boost::numeric::bindings::traits::TRANSPOSE,
-			boost::numeric::bindings::traits::NO_TRANSPOSE,
-			1.0, a, b, 0.0, d
+			1.0, bindings::trans(a), b, 0.0, d
 		);
 		std::cout << "d=" << d << std::endl;
 	}
@@ -62,17 +57,13 @@ main(int argc, char** argv)
 		
 		boost::numeric::ublas::bounded_matrix<double, 3, 3, boost::numeric::ublas::column_major> c;
 		boost::numeric::bindings::blas::gemm(
-			boost::numeric::bindings::traits::NO_TRANSPOSE,
-			boost::numeric::bindings::traits::TRANSPOSE,
-			1.0, a, b, 0.0, c
+			1.0, a, bindings::trans(b), 0.0, c
 		);
 		std::cout << "C=" << c << std::endl;
 		
 		boost::numeric::ublas::bounded_vector<double, 1> d;
 		boost::numeric::bindings::blas::gemm(
-			boost::numeric::bindings::traits::TRANSPOSE,
-			boost::numeric::bindings::traits::NO_TRANSPOSE,
-			1.0, a, b, 0.0, d
+			1.0, bindings::trans(a), b, 0.0, d
 		);
 		std::cout << "d=" << d << std::endl;
 	}
@@ -81,6 +72,9 @@ main(int argc, char** argv)
 	
 	// A * B = C
 	{
+
+        std::cout << "here..." << std::endl;
+
 		boost::numeric::ublas::bounded_matrix<double, 4, 3, boost::numeric::ublas::column_major> a;
 		for (std::size_t i = 0; i < a.size1(); ++i) for (std::size_t j = 0; j < a.size2(); ++j) a(i, j) = i * a.size2() + j;
 		std::cout << "A=" << a << std::endl;
@@ -92,8 +86,6 @@ main(int argc, char** argv)
 		boost::numeric::ublas::bounded_matrix<double, 4, 4, boost::numeric::ublas::column_major> c;
 		//boost::numeric::bindings::blas::gemm(a, b, c);
 		boost::numeric::bindings::blas::gemm(
-			boost::numeric::bindings::traits::NO_TRANSPOSE,
-			boost::numeric::bindings::traits::NO_TRANSPOSE,
 			1.0, a, b, 0.0, c);
 		std::cout << "C=" << c << std::endl;
 	}
@@ -127,8 +119,6 @@ main(int argc, char** argv)
 		> c2 = boost::numeric::ublas::subrange(c, 0, 3, 0, 3);
 		//boost::numeric::bindings::blas::gemm(a2, b2, c2);
 		boost::numeric::bindings::blas::gemm(
-			boost::numeric::bindings::traits::NO_TRANSPOSE,
-			boost::numeric::bindings::traits::NO_TRANSPOSE,
 			1.0, a2, b2, 0.0, c2);
 		std::cout << "C2=" << c2 << std::endl;
 		std::cout << "C=" << c << std::endl;

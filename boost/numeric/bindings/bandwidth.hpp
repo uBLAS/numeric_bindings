@@ -12,9 +12,7 @@
 #include <boost/numeric/bindings/detail/generate_functions.hpp>
 #include <boost/numeric/bindings/detail/get.hpp>
 #include <boost/numeric/bindings/rank.hpp>
-#include <boost/numeric/bindings/index_major.hpp>
-#include <boost/numeric/bindings/index_minor.hpp>
-#include <boost/numeric/bindings/index_trans.hpp>
+#include <boost/numeric/bindings/index.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/min.hpp>
 #include <boost/mpl/greater.hpp>

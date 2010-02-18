@@ -37,9 +37,9 @@ struct begin_impl< T, tag::value > {
 };
 
 template< typename T, int Dimension >
-struct begin_impl<T, tag::index<Dimension> > {
+struct begin_impl<T, tag::addressing_index<Dimension> > {
 
-    typedef tag::index<Dimension> tag_type;
+    typedef tag::addressing_index<Dimension> tag_type;
 
     typedef linear_iterator<
         typename bindings::value_type< T>::type,
@@ -56,7 +56,7 @@ struct begin_impl<T, tag::index<Dimension> > {
 
 namespace result_of {
 
-template< typename T, typename Tag = tag::index<1> >
+template< typename T, typename Tag = tag::addressing_index<1> >
 struct begin {
     BOOST_STATIC_ASSERT( (is_tag<Tag>::value) );
     typedef typename detail::begin_impl<T,Tag>::result_type type;
@@ -91,23 +91,23 @@ template< typename T >
 typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
     typename result_of::begin< T >::type >::type
 begin( T& t ) {
-    return detail::begin_impl< T, tag::index<1> >::invoke( t );
+    return detail::begin_impl< T, tag::addressing_index<1> >::invoke( t );
 }
 
 template< typename T >
 typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
     typename result_of::begin< const T >::type >::type
 begin( const T& t ) {
-    return detail::begin_impl< const T, tag::index<1> >::invoke( t );
+    return detail::begin_impl< const T, tag::addressing_index<1> >::invoke( t );
 }
 
 #define GENERATE_BEGIN_INDEX( z, which, unused ) \
-GENERATE_FUNCTIONS( begin, which, tag::index<which> )
+GENERATE_FUNCTIONS( begin, which, tag::addressing_index<which> )
 
 BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_BEGIN_INDEX,~)
 GENERATE_FUNCTIONS( begin, _value, tag::value )
-GENERATE_FUNCTIONS( begin, _row, tag::index<1> )
-GENERATE_FUNCTIONS( begin, _column, tag::index<2> )
+GENERATE_FUNCTIONS( begin, _row, tag::addressing_index<1> )
+GENERATE_FUNCTIONS( begin, _column, tag::addressing_index<2> )
 
 } // namespace bindings
 } // namespace numeric

@@ -19,49 +19,49 @@ namespace numeric {
 namespace bindings {
 
 template< typename T >
-struct index_minor:
+struct addressing_index_minor:
     mpl::if_<
         is_column_major< T >,
-        tag::index<1>,
-        tag::index<
+        tag::addressing_index<1>,
+        tag::addressing_index<
             mpl::max< tag::matrix, rank< T > >::type::value
         >
     >::type {};
 
 template< typename T >
-struct index_major:
+struct addressing_index_major:
     mpl::if_<
         is_column_major< T >,
-        tag::index<
+        tag::addressing_index<
             mpl::max< tag::matrix, rank< T > >::type::value
         >,
-        tag::index<1>
+        tag::addressing_index<1>
     >::type {};
 
 
-template< typename Index, typename TransTag >
-struct index_trans {
-    typedef Index type;
+template< typename AddressingIndex, typename TransTag >
+struct addressing_index_trans {
+    typedef AddressingIndex type;
 };
 
 template<>
-struct index_trans< tag::index<1>, tag::transpose > {
-    typedef tag::index<2> type;
+struct addressing_index_trans< tag::addressing_index<1>, tag::transpose > {
+    typedef tag::addressing_index<2> type;
 };
 
 template<>
-struct index_trans< tag::index<1>, tag::conjugate > {
-    typedef tag::index<2> type;
+struct addressing_index_trans< tag::addressing_index<1>, tag::conjugate > {
+    typedef tag::addressing_index<2> type;
 };
 
 template<>
-struct index_trans< tag::index<2>, tag::transpose > {
-    typedef tag::index<1> type;
+struct addressing_index_trans< tag::addressing_index<2>, tag::transpose > {
+    typedef tag::addressing_index<1> type;
 };
 
 template<>
-struct index_trans< tag::index<2>, tag::conjugate > {
-    typedef tag::index<1> type;
+struct addressing_index_trans< tag::addressing_index<2>, tag::conjugate > {
+    typedef tag::addressing_index<1> type;
 };
 
 

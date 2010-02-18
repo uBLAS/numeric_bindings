@@ -31,9 +31,9 @@ struct end_impl< T, tag::value > {
 };
 
 template< typename T, int N >
-struct end_impl< T, tag::index<N> > {
+struct end_impl< T, tag::addressing_index<N> > {
 
-    typedef tag::index<N> tag_type;
+    typedef tag::addressing_index<N> tag_type;
 
     typedef linear_iterator<
         typename bindings::value_type< T>::type,
@@ -50,7 +50,7 @@ struct end_impl< T, tag::index<N> > {
 
 namespace result_of {
 
-template< typename T, typename Tag = tag::index<1> >
+template< typename T, typename Tag = tag::addressing_index<1> >
 struct end {
     BOOST_STATIC_ASSERT( (is_tag<Tag>::value) );
     typedef typename detail::end_impl<T,Tag>::result_type type;
@@ -82,16 +82,16 @@ end( const T& t, Tag ) {
 
 template< typename T >
 typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
-    typename result_of::end< T, tag::index<1> >::type >::type
+    typename result_of::end< T, tag::addressing_index<1> >::type >::type
 end( T& t ) {
-    return detail::end_impl<T,tag::index<1> >::invoke( t );
+    return detail::end_impl<T,tag::addressing_index<1> >::invoke( t );
 }
 
 template< typename T >
 typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
     typename result_of::end< const T >::type >::type
 end( const T& t ) {
-    return detail::end_impl<const T, tag::index<1> >::invoke( t );
+    return detail::end_impl<const T, tag::addressing_index<1> >::invoke( t );
 }
 
 #define GENERATE_END_INDEX( z, which, unused ) \
@@ -99,8 +99,8 @@ GENERATE_FUNCTIONS( end, which, mpl::int_<which> )
 
 BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_END_INDEX,~)
 GENERATE_FUNCTIONS( end, _value, tag::value )
-GENERATE_FUNCTIONS( end, _row, tag::index<1> )
-GENERATE_FUNCTIONS( end, _column, tag::index<2> )
+GENERATE_FUNCTIONS( end, _row, tag::addressing_index<1> )
+GENERATE_FUNCTIONS( end, _column, tag::addressing_index<2> )
 
 
 } // namespace bindings

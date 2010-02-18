@@ -26,10 +26,10 @@ namespace numeric {
 namespace bindings {
 namespace detail {
 
-template< typename T, typename Index, typename Enable = void >
+template< typename T, typename AddressingIndex, typename Enable = void >
 struct stride_impl {
 
-    typedef tag::stride_type< Index::value > key_type;
+    typedef tag::stride_type< AddressingIndex::value > key_type;
     typedef typename result_of_get< T, key_type >::type result_type;
 
     static result_type invoke( const T& t ) {
@@ -51,8 +51,8 @@ struct stride_impl {
 // Iff size_i and stride_i are integral constants, results will be known at
 // compile time. Otherwise, the result_type will be std::ptrdiff_t.
 //
-template< typename T, typename Index >
-struct stride_impl< T, Index,
+template< typename T, typename AddressingIndex >
+struct stride_impl< T, AddressingIndex,
         typename boost::enable_if<
             mpl::equal_to< rank<T>, tag::scalar >
         >::type > {
@@ -66,10 +66,10 @@ struct stride_impl< T, Index,
 };
 
 
-template< typename T, typename State, typename Index >
+template< typename T, typename State, typename AddressingIndex >
 struct fold_stride_size {
 
-    typedef tag::index< Index::value > index_type;
+    typedef tag::addressing_index< AddressingIndex::value > index_type;
     typedef typename result_of::size< T, index_type >::type size_type;
     typedef typename stride_impl< T, index_type >::result_type stride_type;
 
@@ -96,20 +96,20 @@ struct fold_stride_size {
 // and return that. Otherwise, runtime stuff is involved, so we'll
 // have to evaluate sum_i( size_i, stride_i ).
 //
-template< typename T, typename Result, int Index >
+template< typename T, typename Result, int AddressingIndex >
 struct apply_fold {
     static Result invoke( const T& t ) {
         return Result();
     }
 };
 
-template< typename T, int Index >
-struct apply_fold< T, std::ptrdiff_t, Index > {
+template< typename T, int AddressingIndex >
+struct apply_fold< T, std::ptrdiff_t, AddressingIndex > {
 
     static std::ptrdiff_t invoke( const T& t ) {
-        return size( t, tag::index< Index >() ) * 
-            stride_impl< T, tag::index< Index > >::invoke( t ) +
-            apply_fold< T, std::ptrdiff_t, Index-1 >::invoke( t );
+        return size( t, tag::addressing_index< AddressingIndex >() ) * 
+            stride_impl< T, tag::addressing_index< AddressingIndex > >::invoke( t ) +
+            apply_fold< T, std::ptrdiff_t, AddressingIndex-1 >::invoke( t );
     }
 
 };
@@ -128,12 +128,12 @@ struct apply_fold< T, std::ptrdiff_t, 0 > {
 //  but not enough time right now
 
 
-template< typename T, typename Index >
-struct stride_impl< T, Index,
+template< typename T, typename AddressingIndex >
+struct stride_impl< T, AddressingIndex,
         typename boost::enable_if<
             mpl::and_<
                  mpl::greater< rank<T>, tag::scalar >,
-                 mpl::greater< Index, rank<T> >
+                 mpl::greater< AddressingIndex, rank<T> >
            >
         >::type > {
 
@@ -159,7 +159,7 @@ struct stride_impl< T, Index,
 
 namespace result_of {
 
-template< typename T, typename Tag = tag::index<1> >
+template< typename T, typename Tag = tag::addressing_index<1> >
 struct stride {
     BOOST_STATIC_ASSERT( (is_tag<Tag>::value) );
     typedef typename detail::stride_impl< T, Tag >::result_type type;
@@ -186,22 +186,22 @@ template< typename T >
 inline typename
 boost::enable_if<
     mpl::less< rank<T>, mpl::int_<2> >,
-    typename result_of::stride< const T, tag::index<1> >::type
+    typename result_of::stride< const T, tag::addressing_index<1> >::type
 >::type
 stride( const T& t ) {
-    return detail::stride_impl<const T, tag::index<1> >::invoke( t );
+    return detail::stride_impl<const T, tag::addressing_index<1> >::invoke( t );
 }
 
 
 #define GENERATE_STRIDE_INDEX( z, which, unused ) \
-GENERATE_FUNCTIONS( stride, which, tag::index<which> )
+GENERATE_FUNCTIONS( stride, which, tag::addressing_index<which> )
 
 BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_STRIDE_INDEX,~)
 
-GENERATE_FUNCTIONS( stride, _row, tag::index<1> )
-GENERATE_FUNCTIONS( stride, _column, tag::index<2> )
-GENERATE_FUNCTIONS( stride, _major, typename index_major<T>::type )
-GENERATE_FUNCTIONS( stride, _minor, typename index_minor<T>::type )
+GENERATE_FUNCTIONS( stride, _row, tag::addressing_index<1> )
+GENERATE_FUNCTIONS( stride, _column, tag::addressing_index<2> )
+GENERATE_FUNCTIONS( stride, _major, typename addressing_index_major<T>::type )
+GENERATE_FUNCTIONS( stride, _minor, typename addressing_index_minor<T>::type )
 
 } // namespace bindings
 } // namespace numeric

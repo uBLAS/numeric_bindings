@@ -65,7 +65,7 @@ ADD_INT_TEMPLATE_TAG( tensor )
 ADD_INT_TEMPLATE_TAG( size_type )
 ADD_INT_TEMPLATE_TAG( stride_type )
 ADD_INT_TEMPLATE_TAG( bandwidth_type )
-ADD_INT_TEMPLATE_TAG( index )
+ADD_INT_TEMPLATE_TAG( addressing_index )
 
 // Supported data structures
 ADD_TAG( linear_array )

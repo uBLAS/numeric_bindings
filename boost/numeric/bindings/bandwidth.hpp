@@ -12,7 +12,7 @@
 #include <boost/numeric/bindings/detail/generate_functions.hpp>
 #include <boost/numeric/bindings/detail/get.hpp>
 #include <boost/numeric/bindings/rank.hpp>
-#include <boost/numeric/bindings/index.hpp>
+#include <boost/numeric/bindings/addressing_index.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/min.hpp>
 #include <boost/mpl/greater.hpp>
@@ -24,10 +24,10 @@ namespace numeric {
 namespace bindings {
 namespace detail {
 
-template< typename T, typename Index, typename Enable = void >
+template< typename T, typename AddressingIndex, typename Enable = void >
 struct bandwidth_impl {
 
-    typedef typename tag::bandwidth_type< Index::value > key_type;
+    typedef typename tag::bandwidth_type< AddressingIndex::value > key_type;
     typedef typename result_of_get< T, key_type >::type result_type;
 
     static result_type invoke( const T& t ) {
@@ -38,33 +38,33 @@ struct bandwidth_impl {
 
 template< typename T >
 struct bandwidth_impl< T, tag::lower >:
-    bandwidth_impl< T, tag::index<1> > {};
+    bandwidth_impl< T, tag::addressing_index<1> > {};
 
 
 template< typename T >
 struct bandwidth_impl< T, tag::upper >:
-    bandwidth_impl< T, tag::index<2> > {};
+    bandwidth_impl< T, tag::addressing_index<2> > {};
 
 
 template< typename T, int N >
-struct bandwidth_impl< T, tag::index<N>,
+struct bandwidth_impl< T, tag::addressing_index<N>,
         typename boost::enable_if< typename mpl::and_<
-            mpl::greater< tag::index<N>, rank<T> >,
+            mpl::greater< tag::addressing_index<N>, rank<T> >,
             is_same_at< T, tag::bandwidth_type<1>, std::ptrdiff_t >
         >::type >::type > {
 
     typedef std::ptrdiff_t result_type;
 
     static result_type invoke( const T& t ) {
-        return std::min< std::ptrdiff_t >( bandwidth_impl<T, tag::index<1> >::invoke(t), 1 );
+        return std::min< std::ptrdiff_t >( bandwidth_impl<T, tag::addressing_index<1> >::invoke(t), 1 );
     }
 
 };
 
 template< typename T, int N >
-struct bandwidth_impl< T, tag::index<N>,
+struct bandwidth_impl< T, tag::addressing_index<N>,
         typename boost::enable_if< typename mpl::and_<
-            mpl::greater< tag::index<N>, rank<T> >,
+            mpl::greater< tag::addressing_index<N>, rank<T> >,
             mpl::not_< is_same_at< T, tag::bandwidth_type<1>, std::ptrdiff_t > >
         >::type >::type > {
 
@@ -84,7 +84,7 @@ struct bandwidth_impl< T, tag::index<N>,
 
 namespace result_of {
 
-template< typename T, typename Tag = tag::index<1> >
+template< typename T, typename Tag = tag::addressing_index<1> >
 struct bandwidth {
     BOOST_STATIC_ASSERT( (is_tag<Tag>::value) );
     typedef typename detail::bandwidth_impl< T, Tag >::result_type type;
@@ -110,20 +110,20 @@ bandwidth( const T& t, Tag ) {
 // typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
 //     typename result_of::bandwidth< const T >::type >::type
 // bandwidth( const T& t ) {
-//     return detail::bandwidth_impl< const T, tag::index<1> >::invoke( t );
+//     return detail::bandwidth_impl< const T, tag::addressing_index<1> >::invoke( t );
 // }
 
 #define GENERATE_BANDWIDTH_INDEX( z, which, unused ) \
-GENERATE_FUNCTIONS( bandwidth, which, tag::index<which> )
+GENERATE_FUNCTIONS( bandwidth, which, tag::addressing_index<which> )
 
 BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_BANDWIDTH_INDEX,~)
 
-GENERATE_FUNCTIONS( bandwidth, _left, tag::index<1> )
-GENERATE_FUNCTIONS( bandwidth, _right, tag::index<2> )
-GENERATE_FUNCTIONS( bandwidth, _lower, tag::index<1> )
-GENERATE_FUNCTIONS( bandwidth, _upper, tag::index<2> )
-GENERATE_FUNCTIONS( bandwidth, _major, typename index_major<T>::type )
-GENERATE_FUNCTIONS( bandwidth, _minor, typename index_minor<T>::type )
+GENERATE_FUNCTIONS( bandwidth, _left, tag::addressing_index<1> )
+GENERATE_FUNCTIONS( bandwidth, _right, tag::addressing_index<2> )
+GENERATE_FUNCTIONS( bandwidth, _lower, tag::addressing_index<1> )
+GENERATE_FUNCTIONS( bandwidth, _upper, tag::addressing_index<2> )
+GENERATE_FUNCTIONS( bandwidth, _major, typename addressing_index_major<T>::type )
+GENERATE_FUNCTIONS( bandwidth, _minor, typename addressing_index_minor<T>::type )
 
 //
 // Overloads for free template functions bandwidth_row( x, tag ), 
@@ -136,14 +136,14 @@ template< typename T, typename TransTag >
 struct bandwidth_upper_op {
     typedef typename bandwidth<
         T,
-        typename index_trans< tag::index<1>, TransTag >::type
+        typename addressing_index_trans< tag::addressing_index<1>, TransTag >::type
     >::type type;
 };
 
 template< typename T, typename TransTag >
 struct bandwidth_lower_op {
     typedef typename bandwidth< T, 
-        typename index_trans< tag::index<2>, TransTag >::type >::type type;
+        typename addressing_index_trans< tag::addressing_index<2>, TransTag >::type >::type type;
 };
 
 } // namespace result_of
@@ -151,13 +151,13 @@ struct bandwidth_lower_op {
 template< typename T, typename Tag >
 inline typename result_of::bandwidth_upper_op< const T, Tag >::type
 bandwidth_upper_op( const T& t, Tag ) {
-    return bindings::bandwidth( t, typename index_trans< tag::index<1>, Tag >::type() );
+    return bindings::bandwidth( t, typename addressing_index_trans< tag::addressing_index<1>, Tag >::type() );
 }
 
 template< typename T, typename Tag >
 inline typename result_of::bandwidth_upper_op< const T, Tag >::type
 bandwidth_lower_op( const T& t, Tag ) {
-    return bindings::bandwidth( t, typename index_trans< tag::index<2>, Tag >::type() );
+    return bindings::bandwidth( t, typename addressing_index_trans< tag::addressing_index<2>, Tag >::type() );
 }
 
 } // namespace bindings

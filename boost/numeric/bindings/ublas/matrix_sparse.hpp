@@ -11,8 +11,10 @@
 
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
+#include <boost/numeric/bindings/detail/copy_const.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
 #include <boost/numeric/bindings/ublas/matrix_expression.hpp>
+#include <boost/numeric/bindings/ublas/storage.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 
 namespace boost {
@@ -23,9 +25,12 @@ namespace detail {
 template< typename T, typename F, std::size_t IB, typename IA, typename TA, typename Id, typename Enable >
 struct adaptor< ublas::compressed_matrix< T, F, IB, IA, TA >, Id, Enable > {
 
+    typedef typename copy_const< Id, T >::type value_type;
+    typedef typename copy_const< Id, typename bindings::value_type<IA>::type >::type index_type;
     typedef typename convert_to< tag::data_order, F >::type data_order;
     typedef mpl::map<
-        mpl::pair< tag::value_type, T >,
+        mpl::pair< tag::value_type, value_type >,
+        mpl::pair< tag::index_type, index_type >,
         mpl::pair< tag::entity, tag::vector >,
         mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
@@ -33,20 +38,36 @@ struct adaptor< ublas::compressed_matrix< T, F, IB, IA, TA >, Id, Enable > {
         mpl::pair< tag::data_order, data_order >
     > property_map;
 
-    static std::ptrdiff_t size1( const Id& t ) {
-        return t.size1();
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size1();
     }
 
-    static std::ptrdiff_t size2( const Id& t ) {
-        return t.size2();
+    static std::ptrdiff_t size2( const Id& id ) {
+        return id.size2();
     }
-/*
-    static void index_data( Id& t ) {
-        return t.index_data()
-    }*/
 
-    static value_type* begin_value( Id& t ) {
-        return bindings::begin_value( t.value_data() );
+    static value_type* begin_value( Id& id ) {
+        return bindings::begin_value( id.value_data() );
+    }
+
+    static value_type* end_value( Id& id ) {
+        return bindings::end_value( id.value_data() );
+    }
+
+    static index_type* begin_index1( Id& id ) {
+        return bindings::begin_value( id.index1_data() );
+    }
+
+    static index_type* end_index1( Id& id ) {
+        return bindings::end_value( id.index1_data() );
+    }
+
+    static index_type* begin_index2( Id& id ) {
+        return bindings::begin_value( id.index2_data() );
+    }
+
+    static index_type* end_index2( Id& id ) {
+        return bindings::end_value( id.index2_data() );
     }
 
 };

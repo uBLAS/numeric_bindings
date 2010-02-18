@@ -50,6 +50,7 @@ template<> \
 struct is_tag< tag::tag_name >: \
     mpl::bool_< true > {};
 
+ADD_TAG( index_type )
 ADD_TAG( value_type )
 ADD_TAG( value )
 ADD_TAG( value_transform )

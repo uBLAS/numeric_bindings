@@ -6,8 +6,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_HAS_STATIC_SIZE_HPP
-#define BOOST_NUMERIC_BINDINGS_HAS_STATIC_SIZE_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_HAS_STATIC_STRIDE_HPP
+#define BOOST_NUMERIC_BINDINGS_HAS_STATIC_STRIDE_HPP
 
 #include <boost/numeric/bindings/detail/property_map.hpp>
 #include <boost/numeric/bindings/tag.hpp>
@@ -20,27 +20,27 @@ namespace bindings {
 namespace detail {
 
 template< typename T >
-struct is_static_size_property: mpl::false_ {};
+struct is_static_stride_property: mpl::false_ {};
 
 template< int N, int M >
-struct is_static_size_property< mpl::pair< tag::size_type<N>, mpl::int_<M> > >: mpl::true_ {};
+struct is_static_stride_property< mpl::pair< tag::stride_type<N>, mpl::int_<M> > >: mpl::true_ {};
 
 } // namespace detail
 
 template< typename T, typename Enable = void >
-struct has_static_size: mpl::false_ {};
+struct has_static_stride: mpl::false_ {};
 
 template< typename T >
-struct has_static_size<
+struct has_static_stride<
         T,
         typename boost::enable_if< detail::is_adaptable<T> >::type >:
 
-    // count the number of static size properties, 
+    // count the number of static stride properties, 
     // should be equal to the rank of the object
     mpl::equal_to< 
         mpl::count_if<
             typename detail::property_map_of< T >::type,
-            detail::is_static_size_property< mpl::_ >
+            detail::is_static_stride_property< mpl::_ >
         >,
         typename detail::property_at< T, tag::entity >::type
     >::type {};

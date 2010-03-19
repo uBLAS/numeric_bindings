@@ -12,7 +12,7 @@ import testing ;
 
 alias bindings-umfpack-tests :
     [ run umf4.cc : a : in1 : : umf4_in1 ]
-    [ run umf4.cc : a : in4 : : umf4_in4 ]
+    [ run umf4.cc : a : in4 : <define>COORDINATE : umf4_in4 ]
     [ run umfpack_di_demo.cc : -y ]
     [ run umfpack_simple.cc ]
     [ run umfpack_zi_demo.cc : -y ]

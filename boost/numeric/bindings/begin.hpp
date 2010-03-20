@@ -33,7 +33,6 @@ struct begin_impl< T, tag::value > {
     static result_type invoke( T& t ) {
         return adaptor_access<T>::begin_value( t );
     }
-
 };
 
 template< typename T, int Dimension >
@@ -49,7 +48,33 @@ struct begin_impl<T, tag::addressing_index<Dimension> > {
     static result_type invoke( T& t ) {
         return result_type( begin_value( t ), stride(t, tag_type() ) );
     }
+};
 
+template< typename T >
+struct begin_impl< T, tag::index_major > {
+    typedef typename detail::property_at< T, tag::index_type >::type* result_type;
+
+    static result_type invoke( T& t ) {
+        return adaptor_access<T>::begin_index_major( t );
+    }
+};
+
+template< typename T >
+struct begin_impl< T, tag::compressed_index_major > {
+    typedef typename detail::property_at< T, tag::index_type >::type* result_type;
+
+    static result_type invoke( T& t ) {
+        return adaptor_access<T>::begin_compressed_index_major( t );
+    }
+};
+
+template< typename T >
+struct begin_impl< T, tag::index_minor > {
+    typedef typename detail::property_at< T, tag::index_type >::type* result_type;
+
+    static result_type invoke( T& t ) {
+        return adaptor_access<T>::begin_index_minor( t );
+    }
 };
 
 } // namespace detail
@@ -108,6 +133,10 @@ BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_BEGIN_INDEX,~)
 GENERATE_FUNCTIONS( begin, _value, tag::value )
 GENERATE_FUNCTIONS( begin, _row, tag::addressing_index<1> )
 GENERATE_FUNCTIONS( begin, _column, tag::addressing_index<2> )
+
+GENERATE_FUNCTIONS( begin, _index_major, tag::index_major )
+GENERATE_FUNCTIONS( begin, _compressed_index_major, tag::compressed_index_major )
+GENERATE_FUNCTIONS( begin, _index_minor, tag::index_minor )
 
 } // namespace bindings
 } // namespace numeric

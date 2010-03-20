@@ -72,7 +72,8 @@ ADD_INT_TEMPLATE_TAG( addressing_index )
 ADD_TAG( linear_array )
 ADD_TAG( triangular_array )
 ADD_TAG( band_array )
-ADD_TAG( yale_sparse )
+ADD_TAG( compressed_sparse )
+ADD_TAG( coordinate_sparse )
 
 ADD_TAG( structure )
 ADD_TAG( general )
@@ -102,6 +103,11 @@ ADD_TAG( non_unit )
 ADD_TAG( left )
 ADD_TAG( right )
 ADD_TAG( both )
+
+// Sparse matrix
+ADD_TAG( index_major )
+ADD_TAG( compressed_index_major )
+ADD_TAG( index_minor )
 
 namespace tag {
 

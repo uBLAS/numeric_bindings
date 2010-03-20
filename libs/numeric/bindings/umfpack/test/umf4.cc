@@ -93,8 +93,8 @@
 #ifdef __ICC
 #  include <mathimf.h> 
 #endif  
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_sparse.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix_sparse.hpp>
 #include <boost/numeric/bindings/umfpack/umfpack.hpp>
 
 using std::max;
@@ -108,7 +108,7 @@ using std::exit;
 
 namespace ublas = boost::numeric::ublas; 
 namespace umf = boost::numeric::bindings::umfpack; 
-namespace traits = boost::numeric::bindings::traits; 
+namespace bindings = boost::numeric::bindings;
 
 #ifndef COORDINATE
 typedef ublas::compressed_matrix<double, ublas::column_major, 0,
@@ -137,13 +137,17 @@ void wait4y() {
 template <typename M, typename V> 
 double resid (M const& m, V const& x, V const& b, V& r) {
 
-  int const* Ap = traits::spmatrix_index1_storage (m);
-  int const* Ai = traits::spmatrix_index2_storage (m);
-  double const* Ax = traits::spmatrix_value_storage (m);
+#ifndef COORDINATE
+  int const* Ap = bindings::begin_compressed_index_major (m);
+#else
+  int const* Ap = bindings::begin_index_major (m);
+#endif
+  int const* Ai = bindings::begin_index_minor (m);
+  double const* Ax = bindings::begin_value (m);
 
   double rnorm, bnorm, absr, absb;
 
-  int n = traits::vector_size (r); 
+  int n = bindings::size (r); 
 
   r = prod (m, x); 
 

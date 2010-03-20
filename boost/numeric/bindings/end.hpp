@@ -27,7 +27,6 @@ struct end_impl< T, tag::value > {
     static result_type invoke( T& t ) {
         return adaptor_access<T>::end_value( t );
     }
-
 };
 
 template< typename T, int N >
@@ -43,7 +42,33 @@ struct end_impl< T, tag::addressing_index<N> > {
     static result_type invoke( T& t ) {
         return result_type( end_value( t ), stride(t, tag_type() ) );
     }
+};
 
+template< typename T >
+struct end_impl< T, tag::index_major > {
+    typedef typename detail::property_at< T, tag::index_type >::type* result_type;
+
+    static result_type invoke( T& t ) {
+        return adaptor_access<T>::end_index_major( t );
+    }
+};
+
+template< typename T >
+struct end_impl< T, tag::compressed_index_major > {
+    typedef typename detail::property_at< T, tag::index_type >::type* result_type;
+
+    static result_type invoke( T& t ) {
+        return adaptor_access<T>::end_compressed_index_major( t );
+    }
+};
+
+template< typename T >
+struct end_impl< T, tag::index_minor > {
+    typedef typename detail::property_at< T, tag::index_type >::type* result_type;
+
+    static result_type invoke( T& t ) {
+        return adaptor_access<T>::end_index_minor( t );
+    }
 };
 
 } // namespace detail
@@ -57,6 +82,7 @@ struct end {
 };
 
 } // namespace result_of
+
 //
 // Free Functions
 //
@@ -102,6 +128,9 @@ GENERATE_FUNCTIONS( end, _value, tag::value )
 GENERATE_FUNCTIONS( end, _row, tag::addressing_index<1> )
 GENERATE_FUNCTIONS( end, _column, tag::addressing_index<2> )
 
+GENERATE_FUNCTIONS( end, _index_major, tag::index_major )
+GENERATE_FUNCTIONS( end, _compressed_index_major, tag::compressed_index_major )
+GENERATE_FUNCTIONS( end, _index_minor, tag::index_minor )
 
 } // namespace bindings
 } // namespace numeric

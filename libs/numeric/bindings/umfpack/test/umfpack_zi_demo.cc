@@ -77,9 +77,8 @@
 #include <complex> 
 #include <math.h>
 #include <boost/mpl/and.hpp>
-#include <boost/numeric/bindings/traits/c_array.hpp>
-#include <boost/numeric/bindings/traits/std_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_sparse.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix_sparse.hpp>
 #include <boost/numeric/bindings/umfpack/umfpack.hpp>
 
 using std::max;
@@ -90,9 +89,13 @@ using std::exit;
 
 namespace ublas = boost::numeric::ublas; 
 namespace umf = boost::numeric::bindings::umfpack; 
-namespace traits = boost::numeric::bindings::traits; 
+namespace bindings = boost::numeric::bindings;
 
+#ifndef COORDINATE
 typedef ublas::compressed_matrix<
+#else
+typedef ublas::coordinate_matrix<
+#endif
   std::complex<double>, 
   ublas::column_major, 
   0,
@@ -138,11 +141,15 @@ template <typename M, typename V>
 double resid (M const& A, V const& x, V const& b, V& r, int transpose = 0) {
 
   double norm;
-  int const* Ap = traits::spmatrix_index1_storage (A);
-  int const* Ai = traits::spmatrix_index2_storage (A);
-  std::complex<double> const* Ax = traits::spmatrix_value_storage (A);
+#ifndef COORDINATE
+  int const* Ap = bindings::begin_compressed_index_major (A);
+#else
+  int const* Ap = bindings::begin_index_major (A);
+#endif
+  int const* Ai = bindings::begin_index_minor (A);
+  std::complex<double> const* Ax = bindings::begin_value (A);
 
-  int n = traits::vector_size (r); 
+  int n = bindings::size (r); 
 
   for (int i = 0; i < n; i++)
     r [i] = -b [i];

@@ -1,8 +1,8 @@
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector2.hpp>
-#include <boost/numeric/bindings/traits/ublas_sparse.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix_sparse.hpp>
 #include <boost/numeric/bindings/mumps/mumps_driver.hpp>
 #include <iostream>
 #include <fstream>

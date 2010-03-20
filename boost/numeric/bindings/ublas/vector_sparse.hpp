@@ -27,7 +27,7 @@ struct adaptor< ublas::compressed_vector< T, IB, IA, TA >, Id, Enable > {
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::vector >,
         mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
-        mpl::pair< tag::data_structure, tag::yale_sparse >
+        mpl::pair< tag::data_structure, tag::compressed_sparse >
     > property_map;
 
     static std::ptrdiff_t size1( const Id& t ) {

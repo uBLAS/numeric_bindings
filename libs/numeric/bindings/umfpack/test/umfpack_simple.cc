@@ -50,8 +50,8 @@
 
 
 #include <iostream>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_sparse.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix_sparse.hpp>
 #include <boost/numeric/bindings/umfpack/umfpack.hpp>
 #include <boost/numeric/ublas/io.hpp>
 

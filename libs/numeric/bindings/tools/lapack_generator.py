@@ -630,7 +630,7 @@ def write_functions( info_map, group, template_map, base_dir ):
     #result = result.replace( '$groupname', group_name.lower() )
     #result = result.replace( '$DESCRIPTION', info_map[ group[g][0] ][ 'description' ] )
 
-    open( os.path.join( base_dir, filename ), 'wb' ).write( result )
+    open( os.path.join( base_dir, filename ), 'w' ).write( result )
 
 #
 # Write the (many) driver routine test cases to cpp files.
@@ -645,7 +645,7 @@ def write_test_case( info_map, group, template_map, base_dir, level_name ):
     result = result.replace( '$levelname', level_name.lower() )
     result = result.replace( '$library', 'lapack' )
 
-    open( os.path.join( base_dir, filename ), 'wb' ).write( result )
+    open( os.path.join( base_dir, filename ), 'w' ).write( result )
 
 def write_cmakefile( level_properties, template_map, base_dir ):
   
@@ -661,7 +661,7 @@ def write_cmakefile( level_properties, template_map, base_dir ):
   filename = 'CMakeLists.txt'
   result = template_map[ 'CMakeLists.txt' ]
   result = result.replace( '$ENTRIES', entries )
-  open( os.path.join( base_dir, filename ), 'wb' ).write( result )
+  open( os.path.join( base_dir, filename ), 'w' ).write( result )
 
 
 def read_templates( template_file ):

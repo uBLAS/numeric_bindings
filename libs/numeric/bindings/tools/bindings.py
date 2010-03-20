@@ -155,7 +155,7 @@ def write_names_header( global_info_map, routines, template_map, dest_file ):
   result = result.replace( "$LIBRARY_INT_TYPE", "fortran_int_t" )
   #//result = result.replace( "$PARSERMODE", template_map[ "PARSERMODE" ] )
 
-  open( dest_file, 'wb' ).write( result )
+  open( dest_file, 'w' ).write( result )
 
 
 
@@ -217,7 +217,7 @@ def write_header( global_info_map, routines, template_map, dest_file ):
   result = result.replace( "$CONTENT", content )
   #result = result.replace( "$PARSERMODE", template_map[ "PARSERMODE" ] )
 
-  open( dest_file, 'wb' ).write( result )
+  open( dest_file, 'w' ).write( result )
 
 
 
@@ -259,7 +259,7 @@ def write_include_hierarchy( global_info_map, routines, template_map, dest_path 
     result = result.replace( "$CONTENT", content )
     result = result.replace( "$LEVEL", level.upper() )
 
-    open( dest_file, 'wb' ).write( result )
+    open( dest_file, 'w' ).write( result )
 
 
 #

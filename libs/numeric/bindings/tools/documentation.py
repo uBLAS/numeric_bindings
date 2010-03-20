@@ -292,7 +292,7 @@ def write_documentation( info_map, group, template_map, base_dir ):
         result = result.replace( '$GROUPNAME', group_name )
         result = result.replace( '$groupname', group_name.lower() )
         print "Writing " + base_dir + "/" + filename
-        open( os.path.join( base_dir, filename ), 'wb' ).write( result )
+        open( os.path.join( base_dir, filename ), 'w' ).write( result )
 
 
 

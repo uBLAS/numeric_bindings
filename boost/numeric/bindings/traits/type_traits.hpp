@@ -14,7 +14,6 @@
 #ifndef BOOST_NUMERIC_BINDINGS_TRAITS_TYPE_TRAITS_HPP
 #define BOOST_NUMERIC_BINDINGS_TRAITS_TYPE_TRAITS_HPP
 
-#include <boost/numeric/bindings/traits/config.hpp>
 #include <boost/numeric/bindings/traits/type.h>
 #include <boost/numeric/bindings/traits/type.hpp>
 
@@ -22,10 +21,6 @@ namespace boost { namespace numeric { namespace bindings { namespace traits {
 
   template <typename Real> 
   struct type_traits { 
-#ifdef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
-    typedef Real type; 
-    typedef Real real_type; 
-#endif 
   };
   template<>
   struct type_traits<float> { 

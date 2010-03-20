@@ -2,7 +2,6 @@
 // BLAS level 2
 // benchmarks 
 
-//#define BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
 //#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 //#define USE_STD_VECTOR
@@ -70,10 +69,6 @@ typedef ublas::symmetric_matrix<
 typedef ublas::symmetric_matrix<
   real_t, ublas::lower, ublas::row_major
 > lrsymm_t; 
-
-#ifdef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-using ublas::prod; 
-#endif 
 
 ////////////////////////////////////////////////////
 // general matrix: gemv()

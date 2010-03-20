@@ -3,7 +3,6 @@
 
 //#define F_USE_STD_VECTOR
 
-//#define BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
 //#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 #include <iostream>

@@ -6,7 +6,6 @@
 // #define BOOST_UBLAS_STRICT_HERMITIAN
 // .. doesn't work (yet?)  
 
-//#define BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
 //#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 #include <cstddef>
@@ -78,11 +77,7 @@ int main() {
   blas::set (1., xc0);  
   blas::set (2., xc1);  
 #ifndef F_ROW_MAJOR
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
   blas::symm ( bindings::tag::left(), 1.0, sa, x, 0.0, b);
-#else
-  blas::symm ( bindings::tag::left(), 1.0, sa, x, 0.0, b); 
-#endif 
 #else
   ublas::matrix_row<m_t> br0 (b, 0), br1 (b, 1); 
   blas::symv (sa, xc0, br0); 

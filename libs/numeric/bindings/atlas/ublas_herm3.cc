@@ -31,8 +31,6 @@ typedef ublas::hermitian_adaptor<rm_t, ublas::upper> urhemm_t;
 typedef ublas::hermitian_adaptor<rm_t, ublas::lower> lrhemm_t; 
 
 int main() {
-
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
   
   cout << endl; 
 
@@ -135,10 +133,4 @@ int main() {
 
   cout << endl; 
 
-#else // BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
-  
-  cout << "requires proper traits classes :o(" << endl; 
-  
-#endif // BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-  
 }

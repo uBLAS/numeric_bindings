@@ -5,7 +5,6 @@
 #include <cmath>
 #include <complex> 
 
-//#define BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
 //#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 #include <boost/numeric/bindings/ublas/vector.hpp>
@@ -21,12 +20,6 @@ using std::endl;
 typedef double real_t;
 typedef std::complex<real_t> cmplx_t;  
 typedef ublas::vector<cmplx_t> vct_t; 
-
-#ifdef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-using ublas::inner_prod; 
-using ublas::norm_2; 
-using ublas::conj; 
-#endif 
 
 int main() {
 

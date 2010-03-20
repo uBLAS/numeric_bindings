@@ -30,8 +30,6 @@ typedef ublas::symmetric_adaptor<rm_t, ublas::lower> lrsymm_t;
 
 int main() {
 
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
-  
   cout << endl; 
 
   size_t n; 
@@ -133,10 +131,4 @@ int main() {
 
   cout << endl; 
 
-#else // BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
-  
-  cout << "requires proper traits classes :o(" << endl; 
-  
-#endif // BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
-  
 }

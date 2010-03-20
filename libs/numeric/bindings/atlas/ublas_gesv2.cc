@@ -2,7 +2,6 @@
 // solving A * X = B
 // using driver function gesv()
 
-//#define BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
 //#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 #include <cstddef>

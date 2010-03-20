@@ -55,12 +55,10 @@ int main() {
   b(0,1) =  9.;  b(1,1) = 11.;
   b(0,2) = -2.;  b(1,2) = 12.;
 
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
   m3x3_t a2; // for part 2
   a2 = project (a, ublas::range (0,3), ublas::range (0,3)); 
   v5_t b2 (n); 
   b2 = row (b, 0);
-#endif 
 
   // part 1:
   cout << "A: " << a << endl; 
@@ -77,7 +75,6 @@ int main() {
 
   cout << endl; 
 
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
   // part 2:
   cout << "A: " << a2 << endl; 
   cout << "B: " << b2 << endl; 
@@ -87,6 +84,5 @@ int main() {
   cout << "X: " << b2 << endl; 
 
   cout << endl; 
-#endif
 }
 

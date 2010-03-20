@@ -5,7 +5,6 @@
 // #define BOOST_UBLAS_STRICT_HERMITIAN
 // .. doesn't work (yet?)  
 
-//#define BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
 //#define BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 #include <cstddef>
@@ -87,18 +86,10 @@ int main() {
     lapack::potri (sa); 
     // ri should be (almost) identity matrix: 
     m_t ri (n, n); 
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
     blas::symm ( bindings::tag::right(), 1.0, sa, a2, 0.0, ri); 
-#else
-    blas::symm (bindings::tag::right(), 1.0, sa, a2, 0.0, ri); 
-#endif 
     print_m (ri, "I = A * A^(-1)"); 
     cout << endl; 
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
     blas::symm ( bindings::tag::left(), 1.0, sa, a2, 0.0, ri); 
-#else
-    blas::symm (CblasLeft, 1.0, sa, a2, 0.0, ri); 
-#endif 
     print_m (ri, "I = A^(-1) * A"); 
     cout << endl; 
   }
@@ -135,11 +126,7 @@ int main() {
   if (ierr == 0) {
     lapack::potri (ha);        // potri()
     cm_t ic (3, 3); 
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
     blas::hemm ( bindings::tag::right(), 1.0, ha, ca2, 0.0, ic); 
-#else
-    blas::hemm (CblasRight, 1.0, ha, ca2, 0.0, ic); 
-#endif 
     print_m (ic, "I = A * A^(-1)"); 
     cout << endl; 
   }
@@ -175,18 +162,10 @@ int main() {
   if (ierr == 0) {
     lapack::potri (ha); 
     cm_t ic (3, 3); 
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
     blas::hemm ( bindings::tag::right(), 1.0, ha, ca2, 0.0, ic); 
-#else
-    blas::hemm (CblasRight, 1.0, ha, ca2, 0.0, ic); 
-#endif 
     print_m (ic, "I = A * A^(-1)"); 
     cout << endl; 
-#ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
     blas::hemm ( bindings::tag::left(), 1.0, ha, ca2, 0.0, ic); 
-#else
-    blas::hemm (CblasLeft, 1.0, ha, ca2, 0.0, ic); 
-#endif 
     print_m (ic, "I = A^(-1) * A"); 
     cout << endl; 
   }

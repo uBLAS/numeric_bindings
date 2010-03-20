@@ -15,9 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_WORKSPACE_HPP
 
 #include <boost/mpl/bool.hpp>
-#include <boost/numeric/bindings/detail/array.hpp>
-#include <boost/numeric/bindings/traits/type.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <memory>
 
@@ -170,30 +167,6 @@ namespace lapack {
      detail::workspace4<W,WR,WI,WB> workspace(W& w, WR& wr, WI& wi, WB& wb) {
         return detail::workspace4<W,WR,WI,WB>(w, wr, wi, wb) ;
      } // workspace()
-
-     /// Select the number of workspaces depending on the value_type
-     template <typename T>
-     struct n_workspace_args { };
-
-     template <>
-     struct n_workspace_args< float > {
-        static const int value = 1 ;
-     };
-
-     template <>
-     struct n_workspace_args< double > {
-        static const int value = 1 ;
-     };
-
-     template <>
-     struct n_workspace_args< traits::complex_f > {
-        static const int value = 2 ;
-     };
-
-     template <>
-     struct n_workspace_args< traits::complex_d > {
-        static const int value = 2 ;
-     };
 
 
 namespace detail {

@@ -29,7 +29,7 @@ namespace blas {
 // Overloaded function for dotu.
 //
 template< typename VectorX, typename VectorY >
-inline typename dot_impl< typename bindings::value_type< VectorX >::type >::return_type
+inline typename dot_impl< typename bindings::value_type< VectorX >::type >::result_type
 dotu( const VectorX& x, const VectorY& y ) {
     return dot_impl< typename bindings::value_type< VectorX >::type >::invoke( x, y );
 }

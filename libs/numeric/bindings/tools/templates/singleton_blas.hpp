@@ -24,7 +24,7 @@ $CONTENT}
 #endif
 
 $TEMPLATE[blas.h_function]
-$RETURN_TYPE BLAS_$SUBROUTINE( $ARGUMENTS );
+$RESULT_TYPE BLAS_$SUBROUTINE( $ARGUMENTS );
 $TEMPLATE[blas_names.h]
 //
 // Copyright (c) 2003--2009

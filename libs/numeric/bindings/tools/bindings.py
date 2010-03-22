@@ -178,7 +178,7 @@ def write_header_part( global_info_map, properties, template_map ):
 
       template = template.replace( "$SUBROUTINE", k )
       template = template.replace( "$ARGUMENTS", ", ".join( arg_list ) )
-      template = template.replace( '$RETURN_TYPE', global_info_map[ k ][ 'return_value_type' ] )
+      template = template.replace( '$RESULT_TYPE', global_info_map[ k ][ 'return_value_type' ] )
       template = template.replace( '$RETURN_STATEMENT', global_info_map[ k ][ 'return_statement' ] )
       template = template.replace( "$LIBRARY_INT_TYPE", "fortran_int_t" )
       content += proper_indent( template )

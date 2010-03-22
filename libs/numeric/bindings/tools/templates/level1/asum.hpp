@@ -1,6 +1,6 @@
 $TEMPLATE[asum.all.remove_argument_value_type_prepend]
 X
-$TEMPLATE[asum.all.level1_return_type]
+$TEMPLATE[asum.all.level1_result_type]
 real_type
 $TEMPLATE[asum.all.arguments]
  N         (input) INTEGER

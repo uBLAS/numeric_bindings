@@ -21,7 +21,7 @@ def parse_file( filename, info_map, template_map ):
     for match in re.compile( '^(cuComplex|cuDoubleComplex|float|double|void|int) ?CUBLASAPI ?cublas([SDCZI][a-z0-9]+) ?\(([^\)]+)\)', re.M | re.S ).findall( source ):
         print "----"
 
-        return_type  = match[0]
+        result_type  = match[0]
         blas_routine = match[1].upper().strip()
         print "CUBLAS routine:", match[1], "   BLAS equivalent:", blas_routine
 

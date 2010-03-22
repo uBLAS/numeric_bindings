@@ -18,6 +18,6 @@ $TEMPLATE[prec_dot.all.INCX.trait]
 stride,X
 $TEMPLATE[prec_dot.all.INCY.trait]
 stride,Y
-$TEMPLATE[prec_dot.all.level1_return_type]
+$TEMPLATE[prec_dot.all.level1_result_type]
 double
 $TEMPLATE[end]

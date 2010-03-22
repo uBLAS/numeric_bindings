@@ -30,7 +30,7 @@ def parse_file( filename, info_map, template_map ):
 
     for match in re.compile( '(void|float|int|double|CBLAS_INDEX) +' + prefix + '([^\(]+)\(([^\)]+)\)', re.M | re.S ).findall( source ):
         print "----"
-        return_type  = match[0]
+        result_type  = match[0]
         fortran_routine = match[1].split("_sub")[0].upper().strip()
         c_routine = prefix + match[1]
 
@@ -97,7 +97,7 @@ def parse_file( filename, info_map, template_map ):
                     else:
                         info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = call_cblas_header
                 else:
-                    if arg == 'INFO' and return_type == 'int':
+                    if arg == 'INFO' and result_type == 'int':
                         info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = None
                         print "INFO is the return type, adding it with code None"
                     elif arg == 'WORK' or arg == 'LWORK':

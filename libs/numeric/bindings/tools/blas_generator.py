@@ -147,7 +147,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         sub_template = sub_template.replace( "$CUBLAS_ROUTINE", cublas_routine )
 
         sub_template = sub_template.replace( '$groupname', group_name.lower() )
-        sub_template = sub_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'return_value_type' ] )
+        sub_template = sub_template.replace( '$RESULT_TYPE', info_map[ subroutine ][ 'return_value_type' ] )
         sub_template = sub_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
         sub_template = bindings.search_replace( sub_template, group_name.lower() + '.level0.gsub', template_map )
 
@@ -329,7 +329,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = level1_template.replace( "$LEVEL1", ", ".join( level1_arg_list ) )
       level1_template = level1_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
       level1_template = level1_template.replace( "$ASSERTS", "\n        ".join( sorted( level1_assert_list ) ) )
-      level1_template = level1_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'level1_return_type' ] )
+      level1_template = level1_template.replace( '$RESULT_TYPE', info_map[ subroutine ][ 'level1_result_type' ] )
       level1_template = level1_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
       level1_template = level1_template.replace( "$KEYWORDS", ", ".join( keyword_type_list ) )
 

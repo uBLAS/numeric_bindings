@@ -44,7 +44,7 @@ global_type_variant_map = {
 
 templates = {}
 
-def return_type( fortran_type ):
+def result_type( fortran_type ):
   m_type_map = global_type_map
   m_type_map[ 'COMPLEX' ] = complex_float_type
   m_type_map[ 'COMPLEX*16' ] = complex_double_type
@@ -914,7 +914,7 @@ def parse_file( filename, template_map ):
   subroutine_group_name = None
   subroutine_value_type = None
   subroutine_precision = None
-  subroutine_return_type = None
+  subroutine_result_type = None
 
   code_line_nr = 0
   while code_line_nr < len(code) and not subroutine_found:
@@ -924,9 +924,9 @@ def parse_file( filename, template_map ):
       subroutine_name = match_subroutine_name.group( 2 )
       subroutine_arguments = match_subroutine_name.group( 3 ).replace( ' ', '' ).split( "," )
       if match_subroutine_name.group(1) != 'SUBROUTINE':
-        subroutine_return_type = (" ".join( match_subroutine_name.group(1).split(" ")[0:-1] )).strip()
-        while '  ' in subroutine_return_type:
-          subroutine_return_type = subroutine_return_type.replace( '  ', ' ' )
+        subroutine_result_type = (" ".join( match_subroutine_name.group(1).split(" ")[0:-1] )).strip()
+        while '  ' in subroutine_result_type:
+          subroutine_result_type = subroutine_result_type.replace( '  ', ' ' )
 
     code_line_nr += 1
 
@@ -970,7 +970,7 @@ def parse_file( filename, template_map ):
   print "Group name: ", subroutine_group_name
   print "Variant:    ", subroutine_value_type
   print "Precision:  ", subroutine_precision
-  print "Return:     ", subroutine_return_type
+  print "Return:     ", subroutine_result_type
 
   # Now we have the names of the arguments. The code following the subroutine statement are
   # the argument declarations. Parse those right now, splitting these examples
@@ -1643,21 +1643,21 @@ def parse_file( filename, template_map ):
   info_map[ 'purpose' ] = subroutine_purpose
   info_map[ 'value_type' ] = subroutine_value_type
   info_map[ 'group_name' ] = subroutine_group_name
-  info_map[ 'return_type' ] = subroutine_return_type
+  info_map[ 'result_type' ] = subroutine_result_type
   info_map[ 'precision' ] = subroutine_precision
   info_map[ 'argument_map' ] = argument_map
   info_map[ 'grouped_arguments' ] = grouped_arguments
-  if subroutine_return_type != None:
-    info_map[ 'return_value_type' ] = return_type( subroutine_return_type )
-    info_map[ 'level1_return_type' ] = 'value_type'
+  if subroutine_result_type != None:
+    info_map[ 'return_value_type' ] = result_type( subroutine_result_type )
+    info_map[ 'level1_result_type' ] = 'value_type'
     info_map[ 'return_statement' ] = 'return '
   else:
     info_map[ 'return_value_type' ] = 'void'
-    info_map[ 'level1_return_type' ] = 'void'
+    info_map[ 'level1_result_type' ] = 'void'
     info_map[ 'return_statement' ] = ''
 
   # Enable overrides of direct info-map stuff.
-  for key_name in [ 'level1_return_type' ]:
+  for key_name in [ 'level1_result_type' ]:
         my_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + key_name
         if my_has_key( my_key, template_map ):
             user_value = template_map[ my_has_key( my_key, template_map ) ].strip()

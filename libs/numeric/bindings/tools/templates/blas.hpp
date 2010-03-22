@@ -81,7 +81,7 @@ $TEMPLATE[blas_overloads]
 // * $SPECIALIZATION value-type.
 //
 template< $TYPES >
-inline $RETURN_TYPE $groupname( $LEVEL0 ) {
+inline $RESULT_TYPE $groupname( $LEVEL0 ) {
     $STATIC_ASSERTS
     $RETURN_STATEMENTBLAS_$SUBROUTINE( $CALL_BLAS_HEADER );
 }
@@ -93,7 +93,7 @@ $TEMPLATE[cblas_overloads]
 // * $SPECIALIZATION value-type.
 //
 template< $TYPES >
-inline $RETURN_TYPE $groupname( $LEVEL0 ) {
+inline $RESULT_TYPE $groupname( $LEVEL0 ) {
     $RETURN_STATEMENT$CBLAS_ROUTINE( $CALL_CBLAS_HEADER );
 }
 
@@ -104,7 +104,7 @@ $TEMPLATE[cublas_overloads]
 // * $SPECIALIZATION value-type.
 //
 template< $TYPES >
-inline $RETURN_TYPE $groupname( $LEVEL0 ) {
+inline $RESULT_TYPE $groupname( $LEVEL0 ) {
     $STATIC_ASSERTS
     $RETURN_STATEMENT$CUBLAS_ROUTINE( $CALL_CUBLAS_HEADER );
 }
@@ -119,7 +119,7 @@ struct $groupname_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef $RETURN_TYPE return_type;
+    typedef $RESULT_TYPE result_type;
 
 $INCLUDE_TEMPLATES
     //
@@ -128,7 +128,7 @@ $INCLUDE_TEMPLATES
     // * Asserts that most arguments make sense.
     //
     template< $TYPES >
-    static return_type invoke( $LEVEL1 ) {
+    static result_type invoke( $LEVEL1 ) {
         namespace bindings = ::boost::numeric::bindings;
         $TYPEDEFS
         $STATIC_ASSERTS
@@ -142,7 +142,7 @@ $TEMPLATE[blas_level2]
 $COMMENTS
 //
 template< $TYPES >
-inline typename $groupname_impl< typename $NAMESPACEvalue_type< $FIRST_TYPENAME >::type >::return_type
+inline typename $groupname_impl< typename $NAMESPACEvalue_type< $FIRST_TYPENAME >::type >::result_type
 $groupname( $LEVEL2 ) {
     $RETURN_STATEMENT$groupname_impl< typename $NAMESPACEvalue_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
 }

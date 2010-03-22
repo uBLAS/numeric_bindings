@@ -188,7 +188,7 @@ struct iamax_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef std::ptrdiff_t return_type;
+    typedef std::ptrdiff_t result_type;
 
     //
     // Static member function that
@@ -196,7 +196,7 @@ struct iamax_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX >
-    static return_type invoke( const VectorX& x ) {
+    static result_type invoke( const VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         return detail::iamax( bindings::size(x),
                 bindings::begin_value(x), bindings::stride(x) );
@@ -216,7 +216,7 @@ struct iamax_impl {
 //
 template< typename VectorX >
 inline typename iamax_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 iamax( const VectorX& x ) {
     return iamax_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x );

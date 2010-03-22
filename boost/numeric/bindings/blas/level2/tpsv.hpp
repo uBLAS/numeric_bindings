@@ -241,7 +241,7 @@ struct tpsv_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -249,7 +249,7 @@ struct tpsv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename VectorX >
-    static return_type invoke( const MatrixAP& ap, VectorX& x ) {
+    static result_type invoke( const MatrixAP& ap, VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename detail::default_order< MatrixAP >::type order;
         typedef typename result_of::trans_tag< MatrixAP, order >::type trans;
@@ -281,7 +281,7 @@ struct tpsv_impl {
 //
 template< typename MatrixAP, typename VectorX >
 inline typename tpsv_impl< typename bindings::value_type<
-        MatrixAP >::type >::return_type
+        MatrixAP >::type >::result_type
 tpsv( const MatrixAP& ap, VectorX& x ) {
     tpsv_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, x );
@@ -293,7 +293,7 @@ tpsv( const MatrixAP& ap, VectorX& x ) {
 //
 template< typename MatrixAP, typename VectorX >
 inline typename tpsv_impl< typename bindings::value_type<
-        MatrixAP >::type >::return_type
+        MatrixAP >::type >::result_type
 tpsv( const MatrixAP& ap, const VectorX& x ) {
     tpsv_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, x );

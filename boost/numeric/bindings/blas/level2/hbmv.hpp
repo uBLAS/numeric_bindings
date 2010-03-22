@@ -172,7 +172,7 @@ struct hbmv_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -180,7 +180,7 @@ struct hbmv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type invoke( const value_type alpha, const MatrixA& a,
+    static result_type invoke( const value_type alpha, const MatrixA& a,
             const VectorX& x, const value_type beta, VectorY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
@@ -218,7 +218,7 @@ struct hbmv_impl {
 //
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename hbmv_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 hbmv( const typename bindings::value_type< MatrixA >::type alpha,
         const MatrixA& a, const VectorX& x,
         const typename bindings::value_type< MatrixA >::type beta,
@@ -233,7 +233,7 @@ hbmv( const typename bindings::value_type< MatrixA >::type alpha,
 //
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename hbmv_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 hbmv( const typename bindings::value_type< MatrixA >::type alpha,
         const MatrixA& a, const VectorX& x,
         const typename bindings::value_type< MatrixA >::type beta,

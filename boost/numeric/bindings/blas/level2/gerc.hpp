@@ -157,7 +157,7 @@ struct gerc_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -165,7 +165,7 @@ struct gerc_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY, typename MatrixA >
-    static return_type invoke( const value_type alpha, const VectorX& x,
+    static result_type invoke( const value_type alpha, const VectorX& x,
             const VectorY& y, MatrixA& a ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
@@ -202,7 +202,7 @@ struct gerc_impl {
 //
 template< typename VectorX, typename VectorY, typename MatrixA >
 inline typename gerc_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 gerc( const typename bindings::value_type< VectorX >::type alpha,
         const VectorX& x, const VectorY& y, MatrixA& a ) {
     gerc_impl< typename bindings::value_type<
@@ -215,7 +215,7 @@ gerc( const typename bindings::value_type< VectorX >::type alpha,
 //
 template< typename VectorX, typename VectorY, typename MatrixA >
 inline typename gerc_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 gerc( const typename bindings::value_type< VectorX >::type alpha,
         const VectorX& x, const VectorY& y, const MatrixA& a ) {
     gerc_impl< typename bindings::value_type<

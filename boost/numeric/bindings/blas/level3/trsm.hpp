@@ -276,7 +276,7 @@ struct trsm_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -284,7 +284,7 @@ struct trsm_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename Side, typename MatrixA, typename MatrixB >
-    static return_type invoke( const Side side, const value_type alpha,
+    static result_type invoke( const Side side, const value_type alpha,
             const MatrixA& a, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
@@ -321,7 +321,7 @@ struct trsm_impl {
 //
 template< typename Side, typename MatrixA, typename MatrixB >
 inline typename trsm_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 trsm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, MatrixB& b ) {
     trsm_impl< typename bindings::value_type<
@@ -334,7 +334,7 @@ trsm( const Side side, const typename bindings::value_type<
 //
 template< typename Side, typename MatrixA, typename MatrixB >
 inline typename trsm_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 trsm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, const MatrixB& b ) {
     trsm_impl< typename bindings::value_type<

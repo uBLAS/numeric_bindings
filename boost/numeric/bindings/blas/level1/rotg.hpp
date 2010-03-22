@@ -184,14 +184,14 @@ struct rotg_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    static return_type invoke( value_type& a, value_type& b, real_type& c,
+    static result_type invoke( value_type& a, value_type& b, real_type& c,
             value_type& s ) {
         namespace bindings = ::boost::numeric::bindings;
         detail::rotg( a, b, c, s );
@@ -210,7 +210,7 @@ struct rotg_impl {
 // Overloaded function for rotg. Its overload differs for
 //
 template< typename Value >
-inline typename rotg_impl< Value >::return_type
+inline typename rotg_impl< Value >::result_type
 rotg( Value& a, Value& b, Value& c, Value& s ) {
     rotg_impl< Value >::invoke( a, b, c, s );
 }

@@ -246,7 +246,7 @@ struct scal_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -254,7 +254,7 @@ struct scal_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename ScalarA, typename VectorX >
-    static return_type invoke( const ScalarA a, VectorX& x ) {
+    static result_type invoke( const ScalarA a, VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         detail::scal( bindings::size(x), a, bindings::begin_value(x),
@@ -276,7 +276,7 @@ struct scal_impl {
 //
 template< typename ScalarA, typename VectorX >
 inline typename scal_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 scal( const ScalarA a, VectorX& x ) {
     scal_impl< typename bindings::value_type<
             VectorX >::type >::invoke( a, x );
@@ -288,7 +288,7 @@ scal( const ScalarA a, VectorX& x ) {
 //
 template< typename ScalarA, typename VectorX >
 inline typename scal_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 scal( const ScalarA a, const VectorX& x ) {
     scal_impl< typename bindings::value_type<
             VectorX >::type >::invoke( a, x );

@@ -196,7 +196,7 @@ struct rot_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -204,7 +204,7 @@ struct rot_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY >
-    static return_type invoke( VectorX& x, VectorY& y, const real_type c,
+    static result_type invoke( VectorX& x, VectorY& y, const real_type c,
             const real_type s ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
@@ -232,7 +232,7 @@ struct rot_impl {
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rot( VectorX& x, VectorY& y, const typename remove_imaginary<
         typename bindings::value_type< VectorX >::type >::type c,
         const typename remove_imaginary< typename bindings::value_type<
@@ -248,7 +248,7 @@ rot( VectorX& x, VectorY& y, const typename remove_imaginary<
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rot( const VectorX& x, VectorY& y, const typename remove_imaginary<
         typename bindings::value_type< VectorX >::type >::type c,
         const typename remove_imaginary< typename bindings::value_type<
@@ -264,7 +264,7 @@ rot( const VectorX& x, VectorY& y, const typename remove_imaginary<
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rot( VectorX& x, const VectorY& y, const typename remove_imaginary<
         typename bindings::value_type< VectorX >::type >::type c,
         const typename remove_imaginary< typename bindings::value_type<
@@ -280,7 +280,7 @@ rot( VectorX& x, const VectorY& y, const typename remove_imaginary<
 //
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rot( const VectorX& x, const VectorY& y,
         const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type c, const typename remove_imaginary<

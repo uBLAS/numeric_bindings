@@ -192,7 +192,7 @@ struct swap_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -200,7 +200,7 @@ struct swap_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY >
-    static return_type invoke( VectorX& x, VectorY& y ) {
+    static result_type invoke( VectorX& x, VectorY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< VectorX >::type >::type,
@@ -229,7 +229,7 @@ struct swap_impl {
 //
 template< typename VectorX, typename VectorY >
 inline typename swap_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 swap( VectorX& x, VectorY& y ) {
     swap_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y );
@@ -242,7 +242,7 @@ swap( VectorX& x, VectorY& y ) {
 //
 template< typename VectorX, typename VectorY >
 inline typename swap_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 swap( const VectorX& x, VectorY& y ) {
     swap_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y );
@@ -255,7 +255,7 @@ swap( const VectorX& x, VectorY& y ) {
 //
 template< typename VectorX, typename VectorY >
 inline typename swap_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 swap( VectorX& x, const VectorY& y ) {
     swap_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y );
@@ -268,7 +268,7 @@ swap( VectorX& x, const VectorY& y ) {
 //
 template< typename VectorX, typename VectorY >
 inline typename swap_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 swap( const VectorX& x, const VectorY& y ) {
     swap_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y );

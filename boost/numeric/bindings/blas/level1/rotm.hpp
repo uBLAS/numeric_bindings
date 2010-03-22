@@ -130,7 +130,7 @@ struct rotm_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -138,7 +138,7 @@ struct rotm_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY, typename VectorPARAM >
-    static return_type invoke( VectorX& x, VectorY& y, VectorPARAM& param ) {
+    static result_type invoke( VectorX& x, VectorY& y, VectorPARAM& param ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< VectorX >::type >::type,
@@ -173,7 +173,7 @@ struct rotm_impl {
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rotm( VectorX& x, VectorY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y, param );
@@ -187,7 +187,7 @@ rotm( VectorX& x, VectorY& y, VectorPARAM& param ) {
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rotm( const VectorX& x, VectorY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y, param );
@@ -201,7 +201,7 @@ rotm( const VectorX& x, VectorY& y, VectorPARAM& param ) {
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rotm( VectorX& x, const VectorY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y, param );
@@ -215,7 +215,7 @@ rotm( VectorX& x, const VectorY& y, VectorPARAM& param ) {
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rotm( const VectorX& x, const VectorY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y, param );
@@ -229,7 +229,7 @@ rotm( const VectorX& x, const VectorY& y, VectorPARAM& param ) {
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rotm( VectorX& x, VectorY& y, const VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y, param );
@@ -243,7 +243,7 @@ rotm( VectorX& x, VectorY& y, const VectorPARAM& param ) {
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rotm( const VectorX& x, VectorY& y, const VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y, param );
@@ -257,7 +257,7 @@ rotm( const VectorX& x, VectorY& y, const VectorPARAM& param ) {
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rotm( VectorX& x, const VectorY& y, const VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y, param );
@@ -271,7 +271,7 @@ rotm( VectorX& x, const VectorY& y, const VectorPARAM& param ) {
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 rotm( const VectorX& x, const VectorY& y, const VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y, param );

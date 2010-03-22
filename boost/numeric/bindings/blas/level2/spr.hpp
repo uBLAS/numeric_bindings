@@ -146,7 +146,7 @@ struct spr_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -154,7 +154,7 @@ struct spr_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename MatrixAP >
-    static return_type invoke( const real_type alpha, const VectorX& x,
+    static result_type invoke( const real_type alpha, const VectorX& x,
             MatrixAP& ap ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAP >::type order;
@@ -184,7 +184,7 @@ struct spr_impl {
 //
 template< typename VectorX, typename MatrixAP >
 inline typename spr_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 spr( const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type alpha, const VectorX& x, MatrixAP& ap ) {
     spr_impl< typename bindings::value_type<
@@ -197,7 +197,7 @@ spr( const typename remove_imaginary< typename bindings::value_type<
 //
 template< typename VectorX, typename MatrixAP >
 inline typename spr_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 spr( const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type alpha, const VectorX& x, const MatrixAP& ap ) {
     spr_impl< typename bindings::value_type<

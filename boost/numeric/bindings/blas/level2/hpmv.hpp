@@ -165,7 +165,7 @@ struct hpmv_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -173,7 +173,7 @@ struct hpmv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename VectorX, typename VectorY >
-    static return_type invoke( const value_type alpha, const MatrixAP& ap,
+    static result_type invoke( const value_type alpha, const MatrixAP& ap,
             const VectorX& x, const value_type beta, VectorY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAP >::type order;
@@ -208,7 +208,7 @@ struct hpmv_impl {
 //
 template< typename MatrixAP, typename VectorX, typename VectorY >
 inline typename hpmv_impl< typename bindings::value_type<
-        MatrixAP >::type >::return_type
+        MatrixAP >::type >::result_type
 hpmv( const typename bindings::value_type< MatrixAP >::type alpha,
         const MatrixAP& ap, const VectorX& x,
         const typename bindings::value_type< MatrixAP >::type beta,
@@ -223,7 +223,7 @@ hpmv( const typename bindings::value_type< MatrixAP >::type alpha,
 //
 template< typename MatrixAP, typename VectorX, typename VectorY >
 inline typename hpmv_impl< typename bindings::value_type<
-        MatrixAP >::type >::return_type
+        MatrixAP >::type >::result_type
 hpmv( const typename bindings::value_type< MatrixAP >::type alpha,
         const MatrixAP& ap, const VectorX& x,
         const typename bindings::value_type< MatrixAP >::type beta,

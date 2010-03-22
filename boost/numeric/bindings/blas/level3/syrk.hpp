@@ -253,7 +253,7 @@ struct syrk_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -261,7 +261,7 @@ struct syrk_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename MatrixC >
-    static return_type invoke( const value_type alpha, const MatrixA& a,
+    static result_type invoke( const value_type alpha, const MatrixA& a,
             const value_type beta, MatrixC& c ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixC >::type order;
@@ -297,7 +297,7 @@ struct syrk_impl {
 //
 template< typename MatrixA, typename MatrixC >
 inline typename syrk_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 syrk( const typename bindings::value_type< MatrixA >::type alpha,
         const MatrixA& a, const typename bindings::value_type<
         MatrixA >::type beta, MatrixC& c ) {
@@ -311,7 +311,7 @@ syrk( const typename bindings::value_type< MatrixA >::type alpha,
 //
 template< typename MatrixA, typename MatrixC >
 inline typename syrk_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 syrk( const typename bindings::value_type< MatrixA >::type alpha,
         const MatrixA& a, const typename bindings::value_type<
         MatrixA >::type beta, const MatrixC& c ) {

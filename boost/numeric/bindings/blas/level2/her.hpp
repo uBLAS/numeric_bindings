@@ -152,7 +152,7 @@ struct her_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -160,7 +160,7 @@ struct her_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename MatrixA >
-    static return_type invoke( const real_type alpha, const VectorX& x,
+    static result_type invoke( const real_type alpha, const VectorX& x,
             MatrixA& a ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
@@ -192,7 +192,7 @@ struct her_impl {
 //
 template< typename VectorX, typename MatrixA >
 inline typename her_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 her( const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type alpha, const VectorX& x, MatrixA& a ) {
     her_impl< typename bindings::value_type<
@@ -205,7 +205,7 @@ her( const typename remove_imaginary< typename bindings::value_type<
 //
 template< typename VectorX, typename MatrixA >
 inline typename her_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 her( const typename remove_imaginary< typename bindings::value_type<
         VectorX >::type >::type alpha, const VectorX& x, const MatrixA& a ) {
     her_impl< typename bindings::value_type<

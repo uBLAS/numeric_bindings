@@ -265,7 +265,7 @@ struct symm_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -274,7 +274,7 @@ struct symm_impl {
     //
     template< typename Side, typename MatrixA, typename MatrixB,
             typename MatrixC >
-    static return_type invoke( const Side side, const value_type alpha,
+    static result_type invoke( const Side side, const value_type alpha,
             const MatrixA& a, const MatrixB& b, const value_type beta,
             MatrixC& c ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -317,7 +317,7 @@ struct symm_impl {
 //
 template< typename Side, typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename symm_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 symm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, const MatrixB& b,
         const typename bindings::value_type< MatrixA >::type beta,
@@ -332,7 +332,7 @@ symm( const Side side, const typename bindings::value_type<
 //
 template< typename Side, typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename symm_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 symm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, const MatrixB& b,
         const typename bindings::value_type< MatrixA >::type beta,

@@ -100,7 +100,7 @@ struct prec_dot_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef double return_type;
+    typedef double result_type;
 
     //
     // Static member function that
@@ -108,7 +108,7 @@ struct prec_dot_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY >
-    static return_type invoke( const VectorX& x, const VectorY& y ) {
+    static result_type invoke( const VectorX& x, const VectorY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< VectorX >::type >::type,
@@ -133,7 +133,7 @@ struct prec_dot_impl {
 //
 template< typename VectorX, typename VectorY >
 inline typename prec_dot_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 prec_dot( const VectorX& x, const VectorY& y ) {
     return prec_dot_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x, y );

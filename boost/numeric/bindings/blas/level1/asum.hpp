@@ -186,7 +186,7 @@ struct asum_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef real_type return_type;
+    typedef real_type result_type;
 
     //
     // Static member function that
@@ -194,7 +194,7 @@ struct asum_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX >
-    static return_type invoke( const VectorX& x ) {
+    static result_type invoke( const VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         return detail::asum( bindings::size(x),
                 bindings::begin_value(x), bindings::stride(x) );
@@ -214,7 +214,7 @@ struct asum_impl {
 //
 template< typename VectorX >
 inline typename asum_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 asum( const VectorX& x ) {
     return asum_impl< typename bindings::value_type<
             VectorX >::type >::invoke( x );

@@ -243,7 +243,7 @@ struct trsv_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -251,7 +251,7 @@ struct trsv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorX >
-    static return_type invoke( const MatrixA& a, VectorX& x ) {
+    static result_type invoke( const MatrixA& a, VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename detail::default_order< MatrixA >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -285,7 +285,7 @@ struct trsv_impl {
 //
 template< typename MatrixA, typename VectorX >
 inline typename trsv_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 trsv( const MatrixA& a, VectorX& x ) {
     trsv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, x );
@@ -297,7 +297,7 @@ trsv( const MatrixA& a, VectorX& x ) {
 //
 template< typename MatrixA, typename VectorX >
 inline typename trsv_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 trsv( const MatrixA& a, const VectorX& x ) {
     trsv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, x );

@@ -158,7 +158,7 @@ struct hpr2_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -166,7 +166,7 @@ struct hpr2_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY, typename MatrixAP >
-    static return_type invoke( const value_type alpha, const VectorX& x,
+    static result_type invoke( const value_type alpha, const VectorX& x,
             const VectorY& y, MatrixAP& ap ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAP >::type order;
@@ -201,7 +201,7 @@ struct hpr2_impl {
 //
 template< typename VectorX, typename VectorY, typename MatrixAP >
 inline typename hpr2_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 hpr2( const typename bindings::value_type< VectorX >::type alpha,
         const VectorX& x, const VectorY& y, MatrixAP& ap ) {
     hpr2_impl< typename bindings::value_type<
@@ -214,7 +214,7 @@ hpr2( const typename bindings::value_type< VectorX >::type alpha,
 //
 template< typename VectorX, typename VectorY, typename MatrixAP >
 inline typename hpr2_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 hpr2( const typename bindings::value_type< VectorX >::type alpha,
         const VectorX& x, const VectorY& y, const MatrixAP& ap ) {
     hpr2_impl< typename bindings::value_type<

@@ -249,7 +249,7 @@ struct tbsv_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -257,7 +257,7 @@ struct tbsv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorX >
-    static return_type invoke( const std::ptrdiff_t k, const MatrixA& a,
+    static result_type invoke( const std::ptrdiff_t k, const MatrixA& a,
             VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename detail::default_order< MatrixA >::type order;
@@ -292,7 +292,7 @@ struct tbsv_impl {
 //
 template< typename MatrixA, typename VectorX >
 inline typename tbsv_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 tbsv( const std::ptrdiff_t k, const MatrixA& a, VectorX& x ) {
     tbsv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( k, a, x );
@@ -304,7 +304,7 @@ tbsv( const std::ptrdiff_t k, const MatrixA& a, VectorX& x ) {
 //
 template< typename MatrixA, typename VectorX >
 inline typename tbsv_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
 tbsv( const std::ptrdiff_t k, const MatrixA& a, const VectorX& x ) {
     tbsv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( k, a, x );

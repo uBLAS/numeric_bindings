@@ -196,7 +196,7 @@ struct axpy_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -204,7 +204,7 @@ struct axpy_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename VectorY >
-    static return_type invoke( const value_type a, const VectorX& x,
+    static result_type invoke( const value_type a, const VectorX& x,
             VectorY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
@@ -232,7 +232,7 @@ struct axpy_impl {
 //
 template< typename VectorX, typename VectorY >
 inline typename axpy_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 axpy( const typename bindings::value_type< VectorX >::type a,
         const VectorX& x, VectorY& y ) {
     axpy_impl< typename bindings::value_type<
@@ -245,7 +245,7 @@ axpy( const typename bindings::value_type< VectorX >::type a,
 //
 template< typename VectorX, typename VectorY >
 inline typename axpy_impl< typename bindings::value_type<
-        VectorX >::type >::return_type
+        VectorX >::type >::result_type
 axpy( const typename bindings::value_type< VectorX >::type a,
         const VectorX& x, const VectorY& y ) {
     axpy_impl< typename bindings::value_type<

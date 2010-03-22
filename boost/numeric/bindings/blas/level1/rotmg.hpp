@@ -130,7 +130,7 @@ struct rotmg_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef void return_type;
+    typedef void result_type;
 
     //
     // Static member function that
@@ -138,7 +138,7 @@ struct rotmg_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorDPARAM >
-    static return_type invoke( real_type& d1, real_type& d2, real_type& x1,
+    static result_type invoke( real_type& d1, real_type& d2, real_type& x1,
             const real_type y1, VectorDPARAM& dparam ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDPARAM >::value) );
@@ -160,7 +160,7 @@ struct rotmg_impl {
 //
 template< typename VectorDPARAM >
 inline typename rotmg_impl< typename bindings::value_type<
-        VectorDPARAM >::type >::return_type
+        VectorDPARAM >::type >::result_type
 rotmg( typename remove_imaginary< typename bindings::value_type<
         VectorDPARAM >::type >::type& d1, typename remove_imaginary<
         typename bindings::value_type< VectorDPARAM >::type >::type& d2,
@@ -178,7 +178,7 @@ rotmg( typename remove_imaginary< typename bindings::value_type<
 //
 template< typename VectorDPARAM >
 inline typename rotmg_impl< typename bindings::value_type<
-        VectorDPARAM >::type >::return_type
+        VectorDPARAM >::type >::result_type
 rotmg( typename remove_imaginary< typename bindings::value_type<
         VectorDPARAM >::type >::type& d1, typename remove_imaginary<
         typename bindings::value_type< VectorDPARAM >::type >::type& d2,

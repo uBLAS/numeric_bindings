@@ -54,7 +54,7 @@ struct adaptor< ublas::compressed_matrix< T, F, IB, IA, TA >, Id, Enable > {
     }
 
     static value_type* end_value( Id& id ) {
-        return bindings::end_value( id.value_data() );
+        return bindings::begin_value( id.value_data() ) + id.nnz();
     }
 
     static index_type* begin_compressed_index_major( Id& id ) {
@@ -70,7 +70,7 @@ struct adaptor< ublas::compressed_matrix< T, F, IB, IA, TA >, Id, Enable > {
     }
 
     static index_type* end_index_minor( Id& id ) {
-        return bindings::end_value( id.index2_data() );
+        return bindings::begin_value( id.index2_data() ) + id.nnz();
     }
 
 };
@@ -94,10 +94,6 @@ struct adaptor< ublas::coordinate_matrix< T, F, IB, IA, TA >, Id, Enable > {
 
     BOOST_STATIC_CONSTANT (std::size_t, index_base = IB);
 
-    static std::ptrdiff_t num_nonzeros ( const Id& id ) {
-        return id.nnz();
-    }
-
     static std::ptrdiff_t size1( const Id& id ) {
         return id.size1();
     }
@@ -111,7 +107,7 @@ struct adaptor< ublas::coordinate_matrix< T, F, IB, IA, TA >, Id, Enable > {
     }
 
     static value_type* end_value( Id& id ) {
-        return bindings::end_value( id.value_data() );
+        return bindings::begin_value( id.value_data() ) + id.nnz();
     }
 
     static index_type* begin_index_major( Id& id ) {
@@ -119,7 +115,7 @@ struct adaptor< ublas::coordinate_matrix< T, F, IB, IA, TA >, Id, Enable > {
     }
 
     static index_type* end_index_major( Id& id ) {
-        return bindings::end_value( id.index1_data() );
+        return bindings::begin_value( id.index1_data() ) + id.nnz();
     }
 
     static index_type* begin_index_minor( Id& id ) {
@@ -127,7 +123,7 @@ struct adaptor< ublas::coordinate_matrix< T, F, IB, IA, TA >, Id, Enable > {
     }
 
     static index_type* end_index_minor( Id& id ) {
-        return bindings::end_value( id.index2_data() );
+        return bindings::begin_value( id.index2_data() ) + id.nnz();
     }
 
 };

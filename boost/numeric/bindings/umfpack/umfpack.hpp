@@ -139,7 +139,7 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
     {
       int n_row = bindings::size_row (A); 
       int n_col = bindings::size_column (A); 
-      int nnz = bindings::detail::adaptor_access<MatrA>::num_nonzeros (A); 
+      int nnz = bindings::end_value (A) - bindings::begin_value (A); 
 
       typedef typename bindings::value_type<MatrA>::type val_t; 
 
@@ -173,7 +173,7 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
 #endif
       int n_row = bindings::size_row (A);
       int n_col = bindings::size_column (A);
-      int nnz = bindings::detail::adaptor_access<MatrA>::num_nonzeros (A);
+      int nnz = bindings::end_value (A) - bindings::begin_value (A);
 
       typedef typename bindings::value_type<MatrA>::type val_t; 
 
@@ -366,7 +366,7 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
     {
       int n_row = bindings::size_row (A); 
       int n_col = bindings::size_column (A); 
-      int nnz = bindings::detail::adaptor_access<MatrA>::num_nonzeros (A); 
+      int nnz = bindings::end_value (A) - bindings::begin_value (A); 
 
       typedef typename bindings::value_type<MatrA>::type val_t; 
 
@@ -512,7 +512,7 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
 #endif
       int n_row = bindings::size_row (A);
       int n_col = bindings::size_column (A);
-      int nnz = bindings::detail::adaptor_access<MatrA>::num_nonzeros (A);
+      int nnz = bindings::end_value (A) - bindings::begin_value (A);
 
       typedef typename bindings::value_type<MatrA>::type val_t;
 
@@ -644,7 +644,7 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
     {
 
       int n = bindings::size_row (A); 
-      int nnz = bindings::detail::adaptor_access<MatrA>::num_nonzeros (A); 
+      int nnz = bindings::end_value (A) - bindings::begin_value (A); 
 
       typedef typename bindings::value_type<MatrA>::type val_t; 
 
@@ -837,7 +837,7 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
 #endif
       int n_row = bindings::size_row (A); 
       int n_col = bindings::size_column (A); 
-      int nnz = bindings::detail::adaptor_access<MatrA>::num_nonzeros (A); 
+      int nnz = bindings::end_value (A) - bindings::begin_value (A); 
 
       typedef typename bindings::value_type<MatrA>::type val_t; 
 
@@ -1051,7 +1051,7 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
     {
       return detail::report_triplet (bindings::size_row (A),
                                      bindings::size_column (A),
-                                     bindings::detail::adaptor_access<MatrA>::num_nonzeros (A),
+                                     bindings::end_value (A) - bindings::begin_value (A),
                                      bindings::begin_index_major (A),
                                      bindings::begin_index_minor (A),
                                      bindings::begin_value (A),

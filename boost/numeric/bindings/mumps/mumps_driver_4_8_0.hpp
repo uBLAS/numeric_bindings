@@ -220,10 +220,10 @@ namespace boost { namespace numeric { namespace bindings { namespace mumps {
     data.n = boost::numeric::bindings::size_row( m ) ;
     assert( boost::numeric::bindings::size_column( m ) == data.n ) ;
 
-    data.nz = boost::numeric::bindings::detail::adaptor_access<M>::num_nonzeros( m ) ;
+    data.nz = boost::numeric::bindings::end_value( m ) - boost::numeric::bindings::begin_value( m ) ;
     detail::indices( typename boost::numeric::bindings::detail::property_at< M, tag::data_order >::type(), data.irn, data.jcn, m ) ;
 
-    data.nz_loc = boost::numeric::bindings::detail::adaptor_access<M>::num_nonzeros( m ) ;
+    data.nz_loc = boost::numeric::bindings::end_value( m ) - boost::numeric::bindings::begin_value( m ) ;
     detail::indices( typename boost::numeric::bindings::detail::property_at< M, tag::data_order >::type(), data.irn_loc, data.jcn_loc, m ) ;
   } // matrix_integer_data()
 

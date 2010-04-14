@@ -4,20 +4,20 @@
 [section begin]
 
 ``
-// Entity stuff, e.g., in case of Matrix:
-begin< tag::index<1> >(m)        // Row iterator
-begin< tag::index<2> >(m)        // Column iterator
-begin< tag::row >(m)            // Same as <1>
-begin< tag::column >(m)         // Same as <2>
-begin< tag::major >(m)          // Depends on data_order
-begin< tag::minor >(m)          // Depends on data_order
+// Entity stuff, e.g., in case of m being a Matrix:
+begin( m, tag::addressing_index<1>() )  // Row iterator, only dense types supported at the moment
+begin( m, tag::addressing_index<2>() )  // Column iterator
+begin( m, tag::row() )            // Same as <1>
+begin( m, tag::column() )         // Same as <2>
+begin( m, tag::major() )          // Depends on data_order
+begin( m, tag::minor() )          // Depends on data_order
+
+begin( m, tag::index_major() )            // Sparse matrices
+begin( m, tag::index_minor() )            // Sparse matrices
+begin( m, tag::compressed_index_major() ) // Sparse matrices
 
 // Data stuff, e.g.,:
-begin< tag::value >(m)          // Begin of value array or main diagonal
-begin< tag::inner >(m)          // Begin of Yale sparse index array of row/columns
-begin< tag::outer >(m)          // Begin of Yale sparse starting points in row/columns
-begin< tag::subdiagonal >(m)    // Begin of subdiagonal value array
-begin< tag::superdiagonal >(m)  // Begin of superdiagonal value array
+begin( m, tag::value() )          // Begin of value array or main diagonal
 
 // Convenience
 begin1(m)                       // Convenience for tagged version
@@ -27,12 +27,12 @@ begin_column(m)                 // Convenience for tagged version
 begin_major(m)                  // Convenience for tagged version
 begin_minor(m)                  // Convenience for tagged version
 
-begin_value(m)                  // Convenience for tagged version
-begin_inner(m)                  // Convenience for tagged version
-begin_outer(m)                  // Convenience for tagged version
+begin_index_major(m)            // Convenience for tagged version
+begin_index_minor(m)            // Convenience for tagged version
+begin_compressed_index_major(m) // Convenience for tagged version
 
-begin_subdiagonal(m)            // Convenience for tagged version
-begin_superdiagonal(m)          // Convenience for tagged version
+begin_value(m)                  // Convenience for tagged version
+
 ``
 
 [endsect]
@@ -58,10 +58,10 @@ Only defined in case of
 
 ``
 // E.g., for matrices
-stride< 1 >(m)                   // Stride for increment of index 1
-stride< 2 >(m)                   // Stride for increment of index 2
-stride< tag::major >(m)          // Depends on data_order
-stride< tag::minor >(m)          // Depends on data_order
+stride< 1() )                   // Stride for increment of index 1
+stride< 2() )                   // Stride for increment of index 2
+stride< tag::major() )          // Depends on data_order
+stride< tag::minor() )          // Depends on data_order
 
 // Convenience stuff
 stride1(m)

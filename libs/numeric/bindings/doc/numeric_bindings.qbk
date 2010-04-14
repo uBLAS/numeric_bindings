@@ -56,7 +56,7 @@ In scope are container adaptors and algorithms:
 * Adaptors for a wide variety of foreign container types, supporting both 
   compile-time statically sized and run-time dynamically sized containers.
   At the moment, the library includes bindings for C-style arrays, 
-  ISO C++ standard vectors, uBLAS', Eigen2, TNT, Boost.Array, 
+  ISO C++ standard vectors, uBLAS', Eigen2, Boost.Array, Boost.MultiArray,
   to name a few.
 * Meta-adaptors to create views on these containers, 
   such as row, transpose, and upper. These are convenient when addressing BLAS or LAPACK.
@@ -65,7 +65,10 @@ In scope are container adaptors and algorithms:
 * A BLAS module supporting cblas, blas, and cublas backends. This covers algorithms from 
   the reference BLAS, ATLAS, Intel's MKL, AMD's CML, NVidia's CUBLAS, and 
   many more vendor-specific BLASs.
-* LAPACK. 
+* A LAPACK module supporting lapack and clapack backends. This coverts algorithms from 
+  the reference LAPACK, and from the routines implemented by ATLAS.
+* A MUMPS module.
+* A UMFPACK module.
 
 Out of scope:
 
@@ -163,10 +166,7 @@ will be the most granular level.
 
 [section Reference]
 [include blas.qbk]
-
-[/
 [include lapack.qbk]
-]
 
 [endsect]
 

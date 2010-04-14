@@ -265,10 +265,10 @@ def write_documentation( info_map, group, template_map, base_dir ):
         result = result.replace( "$PROTOTYPE_OVERLOADS", prototype_overloads )
         result = result.replace( "$ORIGINATING_SOURCES", readable_join( originating_sources ) )
         result = result.replace( '$PURPOSE', combine_purposes( subroutines, info_map ) )
+        result = result.replace( '$LIBRARY_INT_TYPE', "int_t" )
 
         result = result.replace( '$SUBROUTINES', readable_join( subroutines ) )
         result = result.replace( '$header', 'boost/numeric/bindings/' + parsermode + '/' + group_name.lower() + '.hpp' )
-
 
         if len( no_arguments_level0 ) == 1:
             result = result.replace( '$NO_ARGUMENTS_LEVEL0', number_to_text[ no_arguments_level0[0] ] )

@@ -1,0 +1,83 @@
+
+[section upgtr]
+
+[heading Prototype]
+There is one prototype of `upgtr` available, please see below.
+``
+upgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
+        MatrixQ& q );
+``
+
+
+[heading Description]
+
+`upgtr` (short for $FRIENDLY_NAME) provides a C++
+interface to LAPACK routines CUPGTR and ZUPGTR. 
+`upgtr` generates a complex unitary matrix Q which is defined as the
+product of n-1 elementary reflectors H(i) of order n, as returned by
+ZHPTRD using packed storage:
+
+if UPLO = 'U', Q = H(n-1) . . . H(2) H(1),
+
+if UPLO = 'L', Q = H(1) H(2) . . . H(n-1).
+
+The selection of the LAPACK routine is done during compile-time, 
+and is determined by the type of values contained in type `VectorAP`.
+The type of values is obtained through the `value_type` meta-function
+ `typename value_type<VectorAP>::type`.
+The dispatching table below illustrates to which specific routine 
+the code path will be generated. 
+
+[table Dispatching of upgtr
+[  [ Value type of VectorAP ] [LAPACK routine] ]
+[  [`complex<float>`][CUPGTR] ]
+[  [`complex<double>`][ZUPGTR] ]
+
+]
+
+
+[heading Definition]
+Defined in header [headerref boost/numeric/bindings/lapack/upgtr.hpp].
+
+
+[heading Parameters or Requirements on Types]
+
+[variablelist Parameters
+    [[MatrixA] [The definition of term 1]]
+    [[MatrixB] [The definition of term 2]]
+    [[MatrixC] [
+    The definition of term 3.
+
+    Definitions may contain paragraphs.
+    ]]
+]
+
+
+[heading Complexity]
+
+
+[heading Example]
+``
+#include <boost/numeric/bindings/lapack/upgtr.hpp>
+using namespace boost::numeric::bindings;
+
+lapack::upgtr( x, y, z );
+
+``
+
+this will output
+
+``
+[5] 0 1 2 3 4 5
+``
+
+
+
+[heading Notes]
+
+
+[heading See Also]
+
+* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/cupgtr.f.html cupgtr.f] and [@http://www.netlib.org/lapack/explore-html/zupgtr.f.html zupgtr.f] at Netlib.
+
+[endsect]

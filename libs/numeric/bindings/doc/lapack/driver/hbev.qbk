@@ -1,0 +1,77 @@
+
+[section hbev]
+
+[heading Prototype]
+There is one prototype of `hbev` available, please see below.
+``
+hbev( const char jobz, MatrixAB& ab, VectorW& w, MatrixZ& z );
+``
+
+
+[heading Description]
+
+`hbev` (short for $FRIENDLY_NAME) provides a C++
+interface to LAPACK routines CHBEV and ZHBEV. 
+`hbev` computes all the eigenvalues and, optionally, eigenvectors of
+a complex Hermitian band matrix A.
+
+The selection of the LAPACK routine is done during compile-time, 
+and is determined by the type of values contained in type `MatrixAB`.
+The type of values is obtained through the `value_type` meta-function
+ `typename value_type<MatrixAB>::type`.
+The dispatching table below illustrates to which specific routine 
+the code path will be generated. 
+
+[table Dispatching of hbev
+[  [ Value type of MatrixAB ] [LAPACK routine] ]
+[  [`complex<float>`][CHBEV] ]
+[  [`complex<double>`][ZHBEV] ]
+
+]
+
+
+[heading Definition]
+Defined in header [headerref boost/numeric/bindings/lapack/hbev.hpp].
+
+
+[heading Parameters or Requirements on Types]
+
+[variablelist Parameters
+    [[MatrixA] [The definition of term 1]]
+    [[MatrixB] [The definition of term 2]]
+    [[MatrixC] [
+    The definition of term 3.
+
+    Definitions may contain paragraphs.
+    ]]
+]
+
+
+[heading Complexity]
+
+
+[heading Example]
+``
+#include <boost/numeric/bindings/lapack/hbev.hpp>
+using namespace boost::numeric::bindings;
+
+lapack::hbev( x, y, z );
+
+``
+
+this will output
+
+``
+[5] 0 1 2 3 4 5
+``
+
+
+
+[heading Notes]
+
+
+[heading See Also]
+
+* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/chbev.f.html chbev.f] and [@http://www.netlib.org/lapack/explore-html/zhbev.f.html zhbev.f] at Netlib.
+
+[endsect]

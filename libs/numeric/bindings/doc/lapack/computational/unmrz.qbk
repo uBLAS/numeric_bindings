@@ -1,0 +1,89 @@
+
+[section unmrz]
+
+[heading Prototype]
+There is one prototype of `unmrz` available, please see below.
+``
+unmrz( const Side side, const int_t k, const MatrixA& a,
+        const VectorTAU& tau, MatrixC& c );
+``
+
+
+[heading Description]
+
+`unmrz` (short for $FRIENDLY_NAME) provides a C++
+interface to LAPACK routines CUNMRZ and ZUNMRZ. 
+`unmrz` overwrites the general complex M-by-N matrix C with
+
+SIDE = 'L' SIDE = 'R'
+TRANS = 'N': Q * C  C * Q
+TRANS = 'C': Q**H * C C * Q**H
+
+where Q is a complex unitary matrix defined as the product of k
+elementary reflectors
+
+Q = H(1) H(2) . . . H(k)
+
+as returned by ZTZRZF. Q is of order M if SIDE = 'L' and of order N
+if SIDE = 'R'.
+
+The selection of the LAPACK routine is done during compile-time, 
+and is determined by the type of values contained in type `MatrixA`.
+The type of values is obtained through the `value_type` meta-function
+ `typename value_type<MatrixA>::type`.
+The dispatching table below illustrates to which specific routine 
+the code path will be generated. 
+
+[table Dispatching of unmrz
+[  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`complex<float>`][CUNMRZ] ]
+[  [`complex<double>`][ZUNMRZ] ]
+
+]
+
+
+[heading Definition]
+Defined in header [headerref boost/numeric/bindings/lapack/unmrz.hpp].
+
+
+[heading Parameters or Requirements on Types]
+
+[variablelist Parameters
+    [[MatrixA] [The definition of term 1]]
+    [[MatrixB] [The definition of term 2]]
+    [[MatrixC] [
+    The definition of term 3.
+
+    Definitions may contain paragraphs.
+    ]]
+]
+
+
+[heading Complexity]
+
+
+[heading Example]
+``
+#include <boost/numeric/bindings/lapack/unmrz.hpp>
+using namespace boost::numeric::bindings;
+
+lapack::unmrz( x, y, z );
+
+``
+
+this will output
+
+``
+[5] 0 1 2 3 4 5
+``
+
+
+
+[heading Notes]
+
+
+[heading See Also]
+
+* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/cunmrz.f.html cunmrz.f] and [@http://www.netlib.org/lapack/explore-html/zunmrz.f.html zunmrz.f] at Netlib.
+
+[endsect]

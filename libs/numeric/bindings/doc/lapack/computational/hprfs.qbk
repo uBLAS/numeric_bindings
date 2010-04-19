@@ -1,0 +1,80 @@
+
+[section hprfs]
+
+[heading Prototype]
+There is one prototype of `hprfs` available, please see below.
+``
+hprfs( const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr );
+``
+
+
+[heading Description]
+
+`hprfs` (short for $FRIENDLY_NAME) provides a C++
+interface to LAPACK routines CHPRFS and ZHPRFS. 
+`hprfs` improves the computed solution to a system of linear
+equations when the coefficient matrix is Hermitian indefinite
+and packed, and provides error bounds and backward error estimates
+for the solution.
+
+The selection of the LAPACK routine is done during compile-time, 
+and is determined by the type of values contained in type `MatrixAP`.
+The type of values is obtained through the `value_type` meta-function
+ `typename value_type<MatrixAP>::type`.
+The dispatching table below illustrates to which specific routine 
+the code path will be generated. 
+
+[table Dispatching of hprfs
+[  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`complex<float>`][CHPRFS] ]
+[  [`complex<double>`][ZHPRFS] ]
+
+]
+
+
+[heading Definition]
+Defined in header [headerref boost/numeric/bindings/lapack/hprfs.hpp].
+
+
+[heading Parameters or Requirements on Types]
+
+[variablelist Parameters
+    [[MatrixA] [The definition of term 1]]
+    [[MatrixB] [The definition of term 2]]
+    [[MatrixC] [
+    The definition of term 3.
+
+    Definitions may contain paragraphs.
+    ]]
+]
+
+
+[heading Complexity]
+
+
+[heading Example]
+``
+#include <boost/numeric/bindings/lapack/hprfs.hpp>
+using namespace boost::numeric::bindings;
+
+lapack::hprfs( x, y, z );
+
+``
+
+this will output
+
+``
+[5] 0 1 2 3 4 5
+``
+
+
+
+[heading Notes]
+
+
+[heading See Also]
+
+* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/chprfs.f.html chprfs.f] and [@http://www.netlib.org/lapack/explore-html/zhprfs.f.html zhprfs.f] at Netlib.
+
+[endsect]

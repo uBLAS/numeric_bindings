@@ -1,0 +1,81 @@
+
+[section pftrs]
+
+[heading Prototype]
+There is one prototype of `pftrs` available, please see below.
+``
+pftrs( const char uplo, const int_t n, const VectorA& a,
+        MatrixB& b );
+``
+
+
+[heading Description]
+
+`pftrs` (short for $FRIENDLY_NAME) provides a C++
+interface to LAPACK routines SPFTRS, DPFTRS, CPFTRS, and ZPFTRS. 
+`pftrs` solves a system of linear equations A*X = B with a Hermitian
+positive definite matrix A using the Cholesky factorization
+A = U**H*U or A = L*L**H computed by ZPFTRF.
+
+The selection of the LAPACK routine is done during compile-time, 
+and is determined by the type of values contained in type `VectorA`.
+The type of values is obtained through the `value_type` meta-function
+ `typename value_type<VectorA>::type`.
+The dispatching table below illustrates to which specific routine 
+the code path will be generated. 
+
+[table Dispatching of pftrs
+[  [ Value type of VectorA ] [LAPACK routine] ]
+[  [`float`][SPFTRS] ]
+[  [`double`][DPFTRS] ]
+[  [`complex<float>`][CPFTRS] ]
+[  [`complex<double>`][ZPFTRS] ]
+
+]
+
+
+[heading Definition]
+Defined in header [headerref boost/numeric/bindings/lapack/pftrs.hpp].
+
+
+[heading Parameters or Requirements on Types]
+
+[variablelist Parameters
+    [[MatrixA] [The definition of term 1]]
+    [[MatrixB] [The definition of term 2]]
+    [[MatrixC] [
+    The definition of term 3.
+
+    Definitions may contain paragraphs.
+    ]]
+]
+
+
+[heading Complexity]
+
+
+[heading Example]
+``
+#include <boost/numeric/bindings/lapack/pftrs.hpp>
+using namespace boost::numeric::bindings;
+
+lapack::pftrs( x, y, z );
+
+``
+
+this will output
+
+``
+[5] 0 1 2 3 4 5
+``
+
+
+
+[heading Notes]
+
+
+[heading See Also]
+
+* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/spftrs.f.html spftrs.f], [@http://www.netlib.org/lapack/explore-html/dpftrs.f.html dpftrs.f], [@http://www.netlib.org/lapack/explore-html/cpftrs.f.html cpftrs.f], and [@http://www.netlib.org/lapack/explore-html/zpftrs.f.html zpftrs.f] at Netlib.
+
+[endsect]

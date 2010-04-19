@@ -1,0 +1,77 @@
+
+[section hpev]
+
+[heading Prototype]
+There is one prototype of `hpev` available, please see below.
+``
+hpev( const char jobz, MatrixAP& ap, VectorW& w, MatrixZ& z );
+``
+
+
+[heading Description]
+
+`hpev` (short for $FRIENDLY_NAME) provides a C++
+interface to LAPACK routines CHPEV and ZHPEV. 
+`hpev` computes all the eigenvalues and, optionally, eigenvectors of a
+complex Hermitian matrix in packed storage.
+
+The selection of the LAPACK routine is done during compile-time, 
+and is determined by the type of values contained in type `MatrixAP`.
+The type of values is obtained through the `value_type` meta-function
+ `typename value_type<MatrixAP>::type`.
+The dispatching table below illustrates to which specific routine 
+the code path will be generated. 
+
+[table Dispatching of hpev
+[  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`complex<float>`][CHPEV] ]
+[  [`complex<double>`][ZHPEV] ]
+
+]
+
+
+[heading Definition]
+Defined in header [headerref boost/numeric/bindings/lapack/hpev.hpp].
+
+
+[heading Parameters or Requirements on Types]
+
+[variablelist Parameters
+    [[MatrixA] [The definition of term 1]]
+    [[MatrixB] [The definition of term 2]]
+    [[MatrixC] [
+    The definition of term 3.
+
+    Definitions may contain paragraphs.
+    ]]
+]
+
+
+[heading Complexity]
+
+
+[heading Example]
+``
+#include <boost/numeric/bindings/lapack/hpev.hpp>
+using namespace boost::numeric::bindings;
+
+lapack::hpev( x, y, z );
+
+``
+
+this will output
+
+``
+[5] 0 1 2 3 4 5
+``
+
+
+
+[heading Notes]
+
+
+[heading See Also]
+
+* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/chpev.f.html chpev.f] and [@http://www.netlib.org/lapack/explore-html/zhpev.f.html zhpev.f] at Netlib.
+
+[endsect]

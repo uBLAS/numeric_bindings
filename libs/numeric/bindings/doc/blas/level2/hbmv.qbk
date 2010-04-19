@@ -1,0 +1,80 @@
+
+[section hbmv]
+
+[heading Prototype]
+There is one prototype of `hbmv` available, please see below.
+``
+hbmv( const Scalar alpha, const MatrixA& a, const VectorX& x,
+        const Scalar beta, VectorY& y );
+``
+
+
+[heading Description]
+
+`hbmv` (short for hermitian, banded,  matrix-vector operation) provides a C++
+interface to BLAS routines CHBMV and ZHBMV. 
+`hbmv` performs the matrix-vector operation
+
+y := alpha*A*x + beta*y,
+
+where alpha and beta are scalars, x and y are n element vectors and
+A is an n by n hermitian band matrix, with k super-diagonals.
+
+The selection of the BLAS routine is done during compile-time, 
+and is determined by the type of values contained in type `MatrixA`.
+The type of values is obtained through the `value_type` meta-function
+ `typename value_type<MatrixA>::type`.
+Table X below illustrates to which specific routine this dispatching will take place. 
+
+[table Dispatching of hbmv.
+[  [ Value type of MatrixA ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
+[  [`complex<float>`][CHBMV][cblas_chbmv][cublasChbmv] ]
+[  [`complex<double>`][ZHBMV][cblas_zhbmv][Unavailable] ]
+
+]
+
+The original routines CHBMV and ZHBMV have eleven arguments,
+whereas `hbmv` requires five arguments.
+
+[table Deduction of arguments of hbmv.
+]
+
+[heading Definition]
+Defined in header [headerref boost/numeric/bindings/blas/hbmv.hpp].
+
+[heading Parameters or Requirements on Types]
+
+[variablelist Parameters
+    [[MatrixA] [The definition of term 1]]
+    [[MatrixB] [The definition of term 2]]
+    [[MatrixC] [
+    The definition of term 3.
+
+    Definitions may contain paragraphs.
+    ]]
+]
+
+[heading Complexity]
+
+[heading Example]
+``
+#include <boost/numeric/bindings/blas/hbmv.hpp>
+using namespace boost::numeric::bindings;
+
+blas::hbmv( x, y, z );
+
+``
+
+this will output
+
+``
+[5] 0 1 2 3 4 5
+``
+
+[heading Notes]
+
+[heading See Also]
+
+* Originating Fortran source files [@http://www.netlib.org/blas/chbmv.f chbmv.f] and [@http://www.netlib.org/blas/zhbmv.f zhbmv.f] at Netlib.
+
+[endsect]

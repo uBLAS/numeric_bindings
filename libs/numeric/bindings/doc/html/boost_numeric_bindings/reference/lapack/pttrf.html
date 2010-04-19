@@ -1,0 +1,219 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>pttrf</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../../../index.html" title="Boost.Numeric_Bindings">
+<link rel="up" href="../lapack.html" title="LAPACK">
+<link rel="prev" href="ptrfs.html" title="ptrfs">
+<link rel="next" href="pttrs.html" title="pttrs">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr><td valign="top"></td></tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="ptrfs.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="pttrs.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+<div class="section" title="pttrf">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_numeric_bindings.reference.lapack.pttrf"></a><a class="link" href="pttrf.html" title="pttrf">pttrf</a>
+</h4></div></div></div>
+<a name="boost_numeric_bindings.reference.lapack.pttrf.prototype"></a><h6>
+<a name="id614548"></a>
+          <a class="link" href="pttrf.html#boost_numeric_bindings.reference.lapack.pttrf.prototype">Prototype</a>
+        </h6>
+<p>
+          There is one prototype of <code class="computeroutput"><span class="identifier">pttrf</span></code>
+          available, please see below. 
+</p>
+<pre class="programlisting"><span class="identifier">pttrf</span><span class="special">(</span> <span class="identifier">VectorD</span><span class="special">&amp;</span> <span class="identifier">d</span><span class="special">,</span> <span class="identifier">VectorE</span><span class="special">&amp;</span> <span class="identifier">e</span> <span class="special">);</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.pttrf.description"></a><h6>
+<a name="id614638"></a>
+          <a class="link" href="pttrf.html#boost_numeric_bindings.reference.lapack.pttrf.description">Description</a>
+        </h6>
+<p>
+          <code class="computeroutput"><span class="identifier">pttrf</span></code> (short for $FRIENDLY_NAME)
+          provides a C++ interface to LAPACK routines SPTTRF, DPTTRF, CPTTRF, and
+          ZPTTRF. <code class="computeroutput"><span class="identifier">pttrf</span></code> computes
+          the L*D*L' factorization of a complex Hermitian positive definite tridiagonal
+          matrix A. The factorization may also be regarded as having the form A =
+          U'*D*U.
+        </p>
+<p>
+          The selection of the LAPACK routine is done during compile-time, and is
+          determined by the type of values contained in type <code class="computeroutput"><span class="identifier">VectorD</span></code>.
+          The type of values is obtained through the <code class="computeroutput"><span class="identifier">value_type</span></code>
+          meta-function <code class="computeroutput"><span class="keyword">typename</span> <span class="identifier">value_type</span><span class="special">&lt;</span><span class="identifier">VectorD</span><span class="special">&gt;::</span><span class="identifier">type</span></code>.
+          The dispatching table below illustrates to which specific routine the code
+          path will be generated.
+        </p>
+<div class="table">
+<a name="id614741"></a><p class="title"><b>Table&#160;200.&#160;Dispatching of pttrf</b></p>
+<div class="table-contents"><table class="table" summary="Dispatching of pttrf">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+              <p>
+                Value type of VectorD
+              </p>
+              </th>
+<th>
+              <p>
+                LAPACK routine
+              </p>
+              </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">float</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                SPTTRF
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">double</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                DPTTRF
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                CPTTRF
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">double</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                ZPTTRF
+              </p>
+              </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><a name="boost_numeric_bindings.reference.lapack.pttrf.definition"></a><h6>
+<a name="id614914"></a>
+          <a class="link" href="pttrf.html#boost_numeric_bindings.reference.lapack.pttrf.definition">Definition</a>
+        </h6>
+<p>
+          Defined in header <code class="computeroutput">boost/numeric/bindings/lapack/pttrf.hpp</code>.
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.pttrf.parameters_or_requirements_on_types"></a><h6>
+<a name="id614945"></a>
+          <a class="link" href="pttrf.html#boost_numeric_bindings.reference.lapack.pttrf.parameters_or_requirements_on_types">Parameters
+          or Requirements on Types</a>
+        </h6>
+<div class="variablelist" title="Parameters">
+<p class="title"><b>Parameters</b></p>
+<dl>
+<dt><span class="term">MatrixA</span></dt>
+<dd><p>
+              The definition of term 1
+            </p></dd>
+<dt><span class="term">MatrixB</span></dt>
+<dd><p>
+              The definition of term 2
+            </p></dd>
+<dt><span class="term">MatrixC</span></dt>
+<dd>
+<p>
+              The definition of term 3.
+            </p>
+<p>
+              Definitions may contain paragraphs.
+            </p>
+</dd>
+</dl>
+</div>
+<a name="boost_numeric_bindings.reference.lapack.pttrf.complexity"></a><h6>
+<a name="id615014"></a>
+          <a class="link" href="pttrf.html#boost_numeric_bindings.reference.lapack.pttrf.complexity">Complexity</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.pttrf.example"></a><h6>
+<a name="id615035"></a>
+          <a class="link" href="pttrf.html#boost_numeric_bindings.reference.lapack.pttrf.example">Example</a>
+        </h6>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">bindings</span><span class="special">/</span><span class="identifier">lapack</span><span class="special">/</span><span class="identifier">pttrf</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">bindings</span><span class="special">;</span>
+
+<span class="identifier">lapack</span><span class="special">::</span><span class="identifier">pttrf</span><span class="special">(</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">,</span> <span class="identifier">z</span> <span class="special">);</span>
+
+</pre>
+<p>
+        </p>
+<p>
+          this will output
+        </p>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="special">[</span><span class="number">5</span><span class="special">]</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.pttrf.notes"></a><h6>
+<a name="id615278"></a>
+          <a class="link" href="pttrf.html#boost_numeric_bindings.reference.lapack.pttrf.notes">Notes</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.pttrf.see_also"></a><h6>
+<a name="id615298"></a>
+          <a class="link" href="pttrf.html#boost_numeric_bindings.reference.lapack.pttrf.see_also">See
+          Also</a>
+        </h6>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+            Originating Fortran source files <a href="http://www.netlib.org/lapack/explore-html/spttrf.f.html" target="_top">spttrf.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/dpttrf.f.html" target="_top">dpttrf.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/cpttrf.f.html" target="_top">cpttrf.f</a>,
+            and <a href="http://www.netlib.org/lapack/explore-html/zpttrf.f.html" target="_top">zpttrf.f</a>
+            at Netlib.
+          </li></ul></div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2002 -2009 Rutger ter Borg, Kre&#353;imir Fresl, Thomas Klimpel,
+      Toon Knapen, Karl Meerbergen<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="ptrfs.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="pttrs.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

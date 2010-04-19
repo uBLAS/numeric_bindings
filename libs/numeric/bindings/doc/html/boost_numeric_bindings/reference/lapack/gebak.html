@@ -1,0 +1,219 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gebak</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../../../index.html" title="Boost.Numeric_Bindings">
+<link rel="up" href="../lapack.html" title="LAPACK">
+<link rel="prev" href="unmbr.html" title="unmbr">
+<link rel="next" href="gebal.html" title="gebal">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr><td valign="top"></td></tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="unmbr.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="gebal.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+<div class="section" title="gebak">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_numeric_bindings.reference.lapack.gebak"></a><a class="link" href="gebak.html" title="gebak">gebak</a>
+</h4></div></div></div>
+<a name="boost_numeric_bindings.reference.lapack.gebak.prototype"></a><h6>
+<a name="id560858"></a>
+          <a class="link" href="gebak.html#boost_numeric_bindings.reference.lapack.gebak.prototype">Prototype</a>
+        </h6>
+<p>
+          There is one prototype of <code class="computeroutput"><span class="identifier">gebak</span></code>
+          available, please see below. 
+</p>
+<pre class="programlisting"><span class="identifier">gebak</span><span class="special">(</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="identifier">job</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">Side</span> <span class="identifier">side</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">int_t</span> <span class="identifier">ilo</span><span class="special">,</span>
+        <span class="keyword">const</span> <span class="identifier">int_t</span> <span class="identifier">ihi</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">VectorSCALE</span><span class="special">&amp;</span> <span class="identifier">scale</span><span class="special">,</span> <span class="identifier">MatrixV</span><span class="special">&amp;</span> <span class="identifier">v</span> <span class="special">);</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.gebak.description"></a><h6>
+<a name="id561041"></a>
+          <a class="link" href="gebak.html#boost_numeric_bindings.reference.lapack.gebak.description">Description</a>
+        </h6>
+<p>
+          <code class="computeroutput"><span class="identifier">gebak</span></code> (short for $FRIENDLY_NAME)
+          provides a C++ interface to LAPACK routines SGEBAK, DGEBAK, CGEBAK, and
+          ZGEBAK. <code class="computeroutput"><span class="identifier">gebak</span></code> forms the
+          right or left eigenvectors of a complex general matrix by backward transformation
+          on the computed eigenvectors of the balanced matrix output by ZGEBAL.
+        </p>
+<p>
+          The selection of the LAPACK routine is done during compile-time, and is
+          determined by the type of values contained in type <code class="computeroutput"><span class="identifier">VectorSCALE</span></code>.
+          The type of values is obtained through the <code class="computeroutput"><span class="identifier">value_type</span></code>
+          meta-function <code class="computeroutput"><span class="keyword">typename</span> <span class="identifier">value_type</span><span class="special">&lt;</span><span class="identifier">VectorSCALE</span><span class="special">&gt;::</span><span class="identifier">type</span></code>.
+          The dispatching table below illustrates to which specific routine the code
+          path will be generated.
+        </p>
+<div class="table">
+<a name="id561144"></a><p class="title"><b>Table&#160;141.&#160;Dispatching of gebak</b></p>
+<div class="table-contents"><table class="table" summary="Dispatching of gebak">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+              <p>
+                Value type of VectorSCALE
+              </p>
+              </th>
+<th>
+              <p>
+                LAPACK routine
+              </p>
+              </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">float</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                SGEBAK
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">double</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                DGEBAK
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                CGEBAK
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">double</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                ZGEBAK
+              </p>
+              </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><a name="boost_numeric_bindings.reference.lapack.gebak.definition"></a><h6>
+<a name="id561317"></a>
+          <a class="link" href="gebak.html#boost_numeric_bindings.reference.lapack.gebak.definition">Definition</a>
+        </h6>
+<p>
+          Defined in header <code class="computeroutput">boost/numeric/bindings/lapack/gebak.hpp</code>.
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.gebak.parameters_or_requirements_on_types"></a><h6>
+<a name="id561349"></a>
+          <a class="link" href="gebak.html#boost_numeric_bindings.reference.lapack.gebak.parameters_or_requirements_on_types">Parameters
+          or Requirements on Types</a>
+        </h6>
+<div class="variablelist" title="Parameters">
+<p class="title"><b>Parameters</b></p>
+<dl>
+<dt><span class="term">MatrixA</span></dt>
+<dd><p>
+              The definition of term 1
+            </p></dd>
+<dt><span class="term">MatrixB</span></dt>
+<dd><p>
+              The definition of term 2
+            </p></dd>
+<dt><span class="term">MatrixC</span></dt>
+<dd>
+<p>
+              The definition of term 3.
+            </p>
+<p>
+              Definitions may contain paragraphs.
+            </p>
+</dd>
+</dl>
+</div>
+<a name="boost_numeric_bindings.reference.lapack.gebak.complexity"></a><h6>
+<a name="id561418"></a>
+          <a class="link" href="gebak.html#boost_numeric_bindings.reference.lapack.gebak.complexity">Complexity</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.gebak.example"></a><h6>
+<a name="id561439"></a>
+          <a class="link" href="gebak.html#boost_numeric_bindings.reference.lapack.gebak.example">Example</a>
+        </h6>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">bindings</span><span class="special">/</span><span class="identifier">lapack</span><span class="special">/</span><span class="identifier">gebak</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">bindings</span><span class="special">;</span>
+
+<span class="identifier">lapack</span><span class="special">::</span><span class="identifier">gebak</span><span class="special">(</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">,</span> <span class="identifier">z</span> <span class="special">);</span>
+
+</pre>
+<p>
+        </p>
+<p>
+          this will output
+        </p>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="special">[</span><span class="number">5</span><span class="special">]</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.gebak.notes"></a><h6>
+<a name="id561683"></a>
+          <a class="link" href="gebak.html#boost_numeric_bindings.reference.lapack.gebak.notes">Notes</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.gebak.see_also"></a><h6>
+<a name="id561703"></a>
+          <a class="link" href="gebak.html#boost_numeric_bindings.reference.lapack.gebak.see_also">See
+          Also</a>
+        </h6>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+            Originating Fortran source files <a href="http://www.netlib.org/lapack/explore-html/sgebak.f.html" target="_top">sgebak.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/dgebak.f.html" target="_top">dgebak.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/cgebak.f.html" target="_top">cgebak.f</a>,
+            and <a href="http://www.netlib.org/lapack/explore-html/zgebak.f.html" target="_top">zgebak.f</a>
+            at Netlib.
+          </li></ul></div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2002 -2009 Rutger ter Borg, Kre&#353;imir Fresl, Thomas Klimpel,
+      Toon Knapen, Karl Meerbergen<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="unmbr.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="gebal.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

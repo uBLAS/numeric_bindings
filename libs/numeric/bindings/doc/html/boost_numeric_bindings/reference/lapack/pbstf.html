@@ -1,0 +1,232 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>pbstf</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../../../index.html" title="Boost.Numeric_Bindings">
+<link rel="up" href="../lapack.html" title="LAPACK">
+<link rel="prev" href="hegst.html" title="hegst">
+<link rel="next" href="sbgst.html" title="sbgst">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr><td valign="top"></td></tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="hegst.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="sbgst.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+<div class="section" title="pbstf">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_numeric_bindings.reference.lapack.pbstf"></a><a class="link" href="pbstf.html" title="pbstf">pbstf</a>
+</h4></div></div></div>
+<a name="boost_numeric_bindings.reference.lapack.pbstf.prototype"></a><h6>
+<a name="id526623"></a>
+          <a class="link" href="pbstf.html#boost_numeric_bindings.reference.lapack.pbstf.prototype">Prototype</a>
+        </h6>
+<p>
+          There is one prototype of <code class="computeroutput"><span class="identifier">pbstf</span></code>
+          available, please see below. 
+</p>
+<pre class="programlisting"><span class="identifier">pbstf</span><span class="special">(</span> <span class="identifier">MatrixAB</span><span class="special">&amp;</span> <span class="identifier">ab</span> <span class="special">);</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.pbstf.description"></a><h6>
+<a name="id526694"></a>
+          <a class="link" href="pbstf.html#boost_numeric_bindings.reference.lapack.pbstf.description">Description</a>
+        </h6>
+<p>
+          <code class="computeroutput"><span class="identifier">pbstf</span></code> (short for $FRIENDLY_NAME)
+          provides a C++ interface to LAPACK routines SPBSTF, DPBSTF, CPBSTF, and
+          ZPBSTF. <code class="computeroutput"><span class="identifier">pbstf</span></code> computes
+          a split Cholesky factorization of a complex Hermitian positive definite
+          band matrix A.
+        </p>
+<p>
+          This routine is designed to be used in conjunction with ZHBGST.
+        </p>
+<p>
+          The factorization has the form A = S**H*S where S is a band matrix of the
+          same bandwidth as A and the following structure:
+        </p>
+<p>
+          S = ( U ) ( M L )
+        </p>
+<p>
+          where U is upper triangular of order m = (n+kd)/2, and L is lower triangular
+          of order n-m.
+        </p>
+<p>
+          The selection of the LAPACK routine is done during compile-time, and is
+          determined by the type of values contained in type <code class="computeroutput"><span class="identifier">MatrixAB</span></code>.
+          The type of values is obtained through the <code class="computeroutput"><span class="identifier">value_type</span></code>
+          meta-function <code class="computeroutput"><span class="keyword">typename</span> <span class="identifier">value_type</span><span class="special">&lt;</span><span class="identifier">MatrixAB</span><span class="special">&gt;::</span><span class="identifier">type</span></code>.
+          The dispatching table below illustrates to which specific routine the code
+          path will be generated.
+        </p>
+<div class="table">
+<a name="id526813"></a><p class="title"><b>Table&#160;101.&#160;Dispatching of pbstf</b></p>
+<div class="table-contents"><table class="table" summary="Dispatching of pbstf">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+              <p>
+                Value type of MatrixAB
+              </p>
+              </th>
+<th>
+              <p>
+                LAPACK routine
+              </p>
+              </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">float</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                SPBSTF
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">double</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                DPBSTF
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                CPBSTF
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">double</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                ZPBSTF
+              </p>
+              </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><a name="boost_numeric_bindings.reference.lapack.pbstf.definition"></a><h6>
+<a name="id526986"></a>
+          <a class="link" href="pbstf.html#boost_numeric_bindings.reference.lapack.pbstf.definition">Definition</a>
+        </h6>
+<p>
+          Defined in header <code class="computeroutput">boost/numeric/bindings/lapack/pbstf.hpp</code>.
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.pbstf.parameters_or_requirements_on_types"></a><h6>
+<a name="id527019"></a>
+          <a class="link" href="pbstf.html#boost_numeric_bindings.reference.lapack.pbstf.parameters_or_requirements_on_types">Parameters
+          or Requirements on Types</a>
+        </h6>
+<div class="variablelist" title="Parameters">
+<p class="title"><b>Parameters</b></p>
+<dl>
+<dt><span class="term">MatrixA</span></dt>
+<dd><p>
+              The definition of term 1
+            </p></dd>
+<dt><span class="term">MatrixB</span></dt>
+<dd><p>
+              The definition of term 2
+            </p></dd>
+<dt><span class="term">MatrixC</span></dt>
+<dd>
+<p>
+              The definition of term 3.
+            </p>
+<p>
+              Definitions may contain paragraphs.
+            </p>
+</dd>
+</dl>
+</div>
+<a name="boost_numeric_bindings.reference.lapack.pbstf.complexity"></a><h6>
+<a name="id527088"></a>
+          <a class="link" href="pbstf.html#boost_numeric_bindings.reference.lapack.pbstf.complexity">Complexity</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.pbstf.example"></a><h6>
+<a name="id527109"></a>
+          <a class="link" href="pbstf.html#boost_numeric_bindings.reference.lapack.pbstf.example">Example</a>
+        </h6>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">bindings</span><span class="special">/</span><span class="identifier">lapack</span><span class="special">/</span><span class="identifier">pbstf</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">bindings</span><span class="special">;</span>
+
+<span class="identifier">lapack</span><span class="special">::</span><span class="identifier">pbstf</span><span class="special">(</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">,</span> <span class="identifier">z</span> <span class="special">);</span>
+
+</pre>
+<p>
+        </p>
+<p>
+          this will output
+        </p>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="special">[</span><span class="number">5</span><span class="special">]</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.pbstf.notes"></a><h6>
+<a name="id527353"></a>
+          <a class="link" href="pbstf.html#boost_numeric_bindings.reference.lapack.pbstf.notes">Notes</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.pbstf.see_also"></a><h6>
+<a name="id527374"></a>
+          <a class="link" href="pbstf.html#boost_numeric_bindings.reference.lapack.pbstf.see_also">See
+          Also</a>
+        </h6>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+            Originating Fortran source files <a href="http://www.netlib.org/lapack/explore-html/spbstf.f.html" target="_top">spbstf.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/dpbstf.f.html" target="_top">dpbstf.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/cpbstf.f.html" target="_top">cpbstf.f</a>,
+            and <a href="http://www.netlib.org/lapack/explore-html/zpbstf.f.html" target="_top">zpbstf.f</a>
+            at Netlib.
+          </li></ul></div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2002 -2009 Rutger ter Borg, Kre&#353;imir Fresl, Thomas Klimpel,
+      Toon Knapen, Karl Meerbergen<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="hegst.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="sbgst.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

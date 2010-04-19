@@ -1,0 +1,225 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>tprfs</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../../../index.html" title="Boost.Numeric_Bindings">
+<link rel="up" href="../lapack.html" title="LAPACK">
+<link rel="prev" href="tpcon.html" title="tpcon">
+<link rel="next" href="tptri.html" title="tptri">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr><td valign="top"></td></tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="tpcon.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="tptri.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+<div class="section" title="tprfs">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_numeric_bindings.reference.lapack.tprfs"></a><a class="link" href="tprfs.html" title="tprfs">tprfs</a>
+</h4></div></div></div>
+<a name="boost_numeric_bindings.reference.lapack.tprfs.prototype"></a><h6>
+<a name="id628623"></a>
+          <a class="link" href="tprfs.html#boost_numeric_bindings.reference.lapack.tprfs.prototype">Prototype</a>
+        </h6>
+<p>
+          There is one prototype of <code class="computeroutput"><span class="identifier">tprfs</span></code>
+          available, please see below. 
+</p>
+<pre class="programlisting"><span class="identifier">tprfs</span><span class="special">(</span> <span class="keyword">const</span> <span class="identifier">MatrixAP</span><span class="special">&amp;</span> <span class="identifier">ap</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">MatrixB</span><span class="special">&amp;</span> <span class="identifier">b</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">MatrixX</span><span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span>
+        <span class="identifier">VectorFERR</span><span class="special">&amp;</span> <span class="identifier">ferr</span><span class="special">,</span> <span class="identifier">VectorBERR</span><span class="special">&amp;</span> <span class="identifier">berr</span> <span class="special">);</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.tprfs.description"></a><h6>
+<a name="id628794"></a>
+          <a class="link" href="tprfs.html#boost_numeric_bindings.reference.lapack.tprfs.description">Description</a>
+        </h6>
+<p>
+          <code class="computeroutput"><span class="identifier">tprfs</span></code> (short for $FRIENDLY_NAME)
+          provides a C++ interface to LAPACK routines STPRFS, DTPRFS, CTPRFS, and
+          ZTPRFS. <code class="computeroutput"><span class="identifier">tprfs</span></code> provides
+          error bounds and backward error estimates for the solution to a system
+          of linear equations with a triangular packed coefficient matrix.
+        </p>
+<p>
+          The solution matrix X must be computed by ZTPTRS or some other means before
+          entering this routine. <code class="computeroutput"><span class="identifier">tprfs</span></code>
+          does not do iterative refinement because doing so cannot improve the backward
+          error.
+        </p>
+<p>
+          The selection of the LAPACK routine is done during compile-time, and is
+          determined by the type of values contained in type <code class="computeroutput"><span class="identifier">MatrixAP</span></code>.
+          The type of values is obtained through the <code class="computeroutput"><span class="identifier">value_type</span></code>
+          meta-function <code class="computeroutput"><span class="keyword">typename</span> <span class="identifier">value_type</span><span class="special">&lt;</span><span class="identifier">MatrixAP</span><span class="special">&gt;::</span><span class="identifier">type</span></code>.
+          The dispatching table below illustrates to which specific routine the code
+          path will be generated.
+        </p>
+<div class="table">
+<a name="id628911"></a><p class="title"><b>Table&#160;216.&#160;Dispatching of tprfs</b></p>
+<div class="table-contents"><table class="table" summary="Dispatching of tprfs">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+              <p>
+                Value type of MatrixAP
+              </p>
+              </th>
+<th>
+              <p>
+                LAPACK routine
+              </p>
+              </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">float</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                STPRFS
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">double</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                DTPRFS
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                CTPRFS
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">double</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                ZTPRFS
+              </p>
+              </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><a name="boost_numeric_bindings.reference.lapack.tprfs.definition"></a><h6>
+<a name="id629084"></a>
+          <a class="link" href="tprfs.html#boost_numeric_bindings.reference.lapack.tprfs.definition">Definition</a>
+        </h6>
+<p>
+          Defined in header <code class="computeroutput">boost/numeric/bindings/lapack/tprfs.hpp</code>.
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.tprfs.parameters_or_requirements_on_types"></a><h6>
+<a name="id629116"></a>
+          <a class="link" href="tprfs.html#boost_numeric_bindings.reference.lapack.tprfs.parameters_or_requirements_on_types">Parameters
+          or Requirements on Types</a>
+        </h6>
+<div class="variablelist" title="Parameters">
+<p class="title"><b>Parameters</b></p>
+<dl>
+<dt><span class="term">MatrixA</span></dt>
+<dd><p>
+              The definition of term 1
+            </p></dd>
+<dt><span class="term">MatrixB</span></dt>
+<dd><p>
+              The definition of term 2
+            </p></dd>
+<dt><span class="term">MatrixC</span></dt>
+<dd>
+<p>
+              The definition of term 3.
+            </p>
+<p>
+              Definitions may contain paragraphs.
+            </p>
+</dd>
+</dl>
+</div>
+<a name="boost_numeric_bindings.reference.lapack.tprfs.complexity"></a><h6>
+<a name="id629185"></a>
+          <a class="link" href="tprfs.html#boost_numeric_bindings.reference.lapack.tprfs.complexity">Complexity</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.tprfs.example"></a><h6>
+<a name="id629205"></a>
+          <a class="link" href="tprfs.html#boost_numeric_bindings.reference.lapack.tprfs.example">Example</a>
+        </h6>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">bindings</span><span class="special">/</span><span class="identifier">lapack</span><span class="special">/</span><span class="identifier">tprfs</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">bindings</span><span class="special">;</span>
+
+<span class="identifier">lapack</span><span class="special">::</span><span class="identifier">tprfs</span><span class="special">(</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">,</span> <span class="identifier">z</span> <span class="special">);</span>
+
+</pre>
+<p>
+        </p>
+<p>
+          this will output
+        </p>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="special">[</span><span class="number">5</span><span class="special">]</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.tprfs.notes"></a><h6>
+<a name="id629449"></a>
+          <a class="link" href="tprfs.html#boost_numeric_bindings.reference.lapack.tprfs.notes">Notes</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.tprfs.see_also"></a><h6>
+<a name="id629469"></a>
+          <a class="link" href="tprfs.html#boost_numeric_bindings.reference.lapack.tprfs.see_also">See
+          Also</a>
+        </h6>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+            Originating Fortran source files <a href="http://www.netlib.org/lapack/explore-html/stprfs.f.html" target="_top">stprfs.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/dtprfs.f.html" target="_top">dtprfs.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/ctprfs.f.html" target="_top">ctprfs.f</a>,
+            and <a href="http://www.netlib.org/lapack/explore-html/ztprfs.f.html" target="_top">ztprfs.f</a>
+            at Netlib.
+          </li></ul></div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2002 -2009 Rutger ter Borg, Kre&#353;imir Fresl, Thomas Klimpel,
+      Toon Knapen, Karl Meerbergen<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="tpcon.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="tptri.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

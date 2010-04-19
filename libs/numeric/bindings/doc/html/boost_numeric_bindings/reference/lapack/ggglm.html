@@ -1,0 +1,246 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>ggglm</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../../../index.html" title="Boost.Numeric_Bindings">
+<link rel="up" href="../lapack.html" title="LAPACK">
+<link rel="prev" href="sygvx.html" title="sygvx">
+<link rel="next" href="gglse.html" title="gglse">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr><td valign="top"></td></tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="sygvx.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="gglse.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+<div class="section" title="ggglm">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_numeric_bindings.reference.lapack.ggglm"></a><a class="link" href="ggglm.html" title="ggglm">ggglm</a>
+</h4></div></div></div>
+<a name="boost_numeric_bindings.reference.lapack.ggglm.prototype"></a><h6>
+<a name="id696355"></a>
+          <a class="link" href="ggglm.html#boost_numeric_bindings.reference.lapack.ggglm.prototype">Prototype</a>
+        </h6>
+<p>
+          There is one prototype of <code class="computeroutput"><span class="identifier">ggglm</span></code>
+          available, please see below. 
+</p>
+<pre class="programlisting"><span class="identifier">ggglm</span><span class="special">(</span> <span class="identifier">MatrixA</span><span class="special">&amp;</span> <span class="identifier">a</span><span class="special">,</span> <span class="identifier">MatrixB</span><span class="special">&amp;</span> <span class="identifier">b</span><span class="special">,</span> <span class="identifier">VectorD</span><span class="special">&amp;</span> <span class="identifier">d</span><span class="special">,</span> <span class="identifier">VectorX</span><span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">VectorY</span><span class="special">&amp;</span> <span class="identifier">y</span> <span class="special">);</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.ggglm.description"></a><h6>
+<a name="id696508"></a>
+          <a class="link" href="ggglm.html#boost_numeric_bindings.reference.lapack.ggglm.description">Description</a>
+        </h6>
+<p>
+          <code class="computeroutput"><span class="identifier">ggglm</span></code> (short for $FRIENDLY_NAME)
+          provides a C++ interface to LAPACK routines SGGGLM, DGGGLM, CGGGLM, and
+          ZGGGLM. <code class="computeroutput"><span class="identifier">ggglm</span></code> solves a
+          general Gauss-Markov linear model (GLM) problem:
+        </p>
+<p>
+          minimize || y ||_2 subject to d = A*x + B*y x
+        </p>
+<p>
+          where A is an N-by-M matrix, B is an N-by-P matrix, and d is a given N-vector.
+          It is assumed that M &lt;= N &lt;= M+P, and
+        </p>
+<p>
+          rank(A) = M and rank( A B ) = N.
+        </p>
+<p>
+          Under these assumptions, the constrained equation is always consistent,
+          and there is a unique solution x and a minimal 2-norm solution y, which
+          is obtained using a generalized QR factorization of the matrices (A, B)
+          given by
+        </p>
+<p>
+          A = Q*(R), B = Q*T*Z. (0)
+        </p>
+<p>
+          In particular, if matrix B is square nonsingular, then the problem GLM
+          is equivalent to the following weighted linear least squares problem
+        </p>
+<p>
+          minimize || inv(B)*(d-A*x) ||_2 x
+        </p>
+<p>
+          where inv(B) denotes the inverse of B.
+        </p>
+<p>
+          The selection of the LAPACK routine is done during compile-time, and is
+          determined by the type of values contained in type <code class="computeroutput"><span class="identifier">MatrixA</span></code>.
+          The type of values is obtained through the <code class="computeroutput"><span class="identifier">value_type</span></code>
+          meta-function <code class="computeroutput"><span class="keyword">typename</span> <span class="identifier">value_type</span><span class="special">&lt;</span><span class="identifier">MatrixA</span><span class="special">&gt;::</span><span class="identifier">type</span></code>.
+          The dispatching table below illustrates to which specific routine the code
+          path will be generated.
+        </p>
+<div class="table">
+<a name="id696643"></a><p class="title"><b>Table&#160;282.&#160;Dispatching of ggglm</b></p>
+<div class="table-contents"><table class="table" summary="Dispatching of ggglm">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+              <p>
+                Value type of MatrixA
+              </p>
+              </th>
+<th>
+              <p>
+                LAPACK routine
+              </p>
+              </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">float</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                SGGGLM
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">double</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                DGGGLM
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                CGGGLM
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">double</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                ZGGGLM
+              </p>
+              </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><a name="boost_numeric_bindings.reference.lapack.ggglm.definition"></a><h6>
+<a name="id696817"></a>
+          <a class="link" href="ggglm.html#boost_numeric_bindings.reference.lapack.ggglm.definition">Definition</a>
+        </h6>
+<p>
+          Defined in header <code class="computeroutput">boost/numeric/bindings/lapack/ggglm.hpp</code>.
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.ggglm.parameters_or_requirements_on_types"></a><h6>
+<a name="id696849"></a>
+          <a class="link" href="ggglm.html#boost_numeric_bindings.reference.lapack.ggglm.parameters_or_requirements_on_types">Parameters
+          or Requirements on Types</a>
+        </h6>
+<div class="variablelist" title="Parameters">
+<p class="title"><b>Parameters</b></p>
+<dl>
+<dt><span class="term">MatrixA</span></dt>
+<dd><p>
+              The definition of term 1
+            </p></dd>
+<dt><span class="term">MatrixB</span></dt>
+<dd><p>
+              The definition of term 2
+            </p></dd>
+<dt><span class="term">MatrixC</span></dt>
+<dd>
+<p>
+              The definition of term 3.
+            </p>
+<p>
+              Definitions may contain paragraphs.
+            </p>
+</dd>
+</dl>
+</div>
+<a name="boost_numeric_bindings.reference.lapack.ggglm.complexity"></a><h6>
+<a name="id696918"></a>
+          <a class="link" href="ggglm.html#boost_numeric_bindings.reference.lapack.ggglm.complexity">Complexity</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.ggglm.example"></a><h6>
+<a name="id696939"></a>
+          <a class="link" href="ggglm.html#boost_numeric_bindings.reference.lapack.ggglm.example">Example</a>
+        </h6>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">bindings</span><span class="special">/</span><span class="identifier">lapack</span><span class="special">/</span><span class="identifier">ggglm</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">bindings</span><span class="special">;</span>
+
+<span class="identifier">lapack</span><span class="special">::</span><span class="identifier">ggglm</span><span class="special">(</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">,</span> <span class="identifier">z</span> <span class="special">);</span>
+
+</pre>
+<p>
+        </p>
+<p>
+          this will output
+        </p>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="special">[</span><span class="number">5</span><span class="special">]</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.ggglm.notes"></a><h6>
+<a name="id697182"></a>
+          <a class="link" href="ggglm.html#boost_numeric_bindings.reference.lapack.ggglm.notes">Notes</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.ggglm.see_also"></a><h6>
+<a name="id697202"></a>
+          <a class="link" href="ggglm.html#boost_numeric_bindings.reference.lapack.ggglm.see_also">See
+          Also</a>
+        </h6>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+            Originating Fortran source files <a href="http://www.netlib.org/lapack/explore-html/sggglm.f.html" target="_top">sggglm.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/dggglm.f.html" target="_top">dggglm.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/cggglm.f.html" target="_top">cggglm.f</a>,
+            and <a href="http://www.netlib.org/lapack/explore-html/zggglm.f.html" target="_top">zggglm.f</a>
+            at Netlib.
+          </li></ul></div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2002 -2009 Rutger ter Borg, Kre&#353;imir Fresl, Thomas Klimpel,
+      Toon Knapen, Karl Meerbergen<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="sygvx.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="gglse.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

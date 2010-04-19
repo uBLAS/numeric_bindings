@@ -1,0 +1,237 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gees</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../../../index.html" title="Boost.Numeric_Bindings">
+<link rel="up" href="../lapack.html" title="LAPACK">
+<link rel="prev" href="sysvx.html" title="sysvx">
+<link rel="next" href="geesx.html" title="geesx">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr><td valign="top"></td></tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="sysvx.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="geesx.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+<div class="section" title="gees">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_numeric_bindings.reference.lapack.gees"></a><a class="link" href="gees.html" title="gees">gees</a>
+</h4></div></div></div>
+<a name="boost_numeric_bindings.reference.lapack.gees.prototype"></a><h6>
+<a name="id723236"></a>
+          <a class="link" href="gees.html#boost_numeric_bindings.reference.lapack.gees.prototype">Prototype</a>
+        </h6>
+<p>
+          There are two prototypes of <code class="computeroutput"><span class="identifier">gees</span></code>
+          available, please see below. 
+</p>
+<pre class="programlisting"><span class="identifier">gees</span><span class="special">(</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="identifier">jobvs</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="identifier">sort</span><span class="special">,</span> <span class="identifier">logical_t</span><span class="special">*</span> <span class="identifier">select</span><span class="special">,</span> <span class="identifier">MatrixA</span><span class="special">&amp;</span> <span class="identifier">a</span><span class="special">,</span>
+        <span class="identifier">int_t</span><span class="special">&amp;</span> <span class="identifier">sdim</span><span class="special">,</span> <span class="identifier">VectorWR</span><span class="special">&amp;</span> <span class="identifier">wr</span><span class="special">,</span> <span class="identifier">VectorWI</span><span class="special">&amp;</span> <span class="identifier">wi</span><span class="special">,</span> <span class="identifier">MatrixVS</span><span class="special">&amp;</span> <span class="identifier">vs</span> <span class="special">);</span>
+</pre>
+<p>
+        </p>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="identifier">gees</span><span class="special">(</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="identifier">jobvs</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="identifier">sort</span><span class="special">,</span> <span class="identifier">logical_t</span><span class="special">*</span> <span class="identifier">select</span><span class="special">,</span> <span class="identifier">MatrixA</span><span class="special">&amp;</span> <span class="identifier">a</span><span class="special">,</span>
+        <span class="identifier">int_t</span><span class="special">&amp;</span> <span class="identifier">sdim</span><span class="special">,</span> <span class="identifier">VectorW</span><span class="special">&amp;</span> <span class="identifier">w</span><span class="special">,</span> <span class="identifier">MatrixVS</span><span class="special">&amp;</span> <span class="identifier">vs</span> <span class="special">);</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.gees.description"></a><h6>
+<a name="id723618"></a>
+          <a class="link" href="gees.html#boost_numeric_bindings.reference.lapack.gees.description">Description</a>
+        </h6>
+<p>
+          <code class="computeroutput"><span class="identifier">gees</span></code> (short for $FRIENDLY_NAME)
+          provides a C++ interface to LAPACK routines SGEES, DGEES, CGEES, and ZGEES.
+          <code class="computeroutput"><span class="identifier">gees</span></code> computes for an N-by-N
+          complex nonsymmetric matrix A, the eigenvalues, the Schur form T, and,
+          optionally, the matrix of Schur vectors Z. This gives the Schur factorization
+          A = Z<span class="bold"><strong>T</strong></span>(Z**H).
+        </p>
+<p>
+          Optionally, it also orders the eigenvalues on the diagonal of the Schur
+          form so that selected eigenvalues are at the top left. The leading columns
+          of Z then form an orthonormal basis for the invariant subspace corresponding
+          to the selected eigenvalues.
+        </p>
+<p>
+          A complex matrix is in Schur form if it is upper triangular.
+        </p>
+<p>
+          The selection of the LAPACK routine is done during compile-time, and is
+          determined by the type of values contained in type <code class="computeroutput"><span class="identifier">MatrixA</span></code>.
+          The type of values is obtained through the <code class="computeroutput"><span class="identifier">value_type</span></code>
+          meta-function <code class="computeroutput"><span class="keyword">typename</span> <span class="identifier">value_type</span><span class="special">&lt;</span><span class="identifier">MatrixA</span><span class="special">&gt;::</span><span class="identifier">type</span></code>.
+          The dispatching table below illustrates to which specific routine the code
+          path will be generated.
+        </p>
+<div class="table">
+<a name="id723736"></a><p class="title"><b>Table&#160;311.&#160;Dispatching of gees</b></p>
+<div class="table-contents"><table class="table" summary="Dispatching of gees">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+              <p>
+                Value type of MatrixA
+              </p>
+              </th>
+<th>
+              <p>
+                LAPACK routine
+              </p>
+              </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">float</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                SGEES
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">double</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                DGEES
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                CGEES
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">double</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                ZGEES
+              </p>
+              </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><a name="boost_numeric_bindings.reference.lapack.gees.definition"></a><h6>
+<a name="id723909"></a>
+          <a class="link" href="gees.html#boost_numeric_bindings.reference.lapack.gees.definition">Definition</a>
+        </h6>
+<p>
+          Defined in header <code class="computeroutput">boost/numeric/bindings/lapack/gees.hpp</code>.
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.gees.parameters_or_requirements_on_types"></a><h6>
+<a name="id723940"></a>
+          <a class="link" href="gees.html#boost_numeric_bindings.reference.lapack.gees.parameters_or_requirements_on_types">Parameters
+          or Requirements on Types</a>
+        </h6>
+<div class="variablelist" title="Parameters">
+<p class="title"><b>Parameters</b></p>
+<dl>
+<dt><span class="term">MatrixA</span></dt>
+<dd><p>
+              The definition of term 1
+            </p></dd>
+<dt><span class="term">MatrixB</span></dt>
+<dd><p>
+              The definition of term 2
+            </p></dd>
+<dt><span class="term">MatrixC</span></dt>
+<dd>
+<p>
+              The definition of term 3.
+            </p>
+<p>
+              Definitions may contain paragraphs.
+            </p>
+</dd>
+</dl>
+</div>
+<a name="boost_numeric_bindings.reference.lapack.gees.complexity"></a><h6>
+<a name="id724008"></a>
+          <a class="link" href="gees.html#boost_numeric_bindings.reference.lapack.gees.complexity">Complexity</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.gees.example"></a><h6>
+<a name="id724028"></a>
+          <a class="link" href="gees.html#boost_numeric_bindings.reference.lapack.gees.example">Example</a>
+        </h6>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">bindings</span><span class="special">/</span><span class="identifier">lapack</span><span class="special">/</span><span class="identifier">gees</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">bindings</span><span class="special">;</span>
+
+<span class="identifier">lapack</span><span class="special">::</span><span class="identifier">gees</span><span class="special">(</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">,</span> <span class="identifier">z</span> <span class="special">);</span>
+
+</pre>
+<p>
+        </p>
+<p>
+          this will output
+        </p>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="special">[</span><span class="number">5</span><span class="special">]</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.gees.notes"></a><h6>
+<a name="id724271"></a>
+          <a class="link" href="gees.html#boost_numeric_bindings.reference.lapack.gees.notes">Notes</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.gees.see_also"></a><h6>
+<a name="id724291"></a>
+          <a class="link" href="gees.html#boost_numeric_bindings.reference.lapack.gees.see_also">See
+          Also</a>
+        </h6>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+            Originating Fortran source files <a href="http://www.netlib.org/lapack/explore-html/sgees.f.html" target="_top">sgees.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/dgees.f.html" target="_top">dgees.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/cgees.f.html" target="_top">cgees.f</a>,
+            and <a href="http://www.netlib.org/lapack/explore-html/zgees.f.html" target="_top">zgees.f</a>
+            at Netlib.
+          </li></ul></div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2002 -2009 Rutger ter Borg, Kre&#353;imir Fresl, Thomas Klimpel,
+      Toon Knapen, Karl Meerbergen<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="sysvx.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="geesx.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

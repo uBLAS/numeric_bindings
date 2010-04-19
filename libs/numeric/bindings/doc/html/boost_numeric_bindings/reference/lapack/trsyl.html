@@ -1,0 +1,227 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>trsyl</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../../../index.html" title="Boost.Numeric_Bindings">
+<link rel="up" href="../lapack.html" title="LAPACK">
+<link rel="prev" href="trsna.html" title="trsna">
+<link rel="next" href="unghr.html" title="unghr">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr><td valign="top"></td></tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="trsna.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="unghr.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+<div class="section" title="trsyl">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_numeric_bindings.reference.lapack.trsyl"></a><a class="link" href="trsyl.html" title="trsyl">trsyl</a>
+</h4></div></div></div>
+<a name="boost_numeric_bindings.reference.lapack.trsyl.prototype"></a><h6>
+<a name="id571855"></a>
+          <a class="link" href="trsyl.html#boost_numeric_bindings.reference.lapack.trsyl.prototype">Prototype</a>
+        </h6>
+<p>
+          There is one prototype of <code class="computeroutput"><span class="identifier">trsyl</span></code>
+          available, please see below. 
+</p>
+<pre class="programlisting"><span class="identifier">trsyl</span><span class="special">(</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="identifier">trana</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="identifier">tranb</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">int_t</span> <span class="identifier">isgn</span><span class="special">,</span>
+        <span class="keyword">const</span> <span class="identifier">int_t</span> <span class="identifier">m</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">int_t</span> <span class="identifier">n</span><span class="special">,</span>
+        <span class="keyword">const</span> <span class="identifier">MatrixA</span><span class="special">&amp;</span> <span class="identifier">a</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">MatrixB</span><span class="special">&amp;</span> <span class="identifier">b</span><span class="special">,</span> <span class="identifier">MatrixC</span><span class="special">&amp;</span> <span class="identifier">c</span><span class="special">,</span> <span class="identifier">Scalar</span> <span class="special">&gt;</span> <span class="special">);</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.trsyl.description"></a><h6>
+<a name="id572102"></a>
+          <a class="link" href="trsyl.html#boost_numeric_bindings.reference.lapack.trsyl.description">Description</a>
+        </h6>
+<p>
+          <code class="computeroutput"><span class="identifier">trsyl</span></code> (short for $FRIENDLY_NAME)
+          provides a C++ interface to LAPACK routines STRSYL, DTRSYL, CTRSYL, and
+          ZTRSYL. <code class="computeroutput"><span class="identifier">trsyl</span></code> solves the
+          complex Sylvester matrix equation:
+        </p>
+<p>
+          op(A)*X + X*op(B) = scale*C or op(A)*X - X*op(B) = scale*C,
+        </p>
+<p>
+          where op(A) = A or A**H, and A and B are both upper triangular. A is M-by-M
+          and B is N-by-N; the right hand side C and the solution X are M-by-N; and
+          scale is an output scale factor, set &lt;= 1 to avoid overflow in X.
+        </p>
+<p>
+          The selection of the LAPACK routine is done during compile-time, and is
+          determined by the type of values contained in type <code class="computeroutput"><span class="identifier">MatrixA</span></code>.
+          The type of values is obtained through the <code class="computeroutput"><span class="identifier">value_type</span></code>
+          meta-function <code class="computeroutput"><span class="keyword">typename</span> <span class="identifier">value_type</span><span class="special">&lt;</span><span class="identifier">MatrixA</span><span class="special">&gt;::</span><span class="identifier">type</span></code>.
+          The dispatching table below illustrates to which specific routine the code
+          path will be generated.
+        </p>
+<div class="table">
+<a name="id572213"></a><p class="title"><b>Table&#160;152.&#160;Dispatching of trsyl</b></p>
+<div class="table-contents"><table class="table" summary="Dispatching of trsyl">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+              <p>
+                Value type of MatrixA
+              </p>
+              </th>
+<th>
+              <p>
+                LAPACK routine
+              </p>
+              </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">float</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                STRSYL
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="keyword">double</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                DTRSYL
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                CTRSYL
+              </p>
+              </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">complex</span><span class="special">&lt;</span><span class="keyword">double</span><span class="special">&gt;</span></code>
+              </p>
+              </td>
+<td>
+              <p>
+                ZTRSYL
+              </p>
+              </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><a name="boost_numeric_bindings.reference.lapack.trsyl.definition"></a><h6>
+<a name="id572388"></a>
+          <a class="link" href="trsyl.html#boost_numeric_bindings.reference.lapack.trsyl.definition">Definition</a>
+        </h6>
+<p>
+          Defined in header <code class="computeroutput">boost/numeric/bindings/lapack/trsyl.hpp</code>.
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.trsyl.parameters_or_requirements_on_types"></a><h6>
+<a name="id572420"></a>
+          <a class="link" href="trsyl.html#boost_numeric_bindings.reference.lapack.trsyl.parameters_or_requirements_on_types">Parameters
+          or Requirements on Types</a>
+        </h6>
+<div class="variablelist" title="Parameters">
+<p class="title"><b>Parameters</b></p>
+<dl>
+<dt><span class="term">MatrixA</span></dt>
+<dd><p>
+              The definition of term 1
+            </p></dd>
+<dt><span class="term">MatrixB</span></dt>
+<dd><p>
+              The definition of term 2
+            </p></dd>
+<dt><span class="term">MatrixC</span></dt>
+<dd>
+<p>
+              The definition of term 3.
+            </p>
+<p>
+              Definitions may contain paragraphs.
+            </p>
+</dd>
+</dl>
+</div>
+<a name="boost_numeric_bindings.reference.lapack.trsyl.complexity"></a><h6>
+<a name="id572488"></a>
+          <a class="link" href="trsyl.html#boost_numeric_bindings.reference.lapack.trsyl.complexity">Complexity</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.trsyl.example"></a><h6>
+<a name="id572510"></a>
+          <a class="link" href="trsyl.html#boost_numeric_bindings.reference.lapack.trsyl.example">Example</a>
+        </h6>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">bindings</span><span class="special">/</span><span class="identifier">lapack</span><span class="special">/</span><span class="identifier">trsyl</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">bindings</span><span class="special">;</span>
+
+<span class="identifier">lapack</span><span class="special">::</span><span class="identifier">trsyl</span><span class="special">(</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">,</span> <span class="identifier">z</span> <span class="special">);</span>
+
+</pre>
+<p>
+        </p>
+<p>
+          this will output
+        </p>
+<p>
+          
+</p>
+<pre class="programlisting"><span class="special">[</span><span class="number">5</span><span class="special">]</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>
+</pre>
+<p>
+        </p>
+<a name="boost_numeric_bindings.reference.lapack.trsyl.notes"></a><h6>
+<a name="id572755"></a>
+          <a class="link" href="trsyl.html#boost_numeric_bindings.reference.lapack.trsyl.notes">Notes</a>
+        </h6>
+<a name="boost_numeric_bindings.reference.lapack.trsyl.see_also"></a><h6>
+<a name="id572775"></a>
+          <a class="link" href="trsyl.html#boost_numeric_bindings.reference.lapack.trsyl.see_also">See
+          Also</a>
+        </h6>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+            Originating Fortran source files <a href="http://www.netlib.org/lapack/explore-html/strsyl.f.html" target="_top">strsyl.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/dtrsyl.f.html" target="_top">dtrsyl.f</a>,
+            <a href="http://www.netlib.org/lapack/explore-html/ctrsyl.f.html" target="_top">ctrsyl.f</a>,
+            and <a href="http://www.netlib.org/lapack/explore-html/ztrsyl.f.html" target="_top">ztrsyl.f</a>
+            at Netlib.
+          </li></ul></div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2002 -2009 Rutger ter Borg, Kre&#353;imir Fresl, Thomas Klimpel,
+      Toon Knapen, Karl Meerbergen<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="trsna.html"><img src="../../../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../lapack.html"><img src="../../../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="unghr.html"><img src="../../../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

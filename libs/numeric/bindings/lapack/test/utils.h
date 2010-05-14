@@ -97,24 +97,33 @@ void print_v (V const& v, char const* ch = 0) {
 
 
 /////////////////////////////////////
-// matrices 
+// matrices
 
-// element access: 
+// element access:
 template <typename M>
 struct matr_access_traits {
-  typedef typename 
-  M::reference ref_t;
-  //boost::numeric::bindings::traits::matrix_traits<M>::value_type val_t;
-  //typedef val_t& ref_t; 
-  static ref_t elem (M& m, size_t i, size_t j) { return m (i, j); }
+  typedef M mat_t;
+  typedef typename boost::numeric::bindings::value_type<mat_t>::type val_t;
+  typedef typename mat_t::reference ref_t;
+  static ref_t elem (mat_t& m, size_t i, size_t j) { return m (i, j); }
 };
+
+#ifdef EIGEN_FORWARDDECLARATIONS_H
+template<typename _Scalar, int _Rows, int _Cols, int _Options, int _MaxRows, int _MaxCols>
+struct matr_access_traits<Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols> > {
+  typedef Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols> mat_t;
+  typedef typename boost::numeric::bindings::value_type<mat_t>::type val_t;
+  typedef val_t& ref_t;
+  static ref_t elem (mat_t& m, size_t i, size_t j) { return m (i, j); }
+};
+#endif
 
 template <typename M>
 struct matr_access_traits<M const> {
-  typedef typename 
-  boost::numeric::bindings::value_type<M>::type val_t;
+  typedef M const mat_t;
+  typedef typename boost::numeric::bindings::value_type<mat_t>::type val_t;
   typedef val_t ref_t; 
-  static ref_t elem (M const& m, size_t i, size_t j) { return m (i, j); }
+  static ref_t elem (mat_t& m, size_t i, size_t j) { return m (i, j); }
 };
 
 template <typename M>

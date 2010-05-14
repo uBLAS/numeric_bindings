@@ -12,10 +12,18 @@ feature numbind
           mkl-gcc      mkl-msvc
         : optional propagated ;
 
+feature matlib
+        : ublas glas mtl eigen
+        : optional propagated ;
+
 # Make this module a project
 import project ;
 project.initialize $(__name__) ;
 project numeric-bindings ;
+
+GLAS_INCLUDE ?= /usr/local/lib ;
+MTL_INCLUDE ?= /usr/local/lib ;
+EIGEN_INCLUDE ?= /usr/local/lib ;
 
 NUMERIC_LIB_PATH ?= /usr/lib ;
 NUMERIC_INCLUDE ?= /usr/local/lib ;
@@ -57,6 +65,20 @@ UMFPACK_PATH ?= $(NUMERIC_LIB_PATH) ;
 UMFPACK_LIB ?= umfpack ;
 AMD_PATH ?= $(NUMERIC_LIB_PATH) ;
 AMD_LIB ?= amd ;
+
+alias test_matlib : :
+                  : : <define>TEST_MATLIB_UBLAS ;
+alias test_matlib : : <matlib>ublas
+                  : : <define>TEST_MATLIB_UBLAS ;
+alias test_matlib : : <matlib>glas
+                  : : <define>TEST_MATLIB_GLAS
+                      <include>$(GLAS_INCLUDE) ;
+alias test_matlib : : <matlib>mtl
+                  : : <define>TEST_MATLIB_MTL
+                      <include>$(MTL_INCLUDE) ;
+alias test_matlib : : <matlib>eigen
+                  : : <define>TEST_MATLIB_EIGEN
+                      <include>$(EIGEN_INCLUDE) ;
 
 lib acml_lib : : <name>$(ACML_LIB) <search>$(ACML_PATH)
              : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;

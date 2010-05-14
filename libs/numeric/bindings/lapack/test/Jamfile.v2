@@ -6,6 +6,7 @@
 project libs/numeric/bindings/lapack/test : requirements
         <include>$(BOOST_ROOT)
         <include>$(B_ROOT)
+        <library>/numeric-bindings//test_matlib
         <library>/numeric-bindings//lapack_lib ;
 
 import testing ;

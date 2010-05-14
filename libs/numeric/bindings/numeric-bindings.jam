@@ -138,6 +138,5 @@ lib amd_lib : : <name>$(AMD_LIB) <search>$(AMD_PATH)
                 <include>$(UFCONFIG_INCLUDE) ;
 lib umfpack_lib : amd_lib blas_lib
                 : <name>$(UMFPACK_LIB) <search>$(UMFPACK_PATH)
-              : :  <toolset>msvc:<define>NO_NAN
-                   <include>$(UMFPACK_INCLUDE)
+              : :  <include>$(UMFPACK_INCLUDE)
                    <include>$(UFCONFIG_INCLUDE) ;

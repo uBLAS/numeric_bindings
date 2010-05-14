@@ -89,10 +89,7 @@
 #include <cstdlib>
 #include <string> 
 #include <algorithm> 
-#include <math.h>
-#ifdef __ICC
-#  include <mathimf.h> 
-#endif  
+#include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/ublas/matrix_sparse.hpp>
 #include <boost/numeric/bindings/umfpack/umfpack.hpp>
@@ -104,7 +101,7 @@ using std::endl;
 using std::string; 
 using std::ifstream;
 using std::ofstream;
-using std::exit; 
+using std::exit;
 
 namespace ublas = boost::numeric::ublas; 
 namespace umf = boost::numeric::bindings::umfpack; 
@@ -177,22 +174,18 @@ double resid (M const& m, V const& x, V const& b, V& r) {
   rnorm = 0.;
   bnorm = 0.;
   for (int i = 0; i < n; i++) {
-#ifndef NO_NAN
-    if (isnan (r [i])){
+    if ((boost::math::isnan) (r [i])){
       rnorm = r [i];
       break;
     }
-#endif 
     absr = fabs (r [i]);
     rnorm = max (rnorm, absr);
   }
   for (int i = 0; i < n; i++) {
-#ifndef NO_NAN
-    if (isnan (b [i])){
+    if ((boost::math::isnan) (b [i])){
       bnorm = b [i];
       break;
     }
-#endif 
     absb = fabs (b [i]);
     bnorm = max (bnorm, absb);
   }

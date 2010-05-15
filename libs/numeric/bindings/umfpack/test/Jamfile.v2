@@ -6,6 +6,7 @@
 project libs/numeric/bindings/umfpack/test : requirements
         <include>$(BOOST_ROOT)
         <include>$(BOOST)
+        <library>/numeric-bindings//test_matlib
         <library>/numeric-bindings//umfpack_lib ;
 
 import testing ;

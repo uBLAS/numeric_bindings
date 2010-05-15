@@ -1,6 +1,3 @@
-#if !defined(TEST_MATLIB_UBLAS) && !defined(TEST_MATLIB_GLAS) && !defined(TEST_MATLIB_MTL) && !defined(TEST_MATLIB_EIGEN)
-#define TEST_MATLIB_UBLAS
-#endif
 
 // solving A * X = B
 // using driver function gesv()
@@ -10,41 +7,47 @@
 #include <vector>
 #include <boost/numeric/bindings/lapack/driver/gesv.hpp>
 #include <boost/numeric/bindings/std/vector.hpp>
+
+#if !defined(TEST_MATLIB_UBLAS) && !defined(TEST_MATLIB_GLAS) && !defined(TEST_MATLIB_MTL) && !defined(TEST_MATLIB_EIGEN)
+#define TEST_MATLIB_UBLAS
+#endif
+
 #if defined(TEST_MATLIB_UBLAS)
+
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
-#elif defined(TEST_MATLIB_GLAS)
-#include <boost/numeric/bindings/glas/dense_matrix.hpp>
-#include <glas/toolbox/la/algorithm/operators.hpp>
-#elif defined(TEST_MATLIB_MTL)
-#include <boost/numeric/bindings/mtl/dense2D.hpp>
-#include <boost/numeric/mtl/operation/operators.hpp>
-#elif defined(TEST_MATLIB_EIGEN)
-#include <boost/numeric/bindings/eigen/matrix.hpp>
-#endif
-#include "utils.h"
-
-namespace lapack = boost::numeric::bindings::lapack;
-namespace bindings = boost::numeric::bindings;
-#if defined(TEST_MATLIB_UBLAS)
 namespace ublas = boost::numeric::ublas;
 typedef ublas::matrix<double, ublas::column_major> m_t;
 typedef std::size_t size_type;
+
 #elif defined(TEST_MATLIB_GLAS)
+
+#include <boost/numeric/bindings/glas/dense_matrix.hpp>
+#include <glas/toolbox/la/algorithm/operators.hpp>
 using namespace glas::la;
 typedef glas::dense_matrix<double, glas::column_orientation> m_t;
 typedef std::ptrdiff_t size_type;
+
 #elif defined(TEST_MATLIB_MTL)
+
+#include <boost/numeric/bindings/mtl/dense2D.hpp>
+#include <boost/numeric/mtl/operation/operators.hpp>
 typedef mtl::dense2D<double, mtl::matrix::parameters<mtl::tag::col_major> > m_t;
 typedef std::ptrdiff_t size_type;
+
 #elif defined(TEST_MATLIB_EIGEN)
+
+#include <boost/numeric/bindings/eigen/matrix.hpp>
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> m_t;
 typedef int size_type;
+
 #endif
 
+#include "utils.h"
+namespace lapack = boost::numeric::bindings::lapack;
+namespace bindings = boost::numeric::bindings;
 using std::cout;
-using std::endl; 
-
+using std::endl;
 
 int main() {
 

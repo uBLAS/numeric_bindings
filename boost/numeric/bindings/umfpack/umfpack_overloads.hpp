@@ -20,6 +20,7 @@
 #include <boost/numeric/bindings/umfpack/umfpack_inc.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <cassert>
 
 namespace boost { namespace numeric { namespace bindings { 
 

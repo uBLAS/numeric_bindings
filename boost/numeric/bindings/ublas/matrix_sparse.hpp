@@ -10,6 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_UBLAS_MATRIX_SPARSE_HPP
 
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/detail/copy_const.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>

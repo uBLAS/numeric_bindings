@@ -22,6 +22,7 @@
 #include <boost/numeric/bindings/umfpack/umfpack_overloads.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/size.hpp>
 
 

@@ -28,6 +28,24 @@
 
 namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
 
+  template <typename MatrA>
+  void check_umfpack_structure()
+  {
+    BOOST_STATIC_ASSERT((boost::is_same<
+      typename bindings::detail::property_at< MatrA, tag::matrix_type >::type,
+      tag::general
+    >::value));
+    BOOST_STATIC_ASSERT((boost::is_same<
+      typename bindings::detail::property_at< MatrA, tag::data_order >::type,
+      tag::column_major
+    >::value));
+    BOOST_STATIC_ASSERT(bindings::detail::adaptor_access<MatrA>::index_base == 0);
+    typedef typename bindings::detail::property_at<
+      MatrA, tag::data_structure >::type storage_f;
+    BOOST_STATIC_ASSERT(
+      (boost::is_same<storage_f, tag::compressed_sparse>::value ||
+       boost::is_same<storage_f, tag::coordinate_sparse>::value ));
+  }
 
   template <typename T = double>
   struct symbolic_type : private noncopyable { 
@@ -208,28 +226,11 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
                 >& Symbolic, 
                 double const* Control = 0, double* Info = 0) 
   {
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::matrix_type >::type,
-      tag::general
-    >::value)); 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::data_order >::type,
-      tag::column_major
-    >::value)); 
-    BOOST_STATIC_ASSERT(bindings::detail::adaptor_access<MatrA>::index_base == 0);
-#endif 
-
-    typedef 
-      typename bindings::detail::property_at< MatrA, tag::data_structure >::type storage_f;
-
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT(
-      (boost::is_same<storage_f, tag::compressed_sparse>::value
-       || 
-       boost::is_same<storage_f, tag::coordinate_sparse>::value
-       )); 
-#endif 
+#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK
+    check_umfpack_structure<MatrA>();
+#endif
+    typedef typename bindings::detail::property_at<
+      MatrA, tag::data_structure >::type storage_f;
 
     return detail::symbolic (storage_f(), A, &Symbolic.ptr, Control, Info); 
   }
@@ -274,28 +275,11 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
 #ifdef CHECK_TEST_COVERAGE
       typedef typename MatrA::not_yet_tested i_m_still_here;
 #endif
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::matrix_type >::type,
-      tag::general
-    >::value)); 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::data_order >::type,
-      tag::column_major
-    >::value)); 
-    BOOST_STATIC_ASSERT(bindings::detail::adaptor_access<MatrA>::index_base == 0);
-#endif 
-
-    typedef 
-      typename bindings::detail::property_at< MatrA, tag::data_structure >::type storage_f;
-
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT(
-      (boost::is_same<storage_f, tag::compressed_sparse>::value
-       || 
-       boost::is_same<storage_f, tag::coordinate_sparse>::value
-       )); 
-#endif 
+#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK
+    check_umfpack_structure<MatrA>();
+#endif
+    typedef typename bindings::detail::property_at<
+      MatrA, tag::data_structure >::type storage_f;
 
     assert (bindings::size_column (A) == bindings::size (Qinit)); 
 
@@ -403,28 +387,11 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
                >& Numeric, 
                double const* Control = 0, double* Info = 0) 
   {
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::matrix_type >::type,
-      tag::general
-    >::value)); 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::data_order >::type,
-      tag::column_major
-    >::value)); 
-    BOOST_STATIC_ASSERT(bindings::detail::adaptor_access<MatrA>::index_base == 0);
-#endif 
-
-    typedef 
-      typename bindings::detail::property_at< MatrA, tag::data_structure >::type storage_f;
-
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT(
-      (boost::is_same<storage_f, tag::compressed_sparse>::value
-       || 
-       boost::is_same<storage_f, tag::coordinate_sparse>::value
-       )); 
-#endif 
+#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK
+    check_umfpack_structure<MatrA>();
+#endif
+    typedef typename bindings::detail::property_at<
+      MatrA, tag::data_structure >::type storage_f;
 
     return detail::numeric (storage_f(), A, 
                             Symbolic.ptr, &Numeric.ptr, Control, Info); 
@@ -558,28 +525,11 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
 #ifdef CHECK_TEST_COVERAGE
       typedef typename MatrA::not_yet_tested i_m_still_here;
 #endif
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::matrix_type >::type,
-      tag::general
-    >::value)); 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::data_order >::type,
-      tag::column_major
-    >::value)); 
-    BOOST_STATIC_ASSERT(bindings::detail::adaptor_access<MatrA>::index_base == 0);
-#endif 
-
-    typedef 
-      typename bindings::detail::property_at< MatrA, tag::data_structure >::type storage_f;
-
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT(
-      (boost::is_same<storage_f, tag::compressed_sparse>::value
-       || 
-       boost::is_same<storage_f, tag::coordinate_sparse>::value
-       )); 
-#endif 
+#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK
+    check_umfpack_structure<MatrA>();
+#endif
+    typedef typename bindings::detail::property_at<
+      MatrA, tag::data_structure >::type storage_f;
 
     return detail::factor (storage_f(), A, &Numeric.ptr, Control, Info); 
   }
@@ -679,28 +629,11 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
              > const& Numeric, 
              double const* Control = 0, double* Info = 0) 
   {
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::matrix_type >::type,
-      tag::general
-    >::value)); 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::data_order >::type,
-      tag::column_major
-    >::value)); 
-    BOOST_STATIC_ASSERT(bindings::detail::adaptor_access<MatrA>::index_base == 0);
-#endif 
-
-    typedef 
-      typename bindings::detail::property_at< MatrA, tag::data_structure >::type storage_f;
-
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT(
-      (boost::is_same<storage_f, tag::compressed_sparse>::value
-       || 
-       boost::is_same<storage_f, tag::coordinate_sparse>::value
-       )); 
-#endif 
+#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK
+    check_umfpack_structure<MatrA>();
+#endif
+    typedef typename bindings::detail::property_at<
+      MatrA, tag::data_structure >::type storage_f;
 
     assert (bindings::size_row (A) == bindings::size_row (A)); 
     assert (bindings::size_column (A) == bindings::size (X)); 
@@ -889,28 +822,11 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
 #ifdef CHECK_TEST_COVERAGE
       typedef typename MatrA::not_yet_tested i_m_still_here;
 #endif
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::matrix_type >::type,
-      tag::general
-    >::value)); 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::data_order >::type,
-      tag::column_major
-    >::value)); 
-    BOOST_STATIC_ASSERT(bindings::detail::adaptor_access<MatrA>::index_base == 0);
-#endif 
-
-    typedef 
-      typename bindings::detail::property_at< MatrA, tag::data_structure >::type storage_f;
-
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT(
-      (boost::is_same<storage_f, tag::compressed_sparse>::value
-       || 
-       boost::is_same<storage_f, tag::coordinate_sparse>::value
-       )); 
-#endif 
+#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK
+    check_umfpack_structure<MatrA>();
+#endif
+    typedef typename bindings::detail::property_at<
+      MatrA, tag::data_structure >::type storage_f;
 
     assert (bindings::size_row (A) == bindings::size_row (A)); 
     assert (bindings::size_column (A) == bindings::size (X)); 
@@ -1068,28 +984,11 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
                        typename bindings::value_type<MatrA>::type
                      > const& Control) 
   {
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::matrix_type >::type,
-      tag::general
-    >::value)); 
-    BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::data_order >::type,
-      tag::column_major
-    >::value)); 
-    BOOST_STATIC_ASSERT(bindings::detail::adaptor_access<MatrA>::index_base == 0);
-#endif 
-
-    typedef 
-      typename bindings::detail::property_at< MatrA, tag::data_structure >::type storage_f;
-
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-    BOOST_STATIC_ASSERT(
-      (boost::is_same<storage_f, tag::compressed_sparse>::value
-       || 
-       boost::is_same<storage_f, tag::coordinate_sparse>::value
-       )); 
-#endif 
+#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK
+    check_umfpack_structure<MatrA>();
+#endif
+    typedef typename bindings::detail::property_at<
+      MatrA, tag::data_structure >::type storage_f;
 
     return detail::report_matrix (storage_f(), A, Control.ptr); 
   }

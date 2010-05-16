@@ -84,6 +84,11 @@ typedef mtl::matrix::inserter<m_t> mi_t;
 
 #elif defined(TEST_MATLIB_EIGEN)
 
+#include <boost/numeric/bindings/eigen/sparsematrix.hpp>
+typedef Eigen::SparseMatrix<double> m_t;
+typedef Eigen::RandomSetter<m_t> mi_t;
+#define AA(i,j, val) a(i,j) = val
+
 #endif
 
 typedef boost::numeric::ublas::vector<double> v_t;
@@ -91,7 +96,11 @@ namespace umf = boost::numeric::bindings::umfpack;
 
 int main() {
 
-  m_t A (5,5,12);
+  m_t A (5,5
+#if !defined(TEST_MATLIB_EIGEN)
+        ,12
+#endif
+        );
   v_t B (5), X (5);
 
   {

@@ -108,6 +108,7 @@ ADD_TAG( both )
 ADD_TAG( index_major )
 ADD_TAG( compressed_index_major )
 ADD_TAG( index_minor )
+ADD_TAG( index_base )
 
 namespace tag {
 

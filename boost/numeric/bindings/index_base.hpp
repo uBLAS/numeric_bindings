@@ -25,7 +25,7 @@ struct index_base {
 
 template< typename T >
 typename result_of::index_base<T>::type index_base( const T& ) {
-    return result_of::index_base<T>::type();
+    return typename result_of::index_base<T>::type();
 }
 
 } // namespace bindings

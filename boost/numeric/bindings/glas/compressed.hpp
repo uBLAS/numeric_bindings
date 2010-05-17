@@ -38,10 +38,9 @@ struct adaptor< glas::sparse_matrix< T, glas::compressed_sparse_structure<O, Ind
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
         mpl::pair< tag::matrix_type, tag::general >,
         mpl::pair< tag::data_structure, tag::compressed_sparse >,
-        mpl::pair< tag::data_order, data_order >
+        mpl::pair< tag::data_order, data_order >,
+        mpl::pair< tag::index_base, mpl::int_<IB> >
     > property_map;
-
-    BOOST_STATIC_CONSTANT (std::size_t, index_base = IB);
 
     static std::ptrdiff_t size1( const Id& id ) {
         return id.num_rows();

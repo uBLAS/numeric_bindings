@@ -37,10 +37,9 @@ struct adaptor< ublas::compressed_matrix< T, F, IB, IA, TA >, Id, Enable > {
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
         mpl::pair< tag::matrix_type, tag::general >,
         mpl::pair< tag::data_structure, tag::compressed_sparse >,
-        mpl::pair< tag::data_order, data_order >
+        mpl::pair< tag::data_order, data_order >,
+        mpl::pair< tag::index_base, mpl::int_<IB> >
     > property_map;
-
-    BOOST_STATIC_CONSTANT (std::size_t, index_base = IB);
 
     static std::ptrdiff_t size1( const Id& id ) {
         return id.size1();
@@ -90,10 +89,9 @@ struct adaptor< ublas::coordinate_matrix< T, F, IB, IA, TA >, Id, Enable > {
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
         mpl::pair< tag::matrix_type, tag::general >,
         mpl::pair< tag::data_structure, tag::coordinate_sparse >,
-        mpl::pair< tag::data_order, data_order >
+        mpl::pair< tag::data_order, data_order >,
+        mpl::pair< tag::index_base, mpl::int_<IB> >
     > property_map;
-
-    BOOST_STATIC_CONSTANT (std::size_t, index_base = IB);
 
     static std::ptrdiff_t size1( const Id& id ) {
         return id.size1();

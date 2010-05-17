@@ -42,10 +42,9 @@ struct adaptor< mtl::compressed2D< T, Parameters >, Id, Enable > {
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
         mpl::pair< tag::matrix_type, tag::general >,
         mpl::pair< tag::data_structure, tag::compressed_sparse >,
-        mpl::pair< tag::data_order, data_order >
+        mpl::pair< tag::data_order, data_order >,
+        mpl::pair< tag::index_base, mpl::int_<0> >
     > property_map;
-
-    BOOST_STATIC_CONSTANT (std::size_t, index_base = 0);
 
     static std::ptrdiff_t size1( const Id& id ) {
         return id.num_rows();

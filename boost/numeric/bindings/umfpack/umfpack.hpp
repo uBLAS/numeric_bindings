@@ -24,6 +24,8 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
+#include <boost/numeric/bindings/index_base.hpp>
 
 
 namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
@@ -36,10 +38,11 @@ namespace boost { namespace numeric { namespace bindings {  namespace umfpack {
       tag::general
     >::value));
     BOOST_STATIC_ASSERT((boost::is_same<
-      typename bindings::detail::property_at< MatrA, tag::data_order >::type,
+      typename bindings::result_of::data_order<MatrA>::type,
       tag::column_major
     >::value));
-    BOOST_STATIC_ASSERT(bindings::detail::adaptor_access<MatrA>::index_base == 0);
+    typedef typename bindings::result_of::index_base<MatrA>::type index_b;
+    BOOST_STATIC_ASSERT(index_b::value == 0);
     typedef typename bindings::detail::property_at<
       MatrA, tag::data_structure >::type storage_f;
     BOOST_STATIC_ASSERT(

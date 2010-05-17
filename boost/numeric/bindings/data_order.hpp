@@ -34,7 +34,7 @@ struct data_order< T, typename boost::enable_if< is_row_major<T> >::type > {
 
 template< typename T >
 typename result_of::data_order<T>::type data_order( const T& ) {
-    return result_of::data_order<T>::type();
+    return typename result_of::data_order<T>::type();
 }
 
 } // namespace bindings

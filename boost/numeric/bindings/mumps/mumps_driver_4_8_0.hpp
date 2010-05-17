@@ -16,6 +16,8 @@
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
+#include <boost/numeric/bindings/index_base.hpp>
 #include <boost/static_assert.hpp>
 #include <complex>
 #include <cassert>
@@ -216,15 +218,16 @@ namespace boost { namespace numeric { namespace bindings { namespace mumps {
   //
   template <typename M>
   void matrix_integer_data( mumps<M>& data, M& m ) {
-    BOOST_STATIC_ASSERT( (1 == bindings::detail::adaptor_access<M>::index_base) ) ;
+    typedef typename bindings::result_of::index_base<M>::type index_b ;
+    BOOST_STATIC_ASSERT(index_b::value == 1) ;
     data.n = bindings::size_row( m ) ;
     assert( bindings::size_column( m ) == data.n ) ;
 
     data.nz = bindings::end_value( m ) - bindings::begin_value( m ) ;
-    detail::indices( typename bindings::detail::property_at< M, tag::data_order >::type(), data.irn, data.jcn, m ) ;
+    detail::indices( bindings::data_order(m), data.irn, data.jcn, m ) ;
 
     data.nz_loc = bindings::end_value( m ) - bindings::begin_value( m ) ;
-    detail::indices( typename bindings::detail::property_at< M, tag::data_order >::type(), data.irn_loc, data.jcn_loc, m ) ;
+    detail::indices( bindings::data_order(m), data.irn_loc, data.jcn_loc, m ) ;
   } // matrix_integer_data()
 
 

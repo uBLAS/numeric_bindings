@@ -139,12 +139,12 @@ namespace boost { namespace numeric { namespace bindings { namespace mumps {
     } ;
   
     template <>
-    struct mumps_sym< boost::numeric::bindings::tag::symmetric > {
+    struct mumps_sym< bindings::tag::symmetric > {
       static int const value = 2 ;
     } ;
   
     template <>
-    struct mumps_sym< boost::numeric::bindings::tag::general > {
+    struct mumps_sym< bindings::tag::general > {
       static int const value = 0 ;
     } ;
 
@@ -152,15 +152,15 @@ namespace boost { namespace numeric { namespace bindings { namespace mumps {
     // Get index pointers
     //
     template <typename M>
-    void indices( boost::numeric::bindings::tag::row_major, int*& rows, int*& cols, M const& m ) {
-      rows = const_cast<int*>( boost::numeric::bindings::begin_index_major( m ) ) ;
-      cols = const_cast<int*>( boost::numeric::bindings::begin_index_minor( m ) ) ;
+    void indices( bindings::tag::row_major, int*& rows, int*& cols, M const& m ) {
+      rows = const_cast<int*>( bindings::begin_index_major( m ) ) ;
+      cols = const_cast<int*>( bindings::begin_index_minor( m ) ) ;
     }
   
     template <typename M>
-    void indices( boost::numeric::bindings::tag::column_major, int*& rows, int*& cols, M const& m ) {
-      cols = const_cast<int*>( boost::numeric::bindings::begin_index_major( m ) ) ;
-      rows = const_cast<int*>( boost::numeric::bindings::begin_index_minor( m ) ) ;
+    void indices( bindings::tag::column_major, int*& rows, int*& cols, M const& m ) {
+      cols = const_cast<int*>( bindings::begin_index_major( m ) ) ;
+      rows = const_cast<int*>( bindings::begin_index_minor( m ) ) ;
     }
   
     // Pointer Cast
@@ -177,10 +177,10 @@ namespace boost { namespace numeric { namespace bindings { namespace mumps {
   //
   template <typename M>
   struct mumps
-  : detail::mumps_type< typename boost::numeric::bindings::value_type<M>::type >::type
+  : detail::mumps_type< typename bindings::value_type<M>::type >::type
   {
-    typedef typename boost::numeric::bindings::value_type<M>::type                                      value_type ;
-    typedef typename detail::mumps_type< typename boost::numeric::bindings::value_type<M>::type >::type c_struct_type ;
+    typedef typename bindings::value_type<M>::type                                      value_type ;
+    typedef typename detail::mumps_type< typename bindings::value_type<M>::type >::type c_struct_type ;
 
     //
     // Initialize MUMPS solver
@@ -192,7 +192,7 @@ namespace boost { namespace numeric { namespace bindings { namespace mumps {
       this->job = -1 ;
       this->par = par ;
       this->comm_fortran = comm_fortran ;
-      this->sym = detail::mumps_sym< typename boost::numeric::bindings::detail::property_at<M, tag::matrix_type >::type >::value ;
+      this->sym = detail::mumps_sym< typename bindings::detail::property_at<M, tag::matrix_type >::type >::value ;
       detail::mumps_call<value_type>() ( *this ) ;
     }
 
@@ -209,15 +209,15 @@ namespace boost { namespace numeric { namespace bindings { namespace mumps {
   //
   template <typename M>
   void matrix_integer_data( mumps<M>& data, M& m ) {
-    BOOST_STATIC_ASSERT( (1 == boost::numeric::bindings::detail::adaptor_access<M>::index_base) ) ;
-    data.n = boost::numeric::bindings::size_row( m ) ;
-    assert( boost::numeric::bindings::size_column( m ) == data.n ) ;
+    BOOST_STATIC_ASSERT( (1 == bindings::detail::adaptor_access<M>::index_base) ) ;
+    data.n = bindings::size_row( m ) ;
+    assert( bindings::size_column( m ) == data.n ) ;
 
-    data.nz = boost::numeric::bindings::end_value( m ) - boost::numeric::bindings::begin_value( m );
-    detail::indices( typename boost::numeric::bindings::detail::property_at< M, tag::data_order >::type(), data.irn, data.jcn, m ) ;
+    data.nz = bindings::end_value( m ) - bindings::begin_value( m );
+    detail::indices( typename bindings::detail::property_at< M, tag::data_order >::type(), data.irn, data.jcn, m ) ;
 
-    data.nz_loc = boost::numeric::bindings::end_value( m ) - boost::numeric::bindings::begin_value( m );
-    detail::indices( typename boost::numeric::bindings::detail::property_at< M, tag::data_order >::type(), data.irn_loc, data.jcn_loc, m ) ;
+    data.nz_loc = bindings::end_value( m ) - bindings::begin_value( m );
+    detail::indices( typename bindings::detail::property_at< M, tag::data_order >::type(), data.irn_loc, data.jcn_loc, m ) ;
   } // matrix_integer_data()
 
 
@@ -226,8 +226,8 @@ namespace boost { namespace numeric { namespace bindings { namespace mumps {
   //
   template <typename M>
   void matrix_value_data( mumps<M>& data, M& m ) {
-    data.a = detail::cast_2_mumps( boost::numeric::bindings::begin_value( m ) ) ;
-    data.a_loc = detail::cast_2_mumps( boost::numeric::bindings::begin_value( m ) ) ;
+    data.a = detail::cast_2_mumps( bindings::begin_value( m ) ) ;
+    data.a_loc = detail::cast_2_mumps( bindings::begin_value( m ) ) ;
   } // matrix_value_data()
 
 
@@ -237,9 +237,9 @@ namespace boost { namespace numeric { namespace bindings { namespace mumps {
   //
   template <typename M, typename X>
   void rhs_sol_value_data( mumps<M>& data, X& x ) {
-    data.rhs = detail::cast_2_mumps( boost::numeric::bindings::begin_value( x ) ) ;
-    data.nrhs = boost::numeric::bindings::size_column( x ) ;
-    data.lrhs = boost::numeric::bindings::stride_major( x ) ;
+    data.rhs = detail::cast_2_mumps( bindings::begin_value( x ) ) ;
+    data.nrhs = bindings::size_column( x ) ;
+    data.lrhs = bindings::stride_major( x ) ;
   } // matrix_rhs_sol_value_data()
 
 

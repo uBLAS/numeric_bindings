@@ -822,7 +822,7 @@ for level, level_properties in routines.iteritems():
   for problem_type, problem_properties in level_properties.iteritems():
     if problem_properties.has_key( 'routines_by_value_type' ):
       write_functions( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, impl_target_path )
-      documentation.write_documentation( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, doc_target_path )
+      documentation.write_documentation( function_info_map, level, problem_properties[ 'routines_by_value_type' ], templates, doc_target_path )
       write_test_case( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, test_target_path + level, level )
 
   write_cmakefile( level_properties, templates, test_target_path + level )

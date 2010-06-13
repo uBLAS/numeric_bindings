@@ -99,9 +99,14 @@ following hierarchy is available:
  * auxiliary
  * computational
  * driver
+* mumps
+* umfpack
+
+* eigen
+* glas
+* mtl
 * std
 * ublas
-* tnt
 
 The library is header-only, i.e., there is no need to compile or create shared library files for it.
 

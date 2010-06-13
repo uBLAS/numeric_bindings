@@ -581,7 +581,7 @@ for level, level_properties in routines.iteritems():
   if level_properties.has_key( 'routines_by_value_type' ):
     print "has key..." 
     write_functions( function_info_map, level_properties[ 'routines_by_value_type' ], templates, impl_target_path )
-    documentation.write_documentation( function_info_map, level_properties[ 'routines_by_value_type' ], templates, doc_target_path )
+    documentation.write_documentation( function_info_map, level, level_properties[ 'routines_by_value_type' ], templates, doc_target_path )
     write_test_case( function_info_map, level_properties[ 'routines_by_value_type' ], templates, test_target_path + level, level )
 
   write_cmakefile( level_properties, templates, test_target_path + level )

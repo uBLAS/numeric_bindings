@@ -189,7 +189,7 @@ def combine_purposes( subroutines, info_map ):
 #
 # Write the many (low-level) documentation files
 #
-def write_documentation( info_map, group, template_map, base_dir ):
+def write_documentation( info_map, level, group, template_map, base_dir ):
 
     parsermode = template_map[ 'PARSERMODE' ].lower()
 
@@ -268,7 +268,7 @@ def write_documentation( info_map, group, template_map, base_dir ):
         result = result.replace( '$LIBRARY_INT_TYPE', "int_t" )
 
         result = result.replace( '$SUBROUTINES', readable_join( subroutines ) )
-        result = result.replace( '$header', 'boost/numeric/bindings/' + parsermode + '/' + group_name.lower() + '.hpp' )
+        result = result.replace( '$header', 'boost/numeric/bindings/' + parsermode + '/' + level + '/' + group_name.lower() + '.hpp' )
 
         if len( no_arguments_level0 ) == 1:
             result = result.replace( '$NO_ARGUMENTS_LEVEL0', number_to_text[ no_arguments_level0[0] ] )

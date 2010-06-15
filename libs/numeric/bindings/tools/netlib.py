@@ -1353,7 +1353,7 @@ def parse_file( filename, template_map ):
       #
       # Fetch array traits, such as "the length of the array WORK"
       #
-      match_array_traits = re.compile( '(The length|The dimension)(of|the|\s)+(array|\s)+([A-Z]+)', re.M | re.S ).findall( comment_block )
+      match_array_traits = re.compile( '(The length|The dimension|Length)(of|the|\s)+(array|\s)+([A-Z]+)', re.M | re.S ).findall( comment_block )
       if len( match_array_traits ) > 0 and match_array_traits[ 0 ][ 3 ] in grouped_arguments[ 'by_type' ][ 'vector' ]:
         argument_properties[ 'trait_type' ] = 'size'
         argument_properties[ 'trait_of' ] = [ match_array_traits[ 0 ][ 3 ] ]

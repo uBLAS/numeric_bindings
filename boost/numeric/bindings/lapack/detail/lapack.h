@@ -3011,20 +3011,6 @@ void LAPACK_ZGGLSE( const fortran_int_t* m, const fortran_int_t* n,
         const fortran_int_t* ldb, void* c, void* d, void* x, void* work,
         const fortran_int_t* lwork, fortran_int_t* info );
 
-// Value-type variants of cgesv
-void LAPACK_ZCGESV( const fortran_int_t* n, const fortran_int_t* nrhs,
-        void* a, const fortran_int_t* lda, fortran_int_t* ipiv, const void* b,
-        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
-        void* work, void* swork, double* rwork, fortran_int_t* iter,
-        fortran_int_t* info );
-
-// Value-type variants of cposv
-void LAPACK_ZCPOSV( const char* uplo, const fortran_int_t* n,
-        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda,
-        const void* b, const fortran_int_t* ldb, void* x,
-        const fortran_int_t* ldx, void* work, void* swork, double* rwork,
-        fortran_int_t* iter, fortran_int_t* info );
-
 // Value-type variants of gbsv
 void LAPACK_SGBSV( const fortran_int_t* n, const fortran_int_t* kl,
         const fortran_int_t* ku, const fortran_int_t* nrhs, float* ab,
@@ -3229,6 +3215,30 @@ void LAPACK_ZHPSVX( const char* fact, const char* uplo,
         double* rcond, double* ferr, double* berr, void* work, double* rwork,
         fortran_int_t* info );
 
+// Value-type variants of iter_gesv
+void LAPACK_DSGESV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        double* a, const fortran_int_t* lda, fortran_int_t* ipiv,
+        const double* b, const fortran_int_t* ldb, double* x,
+        const fortran_int_t* ldx, double* work, float* swork,
+        fortran_int_t* iter, fortran_int_t* info );
+void LAPACK_ZCGESV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        void* a, const fortran_int_t* lda, fortran_int_t* ipiv, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        void* work, void* swork, double* rwork, fortran_int_t* iter,
+        fortran_int_t* info );
+
+// Value-type variants of iter_posv
+void LAPACK_DSPOSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, double* a, const fortran_int_t* lda,
+        const double* b, const fortran_int_t* ldb, double* x,
+        const fortran_int_t* ldx, double* work, float* swork,
+        fortran_int_t* iter, fortran_int_t* info );
+void LAPACK_ZCPOSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda,
+        const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, void* work, void* swork, double* rwork,
+        fortran_int_t* iter, fortran_int_t* info );
+
 // Value-type variants of pbsv
 void LAPACK_SPBSV( const char* uplo, const fortran_int_t* n,
         const fortran_int_t* kd, const fortran_int_t* nrhs, float* ab,
@@ -3390,20 +3400,6 @@ void LAPACK_ZPTSVX( const char* fact, const fortran_int_t* n,
         void* ef, const void* b, const fortran_int_t* ldb, void* x,
         const fortran_int_t* ldx, double* rcond, double* ferr, double* berr,
         void* work, double* rwork, fortran_int_t* info );
-
-// Value-type variants of sgesv
-void LAPACK_DSGESV( const fortran_int_t* n, const fortran_int_t* nrhs,
-        double* a, const fortran_int_t* lda, fortran_int_t* ipiv,
-        const double* b, const fortran_int_t* ldb, double* x,
-        const fortran_int_t* ldx, double* work, float* swork,
-        fortran_int_t* iter, fortran_int_t* info );
-
-// Value-type variants of sposv
-void LAPACK_DSPOSV( const char* uplo, const fortran_int_t* n,
-        const fortran_int_t* nrhs, double* a, const fortran_int_t* lda,
-        const double* b, const fortran_int_t* ldb, double* x,
-        const fortran_int_t* ldx, double* work, float* swork,
-        fortran_int_t* iter, fortran_int_t* info );
 
 // Value-type variants of spsv
 void LAPACK_SSPSV( const char* uplo, const fortran_int_t* n,

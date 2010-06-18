@@ -42,8 +42,6 @@
 #include <boost/numeric/bindings/lapack/driver/sygvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/ggglm.hpp>
 #include <boost/numeric/bindings/lapack/driver/gglse.hpp>
-#include <boost/numeric/bindings/lapack/driver/cgesv.hpp>
-#include <boost/numeric/bindings/lapack/driver/cposv.hpp>
 #include <boost/numeric/bindings/lapack/driver/gbsv.hpp>
 #include <boost/numeric/bindings/lapack/driver/gbsvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/gejsv.hpp>
@@ -55,6 +53,8 @@
 #include <boost/numeric/bindings/lapack/driver/hesvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/hpsv.hpp>
 #include <boost/numeric/bindings/lapack/driver/hpsvx.hpp>
+#include <boost/numeric/bindings/lapack/driver/iter_gesv.hpp>
+#include <boost/numeric/bindings/lapack/driver/iter_posv.hpp>
 #include <boost/numeric/bindings/lapack/driver/pbsv.hpp>
 #include <boost/numeric/bindings/lapack/driver/pbsvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/posv.hpp>
@@ -63,8 +63,6 @@
 #include <boost/numeric/bindings/lapack/driver/ppsvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/ptsv.hpp>
 #include <boost/numeric/bindings/lapack/driver/ptsvx.hpp>
-#include <boost/numeric/bindings/lapack/driver/sgesv.hpp>
-#include <boost/numeric/bindings/lapack/driver/sposv.hpp>
 #include <boost/numeric/bindings/lapack/driver/spsv.hpp>
 #include <boost/numeric/bindings/lapack/driver/spsvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/sysv.hpp>

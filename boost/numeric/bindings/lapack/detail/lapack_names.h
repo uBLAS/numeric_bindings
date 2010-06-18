@@ -994,12 +994,6 @@
 #define LAPACK_CGGLSE FORTRAN_ID( cgglse )
 #define LAPACK_ZGGLSE FORTRAN_ID( zgglse )
 
-// Value-type variants of cgesv
-#define LAPACK_ZCGESV FORTRAN_ID( zcgesv )
-
-// Value-type variants of cposv
-#define LAPACK_ZCPOSV FORTRAN_ID( zcposv )
-
 // Value-type variants of gbsv
 #define LAPACK_SGBSV FORTRAN_ID( sgbsv )
 #define LAPACK_DGBSV FORTRAN_ID( dgbsv )
@@ -1056,6 +1050,14 @@
 #define LAPACK_CHPSVX FORTRAN_ID( chpsvx )
 #define LAPACK_ZHPSVX FORTRAN_ID( zhpsvx )
 
+// Value-type variants of iter_gesv
+#define LAPACK_DSGESV FORTRAN_ID( dsgesv )
+#define LAPACK_ZCGESV FORTRAN_ID( zcgesv )
+
+// Value-type variants of iter_posv
+#define LAPACK_DSPOSV FORTRAN_ID( dsposv )
+#define LAPACK_ZCPOSV FORTRAN_ID( zcposv )
+
 // Value-type variants of pbsv
 #define LAPACK_SPBSV FORTRAN_ID( spbsv )
 #define LAPACK_DPBSV FORTRAN_ID( dpbsv )
@@ -1103,12 +1105,6 @@
 #define LAPACK_DPTSVX FORTRAN_ID( dptsvx )
 #define LAPACK_CPTSVX FORTRAN_ID( cptsvx )
 #define LAPACK_ZPTSVX FORTRAN_ID( zptsvx )
-
-// Value-type variants of sgesv
-#define LAPACK_DSGESV FORTRAN_ID( dsgesv )
-
-// Value-type variants of sposv
-#define LAPACK_DSPOSV FORTRAN_ID( dsposv )
 
 // Value-type variants of spsv
 #define LAPACK_SSPSV FORTRAN_ID( sspsv )

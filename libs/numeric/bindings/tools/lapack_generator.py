@@ -19,24 +19,30 @@ import pprint
 
 
 #
-# Group subroutines on their name, with the first character removed. This will 
-# group them in the same .hpp file as well. Sort these subroutines based on 
-# routine_cmp above.
+# Group subroutines on their value and precision types.
+# Sort these subroutines based on
+# subroutine_less in the bindings file.
 #
 def group_by_value_type( global_info_map ):
   group_map = {}
-  for i in global_info_map.keys():
-    short_name = i[ 1: ]
-    if not group_map.has_key( short_name ):
-      group_map[ short_name ] = []
-    group_map[ short_name ] += [ i ]
-  for value in group_map.values():
-    value.sort( bindings.routine_cmp )
+  for subroutine_name in global_info_map.keys():
+    subroutine_group_name = global_info_map[ subroutine_name ][ 'group_name' ]
+    if not group_map.has_key( subroutine_group_name ):
+      group_map[ subroutine_group_name ] = []
+      group_map[ subroutine_group_name ].append( subroutine_name )
+    else:
+      insert_at = 0
+      for i in range( 0, len(group_map[ subroutine_group_name ]) ):
+          if bindings.subroutine_less( subroutine_name,
+                              group_map[ subroutine_group_name ][ i ],
+                              global_info_map ):
+              insert_at = i+1
+      group_map[ subroutine_group_name ].insert( insert_at, subroutine_name )
+
   return group_map
-  
 
 
-  
+
 def indent_lines( source_text, indent_size = 8 ):
   indent_string = '\n'
   for i in range(indent_size):

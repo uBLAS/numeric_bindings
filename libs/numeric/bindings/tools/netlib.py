@@ -995,7 +995,18 @@ def parse_file( filename, template_map ):
           argument_map[ argument_name ] = {}
           argument_map[ argument_name ][ 'value_type' ] = match_argument_declaration.group( 1 )
           argument_map[ argument_name ][ 'value_type_variant' ] = global_type_variant_map[ argument_map[ argument_name ][ 'value_type' ] ]
-          if len(argument_description) == 1:
+          
+          # See if the type of the argument (scalar, vector, matrix) gets overridden by the templating system
+          type_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + \
+                argument_name + '.type'
+          if my_has_key( type_key, template_map ):
+            data = template_map[ my_has_key( type_key, template_map ) ].split(",")
+            argument_map[ argument_name ][ 'type' ] = data[0].strip()
+            if len(data)==2 and data[0].strip() == 'matrix':
+              argument_map[ argument_name ][ 'leading_dimension' ] = data[1].strip()
+
+          # if the type was not overridden, proceed with parsing the type
+          elif len(argument_description) == 1:
             argument_map[ argument_name ][ 'type' ] = 'scalar'
           else:
             if argument_description[1].find( "," ) == -1:

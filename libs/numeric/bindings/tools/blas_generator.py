@@ -21,7 +21,7 @@ import pprint
 # Sort these subroutines based on 
 # subroutine_less in the bindings file.
 #
-def group_by_value_type( global_info_map, template_map ):
+def group_by_value_type( global_info_map ):
   group_map = {}
   for subroutine_name in global_info_map.keys():
     subroutine_group_name = global_info_map[ subroutine_name ][ 'group_name' ]
@@ -530,7 +530,7 @@ cublas.parse_file( cublas_h_path, function_info_map, templates )
 print "Grouping subroutines..."
 
 value_type_groups = {}
-value_type_groups = group_by_value_type( function_info_map, templates )
+value_type_groups = group_by_value_type( function_info_map )
 
 routines = {}
 routines[ 'level1' ] = {}

@@ -194,7 +194,6 @@ struct gebal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 // Overloaded function for gebal. Its overload differs for
 // * MatrixA&
-// * VectorSCALE&
 //
 template< typename MatrixA, typename VectorSCALE >
 inline std::ptrdiff_t gebal( const char job, MatrixA& a,
@@ -206,37 +205,10 @@ inline std::ptrdiff_t gebal( const char job, MatrixA& a,
 //
 // Overloaded function for gebal. Its overload differs for
 // * const MatrixA&
-// * VectorSCALE&
 //
 template< typename MatrixA, typename VectorSCALE >
 inline std::ptrdiff_t gebal( const char job, const MatrixA& a,
         fortran_int_t& ilo, fortran_int_t& ihi, VectorSCALE& scale ) {
-    return gebal_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( job, a, ilo, ihi, scale );
-}
-
-//
-// Overloaded function for gebal. Its overload differs for
-// * MatrixA&
-// * const VectorSCALE&
-//
-template< typename MatrixA, typename VectorSCALE >
-inline std::ptrdiff_t gebal( const char job, MatrixA& a,
-        fortran_int_t& ilo, fortran_int_t& ihi,
-        const VectorSCALE& scale ) {
-    return gebal_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( job, a, ilo, ihi, scale );
-}
-
-//
-// Overloaded function for gebal. Its overload differs for
-// * const MatrixA&
-// * const VectorSCALE&
-//
-template< typename MatrixA, typename VectorSCALE >
-inline std::ptrdiff_t gebal( const char job, const MatrixA& a,
-        fortran_int_t& ilo, fortran_int_t& ihi,
-        const VectorSCALE& scale ) {
     return gebal_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( job, a, ilo, ihi, scale );
 }

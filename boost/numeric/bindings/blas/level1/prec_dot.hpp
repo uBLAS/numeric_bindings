@@ -107,13 +107,13 @@ struct prec_dot_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename VectorY >
-    static result_type invoke( const VectorX& x, const VectorY& y ) {
+    template< typename VectorViewX, typename VectorViewY >
+    static result_type invoke( const VectorViewX& x, const VectorViewY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
+                VectorViewY >::type >::type >::value) );
         return detail::prec_dot( bindings::size(x),
                 bindings::begin_value(x), bindings::stride(x),
                 bindings::begin_value(y), bindings::stride(y) );
@@ -131,12 +131,12 @@ struct prec_dot_impl {
 //
 // Overloaded function for prec_dot. Its overload differs for
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename prec_dot_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-prec_dot( const VectorX& x, const VectorY& y ) {
+        VectorViewX >::type >::result_type
+prec_dot( const VectorViewX& x, const VectorViewY& y ) {
     return prec_dot_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y );
+            VectorViewX >::type >::invoke( x, y );
 }
 
 } // namespace blas

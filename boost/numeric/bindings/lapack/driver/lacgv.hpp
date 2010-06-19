@@ -106,21 +106,9 @@ struct lacgv_impl {
 
 //
 // Overloaded function for lacgv. Its overload differs for
-// * VectorX&
 //
 template< typename VectorX >
 inline std::ptrdiff_t lacgv( const fortran_int_t n, VectorX& x,
-        const fortran_int_t incx ) {
-    return lacgv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, incx );
-}
-
-//
-// Overloaded function for lacgv. Its overload differs for
-// * const VectorX&
-//
-template< typename VectorX >
-inline std::ptrdiff_t lacgv( const fortran_int_t n, const VectorX& x,
         const fortran_int_t incx ) {
     return lacgv_impl< typename bindings::value_type<
             VectorX >::type >::invoke( n, x, incx );

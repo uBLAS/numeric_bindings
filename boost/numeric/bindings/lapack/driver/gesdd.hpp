@@ -431,7 +431,6 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 // Overloaded function for gesdd. Its overload differs for
 // * MatrixA&
-// * VectorS&
 // * MatrixU&
 // * MatrixVT&
 // * User-defined workspace
@@ -449,7 +448,6 @@ gesdd( const char jobz, MatrixA& a, VectorS& s, MatrixU& u, MatrixVT& vt,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * MatrixA&
-// * VectorS&
 // * MatrixU&
 // * MatrixVT&
 // * Default workspace-type (optimal)
@@ -468,7 +466,6 @@ gesdd( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * const MatrixA&
-// * VectorS&
 // * MatrixU&
 // * MatrixVT&
 // * User-defined workspace
@@ -486,7 +483,6 @@ gesdd( const char jobz, const MatrixA& a, VectorS& s, MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * const MatrixA&
-// * VectorS&
 // * MatrixU&
 // * MatrixVT&
 // * Default workspace-type (optimal)
@@ -505,81 +501,6 @@ gesdd( const char jobz, const MatrixA& a, VectorS& s, MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * MatrixA&
-// * const VectorS&
-// * MatrixU&
-// * MatrixVT&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, MatrixA& a, const VectorS& s, MatrixU& u,
-        MatrixVT& vt, Workspace work ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt, work );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * MatrixA&
-// * const VectorS&
-// * MatrixU&
-// * MatrixVT&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT >
-inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, MatrixA& a, const VectorS& s, MatrixU& u,
-        MatrixVT& vt ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * const MatrixA&
-// * const VectorS&
-// * MatrixU&
-// * MatrixVT&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, const MatrixA& a, const VectorS& s, MatrixU& u,
-        MatrixVT& vt, Workspace work ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt, work );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * const MatrixA&
-// * const VectorS&
-// * MatrixU&
-// * MatrixVT&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT >
-inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, const MatrixA& a, const VectorS& s, MatrixU& u,
-        MatrixVT& vt ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * MatrixA&
-// * VectorS&
 // * const MatrixU&
 // * MatrixVT&
 // * User-defined workspace
@@ -597,7 +518,6 @@ gesdd( const char jobz, MatrixA& a, VectorS& s, const MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * MatrixA&
-// * VectorS&
 // * const MatrixU&
 // * MatrixVT&
 // * Default workspace-type (optimal)
@@ -616,7 +536,6 @@ gesdd( const char jobz, MatrixA& a, VectorS& s, const MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * const MatrixA&
-// * VectorS&
 // * const MatrixU&
 // * MatrixVT&
 // * User-defined workspace
@@ -634,7 +553,6 @@ gesdd( const char jobz, const MatrixA& a, VectorS& s, const MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * const MatrixA&
-// * VectorS&
 // * const MatrixU&
 // * MatrixVT&
 // * Default workspace-type (optimal)
@@ -653,81 +571,6 @@ gesdd( const char jobz, const MatrixA& a, VectorS& s, const MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * MatrixA&
-// * const VectorS&
-// * const MatrixU&
-// * MatrixVT&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, MatrixA& a, const VectorS& s, const MatrixU& u,
-        MatrixVT& vt, Workspace work ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt, work );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * MatrixA&
-// * const VectorS&
-// * const MatrixU&
-// * MatrixVT&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT >
-inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, MatrixA& a, const VectorS& s, const MatrixU& u,
-        MatrixVT& vt ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * const MatrixA&
-// * const VectorS&
-// * const MatrixU&
-// * MatrixVT&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, const MatrixA& a, const VectorS& s,
-        const MatrixU& u, MatrixVT& vt, Workspace work ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt, work );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * const MatrixA&
-// * const VectorS&
-// * const MatrixU&
-// * MatrixVT&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT >
-inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, const MatrixA& a, const VectorS& s,
-        const MatrixU& u, MatrixVT& vt ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * MatrixA&
-// * VectorS&
 // * MatrixU&
 // * const MatrixVT&
 // * User-defined workspace
@@ -745,7 +588,6 @@ gesdd( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * MatrixA&
-// * VectorS&
 // * MatrixU&
 // * const MatrixVT&
 // * Default workspace-type (optimal)
@@ -764,7 +606,6 @@ gesdd( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * const MatrixA&
-// * VectorS&
 // * MatrixU&
 // * const MatrixVT&
 // * User-defined workspace
@@ -782,7 +623,6 @@ gesdd( const char jobz, const MatrixA& a, VectorS& s, MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * const MatrixA&
-// * VectorS&
 // * MatrixU&
 // * const MatrixVT&
 // * Default workspace-type (optimal)
@@ -801,81 +641,6 @@ gesdd( const char jobz, const MatrixA& a, VectorS& s, MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * MatrixA&
-// * const VectorS&
-// * MatrixU&
-// * const MatrixVT&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, MatrixA& a, const VectorS& s, MatrixU& u,
-        const MatrixVT& vt, Workspace work ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt, work );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * MatrixA&
-// * const VectorS&
-// * MatrixU&
-// * const MatrixVT&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT >
-inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, MatrixA& a, const VectorS& s, MatrixU& u,
-        const MatrixVT& vt ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * const MatrixA&
-// * const VectorS&
-// * MatrixU&
-// * const MatrixVT&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, const MatrixA& a, const VectorS& s, MatrixU& u,
-        const MatrixVT& vt, Workspace work ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt, work );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * const MatrixA&
-// * const VectorS&
-// * MatrixU&
-// * const MatrixVT&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT >
-inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, const MatrixA& a, const VectorS& s, MatrixU& u,
-        const MatrixVT& vt ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * MatrixA&
-// * VectorS&
 // * const MatrixU&
 // * const MatrixVT&
 // * User-defined workspace
@@ -893,7 +658,6 @@ gesdd( const char jobz, MatrixA& a, VectorS& s, const MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * MatrixA&
-// * VectorS&
 // * const MatrixU&
 // * const MatrixVT&
 // * Default workspace-type (optimal)
@@ -912,7 +676,6 @@ gesdd( const char jobz, MatrixA& a, VectorS& s, const MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * const MatrixA&
-// * VectorS&
 // * const MatrixU&
 // * const MatrixVT&
 // * User-defined workspace
@@ -930,7 +693,6 @@ gesdd( const char jobz, const MatrixA& a, VectorS& s, const MatrixU& u,
 //
 // Overloaded function for gesdd. Its overload differs for
 // * const MatrixA&
-// * VectorS&
 // * const MatrixU&
 // * const MatrixVT&
 // * Default workspace-type (optimal)
@@ -941,80 +703,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
         std::ptrdiff_t >::type
 gesdd( const char jobz, const MatrixA& a, VectorS& s, const MatrixU& u,
         const MatrixVT& vt ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * MatrixA&
-// * const VectorS&
-// * const MatrixU&
-// * const MatrixVT&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, MatrixA& a, const VectorS& s, const MatrixU& u,
-        const MatrixVT& vt, Workspace work ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt, work );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * MatrixA&
-// * const VectorS&
-// * const MatrixU&
-// * const MatrixVT&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT >
-inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, MatrixA& a, const VectorS& s, const MatrixU& u,
-        const MatrixVT& vt ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * const MatrixA&
-// * const VectorS&
-// * const MatrixU&
-// * const MatrixVT&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, const MatrixA& a, const VectorS& s,
-        const MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    return gesdd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, s, u, vt, work );
-}
-
-//
-// Overloaded function for gesdd. Its overload differs for
-// * const MatrixA&
-// * const VectorS&
-// * const MatrixU&
-// * const MatrixVT&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorS, typename MatrixU,
-        typename MatrixVT >
-inline typename boost::disable_if< detail::is_workspace< MatrixVT >,
-        std::ptrdiff_t >::type
-gesdd( const char jobz, const MatrixA& a, const VectorS& s,
-        const MatrixU& u, const MatrixVT& vt ) {
     return gesdd_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( jobz, a, s, u, vt,
             optimal_workspace() );

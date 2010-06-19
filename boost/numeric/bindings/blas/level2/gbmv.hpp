@@ -268,21 +268,21 @@ struct gbmv_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixA, typename VectorX, typename VectorY >
+    template< typename MatrixA, typename VectorViewX, typename VectorViewY >
     static result_type invoke( const value_type alpha, const MatrixA& a,
-            const VectorX& x, const value_type beta, VectorY& y ) {
+            const VectorViewX& x, const value_type beta, VectorViewY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename detail::default_order< MatrixA >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorX >::type >::type >::value) );
+                VectorViewX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+                VectorViewY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         detail::gbmv( order(), trans(), bindings::size_row_op(a,
@@ -305,30 +305,30 @@ struct gbmv_impl {
 
 //
 // Overloaded function for gbmv. Its overload differs for
-// * VectorY&
+// * VectorViewY&
 //
-template< typename MatrixA, typename VectorX, typename VectorY >
+template< typename MatrixA, typename VectorViewX, typename VectorViewY >
 inline typename gbmv_impl< typename bindings::value_type<
         MatrixA >::type >::result_type
 gbmv( const typename bindings::value_type< MatrixA >::type alpha,
-        const MatrixA& a, const VectorX& x,
+        const MatrixA& a, const VectorViewX& x,
         const typename bindings::value_type< MatrixA >::type beta,
-        VectorY& y ) {
+        VectorViewY& y ) {
     gbmv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( alpha, a, x, beta, y );
 }
 
 //
 // Overloaded function for gbmv. Its overload differs for
-// * const VectorY&
+// * const VectorViewY&
 //
-template< typename MatrixA, typename VectorX, typename VectorY >
+template< typename MatrixA, typename VectorViewX, typename VectorViewY >
 inline typename gbmv_impl< typename bindings::value_type<
         MatrixA >::type >::result_type
 gbmv( const typename bindings::value_type< MatrixA >::type alpha,
-        const MatrixA& a, const VectorX& x,
+        const MatrixA& a, const VectorViewX& x,
         const typename bindings::value_type< MatrixA >::type beta,
-        const VectorY& y ) {
+        const VectorViewY& y ) {
     gbmv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( alpha, a, x, beta, y );
 }

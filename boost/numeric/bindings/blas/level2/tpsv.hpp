@@ -248,8 +248,8 @@ struct tpsv_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixAP, typename VectorX >
-    static result_type invoke( const MatrixAP& ap, VectorX& x ) {
+    template< typename MatrixAP, typename VectorViewX >
+    static result_type invoke( const MatrixAP& ap, VectorViewX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename detail::default_order< MatrixAP >::type order;
         typedef typename result_of::trans_tag< MatrixAP, order >::type trans;
@@ -258,8 +258,8 @@ struct tpsv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< MatrixAP >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+                VectorViewX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewX >::value) );
         detail::tpsv( order(), uplo(), trans(), diag(),
                 bindings::size_column_op(ap, trans()),
                 bindings::begin_value(ap), bindings::begin_value(x),
@@ -277,24 +277,24 @@ struct tpsv_impl {
 
 //
 // Overloaded function for tpsv. Its overload differs for
-// * VectorX&
+// * VectorViewX&
 //
-template< typename MatrixAP, typename VectorX >
+template< typename MatrixAP, typename VectorViewX >
 inline typename tpsv_impl< typename bindings::value_type<
         MatrixAP >::type >::result_type
-tpsv( const MatrixAP& ap, VectorX& x ) {
+tpsv( const MatrixAP& ap, VectorViewX& x ) {
     tpsv_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, x );
 }
 
 //
 // Overloaded function for tpsv. Its overload differs for
-// * const VectorX&
+// * const VectorViewX&
 //
-template< typename MatrixAP, typename VectorX >
+template< typename MatrixAP, typename VectorViewX >
 inline typename tpsv_impl< typename bindings::value_type<
         MatrixAP >::type >::result_type
-tpsv( const MatrixAP& ap, const VectorX& x ) {
+tpsv( const MatrixAP& ap, const VectorViewX& x ) {
     tpsv_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, x );
 }

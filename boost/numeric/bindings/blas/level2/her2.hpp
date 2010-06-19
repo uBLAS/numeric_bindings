@@ -168,18 +168,18 @@ struct her2_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename VectorY, typename MatrixA >
-    static result_type invoke( const value_type alpha, const VectorX& x,
-            const VectorY& y, MatrixA& a ) {
+    template< typename VectorViewX, typename VectorViewY, typename MatrixA >
+    static result_type invoke( const value_type alpha, const VectorViewX& x,
+            const VectorViewY& y, MatrixA& a ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
+                VectorViewY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
@@ -204,26 +204,26 @@ struct her2_impl {
 // Overloaded function for her2. Its overload differs for
 // * MatrixA&
 //
-template< typename VectorX, typename VectorY, typename MatrixA >
+template< typename VectorViewX, typename VectorViewY, typename MatrixA >
 inline typename her2_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-her2( const typename bindings::value_type< VectorX >::type alpha,
-        const VectorX& x, const VectorY& y, MatrixA& a ) {
+        VectorViewX >::type >::result_type
+her2( const typename bindings::value_type< VectorViewX >::type alpha,
+        const VectorViewX& x, const VectorViewY& y, MatrixA& a ) {
     her2_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( alpha, x, y, a );
+            VectorViewX >::type >::invoke( alpha, x, y, a );
 }
 
 //
 // Overloaded function for her2. Its overload differs for
 // * const MatrixA&
 //
-template< typename VectorX, typename VectorY, typename MatrixA >
+template< typename VectorViewX, typename VectorViewY, typename MatrixA >
 inline typename her2_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-her2( const typename bindings::value_type< VectorX >::type alpha,
-        const VectorX& x, const VectorY& y, const MatrixA& a ) {
+        VectorViewX >::type >::result_type
+her2( const typename bindings::value_type< VectorViewX >::type alpha,
+        const VectorViewX& x, const VectorViewY& y, const MatrixA& a ) {
     her2_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( alpha, x, y, a );
+            VectorViewX >::type >::invoke( alpha, x, y, a );
 }
 
 } // namespace blas

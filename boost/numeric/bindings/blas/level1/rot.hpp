@@ -203,14 +203,14 @@ struct rot_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename VectorY >
-    static result_type invoke( VectorX& x, VectorY& y, const real_type c,
-            const real_type s ) {
+    template< typename VectorViewX, typename VectorViewY >
+    static result_type invoke( VectorViewX& x, VectorViewY& y,
+            const real_type c, const real_type s ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
+                VectorViewY >::type >::type >::value) );
         detail::rot( bindings::size(x), bindings::begin_value(x),
                 bindings::stride(x), bindings::begin_value(y),
                 bindings::stride(y), c, s );
@@ -227,66 +227,66 @@ struct rot_impl {
 
 //
 // Overloaded function for rot. Its overload differs for
-// * VectorX&
-// * VectorY&
+// * VectorViewX&
+// * VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename rot_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rot( VectorX& x, VectorY& y, const typename remove_imaginary<
-        typename bindings::value_type< VectorX >::type >::type c,
+        VectorViewX >::type >::result_type
+rot( VectorViewX& x, VectorViewY& y, const typename remove_imaginary<
+        typename bindings::value_type< VectorViewX >::type >::type c,
         const typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type s ) {
+        VectorViewX >::type >::type s ) {
     rot_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, c, s );
+            VectorViewX >::type >::invoke( x, y, c, s );
 }
 
 //
 // Overloaded function for rot. Its overload differs for
-// * const VectorX&
-// * VectorY&
+// * const VectorViewX&
+// * VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename rot_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rot( const VectorX& x, VectorY& y, const typename remove_imaginary<
-        typename bindings::value_type< VectorX >::type >::type c,
+        VectorViewX >::type >::result_type
+rot( const VectorViewX& x, VectorViewY& y,
         const typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type s ) {
+        VectorViewX >::type >::type c, const typename remove_imaginary<
+        typename bindings::value_type< VectorViewX >::type >::type s ) {
     rot_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, c, s );
+            VectorViewX >::type >::invoke( x, y, c, s );
 }
 
 //
 // Overloaded function for rot. Its overload differs for
-// * VectorX&
-// * const VectorY&
+// * VectorViewX&
+// * const VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename rot_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rot( VectorX& x, const VectorY& y, const typename remove_imaginary<
-        typename bindings::value_type< VectorX >::type >::type c,
+        VectorViewX >::type >::result_type
+rot( VectorViewX& x, const VectorViewY& y,
         const typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type s ) {
+        VectorViewX >::type >::type c, const typename remove_imaginary<
+        typename bindings::value_type< VectorViewX >::type >::type s ) {
     rot_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, c, s );
+            VectorViewX >::type >::invoke( x, y, c, s );
 }
 
 //
 // Overloaded function for rot. Its overload differs for
-// * const VectorX&
-// * const VectorY&
+// * const VectorViewX&
+// * const VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename rot_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rot( const VectorX& x, const VectorY& y,
+        VectorViewX >::type >::result_type
+rot( const VectorViewX& x, const VectorViewY& y,
         const typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type c, const typename remove_imaginary<
-        typename bindings::value_type< VectorX >::type >::type s ) {
+        VectorViewX >::type >::type c, const typename remove_imaginary<
+        typename bindings::value_type< VectorViewX >::type >::type s ) {
     rot_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, c, s );
+            VectorViewX >::type >::invoke( x, y, c, s );
 }
 
 } // namespace blas

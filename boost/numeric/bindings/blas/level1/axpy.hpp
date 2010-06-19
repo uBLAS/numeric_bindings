@@ -203,15 +203,15 @@ struct axpy_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename VectorY >
-    static result_type invoke( const value_type a, const VectorX& x,
-            VectorY& y ) {
+    template< typename VectorViewX, typename VectorViewY >
+    static result_type invoke( const value_type a, const VectorViewX& x,
+            VectorViewY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+                VectorViewY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
         detail::axpy( bindings::size(x), a, bindings::begin_value(x),
                 bindings::stride(x), bindings::begin_value(y),
                 bindings::stride(y) );
@@ -228,28 +228,28 @@ struct axpy_impl {
 
 //
 // Overloaded function for axpy. Its overload differs for
-// * VectorY&
+// * VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename axpy_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-axpy( const typename bindings::value_type< VectorX >::type a,
-        const VectorX& x, VectorY& y ) {
+        VectorViewX >::type >::result_type
+axpy( const typename bindings::value_type< VectorViewX >::type a,
+        const VectorViewX& x, VectorViewY& y ) {
     axpy_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( a, x, y );
+            VectorViewX >::type >::invoke( a, x, y );
 }
 
 //
 // Overloaded function for axpy. Its overload differs for
-// * const VectorY&
+// * const VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename axpy_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-axpy( const typename bindings::value_type< VectorX >::type a,
-        const VectorX& x, const VectorY& y ) {
+        VectorViewX >::type >::result_type
+axpy( const typename bindings::value_type< VectorViewX >::type a,
+        const VectorViewX& x, const VectorViewY& y ) {
     axpy_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( a, x, y );
+            VectorViewX >::type >::invoke( a, x, y );
 }
 
 } // namespace blas

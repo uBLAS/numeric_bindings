@@ -234,8 +234,6 @@ struct latrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 // Overloaded function for latrd. Its overload differs for
 // * MatrixA&
-// * VectorE&
-// * VectorTAU&
 // * MatrixW&
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
@@ -249,8 +247,6 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
 //
 // Overloaded function for latrd. Its overload differs for
 // * const MatrixA&
-// * VectorE&
-// * VectorTAU&
 // * MatrixW&
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
@@ -264,98 +260,6 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
 //
 // Overloaded function for latrd. Its overload differs for
 // * MatrixA&
-// * const VectorE&
-// * VectorTAU&
-// * MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
-        const VectorE& e, VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * const MatrixA&
-// * const VectorE&
-// * VectorTAU&
-// * MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
-        const VectorE& e, VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * MatrixA&
-// * VectorE&
-// * const VectorTAU&
-// * MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
-        VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * const MatrixA&
-// * VectorE&
-// * const VectorTAU&
-// * MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
-        VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * MatrixA&
-// * const VectorE&
-// * const VectorTAU&
-// * MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
-        const VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * const MatrixA&
-// * const VectorE&
-// * const VectorTAU&
-// * MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
-        const VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * MatrixA&
-// * VectorE&
-// * VectorTAU&
 // * const MatrixW&
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
@@ -369,104 +273,12 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
 //
 // Overloaded function for latrd. Its overload differs for
 // * const MatrixA&
-// * VectorE&
-// * VectorTAU&
 // * const MatrixW&
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
         VectorE& e, VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * MatrixA&
-// * const VectorE&
-// * VectorTAU&
-// * const MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
-        const VectorE& e, VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * const MatrixA&
-// * const VectorE&
-// * VectorTAU&
-// * const MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
-        const VectorE& e, VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * MatrixA&
-// * VectorE&
-// * const VectorTAU&
-// * const MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
-        VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * const MatrixA&
-// * VectorE&
-// * const VectorTAU&
-// * const MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
-        VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * MatrixA&
-// * const VectorE&
-// * const VectorTAU&
-// * const MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
-        const VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
-    return latrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( nb, a, e, tau, w );
-}
-
-//
-// Overloaded function for latrd. Its overload differs for
-// * const MatrixA&
-// * const VectorE&
-// * const VectorTAU&
-// * const MatrixW&
-//
-template< typename MatrixA, typename VectorE, typename VectorTAU,
-        typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
-        const VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
     return latrd_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( nb, a, e, tau, w );
 }

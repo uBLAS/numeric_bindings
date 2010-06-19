@@ -120,21 +120,22 @@ struct largv_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename VectorY, typename VectorC >
-    static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
-            VectorY& y, VectorC& c ) {
+    template< typename VectorViewX, typename VectorViewY,
+            typename VectorViewC >
+    static std::ptrdiff_t invoke( const fortran_int_t n, VectorViewX& x,
+            VectorViewY& y, VectorViewC& c ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
+                VectorViewY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+                VectorViewC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewC >::value) );
         BOOST_ASSERT( bindings::size(c) >= 1+(n-1)*bindings::stride(c) );
         BOOST_ASSERT( bindings::size(x) >= 1+(n-1)*bindings::stride(x) );
         BOOST_ASSERT( bindings::size(y) >= 1+(n-1)*bindings::stride(y) );
@@ -160,17 +161,18 @@ struct largv_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename VectorY, typename VectorC >
-    static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
-            VectorY& y, VectorC& c ) {
+    template< typename VectorViewX, typename VectorViewY,
+            typename VectorViewC >
+    static std::ptrdiff_t invoke( const fortran_int_t n, VectorViewX& x,
+            VectorViewY& y, VectorViewC& c ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+                VectorViewY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewC >::value) );
         BOOST_ASSERT( bindings::size(c) >= 1+(n-1)*bindings::stride(c) );
         BOOST_ASSERT( bindings::size(x) >= 1+(n-1)*bindings::stride(x) );
         BOOST_ASSERT( bindings::size(y) >= 1+(n-1)*bindings::stride(y) );
@@ -194,106 +196,106 @@ struct largv_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for largv. Its overload differs for
-// * VectorX&
-// * VectorY&
-// * VectorC&
+// * VectorViewX&
+// * VectorViewY&
+// * VectorViewC&
 //
-template< typename VectorX, typename VectorY, typename VectorC >
-inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
-        VectorY& y, VectorC& c ) {
+template< typename VectorViewX, typename VectorViewY, typename VectorViewC >
+inline std::ptrdiff_t largv( const fortran_int_t n, VectorViewX& x,
+        VectorViewY& y, VectorViewC& c ) {
     return largv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, y, c );
+            VectorViewX >::type >::invoke( n, x, y, c );
 }
 
 //
 // Overloaded function for largv. Its overload differs for
-// * const VectorX&
-// * VectorY&
-// * VectorC&
+// * const VectorViewX&
+// * VectorViewY&
+// * VectorViewC&
 //
-template< typename VectorX, typename VectorY, typename VectorC >
-inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
-        VectorY& y, VectorC& c ) {
+template< typename VectorViewX, typename VectorViewY, typename VectorViewC >
+inline std::ptrdiff_t largv( const fortran_int_t n,
+        const VectorViewX& x, VectorViewY& y, VectorViewC& c ) {
     return largv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, y, c );
+            VectorViewX >::type >::invoke( n, x, y, c );
 }
 
 //
 // Overloaded function for largv. Its overload differs for
-// * VectorX&
-// * const VectorY&
-// * VectorC&
+// * VectorViewX&
+// * const VectorViewY&
+// * VectorViewC&
 //
-template< typename VectorX, typename VectorY, typename VectorC >
-inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
-        const VectorY& y, VectorC& c ) {
+template< typename VectorViewX, typename VectorViewY, typename VectorViewC >
+inline std::ptrdiff_t largv( const fortran_int_t n, VectorViewX& x,
+        const VectorViewY& y, VectorViewC& c ) {
     return largv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, y, c );
+            VectorViewX >::type >::invoke( n, x, y, c );
 }
 
 //
 // Overloaded function for largv. Its overload differs for
-// * const VectorX&
-// * const VectorY&
-// * VectorC&
+// * const VectorViewX&
+// * const VectorViewY&
+// * VectorViewC&
 //
-template< typename VectorX, typename VectorY, typename VectorC >
-inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
-        const VectorY& y, VectorC& c ) {
+template< typename VectorViewX, typename VectorViewY, typename VectorViewC >
+inline std::ptrdiff_t largv( const fortran_int_t n,
+        const VectorViewX& x, const VectorViewY& y, VectorViewC& c ) {
     return largv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, y, c );
+            VectorViewX >::type >::invoke( n, x, y, c );
 }
 
 //
 // Overloaded function for largv. Its overload differs for
-// * VectorX&
-// * VectorY&
-// * const VectorC&
+// * VectorViewX&
+// * VectorViewY&
+// * const VectorViewC&
 //
-template< typename VectorX, typename VectorY, typename VectorC >
-inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
-        VectorY& y, const VectorC& c ) {
+template< typename VectorViewX, typename VectorViewY, typename VectorViewC >
+inline std::ptrdiff_t largv( const fortran_int_t n, VectorViewX& x,
+        VectorViewY& y, const VectorViewC& c ) {
     return largv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, y, c );
+            VectorViewX >::type >::invoke( n, x, y, c );
 }
 
 //
 // Overloaded function for largv. Its overload differs for
-// * const VectorX&
-// * VectorY&
-// * const VectorC&
+// * const VectorViewX&
+// * VectorViewY&
+// * const VectorViewC&
 //
-template< typename VectorX, typename VectorY, typename VectorC >
-inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
-        VectorY& y, const VectorC& c ) {
+template< typename VectorViewX, typename VectorViewY, typename VectorViewC >
+inline std::ptrdiff_t largv( const fortran_int_t n,
+        const VectorViewX& x, VectorViewY& y, const VectorViewC& c ) {
     return largv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, y, c );
+            VectorViewX >::type >::invoke( n, x, y, c );
 }
 
 //
 // Overloaded function for largv. Its overload differs for
-// * VectorX&
-// * const VectorY&
-// * const VectorC&
+// * VectorViewX&
+// * const VectorViewY&
+// * const VectorViewC&
 //
-template< typename VectorX, typename VectorY, typename VectorC >
-inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
-        const VectorY& y, const VectorC& c ) {
+template< typename VectorViewX, typename VectorViewY, typename VectorViewC >
+inline std::ptrdiff_t largv( const fortran_int_t n, VectorViewX& x,
+        const VectorViewY& y, const VectorViewC& c ) {
     return largv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, y, c );
+            VectorViewX >::type >::invoke( n, x, y, c );
 }
 
 //
 // Overloaded function for largv. Its overload differs for
-// * const VectorX&
-// * const VectorY&
-// * const VectorC&
+// * const VectorViewX&
+// * const VectorViewY&
+// * const VectorViewC&
 //
-template< typename VectorX, typename VectorY, typename VectorC >
-inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
-        const VectorY& y, const VectorC& c ) {
+template< typename VectorViewX, typename VectorViewY, typename VectorViewC >
+inline std::ptrdiff_t largv( const fortran_int_t n,
+        const VectorViewX& x, const VectorViewY& y, const VectorViewC& c ) {
     return largv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, y, c );
+            VectorViewX >::type >::invoke( n, x, y, c );
 }
 
 } // namespace lapack

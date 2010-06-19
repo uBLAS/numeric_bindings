@@ -256,9 +256,9 @@ struct tbsv_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixA, typename VectorX >
+    template< typename MatrixA, typename VectorViewX >
     static result_type invoke( const std::ptrdiff_t k, const MatrixA& a,
-            VectorX& x ) {
+            VectorViewX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename detail::default_order< MatrixA >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -267,8 +267,8 @@ struct tbsv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+                VectorViewX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewX >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         detail::tbsv( order(), uplo(), trans(), diag(),
@@ -288,24 +288,25 @@ struct tbsv_impl {
 
 //
 // Overloaded function for tbsv. Its overload differs for
-// * VectorX&
+// * VectorViewX&
 //
-template< typename MatrixA, typename VectorX >
+template< typename MatrixA, typename VectorViewX >
 inline typename tbsv_impl< typename bindings::value_type<
         MatrixA >::type >::result_type
-tbsv( const std::ptrdiff_t k, const MatrixA& a, VectorX& x ) {
+tbsv( const std::ptrdiff_t k, const MatrixA& a, VectorViewX& x ) {
     tbsv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( k, a, x );
 }
 
 //
 // Overloaded function for tbsv. Its overload differs for
-// * const VectorX&
+// * const VectorViewX&
 //
-template< typename MatrixA, typename VectorX >
+template< typename MatrixA, typename VectorViewX >
 inline typename tbsv_impl< typename bindings::value_type<
         MatrixA >::type >::result_type
-tbsv( const std::ptrdiff_t k, const MatrixA& a, const VectorX& x ) {
+tbsv( const std::ptrdiff_t k, const MatrixA& a,
+        const VectorViewX& x ) {
     tbsv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( k, a, x );
 }

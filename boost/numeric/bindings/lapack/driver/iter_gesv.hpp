@@ -354,7 +354,6 @@ struct iter_gesv_impl< Value, typename boost::enable_if< is_complex< Value > >::
 //
 // Overloaded function for iter_gesv. Its overload differs for
 // * MatrixA&
-// * VectorIPIV&
 // * MatrixX&
 // * User-defined workspace
 //
@@ -371,7 +370,6 @@ iter_gesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
 //
 // Overloaded function for iter_gesv. Its overload differs for
 // * MatrixA&
-// * VectorIPIV&
 // * MatrixX&
 // * Default workspace-type (optimal)
 //
@@ -389,7 +387,6 @@ iter_gesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
 //
 // Overloaded function for iter_gesv. Its overload differs for
 // * const MatrixA&
-// * VectorIPIV&
 // * MatrixX&
 // * User-defined workspace
 //
@@ -406,7 +403,6 @@ iter_gesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
 //
 // Overloaded function for iter_gesv. Its overload differs for
 // * const MatrixA&
-// * VectorIPIV&
 // * MatrixX&
 // * Default workspace-type (optimal)
 //
@@ -424,77 +420,6 @@ iter_gesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
 //
 // Overloaded function for iter_gesv. Its overload differs for
 // * MatrixA&
-// * const VectorIPIV&
-// * MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-iter_gesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        fortran_int_t& iter, Workspace work ) {
-    return iter_gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
-}
-
-//
-// Overloaded function for iter_gesv. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline typename boost::disable_if< detail::is_workspace< MatrixX >,
-        std::ptrdiff_t >::type
-iter_gesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        fortran_int_t& iter ) {
-    return iter_gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for iter_gesv. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-iter_gesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, fortran_int_t& iter, Workspace work ) {
-    return iter_gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
-}
-
-//
-// Overloaded function for iter_gesv. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline typename boost::disable_if< detail::is_workspace< MatrixX >,
-        std::ptrdiff_t >::type
-iter_gesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, fortran_int_t& iter ) {
-    return iter_gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for iter_gesv. Its overload differs for
-// * MatrixA&
-// * VectorIPIV&
 // * const MatrixX&
 // * User-defined workspace
 //
@@ -511,7 +436,6 @@ iter_gesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
 //
 // Overloaded function for iter_gesv. Its overload differs for
 // * MatrixA&
-// * VectorIPIV&
 // * const MatrixX&
 // * Default workspace-type (optimal)
 //
@@ -529,7 +453,6 @@ iter_gesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
 //
 // Overloaded function for iter_gesv. Its overload differs for
 // * const MatrixA&
-// * VectorIPIV&
 // * const MatrixX&
 // * User-defined workspace
 //
@@ -546,7 +469,6 @@ iter_gesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
 //
 // Overloaded function for iter_gesv. Its overload differs for
 // * const MatrixA&
-// * VectorIPIV&
 // * const MatrixX&
 // * Default workspace-type (optimal)
 //
@@ -555,76 +477,6 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
 inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 iter_gesv( const MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, fortran_int_t& iter ) {
-    return iter_gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for iter_gesv. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-iter_gesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, fortran_int_t& iter, Workspace work ) {
-    return iter_gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
-}
-
-//
-// Overloaded function for iter_gesv. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline typename boost::disable_if< detail::is_workspace< MatrixX >,
-        std::ptrdiff_t >::type
-iter_gesv( MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, fortran_int_t& iter ) {
-    return iter_gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b, x, iter,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for iter_gesv. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-iter_gesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, fortran_int_t& iter, Workspace work ) {
-    return iter_gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b, x, iter, work );
-}
-
-//
-// Overloaded function for iter_gesv. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline typename boost::disable_if< detail::is_workspace< MatrixX >,
-        std::ptrdiff_t >::type
-iter_gesv( const MatrixA& a, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, fortran_int_t& iter ) {
     return iter_gesv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, ipiv, b, x, iter,

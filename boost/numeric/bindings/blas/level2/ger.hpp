@@ -158,17 +158,17 @@ struct ger_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename VectorY, typename MatrixA >
-    static result_type invoke( const real_type alpha, const VectorX& x,
-            const VectorY& y, MatrixA& a ) {
+    template< typename VectorViewX, typename VectorViewY, typename MatrixA >
+    static result_type invoke( const real_type alpha, const VectorViewX& x,
+            const VectorViewY& y, MatrixA& a ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
+                VectorViewY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
@@ -194,28 +194,28 @@ struct ger_impl {
 // Overloaded function for ger. Its overload differs for
 // * MatrixA&
 //
-template< typename VectorX, typename VectorY, typename MatrixA >
+template< typename VectorViewX, typename VectorViewY, typename MatrixA >
 inline typename ger_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
+        VectorViewX >::type >::result_type
 ger( const typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type alpha, const VectorX& x, const VectorY& y,
-        MatrixA& a ) {
+        VectorViewX >::type >::type alpha, const VectorViewX& x,
+        const VectorViewY& y, MatrixA& a ) {
     ger_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( alpha, x, y, a );
+            VectorViewX >::type >::invoke( alpha, x, y, a );
 }
 
 //
 // Overloaded function for ger. Its overload differs for
 // * const MatrixA&
 //
-template< typename VectorX, typename VectorY, typename MatrixA >
+template< typename VectorViewX, typename VectorViewY, typename MatrixA >
 inline typename ger_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
+        VectorViewX >::type >::result_type
 ger( const typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type alpha, const VectorX& x, const VectorY& y,
-        const MatrixA& a ) {
+        VectorViewX >::type >::type alpha, const VectorViewX& x,
+        const VectorViewY& y, const MatrixA& a ) {
     ger_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( alpha, x, y, a );
+            VectorViewX >::type >::invoke( alpha, x, y, a );
 }
 
 } // namespace blas

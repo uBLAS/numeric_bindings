@@ -201,8 +201,6 @@ struct geequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for geequ. Its overload differs for
-// * VectorR&
-// * VectorC&
 //
 template< typename MatrixA, typename VectorR, typename VectorC >
 inline std::ptrdiff_t geequ( const MatrixA& a, VectorR& r, VectorC& c,
@@ -211,54 +209,6 @@ inline std::ptrdiff_t geequ( const MatrixA& a, VectorR& r, VectorC& c,
         typename bindings::value_type< MatrixA >::type >::type& colcnd,
         typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& amax ) {
-    return geequ_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, r, c, rowcnd, colcnd, amax );
-}
-
-//
-// Overloaded function for geequ. Its overload differs for
-// * const VectorR&
-// * VectorC&
-//
-template< typename MatrixA, typename VectorR, typename VectorC >
-inline std::ptrdiff_t geequ( const MatrixA& a, const VectorR& r,
-        VectorC& c, typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& rowcnd, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& colcnd,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& amax ) {
-    return geequ_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, r, c, rowcnd, colcnd, amax );
-}
-
-//
-// Overloaded function for geequ. Its overload differs for
-// * VectorR&
-// * const VectorC&
-//
-template< typename MatrixA, typename VectorR, typename VectorC >
-inline std::ptrdiff_t geequ( const MatrixA& a, VectorR& r,
-        const VectorC& c, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& rowcnd,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& colcnd, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& amax ) {
-    return geequ_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, r, c, rowcnd, colcnd, amax );
-}
-
-//
-// Overloaded function for geequ. Its overload differs for
-// * const VectorR&
-// * const VectorC&
-//
-template< typename MatrixA, typename VectorR, typename VectorC >
-inline std::ptrdiff_t geequ( const MatrixA& a, const VectorR& r,
-        const VectorC& c, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& rowcnd,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& colcnd, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& amax ) {
     return geequ_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, r, c, rowcnd, colcnd, amax );
 }

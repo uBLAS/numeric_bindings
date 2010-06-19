@@ -172,44 +172,9 @@ struct pttrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for pttrf. Its overload differs for
-// * VectorD&
-// * VectorE&
 //
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t pttrf( VectorD& d, VectorE& e ) {
-    return pttrf_impl< typename bindings::value_type<
-            VectorE >::type >::invoke( d, e );
-}
-
-//
-// Overloaded function for pttrf. Its overload differs for
-// * const VectorD&
-// * VectorE&
-//
-template< typename VectorD, typename VectorE >
-inline std::ptrdiff_t pttrf( const VectorD& d, VectorE& e ) {
-    return pttrf_impl< typename bindings::value_type<
-            VectorE >::type >::invoke( d, e );
-}
-
-//
-// Overloaded function for pttrf. Its overload differs for
-// * VectorD&
-// * const VectorE&
-//
-template< typename VectorD, typename VectorE >
-inline std::ptrdiff_t pttrf( VectorD& d, const VectorE& e ) {
-    return pttrf_impl< typename bindings::value_type<
-            VectorE >::type >::invoke( d, e );
-}
-
-//
-// Overloaded function for pttrf. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-//
-template< typename VectorD, typename VectorE >
-inline std::ptrdiff_t pttrf( const VectorD& d, const VectorE& e ) {
     return pttrf_impl< typename bindings::value_type<
             VectorE >::type >::invoke( d, e );
 }

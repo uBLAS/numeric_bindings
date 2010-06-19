@@ -137,15 +137,15 @@ struct larz_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename Side, typename VectorV, typename MatrixC,
+    template< typename Side, typename VectorViewV, typename MatrixC,
             typename WORK >
     static std::ptrdiff_t invoke( const Side side, const fortran_int_t l,
-            const VectorV& v, const real_type tau, MatrixC& c,
+            const VectorViewV& v, const real_type tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixC >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename bindings::value_type< VectorV >::type >::type,
+                typename bindings::value_type< VectorViewV >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
@@ -170,9 +170,9 @@ struct larz_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename Side, typename VectorV, typename MatrixC >
+    template< typename Side, typename VectorViewV, typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const fortran_int_t l,
-            const VectorV& v, const real_type tau, MatrixC& c,
+            const VectorViewV& v, const real_type tau, MatrixC& c,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( side,
@@ -187,9 +187,9 @@ struct larz_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename Side, typename VectorV, typename MatrixC >
+    template< typename Side, typename VectorViewV, typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const fortran_int_t l,
-            const VectorV& v, const real_type tau, MatrixC& c,
+            const VectorViewV& v, const real_type tau, MatrixC& c,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, l, v, tau, c, minimal_workspace() );
@@ -223,15 +223,15 @@ struct larz_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename Side, typename VectorV, typename MatrixC,
+    template< typename Side, typename VectorViewV, typename MatrixC,
             typename WORK >
     static std::ptrdiff_t invoke( const Side side, const fortran_int_t l,
-            const VectorV& v, const value_type tau, MatrixC& c,
+            const VectorViewV& v, const value_type tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixC >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename bindings::value_type< VectorV >::type >::type,
+                typename bindings::value_type< VectorViewV >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
@@ -256,9 +256,9 @@ struct larz_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename Side, typename VectorV, typename MatrixC >
+    template< typename Side, typename VectorViewV, typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const fortran_int_t l,
-            const VectorV& v, const value_type tau, MatrixC& c,
+            const VectorViewV& v, const value_type tau, MatrixC& c,
             minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( side,
@@ -273,9 +273,9 @@ struct larz_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename Side, typename VectorV, typename MatrixC >
+    template< typename Side, typename VectorViewV, typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const fortran_int_t l,
-            const VectorV& v, const value_type tau, MatrixC& c,
+            const VectorViewV& v, const value_type tau, MatrixC& c,
             optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, l, v, tau, c, minimal_workspace() );
@@ -310,15 +310,15 @@ struct larz_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 // * MatrixC&
 // * User-defined workspace
 //
-template< typename Side, typename VectorV, typename MatrixC,
+template< typename Side, typename VectorViewV, typename MatrixC,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-larz( const Side side, const fortran_int_t l, const VectorV& v,
+larz( const Side side, const fortran_int_t l, const VectorViewV& v,
         const typename remove_imaginary< typename bindings::value_type<
-        VectorV >::type >::type tau, MatrixC& c, Workspace work ) {
+        VectorViewV >::type >::type tau, MatrixC& c, Workspace work ) {
     return larz_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, l, v, tau, c, work );
+            VectorViewV >::type >::invoke( side, l, v, tau, c, work );
 }
 
 //
@@ -326,14 +326,14 @@ larz( const Side side, const fortran_int_t l, const VectorV& v,
 // * MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename Side, typename VectorV, typename MatrixC >
+template< typename Side, typename VectorViewV, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-larz( const Side side, const fortran_int_t l, const VectorV& v,
+larz( const Side side, const fortran_int_t l, const VectorViewV& v,
         const typename remove_imaginary< typename bindings::value_type<
-        VectorV >::type >::type tau, MatrixC& c ) {
+        VectorViewV >::type >::type tau, MatrixC& c ) {
     return larz_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, l, v, tau, c,
+            VectorViewV >::type >::invoke( side, l, v, tau, c,
             optimal_workspace() );
 }
 
@@ -342,15 +342,15 @@ larz( const Side side, const fortran_int_t l, const VectorV& v,
 // * const MatrixC&
 // * User-defined workspace
 //
-template< typename Side, typename VectorV, typename MatrixC,
+template< typename Side, typename VectorViewV, typename MatrixC,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-larz( const Side side, const fortran_int_t l, const VectorV& v,
+larz( const Side side, const fortran_int_t l, const VectorViewV& v,
         const typename remove_imaginary< typename bindings::value_type<
-        VectorV >::type >::type tau, const MatrixC& c, Workspace work ) {
+        VectorViewV >::type >::type tau, const MatrixC& c, Workspace work ) {
     return larz_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, l, v, tau, c, work );
+            VectorViewV >::type >::invoke( side, l, v, tau, c, work );
 }
 
 //
@@ -358,14 +358,14 @@ larz( const Side side, const fortran_int_t l, const VectorV& v,
 // * const MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename Side, typename VectorV, typename MatrixC >
+template< typename Side, typename VectorViewV, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-larz( const Side side, const fortran_int_t l, const VectorV& v,
+larz( const Side side, const fortran_int_t l, const VectorViewV& v,
         const typename remove_imaginary< typename bindings::value_type<
-        VectorV >::type >::type tau, const MatrixC& c ) {
+        VectorViewV >::type >::type tau, const MatrixC& c ) {
     return larz_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, l, v, tau, c,
+            VectorViewV >::type >::invoke( side, l, v, tau, c,
             optimal_workspace() );
 }
 //
@@ -373,15 +373,15 @@ larz( const Side side, const fortran_int_t l, const VectorV& v,
 // * MatrixC&
 // * User-defined workspace
 //
-template< typename Side, typename VectorV, typename MatrixC,
+template< typename Side, typename VectorViewV, typename MatrixC,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-larz( const Side side, const fortran_int_t l, const VectorV& v,
-        const typename bindings::value_type< VectorV >::type tau, MatrixC& c,
-        Workspace work ) {
+larz( const Side side, const fortran_int_t l, const VectorViewV& v,
+        const typename bindings::value_type< VectorViewV >::type tau,
+        MatrixC& c, Workspace work ) {
     return larz_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, l, v, tau, c, work );
+            VectorViewV >::type >::invoke( side, l, v, tau, c, work );
 }
 
 //
@@ -389,14 +389,14 @@ larz( const Side side, const fortran_int_t l, const VectorV& v,
 // * MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename Side, typename VectorV, typename MatrixC >
+template< typename Side, typename VectorViewV, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-larz( const Side side, const fortran_int_t l, const VectorV& v,
-        const typename bindings::value_type< VectorV >::type tau,
+larz( const Side side, const fortran_int_t l, const VectorViewV& v,
+        const typename bindings::value_type< VectorViewV >::type tau,
         MatrixC& c ) {
     return larz_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, l, v, tau, c,
+            VectorViewV >::type >::invoke( side, l, v, tau, c,
             optimal_workspace() );
 }
 
@@ -405,15 +405,15 @@ larz( const Side side, const fortran_int_t l, const VectorV& v,
 // * const MatrixC&
 // * User-defined workspace
 //
-template< typename Side, typename VectorV, typename MatrixC,
+template< typename Side, typename VectorViewV, typename MatrixC,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-larz( const Side side, const fortran_int_t l, const VectorV& v,
-        const typename bindings::value_type< VectorV >::type tau,
+larz( const Side side, const fortran_int_t l, const VectorViewV& v,
+        const typename bindings::value_type< VectorViewV >::type tau,
         const MatrixC& c, Workspace work ) {
     return larz_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, l, v, tau, c, work );
+            VectorViewV >::type >::invoke( side, l, v, tau, c, work );
 }
 
 //
@@ -421,14 +421,14 @@ larz( const Side side, const fortran_int_t l, const VectorV& v,
 // * const MatrixC&
 // * Default workspace-type (optimal)
 //
-template< typename Side, typename VectorV, typename MatrixC >
+template< typename Side, typename VectorViewV, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-larz( const Side side, const fortran_int_t l, const VectorV& v,
-        const typename bindings::value_type< VectorV >::type tau,
+larz( const Side side, const fortran_int_t l, const VectorViewV& v,
+        const typename bindings::value_type< VectorViewV >::type tau,
         const MatrixC& c ) {
     return larz_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, l, v, tau, c,
+            VectorViewV >::type >::invoke( side, l, v, tau, c,
             optimal_workspace() );
 }
 

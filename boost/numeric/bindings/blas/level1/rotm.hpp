@@ -137,19 +137,21 @@ struct rotm_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename VectorY, typename VectorPARAM >
-    static result_type invoke( VectorX& x, VectorY& y, VectorPARAM& param ) {
+    template< typename VectorViewX, typename VectorViewY,
+            typename VectorPARAM >
+    static result_type invoke( VectorViewX& x, VectorViewY& y,
+            VectorPARAM& param ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
+                VectorViewY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 VectorPARAM >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorPARAM >::value) );
         detail::rotm( bindings::size(x), bindings::begin_value(x),
                 bindings::stride(x), bindings::begin_value(y),
@@ -167,114 +169,54 @@ struct rotm_impl {
 
 //
 // Overloaded function for rotm. Its overload differs for
-// * VectorX&
-// * VectorY&
-// * VectorPARAM&
+// * VectorViewX&
+// * VectorViewY&
 //
-template< typename VectorX, typename VectorY, typename VectorPARAM >
+template< typename VectorViewX, typename VectorViewY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rotm( VectorX& x, VectorY& y, VectorPARAM& param ) {
+        VectorViewX >::type >::result_type
+rotm( VectorViewX& x, VectorViewY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, param );
+            VectorViewX >::type >::invoke( x, y, param );
 }
 
 //
 // Overloaded function for rotm. Its overload differs for
-// * const VectorX&
-// * VectorY&
-// * VectorPARAM&
+// * const VectorViewX&
+// * VectorViewY&
 //
-template< typename VectorX, typename VectorY, typename VectorPARAM >
+template< typename VectorViewX, typename VectorViewY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rotm( const VectorX& x, VectorY& y, VectorPARAM& param ) {
+        VectorViewX >::type >::result_type
+rotm( const VectorViewX& x, VectorViewY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, param );
+            VectorViewX >::type >::invoke( x, y, param );
 }
 
 //
 // Overloaded function for rotm. Its overload differs for
-// * VectorX&
-// * const VectorY&
-// * VectorPARAM&
+// * VectorViewX&
+// * const VectorViewY&
 //
-template< typename VectorX, typename VectorY, typename VectorPARAM >
+template< typename VectorViewX, typename VectorViewY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rotm( VectorX& x, const VectorY& y, VectorPARAM& param ) {
+        VectorViewX >::type >::result_type
+rotm( VectorViewX& x, const VectorViewY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, param );
+            VectorViewX >::type >::invoke( x, y, param );
 }
 
 //
 // Overloaded function for rotm. Its overload differs for
-// * const VectorX&
-// * const VectorY&
-// * VectorPARAM&
+// * const VectorViewX&
+// * const VectorViewY&
 //
-template< typename VectorX, typename VectorY, typename VectorPARAM >
+template< typename VectorViewX, typename VectorViewY, typename VectorPARAM >
 inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rotm( const VectorX& x, const VectorY& y, VectorPARAM& param ) {
+        VectorViewX >::type >::result_type
+rotm( const VectorViewX& x, const VectorViewY& y, VectorPARAM& param ) {
     rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, param );
-}
-
-//
-// Overloaded function for rotm. Its overload differs for
-// * VectorX&
-// * VectorY&
-// * const VectorPARAM&
-//
-template< typename VectorX, typename VectorY, typename VectorPARAM >
-inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rotm( VectorX& x, VectorY& y, const VectorPARAM& param ) {
-    rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, param );
-}
-
-//
-// Overloaded function for rotm. Its overload differs for
-// * const VectorX&
-// * VectorY&
-// * const VectorPARAM&
-//
-template< typename VectorX, typename VectorY, typename VectorPARAM >
-inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rotm( const VectorX& x, VectorY& y, const VectorPARAM& param ) {
-    rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, param );
-}
-
-//
-// Overloaded function for rotm. Its overload differs for
-// * VectorX&
-// * const VectorY&
-// * const VectorPARAM&
-//
-template< typename VectorX, typename VectorY, typename VectorPARAM >
-inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rotm( VectorX& x, const VectorY& y, const VectorPARAM& param ) {
-    rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, param );
-}
-
-//
-// Overloaded function for rotm. Its overload differs for
-// * const VectorX&
-// * const VectorY&
-// * const VectorPARAM&
-//
-template< typename VectorX, typename VectorY, typename VectorPARAM >
-inline typename rotm_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-rotm( const VectorX& x, const VectorY& y, const VectorPARAM& param ) {
-    rotm_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y, param );
+            VectorViewX >::type >::invoke( x, y, param );
 }
 
 } // namespace blas

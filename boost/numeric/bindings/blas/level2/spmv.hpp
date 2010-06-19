@@ -162,21 +162,21 @@ struct spmv_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixAP, typename VectorX, typename VectorY >
+    template< typename MatrixAP, typename VectorViewX, typename VectorViewY >
     static result_type invoke( const real_type alpha, const MatrixAP& ap,
-            const VectorX& x, const real_type beta, VectorY& y ) {
+            const VectorViewX& x, const real_type beta, VectorViewY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAP >::type order;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< MatrixAP >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorX >::type >::type >::value) );
+                VectorViewX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< MatrixAP >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+                VectorViewY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
         detail::spmv( order(), uplo(), bindings::size_column(ap), alpha,
                 bindings::begin_value(ap), bindings::begin_value(x),
                 bindings::stride(x), beta, bindings::begin_value(y),
@@ -194,30 +194,32 @@ struct spmv_impl {
 
 //
 // Overloaded function for spmv. Its overload differs for
-// * VectorY&
+// * VectorViewY&
 //
-template< typename MatrixAP, typename VectorX, typename VectorY >
+template< typename MatrixAP, typename VectorViewX, typename VectorViewY >
 inline typename spmv_impl< typename bindings::value_type<
         MatrixAP >::type >::result_type
 spmv( const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type alpha, const MatrixAP& ap, const VectorX& x,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type beta, VectorY& y ) {
+        MatrixAP >::type >::type alpha, const MatrixAP& ap,
+        const VectorViewX& x, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type beta,
+        VectorViewY& y ) {
     spmv_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( alpha, ap, x, beta, y );
 }
 
 //
 // Overloaded function for spmv. Its overload differs for
-// * const VectorY&
+// * const VectorViewY&
 //
-template< typename MatrixAP, typename VectorX, typename VectorY >
+template< typename MatrixAP, typename VectorViewX, typename VectorViewY >
 inline typename spmv_impl< typename bindings::value_type<
         MatrixAP >::type >::result_type
 spmv( const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type alpha, const MatrixAP& ap, const VectorX& x,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type beta, const VectorY& y ) {
+        MatrixAP >::type >::type alpha, const MatrixAP& ap,
+        const VectorViewX& x, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type beta,
+        const VectorViewY& y ) {
     spmv_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( alpha, ap, x, beta, y );
 }

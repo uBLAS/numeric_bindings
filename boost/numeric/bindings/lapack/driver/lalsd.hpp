@@ -387,8 +387,6 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for lalsd. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * MatrixB&
 // * User-defined workspace
 //
@@ -408,8 +406,6 @@ lalsd( const char uplo, const fortran_int_t smlsiz,
 
 //
 // Overloaded function for lalsd. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * MatrixB&
 // * Default workspace-type (optimal)
 //
@@ -427,129 +423,6 @@ lalsd( const char uplo, const fortran_int_t smlsiz,
 
 //
 // Overloaded function for lalsd. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixB,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixB >::type >::type rcond, fortran_int_t& rank,
-        Workspace work ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            work );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixB >
-inline typename boost::disable_if< detail::is_workspace< MatrixB >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, const VectorD& d, VectorE& e, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixB >::type >::type rcond, fortran_int_t& rank ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixB,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixB >::type >::type rcond, fortran_int_t& rank,
-        Workspace work ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            work );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixB >
-inline typename boost::disable_if< detail::is_workspace< MatrixB >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, VectorD& d, const VectorE& e, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixB >::type >::type rcond, fortran_int_t& rank ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixB,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixB& b, const typename remove_imaginary<
-        typename bindings::value_type< MatrixB >::type >::type rcond,
-        fortran_int_t& rank, Workspace work ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            work );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixB >
-inline typename boost::disable_if< detail::is_workspace< MatrixB >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        MatrixB& b, const typename remove_imaginary<
-        typename bindings::value_type< MatrixB >::type >::type rcond,
-        fortran_int_t& rank ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * const MatrixB&
 // * User-defined workspace
 //
@@ -569,8 +442,6 @@ lalsd( const char uplo, const fortran_int_t smlsiz,
 
 //
 // Overloaded function for lalsd. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * const MatrixB&
 // * Default workspace-type (optimal)
 //
@@ -581,129 +452,6 @@ lalsd( const char uplo, const fortran_int_t smlsiz,
         const fortran_int_t n, VectorD& d, VectorE& e, const MatrixB& b,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixB >::type >::type rcond, fortran_int_t& rank ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixB,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixB& b, const typename remove_imaginary<
-        typename bindings::value_type< MatrixB >::type >::type rcond,
-        fortran_int_t& rank, Workspace work ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            work );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixB >
-inline typename boost::disable_if< detail::is_workspace< MatrixB >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, const VectorD& d, VectorE& e,
-        const MatrixB& b, const typename remove_imaginary<
-        typename bindings::value_type< MatrixB >::type >::type rcond,
-        fortran_int_t& rank ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixB,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixB& b, const typename remove_imaginary<
-        typename bindings::value_type< MatrixB >::type >::type rcond,
-        fortran_int_t& rank, Workspace work ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            work );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixB >
-inline typename boost::disable_if< detail::is_workspace< MatrixB >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, VectorD& d, const VectorE& e,
-        const MatrixB& b, const typename remove_imaginary<
-        typename bindings::value_type< MatrixB >::type >::type rcond,
-        fortran_int_t& rank ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixB,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixB& b, const typename remove_imaginary<
-        typename bindings::value_type< MatrixB >::type >::type rcond,
-        fortran_int_t& rank, Workspace work ) {
-    return lalsd_impl< typename bindings::value_type<
-            MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
-            work );
-}
-
-//
-// Overloaded function for lalsd. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixB >
-inline typename boost::disable_if< detail::is_workspace< MatrixB >,
-        std::ptrdiff_t >::type
-lalsd( const char uplo, const fortran_int_t smlsiz,
-        const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const MatrixB& b, const typename remove_imaginary<
-        typename bindings::value_type< MatrixB >::type >::type rcond,
-        fortran_int_t& rank ) {
     return lalsd_impl< typename bindings::value_type<
             MatrixB >::type >::invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
             optimal_workspace() );

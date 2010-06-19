@@ -237,7 +237,6 @@ struct gejsv_impl {
 //
 // Overloaded function for gejsv. Its overload differs for
 // * MatrixA&
-// * VectorSVA&
 // * MatrixU&
 // * MatrixV&
 // * User-defined workspace
@@ -257,7 +256,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * MatrixA&
-// * VectorSVA&
 // * MatrixU&
 // * MatrixV&
 // * Default workspace-type (optimal)
@@ -277,7 +275,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * const MatrixA&
-// * VectorSVA&
 // * MatrixU&
 // * MatrixV&
 // * User-defined workspace
@@ -297,7 +294,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * const MatrixA&
-// * VectorSVA&
 // * MatrixU&
 // * MatrixV&
 // * Default workspace-type (optimal)
@@ -317,87 +313,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * MatrixA&
-// * const VectorSVA&
-// * MatrixU&
-// * MatrixV&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, MatrixA& a,
-        const VectorSVA& sva, MatrixU& u, MatrixV& v, Workspace work ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, work );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * MatrixA&
-// * const VectorSVA&
-// * MatrixU&
-// * MatrixV&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV >
-inline typename boost::disable_if< detail::is_workspace< MatrixV >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, MatrixA& a,
-        const VectorSVA& sva, MatrixU& u, MatrixV& v ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, optimal_workspace() );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * const MatrixA&
-// * const VectorSVA&
-// * MatrixU&
-// * MatrixV&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, const MatrixA& a,
-        const VectorSVA& sva, MatrixU& u, MatrixV& v, Workspace work ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, work );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * const MatrixA&
-// * const VectorSVA&
-// * MatrixU&
-// * MatrixV&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV >
-inline typename boost::disable_if< detail::is_workspace< MatrixV >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, const MatrixA& a,
-        const VectorSVA& sva, MatrixU& u, MatrixV& v ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, optimal_workspace() );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * MatrixA&
-// * VectorSVA&
 // * const MatrixU&
 // * MatrixV&
 // * User-defined workspace
@@ -417,7 +332,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * MatrixA&
-// * VectorSVA&
 // * const MatrixU&
 // * MatrixV&
 // * Default workspace-type (optimal)
@@ -437,7 +351,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * const MatrixA&
-// * VectorSVA&
 // * const MatrixU&
 // * MatrixV&
 // * User-defined workspace
@@ -457,7 +370,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * const MatrixA&
-// * VectorSVA&
 // * const MatrixU&
 // * MatrixV&
 // * Default workspace-type (optimal)
@@ -477,87 +389,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * MatrixA&
-// * const VectorSVA&
-// * const MatrixU&
-// * MatrixV&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, MatrixA& a,
-        const VectorSVA& sva, const MatrixU& u, MatrixV& v, Workspace work ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, work );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * MatrixA&
-// * const VectorSVA&
-// * const MatrixU&
-// * MatrixV&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV >
-inline typename boost::disable_if< detail::is_workspace< MatrixV >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, MatrixA& a,
-        const VectorSVA& sva, const MatrixU& u, MatrixV& v ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, optimal_workspace() );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * const MatrixA&
-// * const VectorSVA&
-// * const MatrixU&
-// * MatrixV&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, const MatrixA& a,
-        const VectorSVA& sva, const MatrixU& u, MatrixV& v, Workspace work ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, work );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * const MatrixA&
-// * const VectorSVA&
-// * const MatrixU&
-// * MatrixV&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV >
-inline typename boost::disable_if< detail::is_workspace< MatrixV >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, const MatrixA& a,
-        const VectorSVA& sva, const MatrixU& u, MatrixV& v ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, optimal_workspace() );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * MatrixA&
-// * VectorSVA&
 // * MatrixU&
 // * const MatrixV&
 // * User-defined workspace
@@ -577,7 +408,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * MatrixA&
-// * VectorSVA&
 // * MatrixU&
 // * const MatrixV&
 // * Default workspace-type (optimal)
@@ -597,7 +427,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * const MatrixA&
-// * VectorSVA&
 // * MatrixU&
 // * const MatrixV&
 // * User-defined workspace
@@ -617,7 +446,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * const MatrixA&
-// * VectorSVA&
 // * MatrixU&
 // * const MatrixV&
 // * Default workspace-type (optimal)
@@ -637,87 +465,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * MatrixA&
-// * const VectorSVA&
-// * MatrixU&
-// * const MatrixV&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, MatrixA& a,
-        const VectorSVA& sva, MatrixU& u, const MatrixV& v, Workspace work ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, work );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * MatrixA&
-// * const VectorSVA&
-// * MatrixU&
-// * const MatrixV&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV >
-inline typename boost::disable_if< detail::is_workspace< MatrixV >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, MatrixA& a,
-        const VectorSVA& sva, MatrixU& u, const MatrixV& v ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, optimal_workspace() );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * const MatrixA&
-// * const VectorSVA&
-// * MatrixU&
-// * const MatrixV&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, const MatrixA& a,
-        const VectorSVA& sva, MatrixU& u, const MatrixV& v, Workspace work ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, work );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * const MatrixA&
-// * const VectorSVA&
-// * MatrixU&
-// * const MatrixV&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV >
-inline typename boost::disable_if< detail::is_workspace< MatrixV >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, const MatrixA& a,
-        const VectorSVA& sva, MatrixU& u, const MatrixV& v ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, optimal_workspace() );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * MatrixA&
-// * VectorSVA&
 // * const MatrixU&
 // * const MatrixV&
 // * User-defined workspace
@@ -737,7 +484,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * MatrixA&
-// * VectorSVA&
 // * const MatrixU&
 // * const MatrixV&
 // * Default workspace-type (optimal)
@@ -757,7 +503,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * const MatrixA&
-// * VectorSVA&
 // * const MatrixU&
 // * const MatrixV&
 // * User-defined workspace
@@ -777,7 +522,6 @@ gejsv( const char joba, const char jobu, const char jobv,
 //
 // Overloaded function for gejsv. Its overload differs for
 // * const MatrixA&
-// * VectorSVA&
 // * const MatrixU&
 // * const MatrixV&
 // * Default workspace-type (optimal)
@@ -789,88 +533,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixV >,
 gejsv( const char joba, const char jobu, const char jobv,
         const char jobr, const char jobt, const char jobp, const MatrixA& a,
         VectorSVA& sva, const MatrixU& u, const MatrixV& v ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, optimal_workspace() );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * MatrixA&
-// * const VectorSVA&
-// * const MatrixU&
-// * const MatrixV&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, MatrixA& a,
-        const VectorSVA& sva, const MatrixU& u, const MatrixV& v,
-        Workspace work ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, work );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * MatrixA&
-// * const VectorSVA&
-// * const MatrixU&
-// * const MatrixV&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV >
-inline typename boost::disable_if< detail::is_workspace< MatrixV >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, MatrixA& a,
-        const VectorSVA& sva, const MatrixU& u, const MatrixV& v ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, optimal_workspace() );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * const MatrixA&
-// * const VectorSVA&
-// * const MatrixU&
-// * const MatrixV&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, const MatrixA& a,
-        const VectorSVA& sva, const MatrixU& u, const MatrixV& v,
-        Workspace work ) {
-    return gejsv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
-            sva, u, v, work );
-}
-
-//
-// Overloaded function for gejsv. Its overload differs for
-// * const MatrixA&
-// * const VectorSVA&
-// * const MatrixU&
-// * const MatrixV&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorSVA, typename MatrixU,
-        typename MatrixV >
-inline typename boost::disable_if< detail::is_workspace< MatrixV >,
-        std::ptrdiff_t >::type
-gejsv( const char joba, const char jobu, const char jobv,
-        const char jobr, const char jobt, const char jobp, const MatrixA& a,
-        const VectorSVA& sva, const MatrixU& u, const MatrixV& v ) {
     return gejsv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( joba, jobu, jobv, jobr, jobt, jobp, a,
             sva, u, v, optimal_workspace() );

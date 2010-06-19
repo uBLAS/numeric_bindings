@@ -152,7 +152,6 @@ struct gbtrf_impl {
 //
 // Overloaded function for gbtrf. Its overload differs for
 // * MatrixAB&
-// * VectorIPIV&
 //
 template< typename MatrixAB, typename VectorIPIV >
 inline std::ptrdiff_t gbtrf( MatrixAB& ab, VectorIPIV& ipiv ) {
@@ -163,32 +162,9 @@ inline std::ptrdiff_t gbtrf( MatrixAB& ab, VectorIPIV& ipiv ) {
 //
 // Overloaded function for gbtrf. Its overload differs for
 // * const MatrixAB&
-// * VectorIPIV&
 //
 template< typename MatrixAB, typename VectorIPIV >
 inline std::ptrdiff_t gbtrf( const MatrixAB& ab, VectorIPIV& ipiv ) {
-    return gbtrf_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( ab, ipiv );
-}
-
-//
-// Overloaded function for gbtrf. Its overload differs for
-// * MatrixAB&
-// * const VectorIPIV&
-//
-template< typename MatrixAB, typename VectorIPIV >
-inline std::ptrdiff_t gbtrf( MatrixAB& ab, const VectorIPIV& ipiv ) {
-    return gbtrf_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( ab, ipiv );
-}
-
-//
-// Overloaded function for gbtrf. Its overload differs for
-// * const MatrixAB&
-// * const VectorIPIV&
-//
-template< typename MatrixAB, typename VectorIPIV >
-inline std::ptrdiff_t gbtrf( const MatrixAB& ab, const VectorIPIV& ipiv ) {
     return gbtrf_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( ab, ipiv );
 }

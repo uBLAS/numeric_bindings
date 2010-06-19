@@ -216,7 +216,6 @@ struct hegv_impl {
 // Overloaded function for hegv. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * VectorW&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
@@ -233,7 +232,6 @@ hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
 // Overloaded function for hegv. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * VectorW&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
@@ -250,7 +248,6 @@ hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
 // Overloaded function for hegv. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * VectorW&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
@@ -267,7 +264,6 @@ hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
 // Overloaded function for hegv. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * VectorW&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
@@ -284,7 +280,6 @@ hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
 // Overloaded function for hegv. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * VectorW&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
@@ -301,7 +296,6 @@ hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
 // Overloaded function for hegv. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * VectorW&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
@@ -318,7 +312,6 @@ hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
 // Overloaded function for hegv. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorW&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
@@ -335,7 +328,6 @@ hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
 // Overloaded function for hegv. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * VectorW&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
@@ -343,142 +335,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
         const MatrixB& b, VectorW& w ) {
-    return hegv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hegv. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorW&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
-        MatrixB& b, const VectorW& w, Workspace work ) {
-    return hegv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w, work );
-}
-
-//
-// Overloaded function for hegv. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorW&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW >
-inline typename boost::disable_if< detail::is_workspace< VectorW >,
-        std::ptrdiff_t >::type
-hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
-        MatrixB& b, const VectorW& w ) {
-    return hegv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hegv. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorW&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
-        MatrixB& b, const VectorW& w, Workspace work ) {
-    return hegv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w, work );
-}
-
-//
-// Overloaded function for hegv. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorW&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW >
-inline typename boost::disable_if< detail::is_workspace< VectorW >,
-        std::ptrdiff_t >::type
-hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
-        MatrixB& b, const VectorW& w ) {
-    return hegv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hegv. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorW&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
-        const MatrixB& b, const VectorW& w, Workspace work ) {
-    return hegv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w, work );
-}
-
-//
-// Overloaded function for hegv. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorW&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW >
-inline typename boost::disable_if< detail::is_workspace< VectorW >,
-        std::ptrdiff_t >::type
-hegv( const fortran_int_t itype, const char jobz, MatrixA& a,
-        const MatrixB& b, const VectorW& w ) {
-    return hegv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hegv. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorW&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
-        const MatrixB& b, const VectorW& w, Workspace work ) {
-    return hegv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w, work );
-}
-
-//
-// Overloaded function for hegv. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorW&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW >
-inline typename boost::disable_if< detail::is_workspace< VectorW >,
-        std::ptrdiff_t >::type
-hegv( const fortran_int_t itype, const char jobz, const MatrixA& a,
-        const MatrixB& b, const VectorW& w ) {
     return hegv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( itype, jobz, a, b, w,
             optimal_workspace() );

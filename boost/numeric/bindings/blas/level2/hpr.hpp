@@ -157,14 +157,14 @@ struct hpr_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename MatrixAP >
-    static result_type invoke( const real_type alpha, const VectorX& x,
+    template< typename VectorViewX, typename MatrixAP >
+    static result_type invoke( const real_type alpha, const VectorViewX& x,
             MatrixAP& ap ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAP >::type order;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixAP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
@@ -186,26 +186,28 @@ struct hpr_impl {
 // Overloaded function for hpr. Its overload differs for
 // * MatrixAP&
 //
-template< typename VectorX, typename MatrixAP >
+template< typename VectorViewX, typename MatrixAP >
 inline typename hpr_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
+        VectorViewX >::type >::result_type
 hpr( const typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type alpha, const VectorX& x, MatrixAP& ap ) {
+        VectorViewX >::type >::type alpha, const VectorViewX& x,
+        MatrixAP& ap ) {
     hpr_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( alpha, x, ap );
+            VectorViewX >::type >::invoke( alpha, x, ap );
 }
 
 //
 // Overloaded function for hpr. Its overload differs for
 // * const MatrixAP&
 //
-template< typename VectorX, typename MatrixAP >
+template< typename VectorViewX, typename MatrixAP >
 inline typename hpr_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
+        VectorViewX >::type >::result_type
 hpr( const typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type alpha, const VectorX& x, const MatrixAP& ap ) {
+        VectorViewX >::type >::type alpha, const VectorViewX& x,
+        const MatrixAP& ap ) {
     hpr_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( alpha, x, ap );
+            VectorViewX >::type >::invoke( alpha, x, ap );
 }
 
 } // namespace blas

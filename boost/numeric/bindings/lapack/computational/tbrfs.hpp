@@ -410,8 +410,6 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for tbrfs. Its overload differs for
-// * VectorFERR&
-// * VectorBERR&
 // * User-defined workspace
 //
 template< typename MatrixAB, typename MatrixB, typename MatrixX,
@@ -427,8 +425,6 @@ tbrfs( const fortran_int_t kd, const MatrixAB& ab, const MatrixB& b,
 
 //
 // Overloaded function for tbrfs. Its overload differs for
-// * VectorFERR&
-// * VectorBERR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixB, typename MatrixX,
@@ -437,108 +433,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 tbrfs( const fortran_int_t kd, const MatrixAB& ab, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    return tbrfs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( kd, ab, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tbrfs. Its overload differs for
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tbrfs( const fortran_int_t kd, const MatrixAB& ab, const MatrixB& b,
-        const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return tbrfs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( kd, ab, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for tbrfs. Its overload differs for
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-tbrfs( const fortran_int_t kd, const MatrixAB& ab, const MatrixB& b,
-        const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
-    return tbrfs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( kd, ab, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tbrfs. Its overload differs for
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tbrfs( const fortran_int_t kd, const MatrixAB& ab, const MatrixB& b,
-        const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
-        Workspace work ) {
-    return tbrfs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( kd, ab, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for tbrfs. Its overload differs for
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-tbrfs( const fortran_int_t kd, const MatrixAB& ab, const MatrixB& b,
-        const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
-    return tbrfs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( kd, ab, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tbrfs. Its overload differs for
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tbrfs( const fortran_int_t kd, const MatrixAB& ab, const MatrixB& b,
-        const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
-        Workspace work ) {
-    return tbrfs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( kd, ab, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for tbrfs. Its overload differs for
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-tbrfs( const fortran_int_t kd, const MatrixAB& ab, const MatrixB& b,
-        const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
     return tbrfs_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( kd, ab, b, x, ferr, berr,
             optimal_workspace() );

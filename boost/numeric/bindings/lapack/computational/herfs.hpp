@@ -239,8 +239,6 @@ struct herfs_impl {
 //
 // Overloaded function for herfs. Its overload differs for
 // * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -258,8 +256,6 @@ herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
 //
 // Overloaded function for herfs. Its overload differs for
 // * MatrixX&
-// * VectorFERR&
-// * VectorBERR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -277,8 +273,6 @@ herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
 //
 // Overloaded function for herfs. Its overload differs for
 // * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -296,8 +290,6 @@ herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
 //
 // Overloaded function for herfs. Its overload differs for
 // * const MatrixX&
-// * VectorFERR&
-// * VectorBERR&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -308,240 +300,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * const MatrixX&
-// * const VectorFERR&
-// * VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        VectorBERR& berr ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * const MatrixX&
-// * VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr, Workspace work ) {
-    return herfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for herfs. Its overload differs for
-// * const MatrixX&
-// * const VectorFERR&
-// * const VectorBERR&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
-        const VectorBERR& berr ) {
     return herfs_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr,
             optimal_workspace() );

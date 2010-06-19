@@ -132,7 +132,6 @@ struct hpsv_impl {
 //
 // Overloaded function for hpsv. Its overload differs for
 // * MatrixAP&
-// * VectorIPIV&
 // * MatrixB&
 //
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
@@ -144,7 +143,6 @@ inline std::ptrdiff_t hpsv( MatrixAP& ap, VectorIPIV& ipiv, MatrixB& b ) {
 //
 // Overloaded function for hpsv. Its overload differs for
 // * const MatrixAP&
-// * VectorIPIV&
 // * MatrixB&
 //
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
@@ -157,33 +155,6 @@ inline std::ptrdiff_t hpsv( const MatrixAP& ap, VectorIPIV& ipiv,
 //
 // Overloaded function for hpsv. Its overload differs for
 // * MatrixAP&
-// * const VectorIPIV&
-// * MatrixB&
-//
-template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hpsv( MatrixAP& ap, const VectorIPIV& ipiv,
-        MatrixB& b ) {
-    return hpsv_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, ipiv, b );
-}
-
-//
-// Overloaded function for hpsv. Its overload differs for
-// * const MatrixAP&
-// * const VectorIPIV&
-// * MatrixB&
-//
-template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hpsv( const MatrixAP& ap, const VectorIPIV& ipiv,
-        MatrixB& b ) {
-    return hpsv_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, ipiv, b );
-}
-
-//
-// Overloaded function for hpsv. Its overload differs for
-// * MatrixAP&
-// * VectorIPIV&
 // * const MatrixB&
 //
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
@@ -196,37 +167,10 @@ inline std::ptrdiff_t hpsv( MatrixAP& ap, VectorIPIV& ipiv,
 //
 // Overloaded function for hpsv. Its overload differs for
 // * const MatrixAP&
-// * VectorIPIV&
 // * const MatrixB&
 //
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t hpsv( const MatrixAP& ap, VectorIPIV& ipiv,
-        const MatrixB& b ) {
-    return hpsv_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, ipiv, b );
-}
-
-//
-// Overloaded function for hpsv. Its overload differs for
-// * MatrixAP&
-// * const VectorIPIV&
-// * const MatrixB&
-//
-template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hpsv( MatrixAP& ap, const VectorIPIV& ipiv,
-        const MatrixB& b ) {
-    return hpsv_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, ipiv, b );
-}
-
-//
-// Overloaded function for hpsv. Its overload differs for
-// * const MatrixAP&
-// * const VectorIPIV&
-// * const MatrixB&
-//
-template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hpsv( const MatrixAP& ap, const VectorIPIV& ipiv,
         const MatrixB& b ) {
     return hpsv_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, ipiv, b );

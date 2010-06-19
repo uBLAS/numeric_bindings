@@ -214,7 +214,6 @@ struct getrf_impl {
 //
 // Overloaded function for getrf. Its overload differs for
 // * MatrixA&
-// * VectorIPIV&
 //
 template< typename MatrixA, typename VectorIPIV >
 inline std::ptrdiff_t getrf( MatrixA& a, VectorIPIV& ipiv ) {
@@ -225,32 +224,9 @@ inline std::ptrdiff_t getrf( MatrixA& a, VectorIPIV& ipiv ) {
 //
 // Overloaded function for getrf. Its overload differs for
 // * const MatrixA&
-// * VectorIPIV&
 //
 template< typename MatrixA, typename VectorIPIV >
 inline std::ptrdiff_t getrf( const MatrixA& a, VectorIPIV& ipiv ) {
-    return getrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv );
-}
-
-//
-// Overloaded function for getrf. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-//
-template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t getrf( MatrixA& a, const VectorIPIV& ipiv ) {
-    return getrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv );
-}
-
-//
-// Overloaded function for getrf. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-//
-template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t getrf( const MatrixA& a, const VectorIPIV& ipiv ) {
     return getrf_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, ipiv );
 }

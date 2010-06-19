@@ -167,21 +167,21 @@ struct sbmv_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixA, typename VectorX, typename VectorY >
+    template< typename MatrixA, typename VectorViewX, typename VectorViewY >
     static result_type invoke( const real_type alpha, const MatrixA& a,
-            const VectorX& x, const real_type beta, VectorY& y ) {
+            const VectorViewX& x, const real_type beta, VectorViewY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorX >::type >::type >::value) );
+                VectorViewX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+                VectorViewY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         detail::sbmv( order(), uplo(), bindings::size_column(a),
@@ -202,30 +202,30 @@ struct sbmv_impl {
 
 //
 // Overloaded function for sbmv. Its overload differs for
-// * VectorY&
+// * VectorViewY&
 //
-template< typename MatrixA, typename VectorX, typename VectorY >
+template< typename MatrixA, typename VectorViewX, typename VectorViewY >
 inline typename sbmv_impl< typename bindings::value_type<
         MatrixA >::type >::result_type
 sbmv( const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type alpha, const MatrixA& a, const VectorX& x,
+        MatrixA >::type >::type alpha, const MatrixA& a, const VectorViewX& x,
         const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type beta, VectorY& y ) {
+        MatrixA >::type >::type beta, VectorViewY& y ) {
     sbmv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( alpha, a, x, beta, y );
 }
 
 //
 // Overloaded function for sbmv. Its overload differs for
-// * const VectorY&
+// * const VectorViewY&
 //
-template< typename MatrixA, typename VectorX, typename VectorY >
+template< typename MatrixA, typename VectorViewX, typename VectorViewY >
 inline typename sbmv_impl< typename bindings::value_type<
         MatrixA >::type >::result_type
 sbmv( const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type alpha, const MatrixA& a, const VectorX& x,
+        MatrixA >::type >::type alpha, const MatrixA& a, const VectorViewX& x,
         const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type beta, const VectorY& y ) {
+        MatrixA >::type >::type beta, const VectorViewY& y ) {
     sbmv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( alpha, a, x, beta, y );
 }

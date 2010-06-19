@@ -296,7 +296,6 @@ struct sytrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 // Overloaded function for sytrf. Its overload differs for
 // * MatrixA&
-// * VectorIPIV&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
@@ -310,7 +309,6 @@ sytrf( MatrixA& a, VectorIPIV& ipiv, Workspace work ) {
 //
 // Overloaded function for sytrf. Its overload differs for
 // * MatrixA&
-// * VectorIPIV&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
@@ -324,7 +322,6 @@ sytrf( MatrixA& a, VectorIPIV& ipiv ) {
 //
 // Overloaded function for sytrf. Its overload differs for
 // * const MatrixA&
-// * VectorIPIV&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
@@ -338,69 +335,12 @@ sytrf( const MatrixA& a, VectorIPIV& ipiv, Workspace work ) {
 //
 // Overloaded function for sytrf. Its overload differs for
 // * const MatrixA&
-// * VectorIPIV&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 sytrf( const MatrixA& a, VectorIPIV& ipiv ) {
-    return sytrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
-}
-
-//
-// Overloaded function for sytrf. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sytrf( MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
-    return sytrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, work );
-}
-
-//
-// Overloaded function for sytrf. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV >
-inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
-        std::ptrdiff_t >::type
-sytrf( MatrixA& a, const VectorIPIV& ipiv ) {
-    return sytrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
-}
-
-//
-// Overloaded function for sytrf. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sytrf( const MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
-    return sytrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, work );
-}
-
-//
-// Overloaded function for sytrf. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV >
-inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
-        std::ptrdiff_t >::type
-sytrf( const MatrixA& a, const VectorIPIV& ipiv ) {
     return sytrf_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
 }

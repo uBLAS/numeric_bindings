@@ -239,7 +239,6 @@ struct heevd_impl {
 //
 // Overloaded function for heevd. Its overload differs for
 // * MatrixA&
-// * VectorW&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorW, typename Workspace >
@@ -253,7 +252,6 @@ heevd( const char jobz, MatrixA& a, VectorW& w, Workspace work ) {
 //
 // Overloaded function for heevd. Its overload differs for
 // * MatrixA&
-// * VectorW&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW >
@@ -267,7 +265,6 @@ heevd( const char jobz, MatrixA& a, VectorW& w ) {
 //
 // Overloaded function for heevd. Its overload differs for
 // * const MatrixA&
-// * VectorW&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorW, typename Workspace >
@@ -281,70 +278,12 @@ heevd( const char jobz, const MatrixA& a, VectorW& w, Workspace work ) {
 //
 // Overloaded function for heevd. Its overload differs for
 // * const MatrixA&
-// * VectorW&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW >
 inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 heevd( const char jobz, const MatrixA& a, VectorW& w ) {
-    return heevd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
-}
-
-//
-// Overloaded function for heevd. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-heevd( const char jobz, MatrixA& a, const VectorW& w, Workspace work ) {
-    return heevd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, w, work );
-}
-
-//
-// Overloaded function for heevd. Its overload differs for
-// * MatrixA&
-// * const VectorW&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW >
-inline typename boost::disable_if< detail::is_workspace< VectorW >,
-        std::ptrdiff_t >::type
-heevd( const char jobz, MatrixA& a, const VectorW& w ) {
-    return heevd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
-}
-
-//
-// Overloaded function for heevd. Its overload differs for
-// * const MatrixA&
-// * const VectorW&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-heevd( const char jobz, const MatrixA& a, const VectorW& w,
-        Workspace work ) {
-    return heevd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, a, w, work );
-}
-
-//
-// Overloaded function for heevd. Its overload differs for
-// * const MatrixA&
-// * const VectorW&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW >
-inline typename boost::disable_if< detail::is_workspace< VectorW >,
-        std::ptrdiff_t >::type
-heevd( const char jobz, const MatrixA& a, const VectorW& w ) {
     return heevd_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( jobz, a, w, optimal_workspace() );
 }

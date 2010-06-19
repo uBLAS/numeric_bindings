@@ -184,23 +184,9 @@ struct ppequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for ppequ. Its overload differs for
-// * VectorS&
 //
 template< typename MatrixAP, typename VectorS >
 inline std::ptrdiff_t ppequ( const MatrixAP& ap, VectorS& s,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type& scond, typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type& amax ) {
-    return ppequ_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, s, scond, amax );
-}
-
-//
-// Overloaded function for ppequ. Its overload differs for
-// * const VectorS&
-//
-template< typename MatrixAP, typename VectorS >
-inline std::ptrdiff_t ppequ( const MatrixAP& ap, const VectorS& s,
         typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& scond, typename remove_imaginary<
         typename bindings::value_type< MatrixAP >::type >::type& amax ) {

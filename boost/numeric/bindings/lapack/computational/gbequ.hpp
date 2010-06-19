@@ -218,8 +218,6 @@ struct gbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for gbequ. Its overload differs for
-// * VectorR&
-// * VectorC&
 //
 template< typename MatrixAB, typename VectorR, typename VectorC >
 inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r, VectorC& c,
@@ -228,54 +226,6 @@ inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r, VectorC& c,
         typename bindings::value_type< MatrixAB >::type >::type& colcnd,
         typename remove_imaginary< typename bindings::value_type<
         MatrixAB >::type >::type& amax ) {
-    return gbequ_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( ab, r, c, rowcnd, colcnd, amax );
-}
-
-//
-// Overloaded function for gbequ. Its overload differs for
-// * const VectorR&
-// * VectorC&
-//
-template< typename MatrixAB, typename VectorR, typename VectorC >
-inline std::ptrdiff_t gbequ( const MatrixAB& ab, const VectorR& r,
-        VectorC& c, typename remove_imaginary< typename bindings::value_type<
-        MatrixAB >::type >::type& rowcnd, typename remove_imaginary<
-        typename bindings::value_type< MatrixAB >::type >::type& colcnd,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixAB >::type >::type& amax ) {
-    return gbequ_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( ab, r, c, rowcnd, colcnd, amax );
-}
-
-//
-// Overloaded function for gbequ. Its overload differs for
-// * VectorR&
-// * const VectorC&
-//
-template< typename MatrixAB, typename VectorR, typename VectorC >
-inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r,
-        const VectorC& c, typename remove_imaginary<
-        typename bindings::value_type< MatrixAB >::type >::type& rowcnd,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixAB >::type >::type& colcnd, typename remove_imaginary<
-        typename bindings::value_type< MatrixAB >::type >::type& amax ) {
-    return gbequ_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( ab, r, c, rowcnd, colcnd, amax );
-}
-
-//
-// Overloaded function for gbequ. Its overload differs for
-// * const VectorR&
-// * const VectorC&
-//
-template< typename MatrixAB, typename VectorR, typename VectorC >
-inline std::ptrdiff_t gbequ( const MatrixAB& ab, const VectorR& r,
-        const VectorC& c, typename remove_imaginary<
-        typename bindings::value_type< MatrixAB >::type >::type& rowcnd,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixAB >::type >::type& colcnd, typename remove_imaginary<
-        typename bindings::value_type< MatrixAB >::type >::type& amax ) {
     return gbequ_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( ab, r, c, rowcnd, colcnd, amax );
 }

@@ -111,48 +111,10 @@ struct sterf_impl {
 
 //
 // Overloaded function for sterf. Its overload differs for
-// * VectorD&
-// * VectorE&
 //
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t sterf( const fortran_int_t n, VectorD& d,
         VectorE& e ) {
-    return sterf_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( n, d, e );
-}
-
-//
-// Overloaded function for sterf. Its overload differs for
-// * const VectorD&
-// * VectorE&
-//
-template< typename VectorD, typename VectorE >
-inline std::ptrdiff_t sterf( const fortran_int_t n, const VectorD& d,
-        VectorE& e ) {
-    return sterf_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( n, d, e );
-}
-
-//
-// Overloaded function for sterf. Its overload differs for
-// * VectorD&
-// * const VectorE&
-//
-template< typename VectorD, typename VectorE >
-inline std::ptrdiff_t sterf( const fortran_int_t n, VectorD& d,
-        const VectorE& e ) {
-    return sterf_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( n, d, e );
-}
-
-//
-// Overloaded function for sterf. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-//
-template< typename VectorD, typename VectorE >
-inline std::ptrdiff_t sterf( const fortran_int_t n, const VectorD& d,
-        const VectorE& e ) {
     return sterf_impl< typename bindings::value_type<
             VectorD >::type >::invoke( n, d, e );
 }

@@ -199,14 +199,14 @@ struct copy_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename VectorY >
-    static result_type invoke( const VectorX& x, VectorY& y ) {
+    template< typename VectorViewX, typename VectorViewY >
+    static result_type invoke( const VectorViewX& x, VectorViewY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+                VectorViewY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
         detail::copy( bindings::size(x), bindings::begin_value(x),
                 bindings::stride(x), bindings::begin_value(y),
                 bindings::stride(y) );
@@ -223,26 +223,26 @@ struct copy_impl {
 
 //
 // Overloaded function for copy. Its overload differs for
-// * VectorY&
+// * VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename copy_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-copy( const VectorX& x, VectorY& y ) {
+        VectorViewX >::type >::result_type
+copy( const VectorViewX& x, VectorViewY& y ) {
     copy_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y );
+            VectorViewX >::type >::invoke( x, y );
 }
 
 //
 // Overloaded function for copy. Its overload differs for
-// * const VectorY&
+// * const VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename copy_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-copy( const VectorX& x, const VectorY& y ) {
+        VectorViewX >::type >::result_type
+copy( const VectorViewX& x, const VectorViewY& y ) {
     copy_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y );
+            VectorViewX >::type >::invoke( x, y );
 }
 
 } // namespace blas

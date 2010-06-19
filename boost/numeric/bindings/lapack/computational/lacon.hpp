@@ -262,7 +262,6 @@ struct lacon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for lacon. Its overload differs for
-// * VectorX&
 // * User-defined workspace
 //
 template< typename VectorX, typename Workspace >
@@ -277,7 +276,6 @@ lacon( const fortran_int_t n, VectorX& x, typename remove_imaginary<
 
 //
 // Overloaded function for lacon. Its overload differs for
-// * VectorX&
 // * Default workspace-type (optimal)
 //
 template< typename VectorX >
@@ -286,37 +284,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorX >,
 lacon( const fortran_int_t n, VectorX& x, typename remove_imaginary<
         typename bindings::value_type< VectorX >::type >::type& est,
         fortran_int_t& kase ) {
-    return lacon_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, est, kase, optimal_workspace() );
-}
-
-//
-// Overloaded function for lacon. Its overload differs for
-// * const VectorX&
-// * User-defined workspace
-//
-template< typename VectorX, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-lacon( const fortran_int_t n, const VectorX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type& est, fortran_int_t& kase,
-        Workspace work ) {
-    return lacon_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, x, est, kase, work );
-}
-
-//
-// Overloaded function for lacon. Its overload differs for
-// * const VectorX&
-// * Default workspace-type (optimal)
-//
-template< typename VectorX >
-inline typename boost::disable_if< detail::is_workspace< VectorX >,
-        std::ptrdiff_t >::type
-lacon( const fortran_int_t n, const VectorX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type& est, fortran_int_t& kase ) {
     return lacon_impl< typename bindings::value_type<
             VectorX >::type >::invoke( n, x, est, kase, optimal_workspace() );
 }

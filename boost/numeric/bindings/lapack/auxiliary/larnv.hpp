@@ -133,49 +133,10 @@ struct larnv_impl {
 
 //
 // Overloaded function for larnv. Its overload differs for
-// * VectorISEED&
-// * VectorX&
 //
 template< typename VectorISEED, typename VectorX >
 inline std::ptrdiff_t larnv( const fortran_int_t idist,
         VectorISEED& iseed, const fortran_int_t n, VectorX& x ) {
-    return larnv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( idist, iseed, n, x );
-}
-
-//
-// Overloaded function for larnv. Its overload differs for
-// * const VectorISEED&
-// * VectorX&
-//
-template< typename VectorISEED, typename VectorX >
-inline std::ptrdiff_t larnv( const fortran_int_t idist,
-        const VectorISEED& iseed, const fortran_int_t n, VectorX& x ) {
-    return larnv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( idist, iseed, n, x );
-}
-
-//
-// Overloaded function for larnv. Its overload differs for
-// * VectorISEED&
-// * const VectorX&
-//
-template< typename VectorISEED, typename VectorX >
-inline std::ptrdiff_t larnv( const fortran_int_t idist,
-        VectorISEED& iseed, const fortran_int_t n, const VectorX& x ) {
-    return larnv_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( idist, iseed, n, x );
-}
-
-//
-// Overloaded function for larnv. Its overload differs for
-// * const VectorISEED&
-// * const VectorX&
-//
-template< typename VectorISEED, typename VectorX >
-inline std::ptrdiff_t larnv( const fortran_int_t idist,
-        const VectorISEED& iseed, const fortran_int_t n,
-        const VectorX& x ) {
     return larnv_impl< typename bindings::value_type<
             VectorX >::type >::invoke( idist, iseed, n, x );
 }

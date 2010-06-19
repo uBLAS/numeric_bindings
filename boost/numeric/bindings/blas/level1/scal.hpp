@@ -253,10 +253,10 @@ struct scal_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename ScalarA, typename VectorX >
-    static result_type invoke( const ScalarA a, VectorX& x ) {
+    template< typename ScalarA, typename VectorViewX >
+    static result_type invoke( const ScalarA a, VectorViewX& x ) {
         namespace bindings = ::boost::numeric::bindings;
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewX >::value) );
         detail::scal( bindings::size(x), a, bindings::begin_value(x),
                 bindings::stride(x) );
     }
@@ -272,26 +272,26 @@ struct scal_impl {
 
 //
 // Overloaded function for scal. Its overload differs for
-// * VectorX&
+// * VectorViewX&
 //
-template< typename ScalarA, typename VectorX >
+template< typename ScalarA, typename VectorViewX >
 inline typename scal_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-scal( const ScalarA a, VectorX& x ) {
+        VectorViewX >::type >::result_type
+scal( const ScalarA a, VectorViewX& x ) {
     scal_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( a, x );
+            VectorViewX >::type >::invoke( a, x );
 }
 
 //
 // Overloaded function for scal. Its overload differs for
-// * const VectorX&
+// * const VectorViewX&
 //
-template< typename ScalarA, typename VectorX >
+template< typename ScalarA, typename VectorViewX >
 inline typename scal_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-scal( const ScalarA a, const VectorX& x ) {
+        VectorViewX >::type >::result_type
+scal( const ScalarA a, const VectorViewX& x ) {
     scal_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( a, x );
+            VectorViewX >::type >::invoke( a, x );
 }
 
 } // namespace blas

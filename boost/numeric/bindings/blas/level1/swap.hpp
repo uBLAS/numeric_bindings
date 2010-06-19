@@ -199,15 +199,15 @@ struct swap_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX, typename VectorY >
-    static result_type invoke( VectorX& x, VectorY& y ) {
+    template< typename VectorViewX, typename VectorViewY >
+    static result_type invoke( VectorViewX& x, VectorViewY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorX >::type >::type,
+                typename bindings::value_type< VectorViewX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+                VectorViewY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
         detail::swap( bindings::size(x), bindings::begin_value(x),
                 bindings::stride(x), bindings::begin_value(y),
                 bindings::stride(y) );
@@ -224,54 +224,54 @@ struct swap_impl {
 
 //
 // Overloaded function for swap. Its overload differs for
-// * VectorX&
-// * VectorY&
+// * VectorViewX&
+// * VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename swap_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-swap( VectorX& x, VectorY& y ) {
+        VectorViewX >::type >::result_type
+swap( VectorViewX& x, VectorViewY& y ) {
     swap_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y );
+            VectorViewX >::type >::invoke( x, y );
 }
 
 //
 // Overloaded function for swap. Its overload differs for
-// * const VectorX&
-// * VectorY&
+// * const VectorViewX&
+// * VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename swap_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-swap( const VectorX& x, VectorY& y ) {
+        VectorViewX >::type >::result_type
+swap( const VectorViewX& x, VectorViewY& y ) {
     swap_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y );
+            VectorViewX >::type >::invoke( x, y );
 }
 
 //
 // Overloaded function for swap. Its overload differs for
-// * VectorX&
-// * const VectorY&
+// * VectorViewX&
+// * const VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename swap_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-swap( VectorX& x, const VectorY& y ) {
+        VectorViewX >::type >::result_type
+swap( VectorViewX& x, const VectorViewY& y ) {
     swap_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y );
+            VectorViewX >::type >::invoke( x, y );
 }
 
 //
 // Overloaded function for swap. Its overload differs for
-// * const VectorX&
-// * const VectorY&
+// * const VectorViewX&
+// * const VectorViewY&
 //
-template< typename VectorX, typename VectorY >
+template< typename VectorViewX, typename VectorViewY >
 inline typename swap_impl< typename bindings::value_type<
-        VectorX >::type >::result_type
-swap( const VectorX& x, const VectorY& y ) {
+        VectorViewX >::type >::result_type
+swap( const VectorViewX& x, const VectorViewY& y ) {
     swap_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( x, y );
+            VectorViewX >::type >::invoke( x, y );
 }
 
 } // namespace blas

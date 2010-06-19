@@ -185,23 +185,9 @@ struct poequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for poequ. Its overload differs for
-// * VectorS&
 //
 template< typename MatrixA, typename VectorS >
 inline std::ptrdiff_t poequ( const MatrixA& a, VectorS& s,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& scond, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& amax ) {
-    return poequ_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, s, scond, amax );
-}
-
-//
-// Overloaded function for poequ. Its overload differs for
-// * const VectorS&
-//
-template< typename MatrixA, typename VectorS >
-inline std::ptrdiff_t poequ( const MatrixA& a, const VectorS& s,
         typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scond, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& amax ) {

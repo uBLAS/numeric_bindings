@@ -208,8 +208,6 @@ struct stevd_impl {
 
 //
 // Overloaded function for stevd. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * MatrixZ&
 // * User-defined workspace
 //
@@ -225,8 +223,6 @@ stevd( const char jobz, const fortran_int_t n, VectorD& d,
 
 //
 // Overloaded function for stevd. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -241,107 +237,6 @@ stevd( const char jobz, const fortran_int_t n, VectorD& d,
 
 //
 // Overloaded function for stevd. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, MatrixZ& z, Workspace work ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, work );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, MatrixZ& z ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, MatrixZ& z, Workspace work ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, work );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, MatrixZ& z ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, MatrixZ& z, Workspace work ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, work );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, MatrixZ& z ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * const MatrixZ&
 // * User-defined workspace
 //
@@ -357,8 +252,6 @@ stevd( const char jobz, const fortran_int_t n, VectorD& d,
 
 //
 // Overloaded function for stevd. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * const MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -367,105 +260,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 stevd( const char jobz, const fortran_int_t n, VectorD& d,
         VectorE& e, const MatrixZ& z ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, const MatrixZ& z, Workspace work ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, work );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, const MatrixZ& z ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, const MatrixZ& z, Workspace work ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, work );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, const MatrixZ& z ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const MatrixZ& z, Workspace work ) {
-    return stevd_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, work );
-}
-
-//
-// Overloaded function for stevd. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stevd( const char jobz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const MatrixZ& z ) {
     return stevd_impl< typename bindings::value_type<
             VectorD >::type >::invoke( jobz, n, d, e, z, optimal_workspace() );
 }

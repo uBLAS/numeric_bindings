@@ -297,7 +297,6 @@ struct tzrzf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 // Overloaded function for tzrzf. Its overload differs for
 // * MatrixA&
-// * VectorTAU&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
@@ -311,7 +310,6 @@ tzrzf( MatrixA& a, VectorTAU& tau, Workspace work ) {
 //
 // Overloaded function for tzrzf. Its overload differs for
 // * MatrixA&
-// * VectorTAU&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
@@ -325,7 +323,6 @@ tzrzf( MatrixA& a, VectorTAU& tau ) {
 //
 // Overloaded function for tzrzf. Its overload differs for
 // * const MatrixA&
-// * VectorTAU&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
@@ -339,69 +336,12 @@ tzrzf( const MatrixA& a, VectorTAU& tau, Workspace work ) {
 //
 // Overloaded function for tzrzf. Its overload differs for
 // * const MatrixA&
-// * VectorTAU&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 tzrzf( const MatrixA& a, VectorTAU& tau ) {
-    return tzrzf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for tzrzf. Its overload differs for
-// * MatrixA&
-// * const VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tzrzf( MatrixA& a, const VectorTAU& tau, Workspace work ) {
-    return tzrzf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, tau, work );
-}
-
-//
-// Overloaded function for tzrzf. Its overload differs for
-// * MatrixA&
-// * const VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAU >
-inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
-        std::ptrdiff_t >::type
-tzrzf( MatrixA& a, const VectorTAU& tau ) {
-    return tzrzf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for tzrzf. Its overload differs for
-// * const MatrixA&
-// * const VectorTAU&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tzrzf( const MatrixA& a, const VectorTAU& tau, Workspace work ) {
-    return tzrzf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, tau, work );
-}
-
-//
-// Overloaded function for tzrzf. Its overload differs for
-// * const MatrixA&
-// * const VectorTAU&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAU >
-inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
-        std::ptrdiff_t >::type
-tzrzf( const MatrixA& a, const VectorTAU& tau ) {
     return tzrzf_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, tau, optimal_workspace() );
 }

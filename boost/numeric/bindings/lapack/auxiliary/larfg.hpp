@@ -118,11 +118,11 @@ struct larfg_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX >
+    template< typename VectorViewX >
     static std::ptrdiff_t invoke( const fortran_int_t n, real_type& alpha,
-            VectorX& x, real_type& tau ) {
+            VectorViewX& x, real_type& tau ) {
         namespace bindings = ::boost::numeric::bindings;
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewX >::value) );
         return detail::larfg( n, alpha, bindings::begin_value(x),
                 bindings::stride(x), tau );
     }
@@ -143,11 +143,11 @@ struct larfg_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorX >
+    template< typename VectorViewX >
     static std::ptrdiff_t invoke( const fortran_int_t n, value_type& alpha,
-            VectorX& x, value_type& tau ) {
+            VectorViewX& x, value_type& tau ) {
         namespace bindings = ::boost::numeric::bindings;
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewX >::value) );
         return detail::larfg( n, alpha, bindings::begin_value(x),
                 bindings::stride(x), tau );
     }
@@ -166,53 +166,55 @@ struct larfg_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for larfg. Its overload differs for
-// * VectorX&
+// * VectorViewX&
 //
-template< typename VectorX >
+template< typename VectorViewX >
 inline std::ptrdiff_t larfg( const fortran_int_t n,
         typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type& alpha, VectorX& x, typename remove_imaginary<
-        typename bindings::value_type< VectorX >::type >::type& tau ) {
+        VectorViewX >::type >::type& alpha, VectorViewX& x,
+        typename remove_imaginary< typename bindings::value_type<
+        VectorViewX >::type >::type& tau ) {
     return larfg_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, alpha, x, tau );
+            VectorViewX >::type >::invoke( n, alpha, x, tau );
 }
 
 //
 // Overloaded function for larfg. Its overload differs for
-// * const VectorX&
+// * const VectorViewX&
 //
-template< typename VectorX >
+template< typename VectorViewX >
 inline std::ptrdiff_t larfg( const fortran_int_t n,
         typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type& alpha, const VectorX& x,
+        VectorViewX >::type >::type& alpha, const VectorViewX& x,
         typename remove_imaginary< typename bindings::value_type<
-        VectorX >::type >::type& tau ) {
+        VectorViewX >::type >::type& tau ) {
     return larfg_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, alpha, x, tau );
+            VectorViewX >::type >::invoke( n, alpha, x, tau );
 }
 //
 // Overloaded function for larfg. Its overload differs for
-// * VectorX&
+// * VectorViewX&
 //
-template< typename VectorX >
+template< typename VectorViewX >
 inline std::ptrdiff_t larfg( const fortran_int_t n,
-        typename bindings::value_type< VectorX >::type& alpha, VectorX& x,
-        typename bindings::value_type< VectorX >::type& tau ) {
+        typename bindings::value_type< VectorViewX >::type& alpha,
+        VectorViewX& x, typename bindings::value_type<
+        VectorViewX >::type& tau ) {
     return larfg_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, alpha, x, tau );
+            VectorViewX >::type >::invoke( n, alpha, x, tau );
 }
 
 //
 // Overloaded function for larfg. Its overload differs for
-// * const VectorX&
+// * const VectorViewX&
 //
-template< typename VectorX >
+template< typename VectorViewX >
 inline std::ptrdiff_t larfg( const fortran_int_t n,
-        typename bindings::value_type< VectorX >::type& alpha,
-        const VectorX& x, typename bindings::value_type<
-        VectorX >::type& tau ) {
+        typename bindings::value_type< VectorViewX >::type& alpha,
+        const VectorViewX& x, typename bindings::value_type<
+        VectorViewX >::type& tau ) {
     return larfg_impl< typename bindings::value_type<
-            VectorX >::type >::invoke( n, alpha, x, tau );
+            VectorViewX >::type >::invoke( n, alpha, x, tau );
 }
 
 } // namespace lapack

@@ -400,8 +400,6 @@ struct stedc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for stedc. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * MatrixZ&
 // * User-defined workspace
 //
@@ -417,8 +415,6 @@ stedc( const char compz, VectorD& d, VectorE& e, MatrixZ& z,
 
 //
 // Overloaded function for stedc. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -432,105 +428,6 @@ stedc( const char compz, VectorD& d, VectorE& e, MatrixZ& z ) {
 
 //
 // Overloaded function for stedc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stedc( const char compz, const VectorD& d, VectorE& e, MatrixZ& z,
-        Workspace work ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, work );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stedc( const char compz, const VectorD& d, VectorE& e, MatrixZ& z ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stedc( const char compz, VectorD& d, const VectorE& e, MatrixZ& z,
-        Workspace work ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, work );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stedc( const char compz, VectorD& d, const VectorE& e, MatrixZ& z ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stedc( const char compz, const VectorD& d, const VectorE& e, MatrixZ& z,
-        Workspace work ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, work );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stedc( const char compz, const VectorD& d, const VectorE& e,
-        MatrixZ& z ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * const MatrixZ&
 // * User-defined workspace
 //
@@ -546,8 +443,6 @@ stedc( const char compz, VectorD& d, VectorE& e, const MatrixZ& z,
 
 //
 // Overloaded function for stedc. Its overload differs for
-// * VectorD&
-// * VectorE&
 // * const MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -555,105 +450,6 @@ template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 stedc( const char compz, VectorD& d, VectorE& e, const MatrixZ& z ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stedc( const char compz, const VectorD& d, VectorE& e, const MatrixZ& z,
-        Workspace work ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, work );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * const VectorD&
-// * VectorE&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stedc( const char compz, const VectorD& d, VectorE& e,
-        const MatrixZ& z ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stedc( const char compz, VectorD& d, const VectorE& e, const MatrixZ& z,
-        Workspace work ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, work );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * VectorD&
-// * const VectorE&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stedc( const char compz, VectorD& d, const VectorE& e,
-        const MatrixZ& z ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stedc( const char compz, const VectorD& d, const VectorE& e,
-        const MatrixZ& z, Workspace work ) {
-    return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, d, e, z, work );
-}
-
-//
-// Overloaded function for stedc. Its overload differs for
-// * const VectorD&
-// * const VectorE&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stedc( const char compz, const VectorD& d, const VectorE& e,
-        const MatrixZ& z ) {
     return stedc_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }

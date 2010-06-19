@@ -138,7 +138,6 @@ struct sptrf_impl {
 //
 // Overloaded function for sptrf. Its overload differs for
 // * MatrixAP&
-// * VectorIPIV&
 //
 template< typename MatrixAP, typename VectorIPIV >
 inline std::ptrdiff_t sptrf( MatrixAP& ap, VectorIPIV& ipiv ) {
@@ -149,32 +148,9 @@ inline std::ptrdiff_t sptrf( MatrixAP& ap, VectorIPIV& ipiv ) {
 //
 // Overloaded function for sptrf. Its overload differs for
 // * const MatrixAP&
-// * VectorIPIV&
 //
 template< typename MatrixAP, typename VectorIPIV >
 inline std::ptrdiff_t sptrf( const MatrixAP& ap, VectorIPIV& ipiv ) {
-    return sptrf_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, ipiv );
-}
-
-//
-// Overloaded function for sptrf. Its overload differs for
-// * MatrixAP&
-// * const VectorIPIV&
-//
-template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t sptrf( MatrixAP& ap, const VectorIPIV& ipiv ) {
-    return sptrf_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, ipiv );
-}
-
-//
-// Overloaded function for sptrf. Its overload differs for
-// * const MatrixAP&
-// * const VectorIPIV&
-//
-template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t sptrf( const MatrixAP& ap, const VectorIPIV& ipiv ) {
     return sptrf_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, ipiv );
 }

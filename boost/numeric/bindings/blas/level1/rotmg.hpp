@@ -156,7 +156,6 @@ struct rotmg_impl {
 
 //
 // Overloaded function for rotmg. Its overload differs for
-// * VectorDPARAM&
 //
 template< typename VectorDPARAM >
 inline typename rotmg_impl< typename bindings::value_type<
@@ -168,24 +167,6 @@ rotmg( typename remove_imaginary< typename bindings::value_type<
         VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
         typename bindings::value_type< VectorDPARAM >::type >::type y1,
         VectorDPARAM& dparam ) {
-    rotmg_impl< typename bindings::value_type<
-            VectorDPARAM >::type >::invoke( d1, d2, x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * const VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename bindings::value_type<
-        VectorDPARAM >::type >::result_type
-rotmg( typename remove_imaginary< typename bindings::value_type<
-        VectorDPARAM >::type >::type& d1, typename remove_imaginary<
-        typename bindings::value_type< VectorDPARAM >::type >::type& d2,
-        typename remove_imaginary< typename bindings::value_type<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename bindings::value_type< VectorDPARAM >::type >::type y1,
-        const VectorDPARAM& dparam ) {
     rotmg_impl< typename bindings::value_type<
             VectorDPARAM >::type >::invoke( d1, d2, x1, y1, dparam );
 }

@@ -198,7 +198,6 @@ struct hbev_impl {
 //
 // Overloaded function for hbev. Its overload differs for
 // * MatrixAB&
-// * VectorW&
 // * MatrixZ&
 // * User-defined workspace
 //
@@ -215,7 +214,6 @@ hbev( const char jobz, MatrixAB& ab, VectorW& w, MatrixZ& z,
 //
 // Overloaded function for hbev. Its overload differs for
 // * MatrixAB&
-// * VectorW&
 // * MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -230,7 +228,6 @@ hbev( const char jobz, MatrixAB& ab, VectorW& w, MatrixZ& z ) {
 //
 // Overloaded function for hbev. Its overload differs for
 // * const MatrixAB&
-// * VectorW&
 // * MatrixZ&
 // * User-defined workspace
 //
@@ -247,7 +244,6 @@ hbev( const char jobz, const MatrixAB& ab, VectorW& w, MatrixZ& z,
 //
 // Overloaded function for hbev. Its overload differs for
 // * const MatrixAB&
-// * VectorW&
 // * MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -262,72 +258,6 @@ hbev( const char jobz, const MatrixAB& ab, VectorW& w, MatrixZ& z ) {
 //
 // Overloaded function for hbev. Its overload differs for
 // * MatrixAB&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hbev( const char jobz, MatrixAB& ab, const VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return hbev_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, work );
-}
-
-//
-// Overloaded function for hbev. Its overload differs for
-// * MatrixAB&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-hbev( const char jobz, MatrixAB& ab, const VectorW& w, MatrixZ& z ) {
-    return hbev_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hbev. Its overload differs for
-// * const MatrixAB&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hbev( const char jobz, const MatrixAB& ab, const VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return hbev_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, work );
-}
-
-//
-// Overloaded function for hbev. Its overload differs for
-// * const MatrixAB&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-hbev( const char jobz, const MatrixAB& ab, const VectorW& w,
-        MatrixZ& z ) {
-    return hbev_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hbev. Its overload differs for
-// * MatrixAB&
-// * VectorW&
 // * const MatrixZ&
 // * User-defined workspace
 //
@@ -344,7 +274,6 @@ hbev( const char jobz, MatrixAB& ab, VectorW& w, const MatrixZ& z,
 //
 // Overloaded function for hbev. Its overload differs for
 // * MatrixAB&
-// * VectorW&
 // * const MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -359,7 +288,6 @@ hbev( const char jobz, MatrixAB& ab, VectorW& w, const MatrixZ& z ) {
 //
 // Overloaded function for hbev. Its overload differs for
 // * const MatrixAB&
-// * VectorW&
 // * const MatrixZ&
 // * User-defined workspace
 //
@@ -376,7 +304,6 @@ hbev( const char jobz, const MatrixAB& ab, VectorW& w, const MatrixZ& z,
 //
 // Overloaded function for hbev. Its overload differs for
 // * const MatrixAB&
-// * VectorW&
 // * const MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -384,72 +311,6 @@ template< typename MatrixAB, typename VectorW, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 hbev( const char jobz, const MatrixAB& ab, VectorW& w,
-        const MatrixZ& z ) {
-    return hbev_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hbev. Its overload differs for
-// * MatrixAB&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hbev( const char jobz, MatrixAB& ab, const VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return hbev_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, work );
-}
-
-//
-// Overloaded function for hbev. Its overload differs for
-// * MatrixAB&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-hbev( const char jobz, MatrixAB& ab, const VectorW& w,
-        const MatrixZ& z ) {
-    return hbev_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for hbev. Its overload differs for
-// * const MatrixAB&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hbev( const char jobz, const MatrixAB& ab, const VectorW& w,
-        const MatrixZ& z, Workspace work ) {
-    return hbev_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, work );
-}
-
-//
-// Overloaded function for hbev. Its overload differs for
-// * const MatrixAB&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-hbev( const char jobz, const MatrixAB& ab, const VectorW& w,
         const MatrixZ& z ) {
     return hbev_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( jobz, ab, w, z, optimal_workspace() );

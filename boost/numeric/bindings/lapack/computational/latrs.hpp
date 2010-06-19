@@ -226,56 +226,12 @@ struct latrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for latrs. Its overload differs for
-// * VectorX&
-// * VectorCNORM&
 //
 template< typename MatrixA, typename VectorX, typename VectorCNORM >
 inline std::ptrdiff_t latrs( const char uplo, const char normin,
         const MatrixA& a, VectorX& x, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& scale,
         VectorCNORM& cnorm ) {
-    return latrs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( uplo, normin, a, x, scale, cnorm );
-}
-
-//
-// Overloaded function for latrs. Its overload differs for
-// * const VectorX&
-// * VectorCNORM&
-//
-template< typename MatrixA, typename VectorX, typename VectorCNORM >
-inline std::ptrdiff_t latrs( const char uplo, const char normin,
-        const MatrixA& a, const VectorX& x, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& scale,
-        VectorCNORM& cnorm ) {
-    return latrs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( uplo, normin, a, x, scale, cnorm );
-}
-
-//
-// Overloaded function for latrs. Its overload differs for
-// * VectorX&
-// * const VectorCNORM&
-//
-template< typename MatrixA, typename VectorX, typename VectorCNORM >
-inline std::ptrdiff_t latrs( const char uplo, const char normin,
-        const MatrixA& a, VectorX& x, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& scale,
-        const VectorCNORM& cnorm ) {
-    return latrs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( uplo, normin, a, x, scale, cnorm );
-}
-
-//
-// Overloaded function for latrs. Its overload differs for
-// * const VectorX&
-// * const VectorCNORM&
-//
-template< typename MatrixA, typename VectorX, typename VectorCNORM >
-inline std::ptrdiff_t latrs( const char uplo, const char normin,
-        const MatrixA& a, const VectorX& x, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& scale,
-        const VectorCNORM& cnorm ) {
     return latrs_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( uplo, normin, a, x, scale, cnorm );
 }

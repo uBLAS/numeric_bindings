@@ -233,7 +233,6 @@ struct sbevd_impl {
 //
 // Overloaded function for sbevd. Its overload differs for
 // * MatrixAB&
-// * VectorW&
 // * MatrixZ&
 // * User-defined workspace
 //
@@ -250,7 +249,6 @@ sbevd( const char jobz, MatrixAB& ab, VectorW& w, MatrixZ& z,
 //
 // Overloaded function for sbevd. Its overload differs for
 // * MatrixAB&
-// * VectorW&
 // * MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -267,7 +265,6 @@ sbevd( const char jobz, MatrixAB& ab, VectorW& w, MatrixZ& z,
 //
 // Overloaded function for sbevd. Its overload differs for
 // * const MatrixAB&
-// * VectorW&
 // * MatrixZ&
 // * User-defined workspace
 //
@@ -284,7 +281,6 @@ sbevd( const char jobz, const MatrixAB& ab, VectorW& w, MatrixZ& z,
 //
 // Overloaded function for sbevd. Its overload differs for
 // * const MatrixAB&
-// * VectorW&
 // * MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -301,75 +297,6 @@ sbevd( const char jobz, const MatrixAB& ab, VectorW& w, MatrixZ& z,
 //
 // Overloaded function for sbevd. Its overload differs for
 // * MatrixAB&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sbevd( const char jobz, MatrixAB& ab, const VectorW& w, MatrixZ& z,
-        const fortran_int_t liwork, Workspace work ) {
-    return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork, work );
-}
-
-//
-// Overloaded function for sbevd. Its overload differs for
-// * MatrixAB&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-sbevd( const char jobz, MatrixAB& ab, const VectorW& w, MatrixZ& z,
-        const fortran_int_t liwork ) {
-    return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for sbevd. Its overload differs for
-// * const MatrixAB&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sbevd( const char jobz, const MatrixAB& ab, const VectorW& w, MatrixZ& z,
-        const fortran_int_t liwork, Workspace work ) {
-    return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork, work );
-}
-
-//
-// Overloaded function for sbevd. Its overload differs for
-// * const MatrixAB&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-sbevd( const char jobz, const MatrixAB& ab, const VectorW& w, MatrixZ& z,
-        const fortran_int_t liwork ) {
-    return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for sbevd. Its overload differs for
-// * MatrixAB&
-// * VectorW&
 // * const MatrixZ&
 // * User-defined workspace
 //
@@ -386,7 +313,6 @@ sbevd( const char jobz, MatrixAB& ab, VectorW& w, const MatrixZ& z,
 //
 // Overloaded function for sbevd. Its overload differs for
 // * MatrixAB&
-// * VectorW&
 // * const MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -403,7 +329,6 @@ sbevd( const char jobz, MatrixAB& ab, VectorW& w, const MatrixZ& z,
 //
 // Overloaded function for sbevd. Its overload differs for
 // * const MatrixAB&
-// * VectorW&
 // * const MatrixZ&
 // * User-defined workspace
 //
@@ -420,7 +345,6 @@ sbevd( const char jobz, const MatrixAB& ab, VectorW& w, const MatrixZ& z,
 //
 // Overloaded function for sbevd. Its overload differs for
 // * const MatrixAB&
-// * VectorW&
 // * const MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -429,74 +353,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 sbevd( const char jobz, const MatrixAB& ab, VectorW& w, const MatrixZ& z,
         const fortran_int_t liwork ) {
-    return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for sbevd. Its overload differs for
-// * MatrixAB&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sbevd( const char jobz, MatrixAB& ab, const VectorW& w, const MatrixZ& z,
-        const fortran_int_t liwork, Workspace work ) {
-    return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork, work );
-}
-
-//
-// Overloaded function for sbevd. Its overload differs for
-// * MatrixAB&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-sbevd( const char jobz, MatrixAB& ab, const VectorW& w, const MatrixZ& z,
-        const fortran_int_t liwork ) {
-    return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for sbevd. Its overload differs for
-// * const MatrixAB&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sbevd( const char jobz, const MatrixAB& ab, const VectorW& w,
-        const MatrixZ& z, const fortran_int_t liwork, Workspace work ) {
-    return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork, work );
-}
-
-//
-// Overloaded function for sbevd. Its overload differs for
-// * const MatrixAB&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-sbevd( const char jobz, const MatrixAB& ab, const VectorW& w,
-        const MatrixZ& z, const fortran_int_t liwork ) {
     return sbevd_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( jobz, ab, w, z, liwork,
             optimal_workspace() );

@@ -772,7 +772,8 @@ def decompose_formula( text_field ):
 def match_assert_ge( argument_map, text_field ):
   #print "Match assert GE..."
   match_it = re.compile( ' +[A-Z]+[ ]{0,3}(>=|must be at least)[ ]{0,3}([0-9]|(min|max|MIN|MAX|[\(\)\,0-9A-Z\+\*\-])+)' ).findall( text_field )
-  if len( match_it ) == 1:
+  if len( match_it ) == 1 or \
+     (len( match_it ) == 2 and re.compile( 'For optimum performance' ).search( text_field ) != None):
     print "Match assert GE:", match_it
     #print match_it
     #if len( match_it[ 0 ][ 2 ] ) > 0:
@@ -1586,6 +1587,9 @@ def parse_file( filename, template_map ):
           if not argument_map[ referring_argument_name ].has_key( 'workspace_query_by' ):
             argument_map[ referring_argument_name ][ 'workspace_query_by' ] = []
           argument_map[ referring_argument_name ][ 'workspace_query_by' ] += [ argument_name ]
+          if 'assert_ge' in argument_properties and not 'assert_size_args' in argument_map[ referring_argument_name ]:
+            argument_map[ referring_argument_name ][ 'assert_size' ] = argument_properties[ 'assert_ge' ]
+            argument_map[ referring_argument_name ][ 'assert_size_args' ] = nested_list_args( argument_properties[ 'assert_ge' ] )
 
     if 'trait_of' in argument_properties:
       rererring_argument_type = argument_properties[ 'trait_type' ]

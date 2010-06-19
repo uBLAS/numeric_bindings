@@ -45,7 +45,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/sbevd.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/sbevd.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -66,7 +66,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/sbevd.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/sbevd.hpp>
+#include <boost/numeric/bindings/lapack/driver/sbevd.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::sbevd( x, y, z );

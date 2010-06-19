@@ -64,7 +64,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/ggev.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/ggev.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -85,7 +85,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/ggev.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/ggev.hpp>
+#include <boost/numeric/bindings/lapack/driver/ggev.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::ggev( x, y, z );

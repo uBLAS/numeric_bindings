@@ -41,7 +41,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/getri.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/getri.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -62,7 +62,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/getri.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/getri.hpp>
+#include <boost/numeric/bindings/lapack/computational/getri.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::getri( x, y, z );

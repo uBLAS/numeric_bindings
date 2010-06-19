@@ -70,7 +70,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/ptsvx.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/ptsvx.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -91,7 +91,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/ptsvx.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/ptsvx.hpp>
+#include <boost/numeric/bindings/lapack/driver/ptsvx.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::ptsvx( x, y, z );

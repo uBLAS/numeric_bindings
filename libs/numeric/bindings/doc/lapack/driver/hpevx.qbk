@@ -41,7 +41,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/hpevx.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/hpevx.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -62,7 +62,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/hpevx.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/hpevx.hpp>
+#include <boost/numeric/bindings/lapack/driver/hpevx.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::hpevx( x, y, z );

@@ -47,7 +47,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/unmhr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/unmhr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -68,7 +68,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/unmhr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/unmhr.hpp>
+#include <boost/numeric/bindings/lapack/computational/unmhr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::unmhr( x, y, z );

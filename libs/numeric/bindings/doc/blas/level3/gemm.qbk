@@ -56,7 +56,7 @@ whereas `gemm` requires five arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/gemm.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level3/gemm.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -74,7 +74,7 @@ Defined in header [headerref boost/numeric/bindings/blas/gemm.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/gemm.hpp>
+#include <boost/numeric/bindings/blas/level3/gemm.hpp>
 using namespace boost::numeric::bindings;
 
 blas::gemm( x, y, z );

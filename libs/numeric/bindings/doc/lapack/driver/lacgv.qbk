@@ -36,7 +36,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/lacgv.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/lacgv.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -57,7 +57,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/lacgv.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/lacgv.hpp>
+#include <boost/numeric/bindings/lapack/driver/lacgv.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::lacgv( x, y, z );

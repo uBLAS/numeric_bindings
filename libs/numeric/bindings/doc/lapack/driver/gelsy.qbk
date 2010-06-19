@@ -73,7 +73,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/gelsy.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/gelsy.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -94,7 +94,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/gelsy.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/gelsy.hpp>
+#include <boost/numeric/bindings/lapack/driver/gelsy.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::gelsy( x, y, z );

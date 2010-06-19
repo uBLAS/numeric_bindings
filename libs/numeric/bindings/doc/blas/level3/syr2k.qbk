@@ -57,7 +57,7 @@ whereas `syr2k` requires five arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/syr2k.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level3/syr2k.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -75,7 +75,7 @@ Defined in header [headerref boost/numeric/bindings/blas/syr2k.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/syr2k.hpp>
+#include <boost/numeric/bindings/blas/level3/syr2k.hpp>
 using namespace boost::numeric::bindings;
 
 blas::syr2k( x, y, z );

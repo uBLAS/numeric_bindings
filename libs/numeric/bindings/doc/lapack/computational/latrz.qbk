@@ -40,7 +40,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/latrz.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/latrz.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -61,7 +61,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/latrz.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/latrz.hpp>
+#include <boost/numeric/bindings/lapack/computational/latrz.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::latrz( x, y, z );

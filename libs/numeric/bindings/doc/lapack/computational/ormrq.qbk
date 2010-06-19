@@ -48,7 +48,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/ormrq.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/ormrq.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -69,7 +69,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/ormrq.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/ormrq.hpp>
+#include <boost/numeric/bindings/lapack/computational/ormrq.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::ormrq( x, y, z );

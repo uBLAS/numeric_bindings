@@ -41,7 +41,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/ungtr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/ungtr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -62,7 +62,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/ungtr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/ungtr.hpp>
+#include <boost/numeric/bindings/lapack/computational/ungtr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::ungtr( x, y, z );

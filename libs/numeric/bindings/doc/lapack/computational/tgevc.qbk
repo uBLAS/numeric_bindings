@@ -62,7 +62,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/tgevc.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/tgevc.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -83,7 +83,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/tgevc.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/tgevc.hpp>
+#include <boost/numeric/bindings/lapack/computational/tgevc.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::tgevc( x, y, z );

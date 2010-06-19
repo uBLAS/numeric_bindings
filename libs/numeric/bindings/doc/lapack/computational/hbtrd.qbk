@@ -38,7 +38,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/hbtrd.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/hbtrd.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -59,7 +59,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/hbtrd.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/hbtrd.hpp>
+#include <boost/numeric/bindings/lapack/computational/hbtrd.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::hbtrd( x, y, z );

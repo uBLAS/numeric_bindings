@@ -57,7 +57,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/lansp.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/auxiliary/lansp.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -78,7 +78,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/lansp.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/lansp.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/lansp.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::lansp( x, y, z );

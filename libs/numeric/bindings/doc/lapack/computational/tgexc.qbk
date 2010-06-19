@@ -57,7 +57,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/tgexc.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/tgexc.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -78,7 +78,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/tgexc.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/tgexc.hpp>
+#include <boost/numeric/bindings/lapack/computational/tgexc.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::tgexc( x, y, z );

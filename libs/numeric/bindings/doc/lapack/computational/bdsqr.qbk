@@ -66,7 +66,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/bdsqr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/bdsqr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -87,7 +87,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/bdsqr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/bdsqr.hpp>
+#include <boost/numeric/bindings/lapack/computational/bdsqr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::bdsqr( x, y, z );

@@ -49,7 +49,7 @@ whereas `hemm` requires six arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/hemm.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level3/hemm.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -67,7 +67,7 @@ Defined in header [headerref boost/numeric/bindings/blas/hemm.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/hemm.hpp>
+#include <boost/numeric/bindings/blas/level3/hemm.hpp>
 using namespace boost::numeric::bindings;
 
 blas::hemm( x, y, z );

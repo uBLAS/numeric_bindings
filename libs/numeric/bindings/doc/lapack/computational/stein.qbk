@@ -50,7 +50,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/stein.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/stein.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -71,7 +71,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/stein.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/stein.hpp>
+#include <boost/numeric/bindings/lapack/computational/stein.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::stein( x, y, z );

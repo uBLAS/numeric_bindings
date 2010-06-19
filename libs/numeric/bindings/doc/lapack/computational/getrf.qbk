@@ -46,7 +46,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/getrf.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/getrf.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -67,7 +67,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/getrf.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/getrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/getrf.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::getrf( x, y, z );

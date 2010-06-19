@@ -11,7 +11,7 @@ There is one prototype of `gejsv` available, please see below.
 ``
 gejsv( const char joba, const char jobu, const char jobv,
         const char jobr, const char jobt, const char jobp, MatrixA& a,
-        const int_t lwork );
+        VectorSVA& sva, MatrixU& u, MatrixV& v );
 ``
 
 
@@ -113,7 +113,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/gejsv.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/gejsv.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -134,7 +134,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/gejsv.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/gejsv.hpp>
+#include <boost/numeric/bindings/lapack/driver/gejsv.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::gejsv( x, y, z );

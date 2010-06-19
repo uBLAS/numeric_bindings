@@ -45,7 +45,7 @@ whereas `rotg` requires four arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/rotg.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level1/rotg.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -63,7 +63,7 @@ Defined in header [headerref boost/numeric/bindings/blas/rotg.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/rotg.hpp>
+#include <boost/numeric/bindings/blas/level1/rotg.hpp>
 using namespace boost::numeric::bindings;
 
 blas::rotg( x, y, z );

@@ -55,7 +55,7 @@ whereas `trsm` requires four arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/trsm.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level3/trsm.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -73,7 +73,7 @@ Defined in header [headerref boost/numeric/bindings/blas/trsm.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/trsm.hpp>
+#include <boost/numeric/bindings/blas/level3/trsm.hpp>
 using namespace boost::numeric::bindings;
 
 blas::trsm( x, y, z );

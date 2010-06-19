@@ -48,7 +48,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/unmlq.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/unmlq.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -69,7 +69,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/unmlq.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/unmlq.hpp>
+#include <boost/numeric/bindings/lapack/computational/unmlq.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::unmlq( x, y, z );

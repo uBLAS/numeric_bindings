@@ -40,7 +40,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/pftrs.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/pftrs.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -61,7 +61,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/pftrs.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/pftrs.hpp>
+#include <boost/numeric/bindings/lapack/computational/pftrs.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::pftrs( x, y, z );

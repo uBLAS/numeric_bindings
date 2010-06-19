@@ -94,7 +94,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/heevr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/heevr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -115,7 +115,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/heevr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/heevr.hpp>
+#include <boost/numeric/bindings/lapack/driver/heevr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::heevr( x, y, z );

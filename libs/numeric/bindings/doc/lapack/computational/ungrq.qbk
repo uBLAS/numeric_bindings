@@ -42,7 +42,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/ungrq.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/ungrq.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -63,7 +63,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/ungrq.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/ungrq.hpp>
+#include <boost/numeric/bindings/lapack/computational/ungrq.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::ungrq( x, y, z );

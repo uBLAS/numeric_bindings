@@ -47,7 +47,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/geequ.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/geequ.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -68,7 +68,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/geequ.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/geequ.hpp>
+#include <boost/numeric/bindings/lapack/computational/geequ.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::geequ( x, y, z );

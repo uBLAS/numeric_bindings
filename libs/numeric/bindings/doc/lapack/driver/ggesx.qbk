@@ -75,7 +75,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/ggesx.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/ggesx.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -96,7 +96,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/ggesx.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/ggesx.hpp>
+#include <boost/numeric/bindings/lapack/driver/ggesx.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::ggesx( x, y, z );

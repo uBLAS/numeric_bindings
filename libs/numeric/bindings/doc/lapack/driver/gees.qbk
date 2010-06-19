@@ -52,7 +52,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/gees.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/gees.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -73,7 +73,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/gees.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/gees.hpp>
+#include <boost/numeric/bindings/lapack/driver/gees.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::gees( x, y, z );

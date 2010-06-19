@@ -53,7 +53,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/larre.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/auxiliary/larre.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -74,7 +74,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/larre.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/larre.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/larre.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::larre( x, y, z );

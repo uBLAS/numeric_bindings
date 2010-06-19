@@ -107,7 +107,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/stemr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/stemr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -128,7 +128,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/stemr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/stemr.hpp>
+#include <boost/numeric/bindings/lapack/computational/stemr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::stemr( x, y, z );

@@ -43,7 +43,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/tpcon.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/tpcon.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -64,7 +64,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/tpcon.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/tpcon.hpp>
+#include <boost/numeric/bindings/lapack/computational/tpcon.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::tpcon( x, y, z );

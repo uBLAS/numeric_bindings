@@ -37,7 +37,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/hetrs.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/hetrs.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -58,7 +58,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/hetrs.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/hetrs.hpp>
+#include <boost/numeric/bindings/lapack/computational/hetrs.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::hetrs( x, y, z );

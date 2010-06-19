@@ -44,7 +44,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/pbequ.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/pbequ.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -65,7 +65,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/pbequ.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/pbequ.hpp>
+#include <boost/numeric/bindings/lapack/computational/pbequ.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::pbequ( x, y, z );

@@ -41,7 +41,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/sprfs.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/sprfs.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -62,7 +62,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/sprfs.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/sprfs.hpp>
+#include <boost/numeric/bindings/lapack/computational/sprfs.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::sprfs( x, y, z );

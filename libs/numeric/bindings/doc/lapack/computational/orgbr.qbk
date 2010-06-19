@@ -54,7 +54,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/orgbr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/orgbr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -75,7 +75,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/orgbr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/orgbr.hpp>
+#include <boost/numeric/bindings/lapack/computational/orgbr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::orgbr( x, y, z );

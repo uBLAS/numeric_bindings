@@ -53,7 +53,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/pteqr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/pteqr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -74,7 +74,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/pteqr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/pteqr.hpp>
+#include <boost/numeric/bindings/lapack/computational/pteqr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::pteqr( x, y, z );

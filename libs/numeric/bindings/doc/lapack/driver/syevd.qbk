@@ -47,7 +47,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/syevd.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/syevd.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -68,7 +68,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/syevd.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/syevd.hpp>
+#include <boost/numeric/bindings/lapack/driver/syevd.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::syevd( x, y, z );

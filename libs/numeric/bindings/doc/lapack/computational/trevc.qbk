@@ -63,7 +63,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/trevc.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/trevc.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -84,7 +84,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/trevc.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/trevc.hpp>
+#include <boost/numeric/bindings/lapack/computational/trevc.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::trevc( x, y, z );

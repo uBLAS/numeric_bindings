@@ -70,7 +70,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/gtsvx.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/gtsvx.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -91,7 +91,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/gtsvx.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/gtsvx.hpp>
+#include <boost/numeric/bindings/lapack/driver/gtsvx.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::gtsvx( x, y, z );

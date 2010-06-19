@@ -42,7 +42,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/sbgst.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/sbgst.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -63,7 +63,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/sbgst.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/sbgst.hpp>
+#include <boost/numeric/bindings/lapack/computational/sbgst.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::sbgst( x, y, z );

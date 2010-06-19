@@ -38,7 +38,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/tptri.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/tptri.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -59,7 +59,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/tptri.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/tptri.hpp>
+#include <boost/numeric/bindings/lapack/computational/tptri.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::tptri( x, y, z );

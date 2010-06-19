@@ -76,7 +76,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/geevx.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/geevx.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -97,7 +97,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/geevx.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/geevx.hpp>
+#include <boost/numeric/bindings/lapack/driver/geevx.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::geevx( x, y, z );

@@ -40,7 +40,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/gerfs.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/gerfs.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -61,7 +61,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/gerfs.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/gerfs.hpp>
+#include <boost/numeric/bindings/lapack/computational/gerfs.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::gerfs( x, y, z );

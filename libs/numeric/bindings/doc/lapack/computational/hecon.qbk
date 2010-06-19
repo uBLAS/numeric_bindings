@@ -41,7 +41,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/hecon.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/hecon.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -62,7 +62,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/hecon.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/hecon.hpp>
+#include <boost/numeric/bindings/lapack/computational/hecon.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::hecon( x, y, z );

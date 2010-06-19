@@ -44,7 +44,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/hegst.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/hegst.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -65,7 +65,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/hegst.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/hegst.hpp>
+#include <boost/numeric/bindings/lapack/computational/hegst.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::hegst( x, y, z );

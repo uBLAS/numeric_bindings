@@ -51,7 +51,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/stebz.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/stebz.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -72,7 +72,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/stebz.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/stebz.hpp>
+#include <boost/numeric/bindings/lapack/computational/stebz.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::stebz( x, y, z );

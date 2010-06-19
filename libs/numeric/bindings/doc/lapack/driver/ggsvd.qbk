@@ -116,7 +116,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/ggsvd.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/ggsvd.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -137,7 +137,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/ggsvd.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/ggsvd.hpp>
+#include <boost/numeric/bindings/lapack/driver/ggsvd.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::ggsvd( x, y, z );

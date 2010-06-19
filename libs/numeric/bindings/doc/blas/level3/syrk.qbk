@@ -56,7 +56,7 @@ whereas `syrk` requires four arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/syrk.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level3/syrk.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -74,7 +74,7 @@ Defined in header [headerref boost/numeric/bindings/blas/syrk.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/syrk.hpp>
+#include <boost/numeric/bindings/blas/level3/syrk.hpp>
 using namespace boost::numeric::bindings;
 
 blas::syrk( x, y, z );

@@ -61,7 +61,7 @@ whereas `rotmg` requires five arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/rotmg.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level1/rotmg.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -79,7 +79,7 @@ Defined in header [headerref boost/numeric/bindings/blas/rotmg.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/rotmg.hpp>
+#include <boost/numeric/bindings/blas/level1/rotmg.hpp>
 using namespace boost::numeric::bindings;
 
 blas::rotmg( x, y, z );

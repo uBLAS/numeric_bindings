@@ -40,7 +40,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/orghr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/orghr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -61,7 +61,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/orghr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/orghr.hpp>
+#include <boost/numeric/bindings/lapack/computational/orghr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::orghr( x, y, z );

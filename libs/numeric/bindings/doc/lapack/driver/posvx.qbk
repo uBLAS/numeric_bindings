@@ -84,7 +84,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/posvx.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/posvx.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -105,7 +105,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/posvx.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/posvx.hpp>
+#include <boost/numeric/bindings/lapack/driver/posvx.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::posvx( x, y, z );

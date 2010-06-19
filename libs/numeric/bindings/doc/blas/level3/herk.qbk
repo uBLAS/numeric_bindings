@@ -49,7 +49,7 @@ whereas `herk` requires four arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/herk.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level3/herk.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -67,7 +67,7 @@ Defined in header [headerref boost/numeric/bindings/blas/herk.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/herk.hpp>
+#include <boost/numeric/bindings/blas/level3/herk.hpp>
 using namespace boost::numeric::bindings;
 
 blas::herk( x, y, z );

@@ -58,7 +58,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/lantb.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/auxiliary/lantb.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -79,7 +79,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/lantb.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/lantb.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/lantb.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::lantb( x, y, z );

@@ -51,7 +51,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/larfx.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/auxiliary/larfx.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -72,7 +72,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/larfx.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/larfx.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/larfx.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::larfx( x, y, z );

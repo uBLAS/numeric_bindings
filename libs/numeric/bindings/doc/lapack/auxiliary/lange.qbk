@@ -57,7 +57,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/lange.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/auxiliary/lange.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -78,7 +78,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/lange.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/lange.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/lange.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::lange( x, y, z );

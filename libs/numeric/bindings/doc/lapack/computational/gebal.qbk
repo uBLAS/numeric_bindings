@@ -46,7 +46,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/gebal.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/gebal.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -67,7 +67,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/gebal.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/gebal.hpp>
+#include <boost/numeric/bindings/lapack/computational/gebal.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::gebal( x, y, z );

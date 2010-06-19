@@ -56,7 +56,7 @@ whereas `symm` requires six arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/symm.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level3/symm.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -74,7 +74,7 @@ Defined in header [headerref boost/numeric/bindings/blas/symm.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/symm.hpp>
+#include <boost/numeric/bindings/blas/level3/symm.hpp>
 using namespace boost::numeric::bindings;
 
 blas::symm( x, y, z );

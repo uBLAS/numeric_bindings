@@ -44,7 +44,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/trrfs.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/trrfs.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -65,7 +65,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/trrfs.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/trrfs.hpp>
+#include <boost/numeric/bindings/lapack/computational/trrfs.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::trrfs( x, y, z );

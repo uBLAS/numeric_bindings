@@ -41,7 +41,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/porfs.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/porfs.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -62,7 +62,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/porfs.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/porfs.hpp>
+#include <boost/numeric/bindings/lapack/computational/porfs.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::porfs( x, y, z );

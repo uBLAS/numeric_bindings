@@ -42,7 +42,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/stevx.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/stevx.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -63,7 +63,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/stevx.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/stevx.hpp>
+#include <boost/numeric/bindings/lapack/driver/stevx.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::stevx( x, y, z );

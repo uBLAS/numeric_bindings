@@ -71,7 +71,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/gelsd.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/gelsd.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -92,7 +92,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/gelsd.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/gelsd.hpp>
+#include <boost/numeric/bindings/lapack/driver/gelsd.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::gelsd( x, y, z );

@@ -42,7 +42,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/orgql.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/orgql.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -63,7 +63,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/orgql.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/orgql.hpp>
+#include <boost/numeric/bindings/lapack/computational/orgql.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::orgql( x, y, z );

@@ -37,7 +37,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/sytrd.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/sytrd.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -58,7 +58,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/sytrd.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/sytrd.hpp>
+#include <boost/numeric/bindings/lapack/computational/sytrd.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::sytrd( x, y, z );

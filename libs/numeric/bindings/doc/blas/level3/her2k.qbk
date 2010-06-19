@@ -50,7 +50,7 @@ whereas `her2k` requires five arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/her2k.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level3/her2k.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -68,7 +68,7 @@ Defined in header [headerref boost/numeric/bindings/blas/her2k.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/her2k.hpp>
+#include <boost/numeric/bindings/blas/level3/her2k.hpp>
 using namespace boost::numeric::bindings;
 
 blas::her2k( x, y, z );

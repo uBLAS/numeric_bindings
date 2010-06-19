@@ -39,7 +39,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/lacon.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/lacon.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -60,7 +60,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/lacon.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/lacon.hpp>
+#include <boost/numeric/bindings/lapack/computational/lacon.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::lacon( x, y, z );

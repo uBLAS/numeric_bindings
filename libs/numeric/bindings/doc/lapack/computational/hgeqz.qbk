@@ -87,7 +87,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/hgeqz.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/hgeqz.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -108,7 +108,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/hgeqz.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/hgeqz.hpp>
+#include <boost/numeric/bindings/lapack/computational/hgeqz.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::hgeqz( x, y, z );

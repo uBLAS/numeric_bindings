@@ -38,7 +38,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/geqp3.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/geqp3.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -59,7 +59,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/geqp3.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/geqp3.hpp>
+#include <boost/numeric/bindings/lapack/computational/geqp3.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::geqp3( x, y, z );

@@ -53,7 +53,7 @@ whereas `trmm` requires four arguments.
 ]
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/blas/trmm.hpp].
+Defined in header [headerref boost/numeric/bindings/blas/level3/trmm.hpp].
 
 [heading Parameters or Requirements on Types]
 
@@ -71,7 +71,7 @@ Defined in header [headerref boost/numeric/bindings/blas/trmm.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/blas/trmm.hpp>
+#include <boost/numeric/bindings/blas/level3/trmm.hpp>
 using namespace boost::numeric::bindings;
 
 blas::trmm( x, y, z );

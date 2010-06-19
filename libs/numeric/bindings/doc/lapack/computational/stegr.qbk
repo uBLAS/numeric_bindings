@@ -60,7 +60,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/stegr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/stegr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -81,7 +81,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/stegr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/stegr.hpp>
+#include <boost/numeric/bindings/lapack/computational/stegr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::stegr( x, y, z );

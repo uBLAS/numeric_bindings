@@ -42,7 +42,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/ggbak.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/ggbak.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -63,7 +63,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/ggbak.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/ggbak.hpp>
+#include <boost/numeric/bindings/lapack/computational/ggbak.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::ggbak( x, y, z );

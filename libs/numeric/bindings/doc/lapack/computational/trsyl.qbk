@@ -47,7 +47,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/trsyl.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/trsyl.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -68,7 +68,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/trsyl.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/trsyl.hpp>
+#include <boost/numeric/bindings/lapack/computational/trsyl.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::trsyl( x, y, z );

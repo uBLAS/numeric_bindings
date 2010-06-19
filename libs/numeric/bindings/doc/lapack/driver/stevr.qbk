@@ -78,7 +78,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/stevr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/driver/stevr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -99,7 +99,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/stevr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/stevr.hpp>
+#include <boost/numeric/bindings/lapack/driver/stevr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::stevr( x, y, z );

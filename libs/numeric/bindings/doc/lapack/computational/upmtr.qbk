@@ -49,7 +49,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/upmtr.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/upmtr.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -70,7 +70,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/upmtr.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/upmtr.hpp>
+#include <boost/numeric/bindings/lapack/computational/upmtr.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::upmtr( x, y, z );

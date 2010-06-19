@@ -43,7 +43,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/pbtrf.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/pbtrf.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -64,7 +64,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/pbtrf.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/pbtrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/pbtrf.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::pbtrf( x, y, z );

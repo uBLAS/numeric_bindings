@@ -42,7 +42,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/hptrf.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/computational/hptrf.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -63,7 +63,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/hptrf.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/hptrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/hptrf.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::hptrf( x, y, z );
